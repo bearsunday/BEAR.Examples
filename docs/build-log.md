@@ -244,6 +244,103 @@ ead13ff Phase 2: Add ALPS profile for CMS (Read + Write transitions)
 01f12f3 Phase 1: Initialize BEAR.Sunday skeleton
 ```
 
+## 振り返り (率直な感想)
+
+技術的な事実は上にまとめたので、ここでは進め方の所感を残す。
+
+### よかったこと
+
+- **解像度を段階的に上げる構築順がうまくはまった。** ALPS で意味、Fake で具体例、
+  schema で制約、entity でドメイン、SQL でストレージ — と「次のフェーズに行く前に
+  この層は確定」という区切りで進められた。後戻りがほとんど発生しなかった。
+- **同じ Fake JSON が4箇所で再利用される構造が気持ちよかった。** schema 検証、
+  FakeSqlQuery、Doctrine seed、観察ログ。普通なら fixture を別々に作るところを、
+  単一データセットで通せた。これは semantic-ex 由来の副産物で、最初から狙った
+  わけではない。
+- **`fake-hal-api-app` を独立したランタイムコンテキストにしたのが地味に効いた。**
+  「Fakeはテスト用」という思い込みを捨てて `src/Fake/` に置いた瞬間、デモ・動作
+  確認・ドキュメント生成が一気に楽になった。テスト用コンテキストとは別物として
+  扱うべき。
+
+### 想定外だったこと
+
+- **`DbQueryInterceptor` が `exec()` を呼ばない事実。** これは正直、ソースを
+  読むまで分からなかった。Phase 9 で Fake の `exec` にだけ書き込み処理を書いて
+  実行 → "unknown row sqlId 'create_article'" で詰まった。Ray.MediaQuery の
+  内部規約 (writes も getRow を通る、SQLite が SELECT 検出で分岐する) を知らないと
+  Fake は書けない。**先にソースを読むべきだった。** 1往復ぶん時間を使った。
+- **`composer create-project` が「ディレクトリが空でない」と怒る挙動。** 自分で
+  rmdir した直後に harness が `.claude/settings.local.json` を復元したらしく、
+  再実行したらまた怒られた。`/tmp` に作ってコピーする回避策で逃げたが、初手で
+  読みきれなかった。
+- **JSON Schema の `format: date-time` が RFC3339 限定だったこと。** DB の
+  `YYYY-MM-DD HH:MM:SS` をそのまま使えるつもりでいた。Fake 側だけ ISO 8601 に
+  揃えて辻褄を合わせたが、本来は entity に DateTimeImmutable を持たせて表現を
+  正規化すべきだろう。Phase 4 の早い段階で気づきたかった。
+
+### あまりエレガントでなかった所
+
+- **`onPost` で `getBySlug` を後追い fetch する設計。** 動作は portable で
+  Fake にも優しいが、INSERT 直後の SELECT は本当は Repository パターンで
+  隠したい操作。今は Resource 層に「INSERT して再取得する」という手続きが
+  そのまま見えている。BEAR ぽくない。次に手を入れるなら `ArticleService`
+  あたりを切る。
+- **`#[Pager]` を避けたこと。** 「PagesInterface を Fake 化するコストが高い」が
+  理由だが、本来は Pagerfanta の `ArrayAdapter` を使えば Fake Pages を作れる。
+  楽な道に逃げた自覚はある。プロダクションに昇格させるなら戻すべき。
+- **`Articles` のレスポンスに `count` (今ページの件数) しか入れていない。**
+  `totalCount` (全体件数) がないと UI でページネーション組めない。schema 側の
+  `articleList.json` には `totalCount` があるのに、実装が追いついていない。
+  実は最初の Read 試運転で「動いた!」で満足してしまい、レビュー漏れ。
+- **malt を実際に動かしていない。** SQLite で代行確認したので `malt.json` は
+  技術的には未検証。手元で試せていないものを README に書いているのは誠実でない。
+  ユーザーが malt start したときに pdo_mysql 拡張が要るとか、port 衝突があるとか、
+  実際に当たってみないと分からない部分が残っている。
+
+### 設計判断の自己評価
+
+- **Factory 不使用 (FetchNewInstance に任せる) は正解。** Entity に依存注入が
+  必要になった時点で導入する、で良い。今は YAGNI を回避できた。
+- **`getBy{naturalKey}` 採用は妥当だが完璧ではない。** UNIQUE 制約が絶対前提に
+  なる。slug が変わる可能性のあるドメインだと破綻する。CMS としてはOK。
+- **コンテキスト命名 `fake-hal-api-app` は良い選択だった。** BEAR.Sunday の
+  既存規約 (`prod-`, `test-`) に違和感なく収まる。
+
+### プロセス上の気付き
+
+- **Plan モードを何度も書き直したのが結果的に良かった。** 最初は QueryLocator を
+  入れていた、Phinx を採用していた、Write を入れていなかった、malt を
+  「インフラ構築」と曖昧に書いていた、BEAR.Skills を入れていなかった、と毎回
+  追加・訂正された。一発で完璧な計画は無理だが、対話で精度が上がった。
+- **コミットを1フェーズ=1コミットで切ったのが整理に効いた。** あとで build-log を
+  書くときに、`git log` がそのまま目次になった。意図して粒度を揃えた価値あり。
+- **`var/tmp/{context}/di/` のキャッシュ消し忘れで何度かハマった。** モジュール
+  構成を変えたのに古いファクトリが残って binding が反映されない。これは BEAR の
+  特性なので、普段から意識する習慣をつけたい。
+
+### もう一回やるなら
+
+1. **Ray.MediaQuery のソース (DbQueryInterceptor / SqlQuery / FetchInterface) を
+   Phase 4 着手前に通読する。** Fake の契約を後で書き直さずに済む。
+2. **Phase 5 で `Articles` の応答 shape を `articleList.json` schema と
+   突き合わせて validate する。** 抜け漏れに気づける。
+3. **malt を実際にインストールして `malt start` まで動かす。** README に書く以上、
+   ユーザーが一発で通る経路を確認しておくべき。
+4. **`#[Pager]` + `ArrayAdapter` で Fake Pages を作るパスを最初から検討する。**
+   逃げずに正攻法を試す。
+
+### 全体としては
+
+リファレンス実装としての目的 — 「BEAR.Sunday + ALPS + semantic-ex + Ray.MediaQuery
++ BDR を一気通貫で見せる小さなコードベース」— は達成できたと思う。
+19テスト pass、2バックエンド (Fake / 実SQLite) で同じ body shape、各フェーズが
+独立コミットになっていて教材としても読める。
+
+ただし「実用にも使える」と言える品質には届いていない。totalCount 欠落、malt 未検証、
+INSERT 後 SELECT のロジックが Resource にむき出し、エラーハンドリング (重複 slug の
+409 化など) 未実装、`#[Cacheable]` 未配線。これらは「次に拡張するとしたら」に
+書いた通りで、参照実装としてのスコープは越えている。
+
 ## 次に拡張するとしたら
 
 - `#[Cacheable]` + QueryRepository (`bear/query-repository`) でHTTPキャッシュ
