@@ -1,0 +1,257 @@
+{
+  "items": [
+    {
+      "id": 1,
+      "slug": "bear-sunday",
+      "name": "BEAR.Sunday"
+    },
+    {
+      "id": 2,
+      "slug": "ray-di",
+      "name": "Ray.Di"
+    },
+    {
+      "id": 3,
+      "slug": "ray-aop",
+      "name": "Ray.Aop"
+    },
+    {
+      "id": 4,
+      "slug": "media-query",
+      "name": "MediaQuery"
+    },
+    {
+      "id": 5,
+      "slug": "alps",
+      "name": "ALPS"
+    },
+    {
+      "id": 6,
+      "slug": "hal",
+      "name": "HAL"
+    },
+    {
+      "id": 7,
+      "slug": "rest",
+      "name": "REST"
+    },
+    {
+      "id": 8,
+      "slug": "tutorial",
+      "name": "Tutorial"
+    },
+    {
+      "id": 9,
+      "slug": "intro",
+      "name": "Introduction"
+    },
+    {
+      "id": 10,
+      "slug": "advanced",
+      "name": "Advanced"
+    },
+    {
+      "id": 11,
+      "slug": "php",
+      "name": "PHP"
+    },
+    {
+      "id": 12,
+      "slug": "php8",
+      "name": "PHP 8"
+    },
+    {
+      "id": 13,
+      "slug": "attributes",
+      "name": "Attributes"
+    },
+    {
+      "id": 14,
+      "slug": "di",
+      "name": "Dependency Injection"
+    },
+    {
+      "id": 15,
+      "slug": "cqrs",
+      "name": "CQRS"
+    },
+    {
+      "id": 16,
+      "slug": "bdr",
+      "name": "BDR Pattern"
+    },
+    {
+      "id": 17,
+      "slug": "testing",
+      "name": "Testing"
+    },
+    {
+      "id": 18,
+      "slug": "phpunit",
+      "name": "PHPUnit"
+    },
+    {
+      "id": 19,
+      "slug": "doctrine",
+      "name": "Doctrine"
+    },
+    {
+      "id": 20,
+      "slug": "migrations",
+      "name": "Migrations"
+    },
+    {
+      "id": 21,
+      "slug": "mysql",
+      "name": "MySQL"
+    },
+    {
+      "id": 22,
+      "slug": "sqlite",
+      "name": "SQLite"
+    },
+    {
+      "id": 23,
+      "slug": "javascript",
+      "name": "JavaScript"
+    },
+    {
+      "id": 24,
+      "slug": "typescript",
+      "name": "TypeScript"
+    },
+    {
+      "id": 25,
+      "slug": "vue",
+      "name": "Vue"
+    },
+    {
+      "id": 26,
+      "slug": "react",
+      "name": "React"
+    },
+    {
+      "id": 27,
+      "slug": "nginx",
+      "name": "Nginx"
+    },
+    {
+      "id": 28,
+      "slug": "docker",
+      "name": "Docker"
+    },
+    {
+      "id": 29,
+      "slug": "malt",
+      "name": "Malt"
+    },
+    {
+      "id": 30,
+      "slug": "opinion",
+      "name": "Opinion"
+    },
+    {
+      "id": 31,
+      "slug": "news",
+      "name": "News"
+    },
+    {
+      "id": 32,
+      "slug": "release",
+      "name": "Release"
+    },
+    {
+      "id": 33,
+      "slug": "performance",
+      "name": "Performance"
+    },
+    {
+      "id": 34,
+      "slug": "security",
+      "name": "Security"
+    },
+    {
+      "id": 35,
+      "slug": "best-practice",
+      "name": "Best Practice"
+    },
+    {
+      "id": 36,
+      "slug": "design-pattern",
+      "name": "Design Pattern"
+    },
+    {
+      "id": 37,
+      "slug": "beginner",
+      "name": "Beginner"
+    },
+    {
+      "id": 38,
+      "slug": "pro-tip",
+      "name": "Pro Tip"
+    },
+    {
+      "id": 39,
+      "slug": "photo-essay",
+      "name": "Photo Essay"
+    },
+    {
+      "id": 40,
+      "slug": "travel-log",
+      "name": "Travel Log"
+    },
+    {
+      "id": 41,
+      "slug": "review",
+      "name": "Review"
+    },
+    {
+      "id": 42,
+      "slug": "interview",
+      "name": "Interview"
+    },
+    {
+      "id": 43,
+      "slug": "case-study",
+      "name": "Case Study"
+    },
+    {
+      "id": 44,
+      "slug": "workflow",
+      "name": "Workflow"
+    },
+    {
+      "id": 45,
+      "slug": "tooling",
+      "name": "Tooling"
+    },
+    {
+      "id": 46,
+      "slug": "accessibility",
+      "name": "Accessibility"
+    },
+    {
+      "id": 47,
+      "slug": "community",
+      "name": "Community"
+    },
+    {
+      "id": 48,
+      "slug": "event",
+      "name": "Event"
+    },
+    {
+      "id": 49,
+      "slug": "career",
+      "name": "Career"
+    },
+    {
+      "id": 50,
+      "slug": "japanese",
+      "name": "日本語"
+    }
+  ],
+  "page": 1,
+  "perPage": 50,
+  "totalCount": 50
+}

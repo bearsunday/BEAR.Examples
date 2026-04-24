@@ -1,0 +1,77 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/bear-cms/articleList",
+  "title": "ArticleList",
+  "description": "Paginated list of articles",
+  "type": "object",
+  "required": [
+    "items",
+    "page",
+    "perPage",
+    "totalCount"
+  ],
+  "properties": {
+    "items": {
+      "type": "array",
+      "items": {
+        "$ref": "https://example.com/bear-cms/article"
+      }
+    },
+    "page": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Current page (1-indexed)"
+    },
+    "perPage": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 100,
+      "description": "Items per page"
+    },
+    "totalCount": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Total matching articles"
+    },
+    "_links": {
+      "type": "object",
+      "properties": {
+        "self": {
+          "$ref": "#/$defs/link"
+        },
+        "next": {
+          "$ref": "#/$defs/link"
+        },
+        "prev": {
+          "$ref": "#/$defs/link"
+        },
+        "first": {
+          "$ref": "#/$defs/link"
+        },
+        "last": {
+          "$ref": "#/$defs/link"
+        },
+        "goArticle": {
+          "$ref": "#/$defs/link"
+        },
+        "doCreateArticle": {
+          "$ref": "#/$defs/link"
+        }
+      }
+    }
+  },
+  "$defs": {
+    "link": {
+      "type": "object",
+      "required": [
+        "href"
+      ],
+      "properties": {
+        "href": {
+          "type": "string",
+          "format": "uri-reference"
+        }
+      }
+    }
+  }
+}

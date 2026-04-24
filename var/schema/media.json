@@ -1,0 +1,83 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/bear-cms/media",
+  "title": "Media",
+  "description": "ALPS Media state",
+  "type": "object",
+  "required": [
+    "id",
+    "filename",
+    "mimeType",
+    "url"
+  ],
+  "properties": {
+    "id": {
+      "type": "integer",
+      "description": "Primary key",
+      "minimum": 1
+    },
+    "filename": {
+      "type": "string",
+      "description": "Original filename",
+      "minLength": 13,
+      "maxLength": 50
+    },
+    "mimeType": {
+      "type": "string",
+      "description": "MIME type",
+      "minLength": 9,
+      "maxLength": 50
+    },
+    "url": {
+      "type": "string",
+      "description": "Public URL path",
+      "minLength": 20,
+      "maxLength": 50,
+      "format": "uri-reference"
+    },
+    "alt": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Accessibility alt text",
+      "minLength": 0,
+      "maxLength": 100
+    },
+    "width": {
+      "type": "integer",
+      "description": "Pixel width; 0 for SVG",
+      "minimum": 0
+    },
+    "height": {
+      "type": "integer",
+      "description": "Pixel height; 0 for SVG",
+      "minimum": 0
+    },
+    "_links": {
+      "type": "object",
+      "properties": {
+        "self": {
+          "$ref": "#/$defs/link"
+        },
+        "doDeleteMedia": {
+          "$ref": "#/$defs/link"
+        }
+      }
+    }
+  },
+  "$defs": {
+    "link": {
+      "type": "object",
+      "required": [
+        "href"
+      ],
+      "properties": {
+        "href": {
+          "type": "string",
+          "format": "uri-reference"
+        }
+      }
+    }
+  }
+}

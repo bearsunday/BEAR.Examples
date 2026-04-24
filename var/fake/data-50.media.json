@@ -1,0 +1,452 @@
+[
+  {
+    "id": 1,
+    "filename": "media-001.jpg",
+    "mimeType": "image/jpeg",
+    "url": "/media/media-001.jpg",
+    "alt": "A minimalist workspace with a laptop and coffee cup.",
+    "width": 640,
+    "height": 1080
+  },
+  {
+    "id": 2,
+    "filename": "media-002.png",
+    "mimeType": "image/png",
+    "url": "/media/media-002.png",
+    "alt": "Mountain peaks in winter light.",
+    "width": 640,
+    "height": 1080
+  },
+  {
+    "id": 3,
+    "filename": "media-003.webp",
+    "mimeType": "image/webp",
+    "url": "/media/media-003.webp",
+    "alt": "Screenshot of a BEAR.Sunday console output.",
+    "width": 320,
+    "height": 600
+  },
+  {
+    "id": 4,
+    "filename": "media-004.gif",
+    "mimeType": "image/gif",
+    "url": "/media/media-004.gif",
+    "alt": "Portrait of a developer smiling at their screen.",
+    "width": 1920,
+    "height": 960
+  },
+  {
+    "id": 5,
+    "filename": "media-005.svg",
+    "mimeType": "image/svg+xml",
+    "url": "/media/media-005.svg",
+    "alt": "Diagram illustrating the BDR pattern.",
+    "width": 0,
+    "height": 0
+  },
+  {
+    "id": 6,
+    "filename": "media-006.jpg",
+    "mimeType": "image/jpeg",
+    "url": "/media/media-006.jpg",
+    "alt": "",
+    "width": 1920,
+    "height": 768
+  },
+  {
+    "id": 7,
+    "filename": "media-007.png",
+    "mimeType": "image/png",
+    "url": "/media/media-007.png",
+    "alt": null,
+    "width": 1280,
+    "height": 1080
+  },
+  {
+    "id": 8,
+    "filename": "media-008.webp",
+    "mimeType": "image/webp",
+    "url": "/media/media-008.webp",
+    "alt": "桜の並木道",
+    "width": 640,
+    "height": 480
+  },
+  {
+    "id": 9,
+    "filename": "media-009.gif",
+    "mimeType": "image/gif",
+    "url": "/media/media-009.gif",
+    "alt": "キーボードの俯瞰写真",
+    "width": 1920,
+    "height": 480
+  },
+  {
+    "id": 10,
+    "filename": "media-010.svg",
+    "mimeType": "image/svg+xml",
+    "url": "/media/media-010.svg",
+    "alt": "ホワイトボード上のスケッチ",
+    "width": 0,
+    "height": 0
+  },
+  {
+    "id": 11,
+    "filename": "media-011.jpg",
+    "mimeType": "image/jpeg",
+    "url": "/media/media-011.jpg",
+    "alt": "A stack of technical books.",
+    "width": 1920,
+    "height": 1200
+  },
+  {
+    "id": 12,
+    "filename": "media-012.png",
+    "mimeType": "image/png",
+    "url": "/media/media-012.png",
+    "alt": "Kitchen counter with a cutting board and knife.",
+    "width": 640,
+    "height": 768
+  },
+  {
+    "id": 13,
+    "filename": "media-013.webp",
+    "mimeType": "image/webp",
+    "url": "/media/media-013.webp",
+    "alt": "Architectural detail of a temple roof.",
+    "width": 320,
+    "height": 480
+  },
+  {
+    "id": 14,
+    "filename": "media-014.gif",
+    "mimeType": "image/gif",
+    "url": "/media/media-014.gif",
+    "alt": "City skyline at dusk.",
+    "width": 1600,
+    "height": 600
+  },
+  {
+    "id": 15,
+    "filename": "media-015.svg",
+    "mimeType": "image/svg+xml",
+    "url": "/media/media-015.svg",
+    "alt": "A cat curled up on a keyboard.",
+    "width": 0,
+    "height": 0
+  },
+  {
+    "id": 16,
+    "filename": "media-016.jpg",
+    "mimeType": "image/jpeg",
+    "url": "/media/media-016.jpg",
+    "alt": "A minimalist workspace with a laptop and coffee cup.",
+    "width": 1920,
+    "height": 768
+  },
+  {
+    "id": 17,
+    "filename": "media-017.png",
+    "mimeType": "image/png",
+    "url": "/media/media-017.png",
+    "alt": "Mountain peaks in winter light.",
+    "width": 1920,
+    "height": 1080
+  },
+  {
+    "id": 18,
+    "filename": "media-018.webp",
+    "mimeType": "image/webp",
+    "url": "/media/media-018.webp",
+    "alt": "Screenshot of a BEAR.Sunday console output.",
+    "width": 1920,
+    "height": 1080
+  },
+  {
+    "id": 19,
+    "filename": "media-019.gif",
+    "mimeType": "image/gif",
+    "url": "/media/media-019.gif",
+    "alt": "Portrait of a developer smiling at their screen.",
+    "width": 1920,
+    "height": 480
+  },
+  {
+    "id": 20,
+    "filename": "media-020.svg",
+    "mimeType": "image/svg+xml",
+    "url": "/media/media-020.svg",
+    "alt": "Diagram illustrating the BDR pattern.",
+    "width": 0,
+    "height": 0
+  },
+  {
+    "id": 21,
+    "filename": "media-021.jpg",
+    "mimeType": "image/jpeg",
+    "url": "/media/media-021.jpg",
+    "alt": "",
+    "width": 800,
+    "height": 480
+  },
+  {
+    "id": 22,
+    "filename": "media-022.png",
+    "mimeType": "image/png",
+    "url": "/media/media-022.png",
+    "alt": null,
+    "width": 1920,
+    "height": 1080
+  },
+  {
+    "id": 23,
+    "filename": "media-023.webp",
+    "mimeType": "image/webp",
+    "url": "/media/media-023.webp",
+    "alt": "桜の並木道",
+    "width": 320,
+    "height": 768
+  },
+  {
+    "id": 24,
+    "filename": "media-024.gif",
+    "mimeType": "image/gif",
+    "url": "/media/media-024.gif",
+    "alt": "キーボードの俯瞰写真",
+    "width": 1920,
+    "height": 240
+  },
+  {
+    "id": 25,
+    "filename": "media-025.svg",
+    "mimeType": "image/svg+xml",
+    "url": "/media/media-025.svg",
+    "alt": "ホワイトボード上のスケッチ",
+    "width": 0,
+    "height": 0
+  },
+  {
+    "id": 26,
+    "filename": "media-026.jpg",
+    "mimeType": "image/jpeg",
+    "url": "/media/media-026.jpg",
+    "alt": "A stack of technical books.",
+    "width": 1920,
+    "height": 768
+  },
+  {
+    "id": 27,
+    "filename": "media-027.png",
+    "mimeType": "image/png",
+    "url": "/media/media-027.png",
+    "alt": "Kitchen counter with a cutting board and knife.",
+    "width": 640,
+    "height": 480
+  },
+  {
+    "id": 28,
+    "filename": "media-028.webp",
+    "mimeType": "image/webp",
+    "url": "/media/media-028.webp",
+    "alt": "Architectural detail of a temple roof.",
+    "width": 1920,
+    "height": 768
+  },
+  {
+    "id": 29,
+    "filename": "media-029.gif",
+    "mimeType": "image/gif",
+    "url": "/media/media-029.gif",
+    "alt": "City skyline at dusk.",
+    "width": 800,
+    "height": 600
+  },
+  {
+    "id": 30,
+    "filename": "media-030.svg",
+    "mimeType": "image/svg+xml",
+    "url": "/media/media-030.svg",
+    "alt": "A cat curled up on a keyboard.",
+    "width": 0,
+    "height": 0
+  },
+  {
+    "id": 31,
+    "filename": "media-031.jpg",
+    "mimeType": "image/jpeg",
+    "url": "/media/media-031.jpg",
+    "alt": "A minimalist workspace with a laptop and coffee cup.",
+    "width": 1920,
+    "height": 1200
+  },
+  {
+    "id": 32,
+    "filename": "media-032.png",
+    "mimeType": "image/png",
+    "url": "/media/media-032.png",
+    "alt": "Mountain peaks in winter light.",
+    "width": 1920,
+    "height": 480
+  },
+  {
+    "id": 33,
+    "filename": "media-033.webp",
+    "mimeType": "image/webp",
+    "url": "/media/media-033.webp",
+    "alt": "Screenshot of a BEAR.Sunday console output.",
+    "width": 640,
+    "height": 240
+  },
+  {
+    "id": 34,
+    "filename": "media-034.gif",
+    "mimeType": "image/gif",
+    "url": "/media/media-034.gif",
+    "alt": "Portrait of a developer smiling at their screen.",
+    "width": 1600,
+    "height": 480
+  },
+  {
+    "id": 35,
+    "filename": "media-035.svg",
+    "mimeType": "image/svg+xml",
+    "url": "/media/media-035.svg",
+    "alt": "Diagram illustrating the BDR pattern.",
+    "width": 0,
+    "height": 0
+  },
+  {
+    "id": 36,
+    "filename": "media-036.jpg",
+    "mimeType": "image/jpeg",
+    "url": "/media/media-036.jpg",
+    "alt": "",
+    "width": 1024,
+    "height": 600
+  },
+  {
+    "id": 37,
+    "filename": "media-037.png",
+    "mimeType": "image/png",
+    "url": "/media/media-037.png",
+    "alt": null,
+    "width": 800,
+    "height": 1200
+  },
+  {
+    "id": 38,
+    "filename": "media-038.webp",
+    "mimeType": "image/webp",
+    "url": "/media/media-038.webp",
+    "alt": "桜の並木道",
+    "width": 320,
+    "height": 1200
+  },
+  {
+    "id": 39,
+    "filename": "media-039.gif",
+    "mimeType": "image/gif",
+    "url": "/media/media-039.gif",
+    "alt": "キーボードの俯瞰写真",
+    "width": 800,
+    "height": 600
+  },
+  {
+    "id": 40,
+    "filename": "media-040.svg",
+    "mimeType": "image/svg+xml",
+    "url": "/media/media-040.svg",
+    "alt": "ホワイトボード上のスケッチ",
+    "width": 0,
+    "height": 0
+  },
+  {
+    "id": 41,
+    "filename": "media-041.jpg",
+    "mimeType": "image/jpeg",
+    "url": "/media/media-041.jpg",
+    "alt": "A stack of technical books.",
+    "width": 1600,
+    "height": 960
+  },
+  {
+    "id": 42,
+    "filename": "media-042.png",
+    "mimeType": "image/png",
+    "url": "/media/media-042.png",
+    "alt": "Kitchen counter with a cutting board and knife.",
+    "width": 1024,
+    "height": 1080
+  },
+  {
+    "id": 43,
+    "filename": "media-043.webp",
+    "mimeType": "image/webp",
+    "url": "/media/media-043.webp",
+    "alt": "Architectural detail of a temple roof.",
+    "width": 1920,
+    "height": 960
+  },
+  {
+    "id": 44,
+    "filename": "media-044.gif",
+    "mimeType": "image/gif",
+    "url": "/media/media-044.gif",
+    "alt": "City skyline at dusk.",
+    "width": 800,
+    "height": 240
+  },
+  {
+    "id": 45,
+    "filename": "media-045.svg",
+    "mimeType": "image/svg+xml",
+    "url": "/media/media-045.svg",
+    "alt": "A cat curled up on a keyboard.",
+    "width": 0,
+    "height": 0
+  },
+  {
+    "id": 46,
+    "filename": "media-046.jpg",
+    "mimeType": "image/jpeg",
+    "url": "/media/media-046.jpg",
+    "alt": "A minimalist workspace with a laptop and coffee cup.",
+    "width": 320,
+    "height": 600
+  },
+  {
+    "id": 47,
+    "filename": "media-047.png",
+    "mimeType": "image/png",
+    "url": "/media/media-047.png",
+    "alt": "Mountain peaks in winter light.",
+    "width": 640,
+    "height": 960
+  },
+  {
+    "id": 48,
+    "filename": "media-048.webp",
+    "mimeType": "image/webp",
+    "url": "/media/media-048.webp",
+    "alt": "Screenshot of a BEAR.Sunday console output.",
+    "width": 800,
+    "height": 240
+  },
+  {
+    "id": 49,
+    "filename": "media-049.gif",
+    "mimeType": "image/gif",
+    "url": "/media/media-049.gif",
+    "alt": "Portrait of a developer smiling at their screen.",
+    "width": 320,
+    "height": 960
+  },
+  {
+    "id": 50,
+    "filename": "media-050.svg",
+    "mimeType": "image/svg+xml",
+    "url": "/media/media-050.svg",
+    "alt": "Diagram illustrating the BDR pattern.",
+    "width": 0,
+    "height": 0
+  }
+]

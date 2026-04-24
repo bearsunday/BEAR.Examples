@@ -1,0 +1,217 @@
+{
+  "items": [
+    {
+      "id": 1,
+      "slug": "technology",
+      "name": "Technology",
+      "description": "",
+      "parentId": null
+    },
+    {
+      "id": 2,
+      "slug": "programming",
+      "name": "Programming",
+      "description": "Posts about coding practice, patterns and language internals.",
+      "parentId": null
+    },
+    {
+      "id": 3,
+      "slug": "php",
+      "name": "PHP",
+      "description": null,
+      "parentId": null
+    },
+    {
+      "id": 4,
+      "slug": "javascript",
+      "name": "JavaScript",
+      "description": "Posts about coding practice, patterns and language internals.",
+      "parentId": null
+    },
+    {
+      "id": 5,
+      "slug": "architecture",
+      "name": "Architecture",
+      "description": "Essays, tips and reference material.",
+      "parentId": null
+    },
+    {
+      "id": 6,
+      "slug": "design",
+      "name": "Design",
+      "description": "Essays, tips and reference material.",
+      "parentId": null
+    },
+    {
+      "id": 7,
+      "slug": "travel",
+      "name": "Travel",
+      "description": "日本語での記事をまとめます。",
+      "parentId": null
+    },
+    {
+      "id": 8,
+      "slug": "food",
+      "name": "Food",
+      "description": "Posts about coding practice, patterns and language internals.",
+      "parentId": null
+    },
+    {
+      "id": 9,
+      "slug": "photography",
+      "name": "Photography",
+      "description": "日本語での記事をまとめます。",
+      "parentId": null
+    },
+    {
+      "id": 10,
+      "slug": "books",
+      "name": "Books",
+      "description": "日本語での記事をまとめます。",
+      "parentId": null
+    },
+    {
+      "id": 11,
+      "slug": "lifestyle",
+      "name": "Lifestyle",
+      "description": "",
+      "parentId": null
+    },
+    {
+      "id": 12,
+      "slug": "culture",
+      "name": "Culture",
+      "description": "Short daily notes.",
+      "parentId": 9
+    },
+    {
+      "id": 13,
+      "slug": "health",
+      "name": "Health",
+      "description": null,
+      "parentId": null
+    },
+    {
+      "id": 14,
+      "slug": "science",
+      "name": "Science",
+      "description": "Posts about coding practice, patterns and language internals.",
+      "parentId": null
+    },
+    {
+      "id": 15,
+      "slug": "business",
+      "name": "Business",
+      "description": "Short daily notes.",
+      "parentId": null
+    },
+    {
+      "id": 16,
+      "slug": "news",
+      "name": "News",
+      "description": "Posts about coding practice, patterns and language internals.",
+      "parentId": 6
+    },
+    {
+      "id": 17,
+      "slug": "opinion",
+      "name": "Opinion",
+      "description": "Short daily notes.",
+      "parentId": null
+    },
+    {
+      "id": 18,
+      "slug": "interviews",
+      "name": "Interviews",
+      "description": "日本語での記事をまとめます。",
+      "parentId": null
+    },
+    {
+      "id": 19,
+      "slug": "tutorials",
+      "name": "Tutorials",
+      "description": "Essays, tips and reference material.",
+      "parentId": null
+    },
+    {
+      "id": 20,
+      "slug": "case-studies",
+      "name": "Case Studies",
+      "description": null,
+      "parentId": 8
+    },
+    {
+      "id": 21,
+      "slug": "release-notes",
+      "name": "Release Notes",
+      "description": "Short daily notes.",
+      "parentId": null
+    },
+    {
+      "id": 22,
+      "slug": "deep-dives",
+      "name": "Deep Dives",
+      "description": "Essays, tips and reference material.",
+      "parentId": null
+    },
+    {
+      "id": 23,
+      "slug": "short-reads",
+      "name": "Short Reads",
+      "description": "Posts about coding practice, patterns and language internals.",
+      "parentId": null
+    },
+    {
+      "id": 24,
+      "slug": "beginner",
+      "name": "Beginner",
+      "description": "Field reports and case studies.",
+      "parentId": 5
+    },
+    {
+      "id": 25,
+      "slug": "advanced",
+      "name": "Advanced",
+      "description": "Essays, tips and reference material.",
+      "parentId": null
+    },
+    {
+      "id": 26,
+      "slug": "web",
+      "name": "Web",
+      "description": "Long-form technical deep dives.",
+      "parentId": null
+    },
+    {
+      "id": 27,
+      "slug": "mobile",
+      "name": "Mobile",
+      "description": "Essays, tips and reference material.",
+      "parentId": null
+    },
+    {
+      "id": 28,
+      "slug": "devops",
+      "name": "DevOps",
+      "description": null,
+      "parentId": 9
+    },
+    {
+      "id": 29,
+      "slug": "cloud",
+      "name": "Cloud",
+      "description": "Long-form technical deep dives.",
+      "parentId": null
+    },
+    {
+      "id": 30,
+      "slug": "databases",
+      "name": "Databases",
+      "description": "",
+      "parentId": null
+    }
+  ],
+  "page": 1,
+  "perPage": 30,
+  "totalCount": 50
+}
