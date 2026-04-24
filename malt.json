@@ -1,0 +1,19 @@
+{
+  "project_name": "bear_cms",
+  "dependencies": [
+    "php@8.4",
+    "mysql@8.0",
+    "composer",
+    "nginx"
+  ],
+  "ports": {
+    "php": [9000],
+    "mysql": [3306],
+    "nginx": [8080]
+  },
+  "php_extensions": [
+    "xdebug",
+    "pcov",
+    "pdo_mysql"
+  ]
+}
