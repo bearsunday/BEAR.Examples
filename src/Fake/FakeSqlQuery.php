@@ -27,25 +27,22 @@ use function json_decode;
 use const JSON_THROW_ON_ERROR;
 
 /**
- * In-memory fake implementation of SqlQueryInterface.
+ * In-memory fake SqlQueryInterface backed by var/fake/data-50.*.json.
  *
- * Dispatches on the SQL id and returns entities constructed from
- * var/fake/data-50.*.json, letting Resource/Query code run end-to-end
- * before a real database is available. Write ops (exec) are recorded.
+ * Lets the whole Read + Write stack run end-to-end without a real database.
+ * Write ops update the in-memory tables and are also recorded to execLog
+ * so tests can assert what was issued.
  */
 final class FakeSqlQuery implements SqlQueryInterface
 {
     /** @var array<string, list<array<string, mixed>>> */
     private array $tables;
 
-    /** @var list<array{sqlId: string, values: array<string, mixed>}> */
+    /** @var list<array{sqlId: string, values: array<string, mixed>, insertedId?: int}> */
     public array $execLog = [];
 
-    private int $nextArticleId;
-    private int $nextCategoryId;
-    private int $nextTagId;
-    private int $nextAuthorId;
-    private int $nextMediaId;
+    /** @var array<string, int> */
+    private array $nextId;
 
     public function __construct(string|null $fakeDir = null)
     {
@@ -58,11 +55,10 @@ final class FakeSqlQuery implements SqlQueryInterface
             'media' => $this->load($fakeDir . '/data-50.media.json'),
             'articleTag' => $this->load($fakeDir . '/data-50.articleTag.json'),
         ];
-        $this->nextArticleId = $this->nextId('article');
-        $this->nextCategoryId = $this->nextId('category');
-        $this->nextTagId = $this->nextId('tag');
-        $this->nextAuthorId = $this->nextId('author');
-        $this->nextMediaId = $this->nextId('media');
+        $this->nextId = [];
+        foreach (['article', 'category', 'tag', 'author', 'media'] as $t) {
+            $this->nextId[$t] = $this->maxId($t) + 1;
+        }
     }
 
     /** @return list<array<string, mixed>> */
@@ -74,34 +70,54 @@ final class FakeSqlQuery implements SqlQueryInterface
         return $rows;
     }
 
-    private function nextId(string $table): int
+    private function maxId(string $table): int
     {
         $max = 0;
         foreach ($this->tables[$table] as $row) {
-            if ($row['id'] > $max) {
+            if ((int) $row['id'] > $max) {
                 $max = (int) $row['id'];
             }
         }
 
-        return $max + 1;
+        return $max;
     }
 
-    /** {@inheritDoc} */
+    // -- SqlQueryInterface ---------------------------------------------------
+
     public function getRow(string $sqlId, array $values = [], FetchInterface|null $fetch = null): object|null
     {
+        if (! str_starts_with($sqlId, 'get_')) {
+            // DbQueryInterceptor routes every #[DbQuery] method through getRow/getRowList
+            // based on the return type. Writes (create_/update_/delete_) come through
+            // here as well, so dispatch to the mutation handler and return null.
+            $this->mutate($sqlId, $values);
+
+            return null;
+        }
+
         return match ($sqlId) {
-            'get_article' => $this->findArticle((int) $values['id']),
-            'get_category' => $this->findCategory((int) $values['id']),
-            'get_tag' => $this->findTag((int) $values['id']),
-            'get_author' => $this->findAuthor((int) $values['id']),
-            'get_media' => $this->findMedia((int) $values['id']),
+            'get_article' => $this->findArticleById((int) $values['id']),
+            'get_article_by_slug' => $this->findArticleBySlug((string) $values['slug']),
+            'get_category' => $this->findCategoryById((int) $values['id']),
+            'get_category_by_slug' => $this->findCategoryBySlug((string) $values['slug']),
+            'get_tag' => $this->findTagById((int) $values['id']),
+            'get_tag_by_slug' => $this->findTagBySlug((string) $values['slug']),
+            'get_author' => $this->findAuthorById((int) $values['id']),
+            'get_author_by_email' => $this->findAuthorByEmail((string) $values['email']),
+            'get_media' => $this->findMediaById((int) $values['id']),
+            'get_media_by_filename' => $this->findMediaByFilename((string) $values['filename']),
             default => throw new LogicException("FakeSqlQuery: unknown row sqlId '{$sqlId}'"),
         };
     }
 
-    /** {@inheritDoc} */
     public function getRowList(string $sqlId, array $values = [], FetchInterface|null $fetch = null): array
     {
+        if (! str_starts_with($sqlId, 'list_')) {
+            $this->mutate($sqlId, $values);
+
+            return [];
+        }
+
         return match ($sqlId) {
             'list_articles' => $this->listArticles($values),
             'list_categories' => array_map(fn ($r) => $this->toCategory($r), $this->tables['category']),
@@ -111,14 +127,20 @@ final class FakeSqlQuery implements SqlQueryInterface
         };
     }
 
-    /** {@inheritDoc} */
     public function exec(string $sqlId, array $values = [], FetchInterface|null $fetch = null): void
     {
+        $this->mutate($sqlId, $values);
+    }
+
+    /** @param array<string, mixed> $values */
+    private function mutate(string $sqlId, array $values): void
+    {
         $this->execLog[] = ['sqlId' => $sqlId, 'values' => $values];
+        $logIdx = count($this->execLog) - 1;
 
         switch ($sqlId) {
             case 'create_article':
-                $id = $this->nextArticleId++;
+                $id = $this->nextId['article']++;
                 $this->tables['article'][] = [
                     'id' => $id,
                     'slug' => $values['slug'],
@@ -130,36 +152,99 @@ final class FakeSqlQuery implements SqlQueryInterface
                     'authorId' => (int) $values['authorId'],
                     'categoryId' => (int) $values['categoryId'],
                 ];
-                $this->execLog[count($this->execLog) - 1]['insertedId'] = $id;
+                $this->execLog[$logIdx]['insertedId'] = $id;
 
                 return;
             case 'update_article':
-                foreach ($this->tables['article'] as &$r) {
-                    if ($r['id'] === (int) $values['id']) {
-                        $r['title'] = $values['title'];
-                        $r['body'] = $values['body'];
-                        if (isset($values['excerpt'])) {
-                            $r['excerpt'] = $values['excerpt'];
-                        }
-
-                        $r['status'] = $values['status'];
-
-                        return;
-                    }
-                }
+                $this->updateRow('article', (int) $values['id'], [
+                    'title' => $values['title'],
+                    'body' => $values['body'],
+                    'excerpt' => $values['excerpt'] ?? null,
+                    'status' => $values['status'],
+                    'publishedAt' => $values['publishedAt'] ?? null,
+                ]);
 
                 return;
             case 'delete_article':
-                $this->tables['article'] = array_values(array_filter($this->tables['article'], static fn ($r) => $r['id'] !== (int) $values['id']));
+                $this->deleteRow('article', (int) $values['id']);
+
+                return;
+            case 'create_category':
+                $id = $this->nextId['category']++;
+                $this->tables['category'][] = [
+                    'id' => $id,
+                    'slug' => $values['slug'],
+                    'name' => $values['name'],
+                    'description' => $values['description'] ?? null,
+                    'parentId' => $values['parentId'] ?? null,
+                ];
+                $this->execLog[$logIdx]['insertedId'] = $id;
+
+                return;
+            case 'update_category':
+                $this->updateRow('category', (int) $values['id'], [
+                    'name' => $values['name'],
+                    'description' => $values['description'] ?? null,
+                    'parentId' => $values['parentId'] ?? null,
+                ]);
+
+                return;
+            case 'delete_category':
+                $this->deleteRow('category', (int) $values['id']);
+
+                return;
+            case 'create_tag':
+                $id = $this->nextId['tag']++;
+                $this->tables['tag'][] = ['id' => $id, 'slug' => $values['slug'], 'name' => $values['name']];
+                $this->execLog[$logIdx]['insertedId'] = $id;
+
+                return;
+            case 'delete_tag':
+                $this->deleteRow('tag', (int) $values['id']);
+
+                return;
+            case 'create_author':
+                $id = $this->nextId['author']++;
+                $this->tables['author'][] = [
+                    'id' => $id,
+                    'name' => $values['name'],
+                    'email' => $values['email'],
+                    'bio' => $values['bio'] ?? '',
+                ];
+                $this->execLog[$logIdx]['insertedId'] = $id;
+
+                return;
+            case 'update_author':
+                $this->updateRow('author', (int) $values['id'], [
+                    'name' => $values['name'],
+                    'email' => $values['email'],
+                    'bio' => $values['bio'] ?? '',
+                ]);
+
+                return;
+            case 'create_media':
+                $id = $this->nextId['media']++;
+                $this->tables['media'][] = [
+                    'id' => $id,
+                    'filename' => $values['filename'],
+                    'mimeType' => $values['mimeType'],
+                    'url' => $values['url'],
+                    'alt' => $values['alt'] ?? null,
+                    'width' => (int) ($values['width'] ?? 0),
+                    'height' => (int) ($values['height'] ?? 0),
+                ];
+                $this->execLog[$logIdx]['insertedId'] = $id;
+
+                return;
+            case 'delete_media':
+                $this->deleteRow('media', (int) $values['id']);
 
                 return;
             default:
-                // Other writes (category, tag, author, media) can be implemented on demand.
-                return;
+                throw new LogicException("FakeSqlQuery: unknown exec sqlId '{$sqlId}'");
         }
     }
 
-    /** {@inheritDoc} */
     public function getCount(string $sqlId, array $values): int
     {
         return match ($sqlId) {
@@ -168,15 +253,36 @@ final class FakeSqlQuery implements SqlQueryInterface
         };
     }
 
-    /** {@inheritDoc} */
     public function getPages(string $sqlId, array $values, int $perPage, string $queryTemplate = '/{?page}', string|null $entity = null): PagesInterface
     {
         throw new LogicException('FakeSqlQuery does not support Pager/PagesInterface; use list/count directly.');
     }
 
-    // -- Read helpers -----------------------------------------------------
+    // -- helpers -------------------------------------------------------------
 
-    private function findArticle(int $id): Article|null
+    /** @param array<string, mixed> $patch */
+    private function updateRow(string $table, int $id, array $patch): void
+    {
+        foreach ($this->tables[$table] as &$row) {
+            if ((int) $row['id'] === $id) {
+                foreach ($patch as $k => $v) {
+                    $row[$k] = $v;
+                }
+
+                return;
+            }
+        }
+    }
+
+    private function deleteRow(string $table, int $id): void
+    {
+        $this->tables[$table] = array_values(array_filter(
+            $this->tables[$table],
+            static fn ($r) => (int) $r['id'] !== $id,
+        ));
+    }
+
+    private function findArticleById(int $id): Article|null
     {
         foreach ($this->tables['article'] as $r) {
             if ((int) $r['id'] === $id) {
@@ -187,7 +293,18 @@ final class FakeSqlQuery implements SqlQueryInterface
         return null;
     }
 
-    private function findCategory(int $id): Category|null
+    private function findArticleBySlug(string $slug): Article|null
+    {
+        foreach ($this->tables['article'] as $r) {
+            if ((string) $r['slug'] === $slug) {
+                return $this->toArticle($r);
+            }
+        }
+
+        return null;
+    }
+
+    private function findCategoryById(int $id): Category|null
     {
         foreach ($this->tables['category'] as $r) {
             if ((int) $r['id'] === $id) {
@@ -198,7 +315,18 @@ final class FakeSqlQuery implements SqlQueryInterface
         return null;
     }
 
-    private function findTag(int $id): Tag|null
+    private function findCategoryBySlug(string $slug): Category|null
+    {
+        foreach ($this->tables['category'] as $r) {
+            if ((string) $r['slug'] === $slug) {
+                return $this->toCategory($r);
+            }
+        }
+
+        return null;
+    }
+
+    private function findTagById(int $id): Tag|null
     {
         foreach ($this->tables['tag'] as $r) {
             if ((int) $r['id'] === $id) {
@@ -209,7 +337,18 @@ final class FakeSqlQuery implements SqlQueryInterface
         return null;
     }
 
-    private function findAuthor(int $id): Author|null
+    private function findTagBySlug(string $slug): Tag|null
+    {
+        foreach ($this->tables['tag'] as $r) {
+            if ((string) $r['slug'] === $slug) {
+                return $this->toTag($r);
+            }
+        }
+
+        return null;
+    }
+
+    private function findAuthorById(int $id): Author|null
     {
         foreach ($this->tables['author'] as $r) {
             if ((int) $r['id'] === $id) {
@@ -220,10 +359,32 @@ final class FakeSqlQuery implements SqlQueryInterface
         return null;
     }
 
-    private function findMedia(int $id): Media|null
+    private function findAuthorByEmail(string $email): Author|null
+    {
+        foreach ($this->tables['author'] as $r) {
+            if ((string) $r['email'] === $email) {
+                return $this->toAuthor($r);
+            }
+        }
+
+        return null;
+    }
+
+    private function findMediaById(int $id): Media|null
     {
         foreach ($this->tables['media'] as $r) {
             if ((int) $r['id'] === $id) {
+                return $this->toMedia($r);
+            }
+        }
+
+        return null;
+    }
+
+    private function findMediaByFilename(string $filename): Media|null
+    {
+        foreach ($this->tables['media'] as $r) {
+            if ((string) $r['filename'] === $filename) {
                 return $this->toMedia($r);
             }
         }

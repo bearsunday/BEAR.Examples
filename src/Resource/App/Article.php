@@ -7,6 +7,7 @@ namespace MyVendor\Cms\Resource\App;
 use BEAR\Resource\Annotation\Link;
 use BEAR\Resource\Code;
 use BEAR\Resource\ResourceObject;
+use MyVendor\Cms\Command\ArticleCommandInterface;
 use MyVendor\Cms\Query\ArticleQueryInterface;
 use MyVendor\Cms\Query\AuthorQueryInterface;
 use MyVendor\Cms\Query\CategoryQueryInterface;
@@ -19,6 +20,7 @@ class Article extends ResourceObject
         private readonly AuthorQueryInterface $authorQuery,
         private readonly CategoryQueryInterface $categoryQuery,
         private readonly TagQueryInterface $tagQuery,
+        private readonly ArticleCommandInterface $articleCommand,
     ) {
     }
 
@@ -55,6 +57,84 @@ class Article extends ResourceObject
                 'tags' => $tags,
             ],
         ];
+
+        return $this;
+    }
+
+    public function onPost(
+        string $slug,
+        string $title,
+        string $body,
+        int $authorId,
+        int $categoryId,
+        string|null $excerpt = null,
+        string $status = 'draft',
+        string|null $publishedAt = null,
+    ): static {
+        $this->articleCommand->create(
+            slug: $slug,
+            title: $title,
+            body: $body,
+            excerpt: $excerpt,
+            status: $status,
+            publishedAt: $publishedAt,
+            authorId: $authorId,
+            categoryId: $categoryId,
+        );
+
+        $created = $this->articleQuery->getBySlug($slug);
+        $this->code = Code::CREATED;
+        $this->headers['Location'] = $created !== null ? '/article?id=' . $created->id : '/article?slug=' . $slug;
+        $this->body = [
+            'id' => $created?->id,
+            'slug' => $slug,
+        ];
+
+        return $this;
+    }
+
+    public function onPut(
+        int $id,
+        string $title,
+        string $body,
+        string $status,
+        string|null $excerpt = null,
+        string|null $publishedAt = null,
+    ): static {
+        if ($this->articleQuery->get($id) === null) {
+            $this->code = Code::NOT_FOUND;
+            $this->body = ['message' => 'Article not found', 'id' => $id];
+
+            return $this;
+        }
+
+        $this->articleCommand->update(
+            id: $id,
+            title: $title,
+            body: $body,
+            excerpt: $excerpt,
+            status: $status,
+            publishedAt: $publishedAt,
+        );
+
+        $this->code = Code::OK;
+        $this->body = ['id' => $id];
+
+        return $this;
+    }
+
+    public function onDelete(int $id): static
+    {
+        if ($this->articleQuery->get($id) === null) {
+            $this->code = Code::NOT_FOUND;
+            $this->body = ['message' => 'Article not found', 'id' => $id];
+
+            return $this;
+        }
+
+        $this->articleCommand->delete($id);
+        $this->code = Code::NO_CONTENT;
+        $this->body = [];
 
         return $this;
     }

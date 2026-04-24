@@ -12,6 +12,9 @@ interface TagQueryInterface
     #[DbQuery('get_tag', type: 'row')]
     public function get(int $id): Tag|null;
 
+    #[DbQuery('get_tag_by_slug', type: 'row')]
+    public function getBySlug(string $slug): Tag|null;
+
     /** @return list<Tag> */
     #[DbQuery('list_tags', type: 'row_list')]
     public function list(): array;

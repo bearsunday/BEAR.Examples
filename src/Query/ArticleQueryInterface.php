@@ -12,6 +12,9 @@ interface ArticleQueryInterface
     #[DbQuery('get_article', type: 'row')]
     public function get(int $id): Article|null;
 
+    #[DbQuery('get_article_by_slug', type: 'row')]
+    public function getBySlug(string $slug): Article|null;
+
     /** @return list<Article> */
     #[DbQuery('list_articles', type: 'row_list')]
     public function list(

@@ -7,12 +7,14 @@ namespace MyVendor\Cms\Resource\App;
 use BEAR\Resource\Annotation\Link;
 use BEAR\Resource\Code;
 use BEAR\Resource\ResourceObject;
+use MyVendor\Cms\Command\CategoryCommandInterface;
 use MyVendor\Cms\Query\CategoryQueryInterface;
 
 class Category extends ResourceObject
 {
     public function __construct(
         private readonly CategoryQueryInterface $categoryQuery,
+        private readonly CategoryCommandInterface $categoryCommand,
     ) {
     }
 
@@ -35,6 +37,57 @@ class Category extends ResourceObject
             'description' => $category->description,
             'parentId' => $category->parentId,
         ];
+
+        return $this;
+    }
+
+    public function onPost(
+        string $slug,
+        string $name,
+        string|null $description = null,
+        int|null $parentId = null,
+    ): static {
+        $this->categoryCommand->create(slug: $slug, name: $name, description: $description, parentId: $parentId);
+        $created = $this->categoryQuery->getBySlug($slug);
+        $this->code = Code::CREATED;
+        $this->headers['Location'] = $created !== null ? '/category?id=' . $created->id : '/category';
+        $this->body = ['id' => $created?->id, 'slug' => $slug];
+
+        return $this;
+    }
+
+    public function onPut(
+        int $id,
+        string $name,
+        string|null $description = null,
+        int|null $parentId = null,
+    ): static {
+        if ($this->categoryQuery->get($id) === null) {
+            $this->code = Code::NOT_FOUND;
+            $this->body = ['message' => 'Category not found', 'id' => $id];
+
+            return $this;
+        }
+
+        $this->categoryCommand->update(id: $id, name: $name, description: $description, parentId: $parentId);
+        $this->code = Code::OK;
+        $this->body = ['id' => $id];
+
+        return $this;
+    }
+
+    public function onDelete(int $id): static
+    {
+        if ($this->categoryQuery->get($id) === null) {
+            $this->code = Code::NOT_FOUND;
+            $this->body = ['message' => 'Category not found', 'id' => $id];
+
+            return $this;
+        }
+
+        $this->categoryCommand->delete($id);
+        $this->code = Code::NO_CONTENT;
+        $this->body = [];
 
         return $this;
     }

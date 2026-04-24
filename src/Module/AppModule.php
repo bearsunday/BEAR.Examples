@@ -8,8 +8,12 @@ use BEAR\Package\AbstractAppModule;
 use BEAR\Package\PackageModule;
 use Koriym\EnvJson\EnvJson;
 use Ray\AuraSqlModule\AuraSqlModule;
-use Ray\MediaQuery\MediaQuerySqlModule;
+use Ray\MediaQuery\DbQueryConfig;
+use Ray\MediaQuery\MediaQueryBaseModule;
+use Ray\MediaQuery\MediaQueryDbModule;
+use Ray\MediaQuery\Queries;
 
+use function array_merge;
 use function dirname;
 use function getenv;
 
@@ -26,9 +30,12 @@ final class AppModule extends AbstractAppModule
         $password = (string) getenv('DB_PASSWORD');
         $this->install(new AuraSqlModule($dsn, $user, $password));
 
-        $this->install(new MediaQuerySqlModule(
-            interfaceDir: $this->appMeta->appDir . '/src/Query',
-            sqlDir: $this->appMeta->appDir . '/var/db/sql',
+        // Scan both Query (Read) and Command (Write) interface directories.
+        $queries = Queries::fromClasses(array_merge(
+            Queries::fromDir($this->appMeta->appDir . '/src/Query')->classes,
+            Queries::fromDir($this->appMeta->appDir . '/src/Command')->classes,
         ));
+        $this->install(new MediaQueryBaseModule($queries));
+        $this->install(new MediaQueryDbModule(new DbQueryConfig($this->appMeta->appDir . '/var/db/sql')));
     }
 }

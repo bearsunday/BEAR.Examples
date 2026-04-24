@@ -11,4 +11,7 @@ interface AuthorQueryInterface
 {
     #[DbQuery('get_author', type: 'row')]
     public function get(int $id): Author|null;
+
+    #[DbQuery('get_author_by_email', type: 'row')]
+    public function getByEmail(string $email): Author|null;
 }
