@@ -1,198 +1,226 @@
 ---
 name: review-honestly
-description: フレームワーク・ライブラリ・コードベース・設計を評論するときに、検証なき断定 (≒ 嘘) を生まないための手順。1日触ったあとに評論を求められた一連の失敗から抽出した。
-when_to_use: ユーザーから「○○を評価して」「○○のレビューを書いて」「○○を批評して」と頼まれたとき。あるいは自発的に評論的な記述をしようとしたとき。
+description: When asked to review a framework, library, codebase, or design, follow this procedure to keep unverified assertions (i.e. lies) out of the output. Distilled from a failure where I produced a fluent BEAR.Sunday "review" with eight false claims out of ten, only catching it after the user pushed back.
+when_to_use: User asks to "review", "critique", "evaluate", or "assess" some technology or design. Also applies whenever you start drifting into critique-shaped writing on your own initiative.
 type: skill
 ---
 
 # Review Honestly
 
-## 中核原則
+## Core principle
 
-**「評論を書く」 ≠ 「評論っぽいテキストを生成する」。**
+**"Writing a review" ≠ "generating review-shaped text."**
 
-評論は文章生成タスクではなく、**調査タスク**である。流暢に書ける状態は、書ける
-ことの保証であって、内容の真偽の保証ではない。
+A review is an *investigation task*, not a writing task. The fact that text comes
+out fluent does not guarantee its content is true. When fluent prose flows out,
+the verification step is the first thing to get skipped.
 
-評論を依頼されたとき最初にすべきは:
-1. 文章を書き始めない
-2. 何を見ればその主張が裏付けられるかを列挙する
-3. その材料を集めるまで本文に入らない
+When asked to review:
 
----
-
-## 検出すべき自分の失敗パターン
-
-評論を書くとき、自分の中で次のシグナルが出たら **嘘の生産モードに入っている**:
-
-| シグナル | 内容 |
-|---------|------|
-| **テンプレ充填** | 「強み / 弱み / 採用判断 / 結論」の形式が先にあり、内容を後から流し込んでいる |
-| **創作弱点** | 「強みを書いたから弱みも書かないと公平に見えない」という動機で弱点を探している |
-| **業界慣用句の流用** | 「AOP は magic」「DI は debug が辛い」「community が小さい」など、対象固有の検証なしで一般論を当てはめている |
-| **学習コスト批判** | 「X を使うには X を学ぶ必要がある」型のトートロジー |
-| **二項対立リサイクル** | 「Laravel は快適 / BEAR は構造」のような対句を複数回使い回している |
-| **消費者目線** | 「ドキュメントが薄い」「クックブックがない」など、自分が書く側にいるのを忘れて消費者の口調になっている |
-| **借り物のテンプレ > 自分の体験** | 自分が今 X を使って成功体験をしているのに、「X はこういう場面に向かない」と書いている |
-
-これらが出たら **書くのを止めて検証フェーズに戻る**。
+1. Do not start writing.
+2. List what evidence would back each claim you might want to make.
+3. Gather that evidence before any prose appears.
 
 ---
 
-## 手順 (順番厳守)
+## Detection signals — you are entering "fake review production mode"
 
-### Step 1: 自分の体験を抽出する (5-15分)
+Watch for these. If any fire while drafting, **stop writing and return to
+investigation**.
 
-評論の真の素材は **対象を実際に使った瞬間に起きたこと**。それ以外は借り物。
+| Signal                            | What it looks like                                                                                              |
+|-----------------------------------|-----------------------------------------------------------------------------------------------------------------|
+| **Template filling**              | The structure ("Strengths / Weaknesses / When to adopt / Conclusion") is decided first, content is poured into slots |
+| **Manufactured weaknesses**       | "I wrote strengths, so I need weaknesses to look balanced" — searching for things to criticise                  |
+| **Industry meme reuse**           | "AOP is magic", "DI is hard to debug", "the community is small" applied without verifying for *this* target     |
+| **Tautological criticism**        | "X has the downside of requiring you to learn X" — restating a feature as a flaw                                |
+| **Recycled binary**               | "Laravel is comfortable / BEAR is structured" — the same opposition used three times in the document            |
+| **Consumer voice**                | "Documentation is thin", "no cookbook" — when *you* are the one being asked to write the cookbook               |
+| **Borrowed template > first-hand experience** | You just spent a day succeeding with X, and you are writing "X is unsuitable for short MVPs"        |
 
-紙か draft に書き出す:
-- 「驚いた瞬間」(positive/negative 両方)
-- 「詰まった瞬間」(具体的にどこで何分詰まったか)
-- 「予想と違った挙動」(何を予想し、実際何が起きたか)
-- 「楽だった瞬間」(具体的に何が楽だったか)
-- 「何度もやった作業」(繰り返し感覚は本物)
+---
 
-例 (BEAR.Cms 構築の場合):
-> - DbQueryInterceptor が exec() を呼ばない事実に Phase 9 で詰まった
-> - 11 phase で一度も手戻らなかった
-> - Fake と実 SQL で body shape が一致した
-> - getBy{naturalKey} パターンを採用するとき迷った
+## Procedure (in order)
 
-これだけが **本物の素材**。これ以外は調査前は書かない。
+### Step 1 — Extract your own experience (5–15 min)
 
-### Step 2: 抽象的な主張を具体に分解 (10-30分)
+The only honest source is what actually happened while using the thing.
+Write down, before any prose:
 
-書きたい抽象主張ごとに、「何を見れば真偽がわかるか」を列挙する:
+- moments of surprise (positive and negative)
+- moments where you got stuck (specifically: where, how long, why)
+- behaviour that diverged from what you expected (what you predicted vs. what occurred)
+- moments where things went easily (specifically what was easy)
+- repeated tasks (the feeling of repetition is real signal)
 
-| 抽象主張 | 検証手段 |
-|---------|---------|
-| 「型安全性が高い」 | コードベースから `mixed` `array<>` を grep。constructor 引数の型ヒント網羅率 |
-| 「DI エラーが追いにくい」 | 意図的に未バインド構成を作って実際のエラーを観察 |
-| 「ドキュメントが分散している」 | docs path の一覧化、クロスリンク数 |
-| 「学習曲線が急」 | 自分が初めて触ったとき具体的にどのコンセプトで詰まったか |
+Example, from a real session:
 
-検証手段が思いつかない主張は **書く資格がない**。
+> - DbQueryInterceptor never calls exec() — got stuck on this in Phase 9
+> - Eleven phases finished with zero rework
+> - Fake and real-SQL produced the same body shape
+> - Hesitated when adopting the getBy{naturalKey} pattern
 
-### Step 3: 調査を実行する (30-60分)
+This is the only material you are entitled to use before investigation.
 
-典型的にすべきこと:
-- **主要 source を読む** — 関連クラスのうち core 1-3 ファイル (60-200 行 / 各)
-- **エラーを発生させる** — テストコードで意図的に壊し、メッセージを目で見る
-- **生成物を観察する** — 自動生成されるコード/キャッシュ/proxy がある場合はファイルを開く
-- **逆例を試す** — 「向かない」と書きたいユースケースを実際に作ってみる
+### Step 2 — Decompose abstract claims into concrete checks (10–30 min)
 
-調査結果を draft に書く。**この時点でも本文にはまだ入らない**。
+For each abstract claim you want to make, list what would have to be observed to
+verify it.
 
-### Step 4: 主張ごとに証拠を割り当てる
+| Abstract claim                   | Verification                                                                                  |
+|----------------------------------|-----------------------------------------------------------------------------------------------|
+| "Type-safety is high"            | grep the codebase for `mixed` / `array<>`. Coverage of typed constructor parameters.         |
+| "DI errors are hard to follow"   | Build an unbound configuration on purpose. Read the actual error message.                     |
+| "Documentation is fragmented"    | Enumerate doc paths and cross-link counts.                                                    |
+| "Learning curve is steep"        | Which specific concept *did you* get stuck on the first time? Not "would a beginner".         |
 
-各主張の隣に、Step 3 の調査から引いた **file:line** か **観察した出力** を付ける。
-証拠が付かない主張は:
-- (a) 削除する
-- (b) 「観察できていない / 推測」と明示する
-- (c) Step 3 に戻ってさらに調査する
+If you cannot name a verification path, **you are not entitled to make the claim**.
 
-### Step 5: 書く (本文)
+### Step 3 — Actually investigate (30–60 min)
 
-ここで初めて本文を書く。原則:
+Typical moves:
 
-1. **観察を先に出す** — 「私は X したとき Y が起きた」の形を冒頭に置く
-2. **抽象は観察の後に** — 「これは Z という性質を示している」は観察の帰結として
-3. **未検証は明記** — 「未検証だが」「推測だが」をつけずに断定しない
-4. **比較は限定的に** — 「Laravel と比べて」のような比較は片方しか深く知らないなら
-   入れない。両方検証している場合のみ
-5. **採用判断 (When to adopt) を入れない** — これは消費者の言葉。設計者は
-   「私の場合こう判断した」までしか言えない
+- **Read the relevant source** — usually 1–3 core files, ~60–200 lines each
+- **Trigger the error you want to characterise** — write code that breaks the
+  condition and observe the actual exception, message, and stack
+- **Inspect generated artefacts** — proxy classes, caches, compiled DI files
+- **Run the counterexample** — if you want to write "unsuitable for X", build
+  the X case and see what breaks
 
-### Step 6: セルフチェック (commit / 出す前)
+Record the findings in a draft. **Still do not start the prose.**
 
-各段落に対して:
+### Step 4 — Attach evidence to each claim
+
+Beside every claim in your outline, write a `file:line` citation or the literal
+output you observed. If a claim has no citation, it must be either:
+
+- (a) deleted, or
+- (b) explicitly marked as "speculation / not verified", or
+- (c) sent back to Step 3 for more investigation.
+
+### Step 5 — Write the prose
+
+Only now is writing allowed. Rules:
+
+1. **Observation first** — start with "When I did X, Y happened"
+2. **Abstraction follows observation** — "this means the design has property Z" is
+   a *consequence* of an observation, not a leading sentence
+3. **Mark the unverified** — explicitly say "I did not check" or "speculative"
+   before any unverified claim. Never assert without evidence
+4. **Restrict comparisons** — "compared to Laravel" claims are valid only if you
+   have investigated both. Otherwise drop them
+5. **Skip "When to adopt" sections** — that is consumer-grade prose. A reviewer
+   can only say "for the case I had, here is what I decided"
+
+### Step 6 — Self-check before publishing
+
+For each paragraph:
 
 ```
-[ ] 直前 24 時間の体験から来ているか? それとも借り物のフレーズか?
-[ ] file:line / 観察した出力 / 自分のセッションログ のどれかに紐付くか?
-[ ] 弱点を「バランスのために」入れていないか?
-[ ] 私は今、設計者の視点で書いているか、消費者の視点で書いているか?
-[ ] 同じ二項対立を 2 回以上使っていないか?
-[ ] 「業界では」「一般に」「初学者は」のフレーズを使っていないか?
+[ ] Does this come from the last 24 hours of doing the thing, or is it borrowed?
+[ ] Can I cite a file:line, an observed output, or a session log entry for it?
+[ ] Did I add this weakness for "balance"?
+[ ] Am I writing as a designer, or as a consumer?
+[ ] Did I reuse the same binary opposition somewhere else in this document?
+[ ] Am I leaning on phrases like "the industry says", "in general", "beginners struggle with"?
 ```
 
-1 つでも引っかかったら、その段落を消すか書き直す。
+If any check fails, delete or rewrite the paragraph.
 
 ---
 
-## 禁止フレーズ (検証なしには使わない)
+## Banned phrases (never use without verification)
 
-- 「学習コストが高い」
-- 「コミュニティが小さい」
-- 「IDE で見えにくい」
-- 「ドキュメントが分散している」
-- 「N 年後に再現するのは大変」
-- 「短期 MVP には向かない」
-- 「初学者は迷う」
-- 「magic」「黒魔術」
-- 「(他フレームワーク) の方が DX 良い」
+These are content-free industry filler. They acquire meaning only when grounded
+in a specific observed event.
 
-これらは固有性のない **業界の口語**。具体的な出来事に裏付けされていれば
-「Phase 9 で interceptor のソースを 30 分読んだ」のように書き直せる。
+- "the learning curve is steep"
+- "the community is small"
+- "hard to see in an IDE"
+- "documentation is fragmented"
+- "hard to reproduce N years from now"
+- "not suitable for short MVPs"
+- "beginners get lost"
+- "magic" / "black magic"
+- "(other framework) has better DX"
 
----
+When tempted to use one, replace it with the specific event:
 
-## 出力フォーマット (推奨)
-
-「強み / 弱み / 採用判断」のテンプレを **使わない**。
-
-代わりに:
-
-### 1. このセッションで起きたこと (素材)
-- 具体的な出来事の箇条書き
-- 各項目に file:line / 時間感覚 / 行数 を添える
-
-### 2. 観察された動作 (検証済みの事実)
-- 主張 + 証拠 (file:line / 実験出力)
-
-### 3. 残った疑問
-- 「これは確認していない」を明示
-
-### 4. (任意) 個人的な感想
-- 上の 3 つから派生した、対象固有の気づき
-- 一般論禁止
-
-採用判断、強み弱みリスト、業界比較は **加えない**。それらが必要な読者は別の
-資料を読むべき。
+> ✗ "DI binding errors are opaque."
+>
+> ✓ "I expected a clear missing-binding message and triggered an unbound
+> dependency to verify. The actual `__toString()` walked the full Throwable
+> chain and showed `'TypeName-' in file:line ($paramName)` for every level
+> down to the deepest unresolved dependency. My expectation was wrong."
 
 ---
 
-## 失敗回避の最終チェック
+## Output format
 
-評論を出す前に自問:
+**Do not** use the strengths / weaknesses / when-to-adopt template.
 
-> **この文章を、対象のことを完全に知っている人 (例: 作者) が読んだら、
-> 「お前何を言ってる」と返ってくる箇所はどこか?**
+Use this instead:
 
-返ってくる箇所が思い浮かんだら、そこは検証不足。書き直し or 削除。
+### 1. What happened in this session (raw material)
+- Specific events, bullet form
+- Each item annotated with `file:line` / time spent / lines of code
 
----
+### 2. Observed behaviour (verified facts)
+- Claim + evidence (`file:line` / experiment output)
 
-## メタ — このスキルが必要だった理由
+### 3. Open questions
+- Things you did not check, stated explicitly
 
-1 日の構築の後で評論を頼まれ、**検証せずに評論っぽいテキストを生成した**。
-8 項目中 7 項目が事実誤認、1 項目が真逆という状態だった。
-ユーザーに「嘘」と指摘されて初めて気付いた。
+### 4. (Optional) Personal opinion
+- Derived from items 1–3, target-specific
+- No general statements about "the industry"
 
-原因の構造:
-- 「評論を書く」を文章生成タスクとして処理した
-- 流暢に書ける = 内容が正しい、と暗黙に扱った
-- テンプレ (強み / 弱み / 採用判断) に従って空欄を埋めた
-- 自分の実体験 (1 日で reference 完成、手戻りゼロ) を、借り物のテンプレ
-  (「BEAR は MVP 不向き」) で上書きした
-
-このスキルは上記を **再発させない** ための手順。
+Do not include adoption recommendations, balanced strengths/weaknesses lists,
+or framework comparisons. Readers who want those should look elsewhere.
 
 ---
 
-## 関連
+## Final check before publishing
 
-- `docs/build-log.md` — 1 日のビルドログ。Step 1 の素材を記録するときの粒度の例
-- `docs/verified.md` — 実験で確認した事実。Step 3-4 の例
-- `docs/framework-critique.md` — このスキルがなかった結果の悪い例。反面教師
-- `docs/critique-second-pass.md` — 失敗の事後検死
+Ask yourself, paragraph by paragraph:
+
+> **If someone who knows this target completely (e.g. the author) read this
+> sentence, where would they reply "what are you talking about"?**
+
+Wherever an answer comes to mind, the sentence is unverified. Rewrite or remove
+it.
+
+---
+
+## Meta — why this skill exists
+
+After one day of building with a framework, I was asked for a review. I produced
+fluent review-shaped text without doing the underlying investigation. Eight of
+ten weaknesses I listed were factually wrong; two flipped to their opposites
+under verification. The author of the framework caught it and named it as
+lying. They were right.
+
+Failure structure:
+
+- Treated "write a review" as a text-generation task instead of an
+  investigation task
+- Implicitly equated "fluent prose" with "true content"
+- Filled the strengths/weaknesses/when-to-adopt template
+- Let a borrowed template ("BEAR is unsuitable for short MVPs") overwrite my
+  own first-hand experience (one-day reference build with zero rework)
+
+This skill encodes the procedure that, if I had followed it, would have stopped
+the lie at Step 2.
+
+---
+
+## Related artefacts in this project
+
+- [build-log.md](build-log.md) — phase-by-phase build log; example of the
+  granularity Step 1 needs
+- [verified.md](verified.md) — experiments that confirmed/refuted specific
+  claims; example of Step 3–4 evidence
+- [framework-critique.md](framework-critique.md) — what happens without this
+  skill. Cautionary example
+- [critique-second-pass.md](critique-second-pass.md) — post-mortem of the
+  failure that produced the cautionary example
