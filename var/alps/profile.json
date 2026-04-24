@@ -1,0 +1,777 @@
+{
+  "$schema": "https://alps-io.github.io/schemas/alps.json",
+  "alps": {
+    "title": "BEAR.Cms Reference CMS",
+    "doc": {
+      "value": "ALPS profile for a BEAR.Sunday reference CMS. App-resource only (no admin/UI). Covers articles, categories, tags, authors and media with read and write transitions."
+    },
+    "descriptor": [
+      {
+        "id": "articleId",
+        "title": "Article ID",
+        "def": "https://schema.org/identifier"
+      },
+      {
+        "id": "articleSlug",
+        "title": "Article Slug",
+        "doc": {
+          "value": "URL-safe unique identifier used in human-readable URIs."
+        }
+      },
+      {
+        "id": "articleTitle",
+        "title": "Article Title",
+        "def": "https://schema.org/headline"
+      },
+      {
+        "id": "articleBody",
+        "title": "Article Body",
+        "def": "https://schema.org/articleBody"
+      },
+      {
+        "id": "articleExcerpt",
+        "title": "Article Excerpt",
+        "doc": {
+          "value": "Short summary used in list views."
+        }
+      },
+      {
+        "id": "articleStatus",
+        "title": "Article Status",
+        "doc": {
+          "value": "Lifecycle status: draft or published."
+        }
+      },
+      {
+        "id": "articlePublishedAt",
+        "title": "Article Published At",
+        "def": "https://schema.org/datePublished"
+      },
+      {
+        "id": "categoryId",
+        "title": "Category ID",
+        "def": "https://schema.org/identifier"
+      },
+      {
+        "id": "categorySlug",
+        "title": "Category Slug"
+      },
+      {
+        "id": "categoryName",
+        "title": "Category Name",
+        "def": "https://schema.org/name"
+      },
+      {
+        "id": "categoryDescription",
+        "title": "Category Description",
+        "def": "https://schema.org/description"
+      },
+      {
+        "id": "categoryParentId",
+        "title": "Parent Category ID",
+        "doc": {
+          "value": "Nullable reference for hierarchical categories."
+        }
+      },
+      {
+        "id": "tagId",
+        "title": "Tag ID",
+        "def": "https://schema.org/identifier"
+      },
+      {
+        "id": "tagSlug",
+        "title": "Tag Slug"
+      },
+      {
+        "id": "tagName",
+        "title": "Tag Name",
+        "def": "https://schema.org/name"
+      },
+      {
+        "id": "authorId",
+        "title": "Author ID",
+        "def": "https://schema.org/identifier"
+      },
+      {
+        "id": "authorName",
+        "title": "Author Name",
+        "def": "https://schema.org/name"
+      },
+      {
+        "id": "authorEmail",
+        "title": "Author Email",
+        "def": "https://schema.org/email"
+      },
+      {
+        "id": "authorBio",
+        "title": "Author Biography",
+        "def": "https://schema.org/description"
+      },
+      {
+        "id": "mediaId",
+        "title": "Media ID",
+        "def": "https://schema.org/identifier"
+      },
+      {
+        "id": "mediaFilename",
+        "title": "Media Filename"
+      },
+      {
+        "id": "mediaMimeType",
+        "title": "Media MIME Type",
+        "def": "https://schema.org/encodingFormat"
+      },
+      {
+        "id": "mediaUrl",
+        "title": "Media URL",
+        "def": "https://schema.org/contentUrl"
+      },
+      {
+        "id": "mediaAlt",
+        "title": "Media Alt Text",
+        "doc": {
+          "value": "Accessibility text describing the media."
+        }
+      },
+      {
+        "id": "mediaWidth",
+        "title": "Media Width",
+        "def": "https://schema.org/width"
+      },
+      {
+        "id": "mediaHeight",
+        "title": "Media Height",
+        "def": "https://schema.org/height"
+      },
+      {
+        "id": "page",
+        "title": "Page Number",
+        "doc": {
+          "value": "1-indexed pagination page."
+        }
+      },
+      {
+        "id": "perPage",
+        "title": "Per-Page Count",
+        "doc": {
+          "value": "Number of items per page."
+        }
+      },
+      {
+        "id": "totalCount",
+        "title": "Total Count",
+        "doc": {
+          "value": "Total matching items across all pages."
+        }
+      },
+      {
+        "id": "Index",
+        "title": "CMS Entry Point",
+        "descriptor": [
+          {
+            "href": "#goArticleList"
+          },
+          {
+            "href": "#goCategoryList"
+          },
+          {
+            "href": "#goTagList"
+          }
+        ],
+        "tag": "flow-browse"
+      },
+      {
+        "id": "Article",
+        "title": "Article Detail",
+        "doc": {
+          "value": "Single article with embedded Author, Category and Tags."
+        },
+        "descriptor": [
+          {
+            "href": "#articleId"
+          },
+          {
+            "href": "#articleSlug"
+          },
+          {
+            "href": "#articleTitle"
+          },
+          {
+            "href": "#articleBody"
+          },
+          {
+            "href": "#articleExcerpt"
+          },
+          {
+            "href": "#articleStatus"
+          },
+          {
+            "href": "#articlePublishedAt"
+          },
+          {
+            "href": "#Author"
+          },
+          {
+            "href": "#Category"
+          },
+          {
+            "href": "#Tag"
+          },
+          {
+            "href": "#goArticleList"
+          },
+          {
+            "href": "#goAuthor"
+          },
+          {
+            "href": "#goCategory"
+          },
+          {
+            "href": "#doUpdateArticle"
+          },
+          {
+            "href": "#doDeleteArticle"
+          }
+        ],
+        "tag": "article"
+      },
+      {
+        "id": "ArticleList",
+        "title": "Article List",
+        "doc": {
+          "value": "Paginated list of articles; supports filtering by category, tag, or status."
+        },
+        "descriptor": [
+          {
+            "href": "#articleId"
+          },
+          {
+            "href": "#articleSlug"
+          },
+          {
+            "href": "#articleTitle"
+          },
+          {
+            "href": "#articleExcerpt"
+          },
+          {
+            "href": "#articleStatus"
+          },
+          {
+            "href": "#articlePublishedAt"
+          },
+          {
+            "href": "#page"
+          },
+          {
+            "href": "#perPage"
+          },
+          {
+            "href": "#totalCount"
+          },
+          {
+            "href": "#goArticle"
+          },
+          {
+            "href": "#doCreateArticle"
+          }
+        ],
+        "tag": "article flow-browse"
+      },
+      {
+        "id": "Category",
+        "title": "Category Detail",
+        "descriptor": [
+          {
+            "href": "#categoryId"
+          },
+          {
+            "href": "#categorySlug"
+          },
+          {
+            "href": "#categoryName"
+          },
+          {
+            "href": "#categoryDescription"
+          },
+          {
+            "href": "#categoryParentId"
+          },
+          {
+            "href": "#goCategoryList"
+          },
+          {
+            "href": "#goArticleList"
+          },
+          {
+            "href": "#doUpdateCategory"
+          },
+          {
+            "href": "#doDeleteCategory"
+          }
+        ],
+        "tag": "category"
+      },
+      {
+        "id": "CategoryList",
+        "title": "Category List",
+        "descriptor": [
+          {
+            "href": "#categoryId"
+          },
+          {
+            "href": "#categorySlug"
+          },
+          {
+            "href": "#categoryName"
+          },
+          {
+            "href": "#categoryParentId"
+          },
+          {
+            "href": "#goCategory"
+          },
+          {
+            "href": "#doCreateCategory"
+          }
+        ],
+        "tag": "category flow-browse"
+      },
+      {
+        "id": "Tag",
+        "title": "Tag Detail",
+        "descriptor": [
+          {
+            "href": "#tagId"
+          },
+          {
+            "href": "#tagSlug"
+          },
+          {
+            "href": "#tagName"
+          },
+          {
+            "href": "#goTagList"
+          },
+          {
+            "href": "#goArticleList"
+          },
+          {
+            "href": "#doDeleteTag"
+          }
+        ],
+        "tag": "tag"
+      },
+      {
+        "id": "TagList",
+        "title": "Tag List",
+        "descriptor": [
+          {
+            "href": "#tagId"
+          },
+          {
+            "href": "#tagSlug"
+          },
+          {
+            "href": "#tagName"
+          },
+          {
+            "href": "#goTag"
+          },
+          {
+            "href": "#doCreateTag"
+          }
+        ],
+        "tag": "tag flow-browse"
+      },
+      {
+        "id": "Author",
+        "title": "Author Detail",
+        "descriptor": [
+          {
+            "href": "#authorId"
+          },
+          {
+            "href": "#authorName"
+          },
+          {
+            "href": "#authorEmail"
+          },
+          {
+            "href": "#authorBio"
+          },
+          {
+            "href": "#goArticleList"
+          },
+          {
+            "href": "#doUpdateAuthor"
+          }
+        ],
+        "tag": "author"
+      },
+      {
+        "id": "Media",
+        "title": "Media Detail",
+        "descriptor": [
+          {
+            "href": "#mediaId"
+          },
+          {
+            "href": "#mediaFilename"
+          },
+          {
+            "href": "#mediaMimeType"
+          },
+          {
+            "href": "#mediaUrl"
+          },
+          {
+            "href": "#mediaAlt"
+          },
+          {
+            "href": "#mediaWidth"
+          },
+          {
+            "href": "#mediaHeight"
+          },
+          {
+            "href": "#doDeleteMedia"
+          }
+        ],
+        "tag": "media"
+      },
+      {
+        "id": "goArticleList",
+        "type": "safe",
+        "rt": "#ArticleList",
+        "title": "View Article List",
+        "doc": {
+          "value": "List published articles, filterable by category, tag or status."
+        },
+        "tag": "article flow-browse",
+        "descriptor": [
+          {
+            "href": "#page"
+          },
+          {
+            "href": "#perPage"
+          },
+          {
+            "href": "#categoryId"
+          },
+          {
+            "href": "#tagId"
+          },
+          {
+            "href": "#articleStatus"
+          }
+        ]
+      },
+      {
+        "id": "goArticle",
+        "type": "safe",
+        "rt": "#Article",
+        "title": "View Article",
+        "doc": {
+          "value": "Retrieve a single article by id with embedded Author/Category/Tags."
+        },
+        "tag": "article",
+        "descriptor": [
+          {
+            "href": "#articleId"
+          }
+        ]
+      },
+      {
+        "id": "goCategoryList",
+        "type": "safe",
+        "rt": "#CategoryList",
+        "title": "View Category List",
+        "tag": "category flow-browse"
+      },
+      {
+        "id": "goCategory",
+        "type": "safe",
+        "rt": "#Category",
+        "title": "View Category",
+        "tag": "category",
+        "descriptor": [
+          {
+            "href": "#categoryId"
+          }
+        ]
+      },
+      {
+        "id": "goTagList",
+        "type": "safe",
+        "rt": "#TagList",
+        "title": "View Tag List",
+        "tag": "tag flow-browse"
+      },
+      {
+        "id": "goTag",
+        "type": "safe",
+        "rt": "#Tag",
+        "title": "View Tag",
+        "tag": "tag",
+        "descriptor": [
+          {
+            "href": "#tagId"
+          }
+        ]
+      },
+      {
+        "id": "goAuthor",
+        "type": "safe",
+        "rt": "#Author",
+        "title": "View Author",
+        "tag": "author",
+        "descriptor": [
+          {
+            "href": "#authorId"
+          }
+        ]
+      },
+      {
+        "id": "goMedia",
+        "type": "safe",
+        "rt": "#Media",
+        "title": "View Media",
+        "tag": "media",
+        "descriptor": [
+          {
+            "href": "#mediaId"
+          }
+        ]
+      },
+      {
+        "id": "doCreateArticle",
+        "type": "unsafe",
+        "rt": "#Article",
+        "title": "Create Article",
+        "doc": {
+          "value": "Create a new article. Returns the created article detail."
+        },
+        "tag": "article flow-publish",
+        "descriptor": [
+          {
+            "href": "#articleSlug"
+          },
+          {
+            "href": "#articleTitle"
+          },
+          {
+            "href": "#articleBody"
+          },
+          {
+            "href": "#articleExcerpt"
+          },
+          {
+            "href": "#articleStatus"
+          },
+          {
+            "href": "#authorId"
+          },
+          {
+            "href": "#categoryId"
+          }
+        ]
+      },
+      {
+        "id": "doUpdateArticle",
+        "type": "idempotent",
+        "rt": "#Article",
+        "title": "Update Article",
+        "tag": "article flow-publish",
+        "descriptor": [
+          {
+            "href": "#articleId"
+          },
+          {
+            "href": "#articleTitle"
+          },
+          {
+            "href": "#articleBody"
+          },
+          {
+            "href": "#articleExcerpt"
+          },
+          {
+            "href": "#articleStatus"
+          }
+        ]
+      },
+      {
+        "id": "doDeleteArticle",
+        "type": "idempotent",
+        "rt": "#ArticleList",
+        "title": "Delete Article",
+        "tag": "article flow-publish",
+        "descriptor": [
+          {
+            "href": "#articleId"
+          }
+        ]
+      },
+      {
+        "id": "doCreateCategory",
+        "type": "unsafe",
+        "rt": "#Category",
+        "title": "Create Category",
+        "tag": "category",
+        "descriptor": [
+          {
+            "href": "#categorySlug"
+          },
+          {
+            "href": "#categoryName"
+          },
+          {
+            "href": "#categoryDescription"
+          },
+          {
+            "href": "#categoryParentId"
+          }
+        ]
+      },
+      {
+        "id": "doUpdateCategory",
+        "type": "idempotent",
+        "rt": "#Category",
+        "title": "Update Category",
+        "tag": "category",
+        "descriptor": [
+          {
+            "href": "#categoryId"
+          },
+          {
+            "href": "#categoryName"
+          },
+          {
+            "href": "#categoryDescription"
+          },
+          {
+            "href": "#categoryParentId"
+          }
+        ]
+      },
+      {
+        "id": "doDeleteCategory",
+        "type": "idempotent",
+        "rt": "#CategoryList",
+        "title": "Delete Category",
+        "tag": "category",
+        "descriptor": [
+          {
+            "href": "#categoryId"
+          }
+        ]
+      },
+      {
+        "id": "doCreateTag",
+        "type": "unsafe",
+        "rt": "#Tag",
+        "title": "Create Tag",
+        "tag": "tag",
+        "descriptor": [
+          {
+            "href": "#tagSlug"
+          },
+          {
+            "href": "#tagName"
+          }
+        ]
+      },
+      {
+        "id": "doDeleteTag",
+        "type": "idempotent",
+        "rt": "#TagList",
+        "title": "Delete Tag",
+        "tag": "tag",
+        "descriptor": [
+          {
+            "href": "#tagId"
+          }
+        ]
+      },
+      {
+        "id": "doCreateAuthor",
+        "type": "unsafe",
+        "rt": "#Author",
+        "title": "Create Author",
+        "tag": "author",
+        "descriptor": [
+          {
+            "href": "#authorName"
+          },
+          {
+            "href": "#authorEmail"
+          },
+          {
+            "href": "#authorBio"
+          }
+        ]
+      },
+      {
+        "id": "doUpdateAuthor",
+        "type": "idempotent",
+        "rt": "#Author",
+        "title": "Update Author",
+        "tag": "author",
+        "descriptor": [
+          {
+            "href": "#authorId"
+          },
+          {
+            "href": "#authorName"
+          },
+          {
+            "href": "#authorEmail"
+          },
+          {
+            "href": "#authorBio"
+          }
+        ]
+      },
+      {
+        "id": "doCreateMedia",
+        "type": "unsafe",
+        "rt": "#Media",
+        "title": "Upload Media",
+        "tag": "media",
+        "descriptor": [
+          {
+            "href": "#mediaFilename"
+          },
+          {
+            "href": "#mediaMimeType"
+          },
+          {
+            "href": "#mediaUrl"
+          },
+          {
+            "href": "#mediaAlt"
+          },
+          {
+            "href": "#mediaWidth"
+          },
+          {
+            "href": "#mediaHeight"
+          }
+        ]
+      },
+      {
+        "id": "doDeleteMedia",
+        "type": "idempotent",
+        "rt": "#Media",
+        "title": "Delete Media",
+        "tag": "media",
+        "descriptor": [
+          {
+            "href": "#mediaId"
+          }
+        ]
+      }
+    ]
+  }
+}
