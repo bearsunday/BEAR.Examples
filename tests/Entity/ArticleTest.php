@@ -40,4 +40,31 @@ final class ArticleTest extends TestCase
         $this->assertTrue($a->isWrittenBy(7));
         $this->assertFalse($a->isWrittenBy(99));
     }
+
+    public function testRenderHtmlThrowsWithoutInjectedRenderer(): void
+    {
+        $a = $this->make();
+        $this->expectException(\RuntimeException::class);
+        $a->renderHtml();
+    }
+
+    public function testRenderHtmlConvertsMarkdownWhenRendererInjected(): void
+    {
+        $renderer = new \MyVendor\Cms\Service\CommonMarkRenderer();
+        $a = new Article(
+            id: 1,
+            slug: 's',
+            title: 't',
+            body: '# Hello' . "\n\n" . 'A paragraph.',
+            excerpt: null,
+            status: 'published',
+            publishedAt: '2026-01-01T00:00:00Z',
+            authorId: 1,
+            categoryId: 1,
+            renderer: $renderer,
+        );
+        $html = $a->renderHtml();
+        $this->assertStringContainsString('<h1>Hello</h1>', $html);
+        $this->assertStringContainsString('<p>A paragraph.</p>', $html);
+    }
 }

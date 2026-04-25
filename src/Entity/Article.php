@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace MyVendor\Cms\Entity;
 
+use MyVendor\Cms\Service\MarkdownRendererInterface;
+use RuntimeException;
+
 final readonly class Article
 {
     public const STATUS_DRAFT = 'draft';
@@ -19,6 +22,11 @@ final readonly class Article
         public string|null $publishedAt,
         public int $authorId,
         public int $categoryId,
+        /**
+         * Injected by ArticleFactory in production. Null in pure unit tests
+         * where the entity is constructed without a Markdown service.
+         */
+        private MarkdownRendererInterface|null $renderer = null,
     ) {
     }
 
@@ -40,5 +48,20 @@ final readonly class Article
     public function isWrittenBy(int $authorId): bool
     {
         return $this->authorId === $authorId;
+    }
+
+    /**
+     * Render the body Markdown to HTML using the injected renderer.
+     *
+     * Demonstrates BDR's Domain layer carrying its own infrastructure
+     * dependency (a service) rather than acting as a pure DTO.
+     */
+    public function renderHtml(): string
+    {
+        if ($this->renderer === null) {
+            throw new RuntimeException('Article was constructed without a MarkdownRendererInterface — call via ArticleFactory or pass one explicitly.');
+        }
+
+        return $this->renderer->render($this->body);
     }
 }

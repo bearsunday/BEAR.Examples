@@ -8,7 +8,10 @@ use BEAR\Package\AbstractAppModule;
 use BEAR\Package\PackageModule;
 use BEAR\Resource\Module\JsonSchemaModule;
 use Koriym\EnvJson\EnvJson;
+use MyVendor\Cms\Service\CommonMarkRenderer;
+use MyVendor\Cms\Service\MarkdownRendererInterface;
 use Ray\AuraSqlModule\AuraSqlModule;
+use Ray\Di\Scope;
 use Ray\MediaQuery\MediaQuerySqlModule;
 
 use function dirname;
@@ -39,5 +42,8 @@ final class AppModule extends AbstractAppModule
             $this->appMeta->appDir . '/var/json_schema',
             $this->appMeta->appDir . '/var/json_validate',
         ));
+
+        // Domain-layer services (e.g. injected into Entity via FetchInjectionFactory).
+        $this->bind(MarkdownRendererInterface::class)->to(CommonMarkRenderer::class)->in(Scope::SINGLETON);
     }
 }
