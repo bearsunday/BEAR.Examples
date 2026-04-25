@@ -8,9 +8,11 @@ use League\CommonMark\CommonMarkConverter;
 
 final class CommonMarkRenderer implements MarkdownRendererInterface
 {
-    public function __construct(
-        private readonly CommonMarkConverter $converter = new CommonMarkConverter(),
-    ) {
+    private CommonMarkConverter $converter;
+
+    public function __construct()
+    {
+        $this->converter = new CommonMarkConverter();
     }
 
     public function render(string $markdown): string

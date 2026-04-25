@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace MyVendor\Cms\Resource\App;
 
+use BEAR\Cli\Attribute\Cli;
+use BEAR\Cli\Attribute\Option;
 use BEAR\Resource\Annotation\JsonSchema;
 use BEAR\Resource\Annotation\Link;
 use BEAR\Resource\ResourceObject;
@@ -20,11 +22,17 @@ class Articles extends ResourceObject
 
     #[Link(rel: 'goArticle', href: 'app://self/article{?id}')]
     #[JsonSchema('articleList.json')]
+    #[Cli(name: 'article-list', description: 'List articles (paginated, filterable)', output: 'count')]
     public function onGet(
+        #[Option(shortName: 'p', description: 'Page number')]
         int $page = 1,
+        #[Option(shortName: 'n', description: 'Items per page (max 100)')]
         int $perPage = 20,
+        #[Option(shortName: 'c', description: 'Filter by category id')]
         int|null $categoryId = null,
+        #[Option(shortName: 't', description: 'Filter by tag id')]
         int|null $tagId = null,
+        #[Option(shortName: 's', description: 'Filter by status (draft|published)')]
         string|null $status = null,
     ): static {
         $page = $page < 1 ? 1 : $page;

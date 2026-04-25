@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "95bf5249d93cccfc1c44a2463f4937d5",
+    "content-hash": "ace394e4ba5c32a2a3c78ef418fdadd6",
     "packages": [
         {
             "name": "aura/cli",
@@ -4284,6 +4284,62 @@
                 "source": "https://github.com/bearsunday/BEAR.ApiDoc/tree/1.8.0"
             },
             "time": "2026-02-16T16:28:21+00:00"
+        },
+        {
+            "name": "bear/cli",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/bearsunday/BEAR.Cli.git",
+                "reference": "5bcac8b1f9f77c658ef6fc8a5a2109d2b0fab4f6"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/bearsunday/BEAR.Cli/zipball/5bcac8b1f9f77c658ef6fc8a5a2109d2b0fab4f6",
+                "reference": "5bcac8b1f9f77c658ef6fc8a5a2109d2b0fab4f6",
+                "shasum": ""
+            },
+            "require": {
+                "bear/app-meta": "^1.8",
+                "bear/package": "^1.10",
+                "bear/resource": "^1.23",
+                "php": "^8.2"
+            },
+            "require-dev": {
+                "bamarni/composer-bin-plugin": "^1.8",
+                "phpunit/phpunit": "^9.6.21"
+            },
+            "bin": [
+                "bin/bear-cli-gen"
+            ],
+            "type": "library",
+            "extra": {
+                "bamarni-bin": {
+                    "bin-links": true,
+                    "forward-command": true
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "BEAR\\Cli\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Akihito Koriyama",
+                    "email": "akihito.koriyama@gmail.com"
+                }
+            ],
+            "description": "Transform BEAR.Sunday resources into native CLI commands",
+            "support": {
+                "issues": "https://github.com/bearsunday/BEAR.Cli/issues",
+                "source": "https://github.com/bearsunday/BEAR.Cli/tree/1.0.0"
+            },
+            "time": "2025-11-28T15:32:37+00:00"
         },
         {
             "name": "bear/devtools",

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace MyVendor\Cms\Resource\App;
 
+use BEAR\Cli\Attribute\Cli;
+use BEAR\Cli\Attribute\Option;
 use BEAR\Resource\Annotation\Embed;
 use BEAR\Resource\Annotation\JsonSchema;
 use BEAR\Resource\Annotation\Link;
@@ -42,7 +44,11 @@ class Article extends ResourceObject
     #[Embed(rel: 'goCategory', src: 'app://self/category')]
     #[Embed(rel: 'goTagList', src: 'app://self/tags')]
     #[JsonSchema('article.json')]
-    public function onGet(int $id): static
+    #[Cli(name: 'article-show', description: 'Show an article by id', output: 'title')]
+    public function onGet(
+        #[Option(shortName: 'i', description: 'Article id')]
+        int $id,
+    ): static
     {
         $article = $this->articleQuery->getById($id);
         if ($article === null) {
