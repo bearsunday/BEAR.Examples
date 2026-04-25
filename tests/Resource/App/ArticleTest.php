@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace MyVendor\Cms\Resource\App;
 
+use BEAR\Resource\Exception\JsonSchemaException;
+use BEAR\Resource\Exception\ParameterException;
 use MyVendor\Cms\AbstractAppTestCase;
 
 use function array_column;
@@ -100,7 +102,7 @@ final class ArticleTest extends AbstractAppTestCase
 
     public function testPostWithInvalidSlugRejectedByJsonSchema(): void
     {
-        $this->expectException(\BEAR\Resource\Exception\JsonSchemaException::class);
+        $this->expectException(JsonSchemaException::class);
         $this->resource->post('app://self/article', [
             'slug' => 'INVALID Slug With Spaces',
             'title' => 'T',
@@ -115,7 +117,7 @@ final class ArticleTest extends AbstractAppTestCase
         // PHP-level required parameter check (RequiredParam) fires before
         // JsonSchema's `params:` validation. Documented behaviour, not a bug:
         // JsonSchema validates the *shape* of present args, not their existence.
-        $this->expectException(\BEAR\Resource\Exception\ParameterException::class);
+        $this->expectException(ParameterException::class);
         $this->resource->post('app://self/article', [
             'slug' => 'valid-slug',
             'title' => 'T',
@@ -125,7 +127,7 @@ final class ArticleTest extends AbstractAppTestCase
 
     public function testPostWithBadStatusRejectedByJsonSchema(): void
     {
-        $this->expectException(\BEAR\Resource\Exception\JsonSchemaException::class);
+        $this->expectException(JsonSchemaException::class);
         $this->resource->post('app://self/article', [
             'slug' => 'valid-slug',
             'title' => 'T',
