@@ -98,8 +98,8 @@ final class ArticleTest extends AbstractAppTestCase
         $slug = 'tagged-' . uniqid();
         $post = $this->resource->post('app://self/article', [
             'slug' => $slug,
-            'title' => 'Tagged',
-            'body' => 'B',
+            'title' => 'Tagged title',
+            'body' => 'Body content for tagged article.',
             'authorId' => 1,
             'categoryId' => 1,
             'status' => 'published',
@@ -116,8 +116,8 @@ final class ArticleTest extends AbstractAppTestCase
 
         $put = $this->resource->put('app://self/article', [
             'id' => $id,
-            'title' => 'Tagged',
-            'body' => 'B',
+            'title' => 'Tagged update',
+            'body' => 'Body content updated.',
             'status' => 'published',
             'tagIds' => [4, 5],
         ]);
