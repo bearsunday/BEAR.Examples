@@ -98,6 +98,44 @@ final class ArticleTest extends AbstractAppTestCase
         $this->assertSame(404, $ro->code);
     }
 
+    public function testPostWithInvalidSlugRejectedByJsonSchema(): void
+    {
+        $this->expectException(\BEAR\Resource\Exception\JsonSchemaException::class);
+        $this->resource->post('app://self/article', [
+            'slug' => 'INVALID Slug With Spaces',
+            'title' => 'T',
+            'body' => 'B',
+            'authorId' => 1,
+            'categoryId' => 1,
+        ]);
+    }
+
+    public function testPostMissingRequiredFieldsRejectedBeforeJsonSchema(): void
+    {
+        // PHP-level required parameter check (RequiredParam) fires before
+        // JsonSchema's `params:` validation. Documented behaviour, not a bug:
+        // JsonSchema validates the *shape* of present args, not their existence.
+        $this->expectException(\BEAR\Resource\Exception\ParameterException::class);
+        $this->resource->post('app://self/article', [
+            'slug' => 'valid-slug',
+            'title' => 'T',
+            // body, authorId, categoryId all missing
+        ]);
+    }
+
+    public function testPostWithBadStatusRejectedByJsonSchema(): void
+    {
+        $this->expectException(\BEAR\Resource\Exception\JsonSchemaException::class);
+        $this->resource->post('app://self/article', [
+            'slug' => 'valid-slug',
+            'title' => 'T',
+            'body' => 'B',
+            'authorId' => 1,
+            'categoryId' => 1,
+            'status' => 'invalid-status-value',
+        ]);
+    }
+
     public function testCreateWithTagsLinksThemAndUpdateReplaces(): void
     {
         $slug = 'tagged-' . uniqid();

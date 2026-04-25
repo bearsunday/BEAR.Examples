@@ -80,6 +80,7 @@ class Article extends ResourceObject
     }
 
     /** @param list<int> $tagIds Optional list of tag ids to link to the new article. */
+    #[JsonSchema(schema: 'write_response.json', params: 'article_create.json')]
     public function onPost(
         string $slug,
         string $title,
@@ -118,6 +119,7 @@ class Article extends ResourceObject
     }
 
     /** @param list<int>|null $tagIds When provided, replaces the tag set entirely. */
+    #[JsonSchema(schema: 'write_response.json', params: 'article_update.json')]
     public function onPut(
         int $id,
         string $title,

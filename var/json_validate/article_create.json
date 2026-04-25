@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ArticleCreateInput",
+  "description": "Input for POST app://self/article. Validates the named arguments of onPost.",
+  "type": "object",
+  "required": ["slug", "title", "body", "authorId", "categoryId"],
+  "properties": {
+    "slug":        {"type": "string", "minLength": 3, "maxLength": 100, "pattern": "^[a-z0-9][a-z0-9-]*$"},
+    "title":       {"type": "string", "minLength": 1, "maxLength": 255},
+    "body":        {"type": "string", "minLength": 1},
+    "authorId":    {"type": "integer", "minimum": 1},
+    "categoryId":  {"type": "integer", "minimum": 1},
+    "excerpt":     {"type": ["string", "null"]},
+    "status":      {"type": "string", "enum": ["draft", "published"]},
+    "publishedAt": {"type": ["string", "null"], "format": "date-time"},
+    "tagIds":      {"type": "array", "items": {"type": "integer", "minimum": 1}}
+  }
+}

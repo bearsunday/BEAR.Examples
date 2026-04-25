@@ -42,6 +42,7 @@ class Media extends ResourceObject
         return $this;
     }
 
+    #[JsonSchema(schema: 'write_response.json', params: 'media_create.json')]
     public function onPost(
         string $filename,
         string $mimeType,

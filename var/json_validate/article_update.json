@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ArticleUpdateInput",
+  "type": "object",
+  "required": ["id", "title", "body", "status"],
+  "properties": {
+    "id":          {"type": "integer", "minimum": 1},
+    "title":       {"type": "string", "minLength": 1, "maxLength": 255},
+    "body":        {"type": "string", "minLength": 1},
+    "status":      {"type": "string", "enum": ["draft", "published"]},
+    "excerpt":     {"type": ["string", "null"]},
+    "publishedAt": {"type": ["string", "null"], "format": "date-time"},
+    "tagIds":      {"type": ["array", "null"], "items": {"type": "integer", "minimum": 1}}
+  }
+}

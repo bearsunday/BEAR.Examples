@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "MediaCreateInput",
+  "type": "object",
+  "required": ["filename", "mimeType", "url"],
+  "properties": {
+    "filename": {"type": "string", "minLength": 1, "maxLength": 191},
+    "mimeType": {"type": "string", "minLength": 3, "maxLength": 64},
+    "url":      {"type": "string", "format": "uri-reference", "maxLength": 255},
+    "alt":      {"type": ["string", "null"], "maxLength": 255},
+    "width":    {"type": "integer", "minimum": 0},
+    "height":   {"type": "integer", "minimum": 0}
+  }
+}

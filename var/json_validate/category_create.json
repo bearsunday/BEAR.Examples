@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CategoryCreateInput",
+  "type": "object",
+  "required": ["slug", "name"],
+  "properties": {
+    "slug":        {"type": "string", "minLength": 1, "maxLength": 100, "pattern": "^[a-z0-9][a-z0-9-]*$"},
+    "name":        {"type": "string", "minLength": 1, "maxLength": 100},
+    "description": {"type": ["string", "null"]},
+    "parentId":    {"type": ["integer", "null"], "minimum": 1}
+  }
+}

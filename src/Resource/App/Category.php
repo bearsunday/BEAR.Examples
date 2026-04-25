@@ -43,6 +43,7 @@ class Category extends ResourceObject
         return $this;
     }
 
+    #[JsonSchema(schema: 'write_response.json', params: 'category_create.json')]
     public function onPost(
         string $slug,
         string $name,
@@ -58,6 +59,7 @@ class Category extends ResourceObject
         return $this;
     }
 
+    #[JsonSchema(schema: 'write_response.json', params: 'category_update.json')]
     public function onPut(
         int $id,
         string $name,

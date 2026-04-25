@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AuthorUpdateInput",
+  "type": "object",
+  "required": ["id", "name", "email"],
+  "properties": {
+    "id":    {"type": "integer", "minimum": 1},
+    "name":  {"type": "string", "minLength": 1, "maxLength": 100},
+    "email": {"type": "string", "format": "email", "maxLength": 191},
+    "bio":   {"type": "string"}
+  }
+}

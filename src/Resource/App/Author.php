@@ -41,6 +41,7 @@ class Author extends ResourceObject
         return $this;
     }
 
+    #[JsonSchema(schema: 'write_response.json', params: 'author_create.json')]
     public function onPost(string $name, string $email, string $bio = ''): static
     {
         $this->authorCommand->add(name: $name, email: $email, bio: $bio);
@@ -52,6 +53,7 @@ class Author extends ResourceObject
         return $this;
     }
 
+    #[JsonSchema(schema: 'write_response.json', params: 'author_update.json')]
     public function onPut(int $id, string $name, string $email, string $bio = ''): static
     {
         if ($this->authorQuery->getById($id) === null) {

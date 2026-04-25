@@ -41,6 +41,7 @@ class Tag extends ResourceObject
         return $this;
     }
 
+    #[JsonSchema(schema: 'write_response.json', params: 'tag_create.json')]
     public function onPost(string $slug, string $name): static
     {
         $this->tagCommand->add(slug: $slug, name: $name);
