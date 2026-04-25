@@ -1,0 +1,77 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://example.com/bear-cms/article",
+    "title": "Article",
+    "description": "ALPS Article state. Single article with embedded Author, Category and Tags.",
+    "type": "object",
+    "required": [
+        "id",
+        "slug",
+        "title",
+        "body",
+        "status",
+        "authorId",
+        "categoryId"
+    ],
+    "properties": {
+        "id": {
+            "type": "integer",
+            "description": "Primary key",
+            "minimum": 1
+        },
+        "slug": {
+            "type": "string",
+            "description": "URL-safe unique slug",
+            "minLength": 3,
+            "maxLength": 50,
+            "pattern": "^[a-z0-9][a-z0-9-]*$"
+        },
+        "title": {
+            "type": "string",
+            "description": "Article headline",
+            "minLength": 10,
+            "maxLength": 50
+        },
+        "body": {
+            "type": "string",
+            "description": "Full article body",
+            "minLength": 5,
+            "maxLength": 500
+        },
+        "excerpt": {
+            "type": [
+                "string",
+                "null"
+            ],
+            "description": "Short summary used in list views",
+            "minLength": 5,
+            "maxLength": 200
+        },
+        "status": {
+            "type": "string",
+            "description": "Lifecycle status",
+            "enum": [
+                "draft",
+                "published"
+            ]
+        },
+        "publishedAt": {
+            "type": [
+                "string",
+                "null"
+            ],
+            "description": "Publication timestamp; null for drafts",
+            "format": "date-time"
+        },
+        "authorId": {
+            "type": "integer",
+            "description": "Foreign key to Author",
+            "minimum": 1
+        },
+        "categoryId": {
+            "type": "integer",
+            "description": "Foreign key to Category",
+            "minimum": 1
+        }
+    }
+}

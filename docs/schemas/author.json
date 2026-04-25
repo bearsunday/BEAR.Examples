@@ -1,0 +1,40 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://example.com/bear-cms/author",
+    "title": "Author",
+    "type": "object",
+    "required": [
+        "id",
+        "name",
+        "email"
+    ],
+    "properties": {
+        "id": {
+            "type": "integer",
+            "description": "Primary key",
+            "minimum": 1
+        },
+        "name": {
+            "type": "string",
+            "description": "Full name",
+            "minLength": 5,
+            "maxLength": 50
+        },
+        "email": {
+            "type": "string",
+            "description": "Email address",
+            "minLength": 20,
+            "maxLength": 50,
+            "format": "email"
+        },
+        "bio": {
+            "type": [
+                "string",
+                "null"
+            ],
+            "description": "Optional biography",
+            "minLength": 0,
+            "maxLength": 50
+        }
+    }
+}

@@ -27,7 +27,7 @@
 </thead>
 <tbody>
 <tr>
-  <td rowspan="16" class="path-cell" id="path-article">/article</td>
+  <td rowspan="18" class="path-cell" id="path-article">/article</td>
   <td rowspan="1" class="method-cell"><span class="ti safe"></span>GET</td>
   <td><span class="param">id</span><span class="req">*</span></td>
   <td><span class="badge type-int">int</span></td>
@@ -35,18 +35,18 @@
   <td><div class="extra-info">
       
     </div></td>
-  <td rowspan="1"></td>
+  <td rowspan="1"><a href="#Article" class="schema-link">Article</a></td>
 </tr>
 <tr>
   
-  <td rowspan="8" class="method-cell"><span class="ti unsafe"></span>POST</td>
+  <td rowspan="9" class="method-cell"><span class="ti unsafe"></span>POST</td>
   <td><span class="param">slug</span><span class="req">*</span></td>
   <td><span class="badge type-string">string</span></td>
   <td class="param-desc"></td>
   <td><div class="extra-info">
       
     </div></td>
-  <td rowspan="8"></td>
+  <td rowspan="9"></td>
 </tr>
 <tr>
   
@@ -127,14 +127,25 @@
 </tr>
 <tr>
   
-  <td rowspan="6" class="method-cell"><span class="ti idempotent"></span>PUT</td>
+  
+  <td><span class="param">tagIds</span></td>
+  <td><span class="badge type-array">array</span></td>
+  <td class="param-desc">Optional list of tag ids to link to the new article.</td>
+  <td><div class="extra-info">
+      
+    </div></td>
+  
+</tr>
+<tr>
+  
+  <td rowspan="7" class="method-cell"><span class="ti idempotent"></span>PUT</td>
   <td><span class="param">id</span><span class="req">*</span></td>
   <td><span class="badge type-int">int</span></td>
   <td class="param-desc"></td>
   <td><div class="extra-info">
       
     </div></td>
-  <td rowspan="6"></td>
+  <td rowspan="7"></td>
 </tr>
 <tr>
   
@@ -193,6 +204,17 @@
 </tr>
 <tr>
   
+  
+  <td><span class="param">tagIds</span></td>
+  <td><span class="badge type-array">array</span></td>
+  <td class="param-desc">When provided, replaces the tag set entirely.</td>
+  <td><div class="extra-info">
+      
+    </div></td>
+  
+</tr>
+<tr>
+  
   <td rowspan="1" class="method-cell"><span class="ti idempotent"></span>DELETE</td>
   <td><span class="param">id</span><span class="req">*</span></td>
   <td><span class="badge type-int">int</span></td>
@@ -211,7 +233,7 @@
   <td><div class="extra-info">
       
     </div></td>
-  <td rowspan="5"></td>
+  <td rowspan="5"><a href="#ArticleList" class="schema-link">ArticleList</a></td>
 </tr>
 <tr>
   
@@ -258,6 +280,36 @@
   
 </tr>
 <tr>
+  <td rowspan="3" class="path-cell" id="path-auth">/auth</td>
+  <td class="method-cell"><span class="ti safe"></span>GET</td>
+  <td></td>
+  <td></td>
+  <td></td>
+  <td></td>
+</tr>
+<tr>
+  
+  <td rowspan="2" class="method-cell"><span class="ti unsafe"></span>POST</td>
+  <td><span class="param">code</span><span class="req">*</span></td>
+  <td><span class="badge type-string">string</span></td>
+  <td class="param-desc"></td>
+  <td><div class="extra-info">
+      
+    </div></td>
+  <td rowspan="2"></td>
+</tr>
+<tr>
+  
+  
+  <td><span class="param">state</span><span class="req">*</span></td>
+  <td><span class="badge type-string">string</span></td>
+  <td class="param-desc"></td>
+  <td><div class="extra-info">
+      
+    </div></td>
+  
+</tr>
+<tr>
   <td rowspan="8" class="path-cell" id="path-author">/author</td>
   <td rowspan="1" class="method-cell"><span class="ti safe"></span>GET</td>
   <td><span class="param">id</span><span class="req">*</span></td>
@@ -266,7 +318,7 @@
   <td><div class="extra-info">
       
     </div></td>
-  <td rowspan="1"></td>
+  <td rowspan="1"><a href="#Author" class="schema-link">Author</a></td>
 </tr>
 <tr>
   
@@ -351,7 +403,7 @@
   <td></td>
   <td></td>
   <td></td>
-  <td></td>
+  <td><a href="#CategoryList" class="schema-link">CategoryList</a></td>
 </tr>
 <tr>
   <td rowspan="10" class="path-cell" id="path-category">/category</td>
@@ -362,7 +414,7 @@
   <td><div class="extra-info">
       
     </div></td>
-  <td rowspan="1"></td>
+  <td rowspan="1"><a href="#Category" class="schema-link">Category</a></td>
 </tr>
 <tr>
   
@@ -472,7 +524,7 @@
   <td><div class="extra-info">
       
     </div></td>
-  <td rowspan="1"></td>
+  <td rowspan="1"><a href="#Media" class="schema-link">Media</a></td>
 </tr>
 <tr>
   
@@ -560,7 +612,7 @@
   <td><div class="extra-info">
       
     </div></td>
-  <td rowspan="1"></td>
+  <td rowspan="1"><a href="#Tag" class="schema-link">Tag</a></td>
 </tr>
 <tr>
   
@@ -597,16 +649,566 @@
 </tr>
 <tr>
   <td rowspan="1" class="path-cell" id="path-tags">/tags</td>
-  <td class="method-cell"><span class="ti safe"></span>GET</td>
-  <td></td>
-  <td></td>
-  <td></td>
-  <td></td>
+  <td rowspan="1" class="method-cell"><span class="ti safe"></span>GET</td>
+  <td><span class="param">articleId</span></td>
+  <td><span class="badge type-int">int</span></td>
+  <td class="param-desc"></td>
+  <td><div class="extra-info">
+      
+    </div></td>
+  <td rowspan="1"><a href="#TagList" class="schema-link">TagList</a></td>
 </tr>
 
 </tbody>
 </table>
 
+<h2>Objects</h2>
+<div class="object-section" id="Article">
+<h3 class="object-name"><a href="schemas/article.json" class="schema-file-link" title="JSON Schema">📄</a>Article</h3>
+<table>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Description</th><th>Meta</th></tr>
+</thead>
+<tbody>
+<tr>
+  <td><span class="prop-name">id</span></td>
+  <td><span class="badge type-int">int</span></td>
+  <td class="param-desc">Primary key</td>
+  <td><div class="extra-info">
+      <span class="badge constraint">minimum: 1</span>
+    </div></td>
+</tr>
+<tr>
+  <td><span class="prop-name">slug</span></td>
+  <td><span class="badge type-string">string</span></td>
+  <td class="param-desc">URL-safe unique slug</td>
+  <td><div class="extra-info">
+      <span class="badge constraint">minLength: 3</span>
+      <span class="badge constraint">maxLength: 50</span>
+      <span class="badge constraint">pattern: ^[a-z0-9][a-z0-9-]*$</span>
+    </div></td>
+</tr>
+<tr>
+  <td><span class="prop-name">title</span></td>
+  <td><span class="badge type-string">string</span></td>
+  <td class="param-desc">Article headline</td>
+  <td><div class="extra-info">
+      <span class="badge constraint">minLength: 10</span>
+      <span class="badge constraint">maxLength: 50</span>
+    </div></td>
+</tr>
+<tr>
+  <td><span class="prop-name">body</span></td>
+  <td><span class="badge type-string">string</span></td>
+  <td class="param-desc">Full article body</td>
+  <td><div class="extra-info">
+      <span class="badge constraint">minLength: 5</span>
+      <span class="badge constraint">maxLength: 500</span>
+    </div></td>
+</tr>
+<tr>
+  <td><span class="prop-name">excerpt</span></td>
+  <td><span class="badge type-stringnull">string|null</span></td>
+  <td class="param-desc">Short summary used in list views</td>
+  <td><div class="extra-info">
+      <span class="badge constraint">minLength: 5</span>
+      <span class="badge constraint">maxLength: 200</span>
+    </div></td>
+</tr>
+<tr>
+  <td><span class="prop-name">status</span></td>
+  <td><span class="badge type-string">string</span></td>
+  <td class="param-desc">Lifecycle status</td>
+  <td><div class="extra-info">
+      <span class="badge constraint">enum: [&quot;draft&quot;,&quot;published&quot;]</span>
+    </div></td>
+</tr>
+<tr>
+  <td><span class="prop-name">publishedAt</span></td>
+  <td><span class="badge type-stringnull">string|null</span></td>
+  <td class="param-desc">Publication timestamp; null for drafts</td>
+  <td><div class="extra-info">
+      <span class="badge format">format: date-time</span>
+    </div></td>
+</tr>
+<tr>
+  <td><span class="prop-name">authorId</span></td>
+  <td><span class="badge type-int">int</span></td>
+  <td class="param-desc">Foreign key to Author</td>
+  <td><div class="extra-info">
+      <span class="badge constraint">minimum: 1</span>
+    </div></td>
+</tr>
+<tr>
+  <td><span class="prop-name">categoryId</span></td>
+  <td><span class="badge type-int">int</span></td>
+  <td class="param-desc">Foreign key to Category</td>
+  <td><div class="extra-info">
+      <span class="badge constraint">minimum: 1</span>
+    </div></td>
+</tr>
+<tr class="embed-row">
+  <td class="prop-name"><span class="ti semantic"></span><a href="#Author">goAuthor</a></td>
+  <td><span class="badge embed">embed</span></td>
+  <td class="param-desc"></td>
+  <td>
+    <div class="extra-info">
+      <span class="badge href">src: app://self/author</span>
+    </div>
+  </td>
+</tr>
+<tr class="embed-row">
+  <td class="prop-name"><span class="ti semantic"></span><a href="#Category">goCategory</a></td>
+  <td><span class="badge embed">embed</span></td>
+  <td class="param-desc"></td>
+  <td>
+    <div class="extra-info">
+      <span class="badge href">src: app://self/category</span>
+    </div>
+  </td>
+</tr>
+<tr class="embed-row">
+  <td class="prop-name"><span class="ti semantic"></span><a href="#TagList">goTagList</a></td>
+  <td><span class="badge embed">embed</span></td>
+  <td class="param-desc"></td>
+  <td>
+    <div class="extra-info">
+      <span class="badge href">src: app://self/tags</span>
+    </div>
+  </td>
+</tr>
+<tr class="link-row">
+  <td class="prop-name"><span class="ti safe"></span><a href="#ArticleList">goArticleList</a></td>
+  <td><span class="badge link">link</span></td>
+  <td class="param-desc"></td>
+  <td>
+    <div class="extra-info">
+      <span class="badge href">href: app://self/articles</span>
+    </div>
+  </td>
+</tr>
+<tr class="link-row">
+  <td class="prop-name"><span class="ti safe"></span><a href="#Author">goAuthor</a></td>
+  <td><span class="badge link">link</span></td>
+  <td class="param-desc"></td>
+  <td>
+    <div class="extra-info">
+      <span class="badge href">href: app://self/author{?id}</span>
+    </div>
+  </td>
+</tr>
+<tr class="link-row">
+  <td class="prop-name"><span class="ti safe"></span><a href="#Category">goCategory</a></td>
+  <td><span class="badge link">link</span></td>
+  <td class="param-desc"></td>
+  <td>
+    <div class="extra-info">
+      <span class="badge href">href: app://self/category{?id}</span>
+    </div>
+  </td>
+</tr>
+
+</tbody>
+</table>
+</div>
+<div class="object-section" id="ArticleList">
+<h3 class="object-name"><a href="schemas/articleList.json" class="schema-file-link" title="JSON Schema">📄</a>ArticleList</h3>
+<table>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Description</th><th>Meta</th></tr>
+</thead>
+<tbody>
+<tr>
+  <td><span class="prop-name">items</span></td>
+  <td><span class="badge type-array">array</span></td>
+  <td class="param-desc"></td>
+  <td><div class="extra-info">
+      
+    </div></td>
+</tr>
+<tr>
+  <td><span class="prop-name">page</span></td>
+  <td><span class="badge type-int">int</span></td>
+  <td class="param-desc"></td>
+  <td><div class="extra-info">
+      <span class="badge constraint">minimum: 1</span>
+    </div></td>
+</tr>
+<tr>
+  <td><span class="prop-name">perPage</span></td>
+  <td><span class="badge type-int">int</span></td>
+  <td class="param-desc"></td>
+  <td><div class="extra-info">
+      <span class="badge constraint">minimum: 1</span>
+      <span class="badge constraint">maximum: 100</span>
+    </div></td>
+</tr>
+<tr>
+  <td><span class="prop-name">count</span></td>
+  <td><span class="badge type-int">int</span></td>
+  <td class="param-desc"></td>
+  <td><div class="extra-info">
+      <span class="badge constraint">minimum: 0</span>
+    </div></td>
+</tr>
+<tr>
+  <td><span class="prop-name">totalCount</span></td>
+  <td><span class="badge type-int">int</span></td>
+  <td class="param-desc"></td>
+  <td><div class="extra-info">
+      <span class="badge constraint">minimum: 0</span>
+    </div></td>
+</tr>
+<tr class="link-row">
+  <td class="prop-name"><span class="ti safe"></span><a href="#Article">goArticle</a></td>
+  <td><span class="badge link">link</span></td>
+  <td class="param-desc"></td>
+  <td>
+    <div class="extra-info">
+      <span class="badge href">href: app://self/article{?id}</span>
+    </div>
+  </td>
+</tr>
+
+</tbody>
+</table>
+</div>
+<div class="object-section" id="Author">
+<h3 class="object-name"><a href="schemas/author.json" class="schema-file-link" title="JSON Schema">📄</a>Author</h3>
+<table>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Description</th><th>Meta</th></tr>
+</thead>
+<tbody>
+<tr>
+  <td><span class="prop-name">id</span></td>
+  <td><span class="badge type-int">int</span></td>
+  <td class="param-desc">Primary key</td>
+  <td><div class="extra-info">
+      <span class="badge constraint">minimum: 1</span>
+    </div></td>
+</tr>
+<tr>
+  <td><span class="prop-name">name</span></td>
+  <td><span class="badge type-string">string</span></td>
+  <td class="param-desc">Full name</td>
+  <td><div class="extra-info">
+      <span class="badge constraint">minLength: 5</span>
+      <span class="badge constraint">maxLength: 50</span>
+    </div></td>
+</tr>
+<tr>
+  <td><span class="prop-name">email</span></td>
+  <td><span class="badge type-string">string</span></td>
+  <td class="param-desc">Email address</td>
+  <td><div class="extra-info">
+      <span class="badge format">format: email</span>
+      <span class="badge constraint">minLength: 20</span>
+      <span class="badge constraint">maxLength: 50</span>
+    </div></td>
+</tr>
+<tr>
+  <td><span class="prop-name">bio</span></td>
+  <td><span class="badge type-stringnull">string|null</span></td>
+  <td class="param-desc">Optional biography</td>
+  <td><div class="extra-info">
+      <span class="badge constraint">minLength: 0</span>
+      <span class="badge constraint">maxLength: 50</span>
+    </div></td>
+</tr>
+<tr class="link-row">
+  <td class="prop-name"><span class="ti safe"></span><a href="#ArticleList">goArticleList</a></td>
+  <td><span class="badge link">link</span></td>
+  <td class="param-desc"></td>
+  <td>
+    <div class="extra-info">
+      <span class="badge href">href: app://self/articles</span>
+    </div>
+  </td>
+</tr>
+
+</tbody>
+</table>
+</div>
+<div class="object-section" id="CategoryList">
+<h3 class="object-name"><a href="schemas/categoryList.json" class="schema-file-link" title="JSON Schema">📄</a>CategoryList</h3>
+<table>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Description</th><th>Meta</th></tr>
+</thead>
+<tbody>
+<tr>
+  <td><span class="prop-name">items</span></td>
+  <td><span class="badge type-array">array</span></td>
+  <td class="param-desc"></td>
+  <td><div class="extra-info">
+      
+    </div></td>
+</tr>
+<tr>
+  <td><span class="prop-name">totalCount</span></td>
+  <td><span class="badge type-int">int</span></td>
+  <td class="param-desc"></td>
+  <td><div class="extra-info">
+      <span class="badge constraint">minimum: 0</span>
+    </div></td>
+</tr>
+<tr class="link-row">
+  <td class="prop-name"><span class="ti safe"></span><a href="#Category">goCategory</a></td>
+  <td><span class="badge link">link</span></td>
+  <td class="param-desc"></td>
+  <td>
+    <div class="extra-info">
+      <span class="badge href">href: app://self/category{?id}</span>
+    </div>
+  </td>
+</tr>
+
+</tbody>
+</table>
+</div>
+<div class="object-section" id="Category">
+<h3 class="object-name"><a href="schemas/category.json" class="schema-file-link" title="JSON Schema">📄</a>Category</h3>
+<table>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Description</th><th>Meta</th></tr>
+</thead>
+<tbody>
+<tr>
+  <td><span class="prop-name">id</span></td>
+  <td><span class="badge type-int">int</span></td>
+  <td class="param-desc">Primary key</td>
+  <td><div class="extra-info">
+      <span class="badge constraint">minimum: 1</span>
+    </div></td>
+</tr>
+<tr>
+  <td><span class="prop-name">slug</span></td>
+  <td><span class="badge type-string">string</span></td>
+  <td class="param-desc">URL-safe unique slug</td>
+  <td><div class="extra-info">
+      <span class="badge constraint">minLength: 2</span>
+      <span class="badge constraint">maxLength: 50</span>
+      <span class="badge constraint">pattern: ^[a-z0-9][a-z0-9-]*$</span>
+    </div></td>
+</tr>
+<tr>
+  <td><span class="prop-name">name</span></td>
+  <td><span class="badge type-string">string</span></td>
+  <td class="param-desc">Display name</td>
+  <td><div class="extra-info">
+      <span class="badge constraint">minLength: 2</span>
+      <span class="badge constraint">maxLength: 50</span>
+    </div></td>
+</tr>
+<tr>
+  <td><span class="prop-name">description</span></td>
+  <td><span class="badge type-stringnull">string|null</span></td>
+  <td class="param-desc">Optional description</td>
+  <td><div class="extra-info">
+      <span class="badge constraint">minLength: 0</span>
+      <span class="badge constraint">maxLength: 100</span>
+    </div></td>
+</tr>
+<tr>
+  <td><span class="prop-name">parentId</span></td>
+  <td><span class="badge type-intnull">int|null</span></td>
+  <td class="param-desc">Parent category id; null for top-level</td>
+  <td><div class="extra-info">
+      <span class="badge constraint">minimum: 1</span>
+    </div></td>
+</tr>
+<tr class="link-row">
+  <td class="prop-name"><span class="ti safe"></span><a href="#CategoryList">goCategoryList</a></td>
+  <td><span class="badge link">link</span></td>
+  <td class="param-desc"></td>
+  <td>
+    <div class="extra-info">
+      <span class="badge href">href: app://self/categories</span>
+    </div>
+  </td>
+</tr>
+<tr class="link-row">
+  <td class="prop-name"><span class="ti safe"></span><a href="#ArticleList">goArticleList</a></td>
+  <td><span class="badge link">link</span></td>
+  <td class="param-desc"></td>
+  <td>
+    <div class="extra-info">
+      <span class="badge href">href: app://self/articles{?categoryId}</span>
+    </div>
+  </td>
+</tr>
+
+</tbody>
+</table>
+</div>
+<div class="object-section" id="Media">
+<h3 class="object-name"><a href="schemas/media.json" class="schema-file-link" title="JSON Schema">📄</a>Media</h3>
+<table>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Description</th><th>Meta</th></tr>
+</thead>
+<tbody>
+<tr>
+  <td><span class="prop-name">id</span></td>
+  <td><span class="badge type-int">int</span></td>
+  <td class="param-desc">Primary key</td>
+  <td><div class="extra-info">
+      <span class="badge constraint">minimum: 1</span>
+    </div></td>
+</tr>
+<tr>
+  <td><span class="prop-name">filename</span></td>
+  <td><span class="badge type-string">string</span></td>
+  <td class="param-desc">Original filename</td>
+  <td><div class="extra-info">
+      <span class="badge constraint">minLength: 13</span>
+      <span class="badge constraint">maxLength: 50</span>
+    </div></td>
+</tr>
+<tr>
+  <td><span class="prop-name">mimeType</span></td>
+  <td><span class="badge type-string">string</span></td>
+  <td class="param-desc">MIME type</td>
+  <td><div class="extra-info">
+      <span class="badge constraint">minLength: 9</span>
+      <span class="badge constraint">maxLength: 50</span>
+    </div></td>
+</tr>
+<tr>
+  <td><span class="prop-name">url</span></td>
+  <td><span class="badge type-string">string</span></td>
+  <td class="param-desc">Public URL path</td>
+  <td><div class="extra-info">
+      <span class="badge format">format: uri-reference</span>
+      <span class="badge constraint">minLength: 20</span>
+      <span class="badge constraint">maxLength: 50</span>
+    </div></td>
+</tr>
+<tr>
+  <td><span class="prop-name">alt</span></td>
+  <td><span class="badge type-stringnull">string|null</span></td>
+  <td class="param-desc">Accessibility alt text</td>
+  <td><div class="extra-info">
+      <span class="badge constraint">minLength: 0</span>
+      <span class="badge constraint">maxLength: 100</span>
+    </div></td>
+</tr>
+<tr>
+  <td><span class="prop-name">width</span></td>
+  <td><span class="badge type-int">int</span></td>
+  <td class="param-desc">Pixel width; 0 for SVG</td>
+  <td><div class="extra-info">
+      <span class="badge constraint">minimum: 0</span>
+    </div></td>
+</tr>
+<tr>
+  <td><span class="prop-name">height</span></td>
+  <td><span class="badge type-int">int</span></td>
+  <td class="param-desc">Pixel height; 0 for SVG</td>
+  <td><div class="extra-info">
+      <span class="badge constraint">minimum: 0</span>
+    </div></td>
+</tr>
+
+</tbody>
+</table>
+</div>
+<div class="object-section" id="Tag">
+<h3 class="object-name"><a href="schemas/tag.json" class="schema-file-link" title="JSON Schema">📄</a>Tag</h3>
+<table>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Description</th><th>Meta</th></tr>
+</thead>
+<tbody>
+<tr>
+  <td><span class="prop-name">id</span></td>
+  <td><span class="badge type-int">int</span></td>
+  <td class="param-desc">Primary key</td>
+  <td><div class="extra-info">
+      <span class="badge constraint">minimum: 1</span>
+    </div></td>
+</tr>
+<tr>
+  <td><span class="prop-name">slug</span></td>
+  <td><span class="badge type-string">string</span></td>
+  <td class="param-desc">URL-safe unique slug</td>
+  <td><div class="extra-info">
+      <span class="badge constraint">minLength: 2</span>
+      <span class="badge constraint">maxLength: 50</span>
+      <span class="badge constraint">pattern: ^[a-z0-9][a-z0-9-]*$</span>
+    </div></td>
+</tr>
+<tr>
+  <td><span class="prop-name">name</span></td>
+  <td><span class="badge type-string">string</span></td>
+  <td class="param-desc">Display name</td>
+  <td><div class="extra-info">
+      <span class="badge constraint">minLength: 3</span>
+      <span class="badge constraint">maxLength: 50</span>
+    </div></td>
+</tr>
+<tr class="link-row">
+  <td class="prop-name"><span class="ti safe"></span><a href="#TagList">goTagList</a></td>
+  <td><span class="badge link">link</span></td>
+  <td class="param-desc"></td>
+  <td>
+    <div class="extra-info">
+      <span class="badge href">href: app://self/tags</span>
+    </div>
+  </td>
+</tr>
+<tr class="link-row">
+  <td class="prop-name"><span class="ti safe"></span><a href="#ArticleList">goArticleList</a></td>
+  <td><span class="badge link">link</span></td>
+  <td class="param-desc"></td>
+  <td>
+    <div class="extra-info">
+      <span class="badge href">href: app://self/articles{?tagId}</span>
+    </div>
+  </td>
+</tr>
+
+</tbody>
+</table>
+</div>
+<div class="object-section" id="TagList">
+<h3 class="object-name"><a href="schemas/tagList.json" class="schema-file-link" title="JSON Schema">📄</a>TagList</h3>
+<table>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Description</th><th>Meta</th></tr>
+</thead>
+<tbody>
+<tr>
+  <td><span class="prop-name">items</span></td>
+  <td><span class="badge type-array">array</span></td>
+  <td class="param-desc"></td>
+  <td><div class="extra-info">
+      
+    </div></td>
+</tr>
+<tr>
+  <td><span class="prop-name">totalCount</span></td>
+  <td><span class="badge type-int">int</span></td>
+  <td class="param-desc"></td>
+  <td><div class="extra-info">
+      <span class="badge constraint">minimum: 0</span>
+    </div></td>
+</tr>
+<tr class="link-row">
+  <td class="prop-name"><span class="ti safe"></span><a href="#Tag">goTag</a></td>
+  <td><span class="badge link">link</span></td>
+  <td class="param-desc"></td>
+  <td>
+    <div class="extra-info">
+      <span class="badge href">href: app://self/tag{?id}</span>
+    </div>
+  </td>
+</tr>
+
+</tbody>
+</table>
+</div>
 
 
 

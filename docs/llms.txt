@@ -2,12 +2,13 @@
 
 API Document
 
-## Routes (8)
+## Routes (9)
 
 | HTTP Route | Methods | Resource |
 |------------|---------|----------|
 | /article | GET, POST, PUT, DELETE | App/Article |
 | /articles | GET | App/Articles |
+| /auth | GET, POST | App/Auth |
 | /author | GET, POST, PUT | App/Author |
 | /categories | GET | App/Categories |
 | /category | GET, POST, PUT, DELETE | App/Category |
@@ -15,16 +16,16 @@ API Document
 | /tag | GET, POST, DELETE | App/Tag |
 | /tags | GET | App/Tags |
 
-## ResourceObjects (8)
+## ResourceObjects (9)
 
 ### App/Article
 `/article`
 
 | Method | Parameters | Links |
 |--------|------------|-------|
-| GET | id* | href(goArticleList), href(goAuthor), href(goCategory) |
-| POST | slug*, title*, body*, authorId*, categoryId*, excerpt, status, publishedAt | - |
-| PUT | id*, title*, body*, status*, excerpt, publishedAt | - |
+| GET | id* | href(goArticleList), href(goAuthor), href(goCategory), src(goAuthor), src(goCategory), src(goTagList) |
+| POST | slug*, title*, body*, authorId*, categoryId*, excerpt, status, publishedAt, tagIds | - |
+| PUT | id*, title*, body*, status*, excerpt, publishedAt, tagIds | - |
 | DELETE | id* | - |
 
 ### App/Articles
@@ -33,6 +34,14 @@ API Document
 | Method | Parameters | Links |
 |--------|------------|-------|
 | GET | page, perPage, categoryId, tagId, status | href(goArticle) |
+
+### App/Auth
+`/auth`
+
+| Method | Parameters | Links |
+|--------|------------|-------|
+| GET | - | - |
+| POST | code*, state* | - |
 
 ### App/Author
 `/author`
@@ -83,19 +92,38 @@ API Document
 
 | Method | Parameters | Links |
 |--------|------------|-------|
-| GET | - | href(goTag) |
+| GET | articleId | href(goTag) |
 
-## Query Interfaces (5)
+## Responses (8)
+
+| Response | Schema | Properties |
+|----------|--------|------------|
+| Article | article.json | id, slug, title, body, excerpt, status, publishedAt, authorId, categoryId |
+| ArticleList | articleList.json | items, page, perPage, count, totalCount |
+| Author | author.json | id, name, email, bio |
+| CategoryList | categoryList.json | items, totalCount |
+| Category | category.json | id, slug, name, description, parentId |
+| Media | media.json | id, filename, mimeType, url, alt, width, height |
+| Tag | tag.json | id, slug, name |
+| TagList | tagList.json | items, totalCount |
+
+## Query Interfaces (11)
 
 | Interface | Methods |
 |-----------|---------|
+| ArticleCommandInterface | add(slug, title, body, excerpt, status, publishedAt, authorId, categoryId):void, update(id, title, body, excerpt, status, publishedAt):void, delete(id):void |
 | ArticleQueryInterface | getById(id):Article, getBySlug(slug):Article, list(categoryId, tagId, status, limit, offset):array |
+| ArticleTagCommandInterface | clear(articleId):void, link(articleId, tagId):void |
+| AuthorCommandInterface | add(name, email, bio):void, update(id, name, email, bio):void |
 | AuthorQueryInterface | getById(id):Author, getByEmail(email):Author |
+| CategoryCommandInterface | add(slug, name, description, parentId):void, update(id, name, description, parentId):void, delete(id):void |
 | CategoryQueryInterface | getById(id):Category, getBySlug(slug):Category, list():array |
+| MediaCommandInterface | add(filename, mimeType, url, alt, width, height):void, delete(id):void |
 | MediaQueryInterface | getById(id):Media, getByFilename(filename):Media |
+| TagCommandInterface | add(slug, name):void, delete(id):void |
 | TagQueryInterface | getById(id):Tag, getBySlug(slug):Tag, list():array, listByArticle(articleId):array |
 
-## SQL (26)
+## SQL (28)
 
 | File | Query |
 |------|-------|
@@ -124,6 +152,8 @@ API Document
     a.body,
     a.excerpt,
     a.st...` |
+| article_tag_clear.sql | `DELETE FROM article_tags WHERE article_id = :articleId` |
+| article_tag_link.sql | `INSERT INTO article_tags (article_id, tag_id) VALUES (:articleId, :tagId)` |
 | article_update.sql | `UPDATE articles
 SET title = :title,
     body = :body,

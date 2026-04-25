@@ -1,0 +1,21 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://example.com/bear-cms/categoryList",
+    "title": "CategoryList",
+    "type": "object",
+    "required": [
+        "items"
+    ],
+    "properties": {
+        "items": {
+            "type": "array",
+            "items": {
+                "$ref": "category.json"
+            }
+        },
+        "totalCount": {
+            "type": "integer",
+            "minimum": 0
+        }
+    }
+}

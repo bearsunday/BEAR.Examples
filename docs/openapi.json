@@ -10,7 +10,14 @@
             "get": {
                 "responses": {
                     "200": {
-                        "description": "Successful response"
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Article"
+                                }
+                            }
+                        }
                     }
                 }
             },
@@ -40,6 +47,33 @@
             "get": {
                 "responses": {
                     "200": {
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ArticleList"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/auth": {
+            "get": {
+                "summary": "OAuth login resource.",
+                "description": "GET  app://self/auth        \u2192 returns the authorization URL the client should redirect to\nPOST app://self/auth        \u2192 exchanges {code, state} for an AuthenticatedUser\n\nThe bound AuthInterface decides the backend (Google in production,\nFakeAuthProvider in test / fake-hal-api-app).",
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                }
+            },
+            "post": {
+                "summary": "OAuth login resource.",
+                "description": "GET  app://self/auth        \u2192 returns the authorization URL the client should redirect to\nPOST app://self/auth        \u2192 exchanges {code, state} for an AuthenticatedUser\n\nThe bound AuthInterface decides the backend (Google in production,\nFakeAuthProvider in test / fake-hal-api-app).",
+                "responses": {
+                    "200": {
                         "description": "Successful response"
                     }
                 }
@@ -49,7 +83,14 @@
             "get": {
                 "responses": {
                     "200": {
-                        "description": "Successful response"
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Author"
+                                }
+                            }
+                        }
                     }
                 }
             },
@@ -72,7 +113,14 @@
             "get": {
                 "responses": {
                     "200": {
-                        "description": "Successful response"
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CategoryList"
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -81,7 +129,14 @@
             "get": {
                 "responses": {
                     "200": {
-                        "description": "Successful response"
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Category"
+                                }
+                            }
+                        }
                     }
                 }
             },
@@ -111,7 +166,14 @@
             "get": {
                 "responses": {
                     "200": {
-                        "description": "Successful response"
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Media"
+                                }
+                            }
+                        }
                     }
                 }
             },
@@ -134,7 +196,14 @@
             "get": {
                 "responses": {
                     "200": {
-                        "description": "Successful response"
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Tag"
+                                }
+                            }
+                        }
                     }
                 }
             },
@@ -157,13 +226,384 @@
             "get": {
                 "responses": {
                     "200": {
-                        "description": "Successful response"
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TagList"
+                                }
+                            }
+                        }
                     }
                 }
             }
         }
     },
     "components": {
-        "schemas": []
+        "schemas": {
+            "Article": {
+                "title": "Article",
+                "description": "ALPS Article state. Single article with embedded Author, Category and Tags.",
+                "type": "object",
+                "required": [
+                    "id",
+                    "slug",
+                    "title",
+                    "body",
+                    "status",
+                    "authorId",
+                    "categoryId"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "description": "Primary key",
+                        "minimum": 1
+                    },
+                    "slug": {
+                        "type": "string",
+                        "description": "URL-safe unique slug",
+                        "minLength": 3,
+                        "maxLength": 50,
+                        "pattern": "^[a-z0-9][a-z0-9-]*$"
+                    },
+                    "title": {
+                        "type": "string",
+                        "description": "Article headline",
+                        "minLength": 10,
+                        "maxLength": 50
+                    },
+                    "body": {
+                        "type": "string",
+                        "description": "Full article body",
+                        "minLength": 5,
+                        "maxLength": 500
+                    },
+                    "excerpt": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "Short summary used in list views",
+                        "minLength": 5,
+                        "maxLength": 200
+                    },
+                    "status": {
+                        "type": "string",
+                        "description": "Lifecycle status",
+                        "enum": [
+                            "draft",
+                            "published"
+                        ]
+                    },
+                    "publishedAt": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "Publication timestamp; null for drafts",
+                        "format": "date-time"
+                    },
+                    "authorId": {
+                        "type": "integer",
+                        "description": "Foreign key to Author",
+                        "minimum": 1
+                    },
+                    "categoryId": {
+                        "type": "integer",
+                        "description": "Foreign key to Category",
+                        "minimum": 1
+                    }
+                }
+            },
+            "ArticleList": {
+                "title": "ArticleList",
+                "description": "Paginated list of article summaries",
+                "type": "object",
+                "required": [
+                    "items",
+                    "page",
+                    "perPage",
+                    "count"
+                ],
+                "properties": {
+                    "items": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "required": [
+                                "id",
+                                "slug",
+                                "title",
+                                "status"
+                            ],
+                            "properties": {
+                                "id": {
+                                    "type": "integer",
+                                    "minimum": 1
+                                },
+                                "slug": {
+                                    "type": "string"
+                                },
+                                "title": {
+                                    "type": "string"
+                                },
+                                "excerpt": {
+                                    "type": [
+                                        "string",
+                                        "null"
+                                    ]
+                                },
+                                "status": {
+                                    "type": "string",
+                                    "enum": [
+                                        "draft",
+                                        "published"
+                                    ]
+                                },
+                                "publishedAt": {
+                                    "type": [
+                                        "string",
+                                        "null"
+                                    ],
+                                    "format": "date-time"
+                                },
+                                "authorId": {
+                                    "type": "integer",
+                                    "minimum": 1
+                                },
+                                "categoryId": {
+                                    "type": "integer",
+                                    "minimum": 1
+                                }
+                            }
+                        }
+                    },
+                    "page": {
+                        "type": "integer",
+                        "minimum": 1
+                    },
+                    "perPage": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 100
+                    },
+                    "count": {
+                        "type": "integer",
+                        "minimum": 0
+                    },
+                    "totalCount": {
+                        "type": "integer",
+                        "minimum": 0
+                    }
+                }
+            },
+            "Author": {
+                "title": "Author",
+                "type": "object",
+                "required": [
+                    "id",
+                    "name",
+                    "email"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "description": "Primary key",
+                        "minimum": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "Full name",
+                        "minLength": 5,
+                        "maxLength": 50
+                    },
+                    "email": {
+                        "type": "string",
+                        "description": "Email address",
+                        "minLength": 20,
+                        "maxLength": 50,
+                        "format": "email"
+                    },
+                    "bio": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "Optional biography",
+                        "minLength": 0,
+                        "maxLength": 50
+                    }
+                }
+            },
+            "Category": {
+                "title": "Category",
+                "type": "object",
+                "required": [
+                    "id",
+                    "slug",
+                    "name"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "description": "Primary key",
+                        "minimum": 1
+                    },
+                    "slug": {
+                        "type": "string",
+                        "description": "URL-safe unique slug",
+                        "minLength": 2,
+                        "maxLength": 50,
+                        "pattern": "^[a-z0-9][a-z0-9-]*$"
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "Display name",
+                        "minLength": 2,
+                        "maxLength": 50
+                    },
+                    "description": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "Optional description",
+                        "minLength": 0,
+                        "maxLength": 100
+                    },
+                    "parentId": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ],
+                        "description": "Parent category id; null for top-level",
+                        "minimum": 1
+                    }
+                }
+            },
+            "CategoryList": {
+                "title": "CategoryList",
+                "type": "object",
+                "required": [
+                    "items"
+                ],
+                "properties": {
+                    "items": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Category"
+                        }
+                    },
+                    "totalCount": {
+                        "type": "integer",
+                        "minimum": 0
+                    }
+                }
+            },
+            "Media": {
+                "title": "Media",
+                "type": "object",
+                "required": [
+                    "id",
+                    "filename",
+                    "mimeType",
+                    "url"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "description": "Primary key",
+                        "minimum": 1
+                    },
+                    "filename": {
+                        "type": "string",
+                        "description": "Original filename",
+                        "minLength": 13,
+                        "maxLength": 50
+                    },
+                    "mimeType": {
+                        "type": "string",
+                        "description": "MIME type",
+                        "minLength": 9,
+                        "maxLength": 50
+                    },
+                    "url": {
+                        "type": "string",
+                        "description": "Public URL path",
+                        "minLength": 20,
+                        "maxLength": 50,
+                        "format": "uri-reference"
+                    },
+                    "alt": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "Accessibility alt text",
+                        "minLength": 0,
+                        "maxLength": 100
+                    },
+                    "width": {
+                        "type": "integer",
+                        "description": "Pixel width; 0 for SVG",
+                        "minimum": 0
+                    },
+                    "height": {
+                        "type": "integer",
+                        "description": "Pixel height; 0 for SVG",
+                        "minimum": 0
+                    }
+                }
+            },
+            "Tag": {
+                "title": "Tag",
+                "type": "object",
+                "required": [
+                    "id",
+                    "slug",
+                    "name"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "description": "Primary key",
+                        "minimum": 1
+                    },
+                    "slug": {
+                        "type": "string",
+                        "description": "URL-safe unique slug",
+                        "minLength": 2,
+                        "maxLength": 50,
+                        "pattern": "^[a-z0-9][a-z0-9-]*$"
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "Display name",
+                        "minLength": 3,
+                        "maxLength": 50
+                    }
+                }
+            },
+            "TagList": {
+                "title": "TagList",
+                "type": "object",
+                "required": [
+                    "items"
+                ],
+                "properties": {
+                    "items": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Tag"
+                        }
+                    },
+                    "totalCount": {
+                        "type": "integer",
+                        "minimum": 0
+                    }
+                }
+            }
+        }
     }
 }
