@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://example.com/bear-cms/category",
+  "$id": "category.json",
   "title": "Category",
   "description": "ALPS Category state",
   "type": "object",
@@ -44,40 +44,6 @@
       ],
       "description": "Parent category id, null for top-level",
       "minimum": 1
-    },
-    "_links": {
-      "type": "object",
-      "properties": {
-        "self": {
-          "$ref": "#/$defs/link"
-        },
-        "goCategoryList": {
-          "$ref": "#/$defs/link"
-        },
-        "goArticleList": {
-          "$ref": "#/$defs/link"
-        },
-        "doUpdateCategory": {
-          "$ref": "#/$defs/link"
-        },
-        "doDeleteCategory": {
-          "$ref": "#/$defs/link"
-        }
-      }
-    }
-  },
-  "$defs": {
-    "link": {
-      "type": "object",
-      "required": [
-        "href"
-      ],
-      "properties": {
-        "href": {
-          "type": "string",
-          "format": "uri-reference"
-        }
-      }
     }
   }
 }

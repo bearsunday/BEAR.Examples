@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace MyVendor\Cms\Resource\App;
 
+use BEAR\Resource\Annotation\JsonSchema;
 use BEAR\Resource\Annotation\Link;
 use BEAR\Resource\ResourceObject;
 use MyVendor\Cms\Query\TagQueryInterface;
 
 use function array_map;
+use function count;
 
 class Tags extends ResourceObject
 {
@@ -18,9 +20,13 @@ class Tags extends ResourceObject
     }
 
     #[Link(rel: 'goTag', href: 'app://self/tag{?id}')]
-    public function onGet(): static
+    #[JsonSchema('tagList.json')]
+    public function onGet(int|null $articleId = null): static
     {
-        $items = $this->tagQuery->list();
+        $items = $articleId === null
+            ? $this->tagQuery->list()
+            : $this->tagQuery->listByArticle($articleId);
+
         $this->body = [
             'items' => array_map(static fn ($t) => [
                 'id' => $t->id,

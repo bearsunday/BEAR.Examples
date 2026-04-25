@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "tagList.json",
+  "title": "TagList",
+  "description": "List of tags",
+  "type": "object",
+  "required": [
+    "items"
+  ],
+  "properties": {
+    "items": {
+      "type": "array",
+      "items": {
+        "$ref": "tag.json"
+      }
+    },
+    "totalCount": {
+      "type": "integer",
+      "minimum": 0
+    }
+  }
+}

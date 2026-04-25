@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "categoryList.json",
+  "title": "CategoryList",
+  "description": "List of categories",
+  "type": "object",
+  "required": [
+    "items"
+  ],
+  "properties": {
+    "items": {
+      "type": "array",
+      "items": {
+        "$ref": "category.json"
+      }
+    },
+    "totalCount": {
+      "type": "integer",
+      "minimum": 0
+    }
+  }
+}

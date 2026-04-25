@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace MyVendor\Cms\Resource\App;
 
 use BEAR\Resource\Code;
+use BEAR\Resource\Annotation\JsonSchema;
 use BEAR\Resource\ResourceObject;
 use MyVendor\Cms\Command\MediaCommandInterface;
 use MyVendor\Cms\Query\MediaQueryInterface;
@@ -16,6 +17,7 @@ class Media extends ResourceObject
         private readonly MediaCommandInterface $mediaCommand,
     ) {
     }
+    #[JsonSchema('media.json')]
 
     public function onGet(int $id): static
     {

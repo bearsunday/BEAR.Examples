@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace MyVendor\Cms\Resource\App;
 
+use BEAR\Resource\Annotation\JsonSchema;
 use BEAR\Resource\Annotation\Link;
 use BEAR\Resource\Code;
 use BEAR\Resource\ResourceObject;
@@ -20,6 +21,7 @@ class Category extends ResourceObject
 
     #[Link(rel: 'goCategoryList', href: 'app://self/categories')]
     #[Link(rel: 'goArticleList', href: 'app://self/articles{?categoryId}')]
+    #[JsonSchema('category.json')]
     public function onGet(int $id): static
     {
         $category = $this->categoryQuery->getById($id);

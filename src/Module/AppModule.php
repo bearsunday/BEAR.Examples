@@ -6,6 +6,7 @@ namespace MyVendor\Cms\Module;
 
 use BEAR\Package\AbstractAppModule;
 use BEAR\Package\PackageModule;
+use BEAR\Resource\Module\JsonSchemaModule;
 use Koriym\EnvJson\EnvJson;
 use Ray\AuraSqlModule\AuraSqlModule;
 use Ray\MediaQuery\DbQueryConfig;
@@ -37,5 +38,11 @@ final class AppModule extends AbstractAppModule
         ));
         $this->install(new MediaQueryBaseModule($queries));
         $this->install(new MediaQueryDbModule(new DbQueryConfig($this->appMeta->appDir . '/var/db/sql')));
+
+        // Validate response bodies (and optionally request params) against JSON Schemas.
+        $this->install(new JsonSchemaModule(
+            $this->appMeta->appDir . '/var/json_schema',
+            $this->appMeta->appDir . '/var/json_validate',
+        ));
     }
 }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace MyVendor\Cms\Resource\App;
 
+use BEAR\Resource\Annotation\JsonSchema;
 use BEAR\Resource\Annotation\Link;
 use BEAR\Resource\Code;
 use BEAR\Resource\ResourceObject;
@@ -19,6 +20,7 @@ class Author extends ResourceObject
     }
 
     #[Link(rel: 'goArticleList', href: 'app://self/articles')]
+    #[JsonSchema('author.json')]
     public function onGet(int $id): static
     {
         $author = $this->authorQuery->getById($id);

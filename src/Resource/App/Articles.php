@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace MyVendor\Cms\Resource\App;
 
+use BEAR\Resource\Annotation\JsonSchema;
 use BEAR\Resource\Annotation\Link;
 use BEAR\Resource\ResourceObject;
 use MyVendor\Cms\Query\ArticleQueryInterface;
@@ -18,6 +19,7 @@ class Articles extends ResourceObject
     }
 
     #[Link(rel: 'goArticle', href: 'app://self/article{?id}')]
+    #[JsonSchema('articleList.json')]
     public function onGet(
         int $page = 1,
         int $perPage = 20,

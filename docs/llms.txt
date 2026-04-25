@@ -1,0 +1,209 @@
+# MyVendor\Cms
+
+API Document
+
+## Routes (8)
+
+| HTTP Route | Methods | Resource |
+|------------|---------|----------|
+| /article | GET, POST, PUT, DELETE | App/Article |
+| /articles | GET | App/Articles |
+| /author | GET, POST, PUT | App/Author |
+| /categories | GET | App/Categories |
+| /category | GET, POST, PUT, DELETE | App/Category |
+| /media | GET, POST, DELETE | App/Media |
+| /tag | GET, POST, DELETE | App/Tag |
+| /tags | GET | App/Tags |
+
+## ResourceObjects (8)
+
+### App/Article
+`/article`
+
+| Method | Parameters | Links |
+|--------|------------|-------|
+| GET | id* | href(goArticleList), href(goAuthor), href(goCategory) |
+| POST | slug*, title*, body*, authorId*, categoryId*, excerpt, status, publishedAt | - |
+| PUT | id*, title*, body*, status*, excerpt, publishedAt | - |
+| DELETE | id* | - |
+
+### App/Articles
+`/articles`
+
+| Method | Parameters | Links |
+|--------|------------|-------|
+| GET | page, perPage, categoryId, tagId, status | href(goArticle) |
+
+### App/Author
+`/author`
+
+| Method | Parameters | Links |
+|--------|------------|-------|
+| GET | id* | href(goArticleList) |
+| POST | name*, email*, bio | - |
+| PUT | id*, name*, email*, bio | - |
+
+### App/Categories
+`/categories`
+
+| Method | Parameters | Links |
+|--------|------------|-------|
+| GET | - | href(goCategory) |
+
+### App/Category
+`/category`
+
+| Method | Parameters | Links |
+|--------|------------|-------|
+| GET | id* | href(goCategoryList), href(goArticleList) |
+| POST | slug*, name*, description, parentId | - |
+| PUT | id*, name*, description, parentId | - |
+| DELETE | id* | - |
+
+### App/Media
+`/media`
+
+| Method | Parameters | Links |
+|--------|------------|-------|
+| GET | id* | - |
+| POST | filename*, mimeType*, url*, alt, width, height | - |
+| DELETE | id* | - |
+
+### App/Tag
+`/tag`
+
+| Method | Parameters | Links |
+|--------|------------|-------|
+| GET | id* | href(goTagList), href(goArticleList) |
+| POST | slug*, name* | - |
+| DELETE | id* | - |
+
+### App/Tags
+`/tags`
+
+| Method | Parameters | Links |
+|--------|------------|-------|
+| GET | - | href(goTag) |
+
+## Query Interfaces (5)
+
+| Interface | Methods |
+|-----------|---------|
+| ArticleQueryInterface | getById(id):Article, getBySlug(slug):Article, list(categoryId, tagId, status, limit, offset):array |
+| AuthorQueryInterface | getById(id):Author, getByEmail(email):Author |
+| CategoryQueryInterface | getById(id):Category, getBySlug(slug):Category, list():array |
+| MediaQueryInterface | getById(id):Media, getByFilename(filename):Media |
+| TagQueryInterface | getById(id):Tag, getBySlug(slug):Tag, list():array, listByArticle(articleId):array |
+
+## SQL (26)
+
+| File | Query |
+|------|-------|
+| article_add.sql | `INSERT INTO articles (slug, title, body, excerpt, status, published_at, autho...` |
+| article_by_id.sql | `SELECT
+    id,
+    slug,
+    title,
+    body,
+    excerpt,
+    status,
+    pu...` |
+| article_by_slug.sql | `SELECT
+    id,
+    slug,
+    title,
+    body,
+    excerpt,
+    status,
+    pu...` |
+| article_delete.sql | `DELETE FROM articles WHERE id = :id` |
+| article_list.sql | `SELECT
+    a.id,
+    a.slug,
+    a.title,
+    a.body,
+    a.excerpt,
+    a.st...` |
+| article_update.sql | `UPDATE articles
+SET title = :title,
+    body = :body,
+    excerpt = :excerpt,...` |
+| author_add.sql | `INSERT INTO authors (name, email, bio) VALUES (:name, :email, :bio)` |
+| author_by_email.sql | `SELECT id, name, email, bio FROM authors WHERE email = :email LIMIT 1` |
+| author_by_id.sql | `SELECT
+    id,
+    name,
+    email,
+    bio
+FROM authors
+WHERE id = :id
+LIMIT 1` |
+| author_update.sql | `UPDATE authors SET name = :name, email = :email, bio = :bio WHERE id = :id` |
+| category_add.sql | `INSERT INTO categories (slug, name, description, parent_id)
+VALUES (:slug, :n...` |
+| category_by_id.sql | `SELECT
+    id,
+    slug,
+    name,
+    description,
+    parent_id
+FROM catego...` |
+| category_by_slug.sql | `SELECT id, slug, name, description, parent_id
+FROM categories
+WHERE slug = :s...` |
+| category_delete.sql | `DELETE FROM categories WHERE id = :id` |
+| category_list.sql | `SELECT
+    id,
+    slug,
+    name,
+    description,
+    parent_id
+FROM catego...` |
+| category_update.sql | `UPDATE categories
+SET name = :name,
+    description = :description,
+    paren...` |
+| media_add.sql | `INSERT INTO media (filename, mime_type, url, alt, width, height)
+VALUES (:fil...` |
+| media_by_filename.sql | `SELECT id, filename, mime_type, url, alt, width, height FROM media WHERE file...` |
+| media_by_id.sql | `SELECT
+    id,
+    filename,
+    mime_type,
+    url,
+    alt,
+    width,
+    ...` |
+| media_delete.sql | `DELETE FROM media WHERE id = :id` |
+| tag_add.sql | `INSERT INTO tags (slug, name) VALUES (:slug, :name)` |
+| tag_by_id.sql | `SELECT
+    id,
+    slug,
+    name
+FROM tags
+WHERE id = :id
+LIMIT 1` |
+| tag_by_slug.sql | `SELECT id, slug, name FROM tags WHERE slug = :slug LIMIT 1` |
+| tag_delete.sql | `DELETE FROM tags WHERE id = :id` |
+| tag_list.sql | `SELECT
+    id,
+    slug,
+    name
+FROM tags
+ORDER BY name` |
+| tag_list_by_article.sql | `SELECT
+    t.id,
+    t.slug,
+    t.name
+FROM tags t
+JOIN article_tags at ON a...` |
+
+## Entities (5)
+
+| Entity | Properties |
+|--------|------------|
+| Article | id, slug, title, body, status, authorId, categoryId |
+| Author | id, name, email, bio |
+| Category | id, slug, name |
+| Media | id, filename, mimeType, url, width, height |
+| Tag | id, slug, name |

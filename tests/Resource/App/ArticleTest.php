@@ -15,10 +15,17 @@ final class ArticleTest extends AbstractAppTestCase
         $this->assertSame(200, $ro->code);
         $this->assertSame(1, $ro->body['id']);
         $this->assertSame('getting-started-with-bear-sunday', $ro->body['slug']);
-        $this->assertArrayHasKey('_embedded', $ro->body);
-        $this->assertSame($ro->body['authorId'], $ro->body['_embedded']['author']->id);
-        $this->assertSame($ro->body['categoryId'], $ro->body['_embedded']['category']->id);
-        $this->assertIsArray($ro->body['_embedded']['tags']);
+
+        // The HAL renderer materialises #[Embed] requests under _embedded.
+        $rendered = json_decode((string) $ro, true);
+        $this->assertSame($ro->body['authorId'], $rendered['_embedded']['goAuthor']['id']);
+        $this->assertSame($ro->body['categoryId'], $rendered['_embedded']['goCategory']['id']);
+        $this->assertIsArray($rendered['_embedded']['goTagList']['items']);
+
+        // _links carry the URI templates expanded with request arguments.
+        $this->assertArrayHasKey('goArticleList', $rendered['_links']);
+        $this->assertArrayHasKey('goAuthor', $rendered['_links']);
+        $this->assertArrayHasKey('goCategory', $rendered['_links']);
     }
 
     public function testOnGetMissingReturns404(): void

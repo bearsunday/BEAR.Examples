@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://example.com/bear-cms/author",
+  "$id": "author.json",
   "title": "Author",
   "description": "ALPS Author state",
   "type": "object",
@@ -29,38 +29,13 @@
       "format": "email"
     },
     "bio": {
-      "type": "string",
+      "type": [
+        "string",
+        "null"
+      ],
       "description": "Optional biography; empty allowed",
       "minLength": 0,
       "maxLength": 50
-    },
-    "_links": {
-      "type": "object",
-      "properties": {
-        "self": {
-          "$ref": "#/$defs/link"
-        },
-        "goArticleList": {
-          "$ref": "#/$defs/link"
-        },
-        "doUpdateAuthor": {
-          "$ref": "#/$defs/link"
-        }
-      }
-    }
-  },
-  "$defs": {
-    "link": {
-      "type": "object",
-      "required": [
-        "href"
-      ],
-      "properties": {
-        "href": {
-          "type": "string",
-          "format": "uri-reference"
-        }
-      }
     }
   }
 }

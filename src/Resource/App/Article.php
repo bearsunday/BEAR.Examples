@@ -4,22 +4,18 @@ declare(strict_types=1);
 
 namespace MyVendor\Cms\Resource\App;
 
+use BEAR\Resource\Annotation\Embed;
+use BEAR\Resource\Annotation\JsonSchema;
 use BEAR\Resource\Annotation\Link;
 use BEAR\Resource\Code;
 use BEAR\Resource\ResourceObject;
 use MyVendor\Cms\Command\ArticleCommandInterface;
 use MyVendor\Cms\Query\ArticleQueryInterface;
-use MyVendor\Cms\Query\AuthorQueryInterface;
-use MyVendor\Cms\Query\CategoryQueryInterface;
-use MyVendor\Cms\Query\TagQueryInterface;
 
 class Article extends ResourceObject
 {
     public function __construct(
         private readonly ArticleQueryInterface $articleQuery,
-        private readonly AuthorQueryInterface $authorQuery,
-        private readonly CategoryQueryInterface $categoryQuery,
-        private readonly TagQueryInterface $tagQuery,
         private readonly ArticleCommandInterface $articleCommand,
     ) {
     }
@@ -27,6 +23,10 @@ class Article extends ResourceObject
     #[Link(rel: 'goArticleList', href: 'app://self/articles')]
     #[Link(rel: 'goAuthor', href: 'app://self/author{?id}')]
     #[Link(rel: 'goCategory', href: 'app://self/category{?id}')]
+    #[Embed(rel: 'goAuthor', src: 'app://self/author')]
+    #[Embed(rel: 'goCategory', src: 'app://self/category')]
+    #[Embed(rel: 'goTagList', src: 'app://self/tags')]
+    #[JsonSchema('article.json')]
     public function onGet(int $id): static
     {
         $article = $this->articleQuery->getById($id);
@@ -37,26 +37,24 @@ class Article extends ResourceObject
             return $this;
         }
 
-        $author = $this->authorQuery->getById($article->authorId);
-        $category = $this->categoryQuery->getById($article->categoryId);
-        $tags = $this->tagQuery->listByArticle($article->id);
+        // Inject runtime values into the embedded resource Requests.
+        // The Embed interceptor has already populated $this->body['goAuthor'/...]
+        // with Request objects; addQuery() supplements their query string before
+        // they materialize at render time.
+        $this->body['goAuthor']->addQuery(['id' => $article->authorId]);
+        $this->body['goCategory']->addQuery(['id' => $article->categoryId]);
+        $this->body['goTagList']->addQuery(['articleId' => $article->id]);
 
-        $this->body = [
-            'id' => $article->id,
-            'slug' => $article->slug,
-            'title' => $article->title,
-            'body' => $article->body,
-            'excerpt' => $article->excerpt,
-            'status' => $article->status,
-            'publishedAt' => $article->publishedAt,
-            'authorId' => $article->authorId,
-            'categoryId' => $article->categoryId,
-            '_embedded' => [
-                'author' => $author,
-                'category' => $category,
-                'tags' => $tags,
-            ],
-        ];
+        // Article's own data fields.
+        $this->body['id'] = $article->id;
+        $this->body['slug'] = $article->slug;
+        $this->body['title'] = $article->title;
+        $this->body['body'] = $article->body;
+        $this->body['excerpt'] = $article->excerpt;
+        $this->body['status'] = $article->status;
+        $this->body['publishedAt'] = $article->publishedAt;
+        $this->body['authorId'] = $article->authorId;
+        $this->body['categoryId'] = $article->categoryId;
 
         return $this;
     }

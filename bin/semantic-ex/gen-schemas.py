@@ -8,7 +8,7 @@ import math
 from pathlib import Path
 
 FAKE = Path("/Users/akihito/git/BEAR.Cms/var/fake")
-OUT  = Path("/Users/akihito/git/BEAR.Cms/var/schema")
+OUT  = Path("/Users/akihito/git/BEAR.Cms/var/json_schema")
 OUT.mkdir(parents=True, exist_ok=True)
 
 BASE_ID = "https://example.com/bear-cms"

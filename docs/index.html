@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>MyVendor.Cms API</title>
+<link rel="profile" href="https://bearsunday.github.io/BEAR.ApiDoc/alps/apidoc.xml">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/3.0.1/github-markdown.min.css">
+<link rel="stylesheet" href="https://bearsunday.github.io/BEAR.ApiDoc/apidoc.css">
+</head>
+<body>
+<div class="markdown-body">
+<h1>MyVendor.Cms API</h1>
+<p>API Document</p>
+
+<h2>Endpoints</h2>
+<table>
+<thead>
+<tr>
+  <th>Path</th>
+  <th>Method</th>
+  <th>Params</th>
+  <th>Type</th>
+  <th>Description</th>
+  <th>Meta</th>
+  <th>Response</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td rowspan="16" class="path-cell" id="path-article">/article</td>
+  <td rowspan="1" class="method-cell"><span class="ti safe"></span>GET</td>
+  <td><span class="param">id</span><span class="req">*</span></td>
+  <td><span class="badge type-int">int</span></td>
+  <td class="param-desc"></td>
+  <td><div class="extra-info">
+      
+    </div></td>
+  <td rowspan="1"></td>
+</tr>
+<tr>
+  
+  <td rowspan="8" class="method-cell"><span class="ti unsafe"></span>POST</td>
+  <td><span class="param">slug</span><span class="req">*</span></td>
+  <td><span class="badge type-string">string</span></td>
+  <td class="param-desc"></td>
+  <td><div class="extra-info">
+      
+    </div></td>
+  <td rowspan="8"></td>
+</tr>
+<tr>
+  
+  
+  <td><span class="param">title</span><span class="req">*</span></td>
+  <td><span class="badge type-string">string</span></td>
+  <td class="param-desc"></td>
+  <td><div class="extra-info">
+      
+    </div></td>
+  
+</tr>
+<tr>
+  
+  
+  <td><span class="param">body</span><span class="req">*</span></td>
+  <td><span class="badge type-string">string</span></td>
+  <td class="param-desc"></td>
+  <td><div class="extra-info">
+      
+    </div></td>
+  
+</tr>
+<tr>
+  
+  
+  <td><span class="param">authorId</span><span class="req">*</span></td>
+  <td><span class="badge type-int">int</span></td>
+  <td class="param-desc"></td>
+  <td><div class="extra-info">
+      
+    </div></td>
+  
+</tr>
+<tr>
+  
+  
+  <td><span class="param">categoryId</span><span class="req">*</span></td>
+  <td><span class="badge type-int">int</span></td>
+  <td class="param-desc"></td>
+  <td><div class="extra-info">
+      
+    </div></td>
+  
+</tr>
+<tr>
+  
+  
+  <td><span class="param">excerpt</span></td>
+  <td><span class="badge type-string">string</span></td>
+  <td class="param-desc"></td>
+  <td><div class="extra-info">
+      
+    </div></td>
+  
+</tr>
+<tr>
+  
+  
+  <td><span class="param">status</span></td>
+  <td><span class="badge type-string">string</span></td>
+  <td class="param-desc"></td>
+  <td><div class="extra-info">
+      
+    </div></td>
+  
+</tr>
+<tr>
+  
+  
+  <td><span class="param">publishedAt</span></td>
+  <td><span class="badge type-string">string</span></td>
+  <td class="param-desc"></td>
+  <td><div class="extra-info">
+      
+    </div></td>
+  
+</tr>
+<tr>
+  
+  <td rowspan="6" class="method-cell"><span class="ti idempotent"></span>PUT</td>
+  <td><span class="param">id</span><span class="req">*</span></td>
+  <td><span class="badge type-int">int</span></td>
+  <td class="param-desc"></td>
+  <td><div class="extra-info">
+      
+    </div></td>
+  <td rowspan="6"></td>
+</tr>
+<tr>
+  
+  
+  <td><span class="param">title</span><span class="req">*</span></td>
+  <td><span class="badge type-string">string</span></td>
+  <td class="param-desc"></td>
+  <td><div class="extra-info">
+      
+    </div></td>
+  
+</tr>
+<tr>
+  
+  
+  <td><span class="param">body</span><span class="req">*</span></td>
+  <td><span class="badge type-string">string</span></td>
+  <td class="param-desc"></td>
+  <td><div class="extra-info">
+      
+    </div></td>
+  
+</tr>
+<tr>
+  
+  
+  <td><span class="param">status</span><span class="req">*</span></td>
+  <td><span class="badge type-string">string</span></td>
+  <td class="param-desc"></td>
+  <td><div class="extra-info">
+      
+    </div></td>
+  
+</tr>
+<tr>
+  
+  
+  <td><span class="param">excerpt</span></td>
+  <td><span class="badge type-string">string</span></td>
+  <td class="param-desc"></td>
+  <td><div class="extra-info">
+      
+    </div></td>
+  
+</tr>
+<tr>
+  
+  
+  <td><span class="param">publishedAt</span></td>
+  <td><span class="badge type-string">string</span></td>
+  <td class="param-desc"></td>
+  <td><div class="extra-info">
+      
+    </div></td>
+  
+</tr>
+<tr>
+  
+  <td rowspan="1" class="method-cell"><span class="ti idempotent"></span>DELETE</td>
+  <td><span class="param">id</span><span class="req">*</span></td>
+  <td><span class="badge type-int">int</span></td>
+  <td class="param-desc"></td>
+  <td><div class="extra-info">
+      
+    </div></td>
+  <td rowspan="1"></td>
+</tr>
+<tr>
+  <td rowspan="5" class="path-cell" id="path-articles">/articles</td>
+  <td rowspan="5" class="method-cell"><span class="ti safe"></span>GET</td>
+  <td><span class="param">page</span></td>
+  <td><span class="badge type-int">int</span></td>
+  <td class="param-desc"></td>
+  <td><div class="extra-info">
+      
+    </div></td>
+  <td rowspan="5"></td>
+</tr>
+<tr>
+  
+  
+  <td><span class="param">perPage</span></td>
+  <td><span class="badge type-int">int</span></td>
+  <td class="param-desc"></td>
+  <td><div class="extra-info">
+      
+    </div></td>
+  
+</tr>
+<tr>
+  
+  
+  <td><span class="param">categoryId</span></td>
+  <td><span class="badge type-int">int</span></td>
+  <td class="param-desc"></td>
+  <td><div class="extra-info">
+      
+    </div></td>
+  
+</tr>
+<tr>
+  
+  
+  <td><span class="param">tagId</span></td>
+  <td><span class="badge type-int">int</span></td>
+  <td class="param-desc"></td>
+  <td><div class="extra-info">
+      
+    </div></td>
+  
+</tr>
+<tr>
+  
+  
+  <td><span class="param">status</span></td>
+  <td><span class="badge type-string">string</span></td>
+  <td class="param-desc"></td>
+  <td><div class="extra-info">
+      
+    </div></td>
+  
+</tr>
+<tr>
+  <td rowspan="8" class="path-cell" id="path-author">/author</td>
+  <td rowspan="1" class="method-cell"><span class="ti safe"></span>GET</td>
+  <td><span class="param">id</span><span class="req">*</span></td>
+  <td><span class="badge type-int">int</span></td>
+  <td class="param-desc"></td>
+  <td><div class="extra-info">
+      
+    </div></td>
+  <td rowspan="1"></td>
+</tr>
+<tr>
+  
+  <td rowspan="3" class="method-cell"><span class="ti unsafe"></span>POST</td>
+  <td><span class="param">name</span><span class="req">*</span></td>
+  <td><span class="badge type-string">string</span></td>
+  <td class="param-desc"></td>
+  <td><div class="extra-info">
+      
+    </div></td>
+  <td rowspan="3"></td>
+</tr>
+<tr>
+  
+  
+  <td><span class="param">email</span><span class="req">*</span></td>
+  <td><span class="badge type-string">string</span></td>
+  <td class="param-desc"></td>
+  <td><div class="extra-info">
+      
+    </div></td>
+  
+</tr>
+<tr>
+  
+  
+  <td><span class="param">bio</span></td>
+  <td><span class="badge type-string">string</span></td>
+  <td class="param-desc"></td>
+  <td><div class="extra-info">
+      
+    </div></td>
+  
+</tr>
+<tr>
+  
+  <td rowspan="4" class="method-cell"><span class="ti idempotent"></span>PUT</td>
+  <td><span class="param">id</span><span class="req">*</span></td>
+  <td><span class="badge type-int">int</span></td>
+  <td class="param-desc"></td>
+  <td><div class="extra-info">
+      
+    </div></td>
+  <td rowspan="4"></td>
+</tr>
+<tr>
+  
+  
+  <td><span class="param">name</span><span class="req">*</span></td>
+  <td><span class="badge type-string">string</span></td>
+  <td class="param-desc"></td>
+  <td><div class="extra-info">
+      
+    </div></td>
+  
+</tr>
+<tr>
+  
+  
+  <td><span class="param">email</span><span class="req">*</span></td>
+  <td><span class="badge type-string">string</span></td>
+  <td class="param-desc"></td>
+  <td><div class="extra-info">
+      
+    </div></td>
+  
+</tr>
+<tr>
+  
+  
+  <td><span class="param">bio</span></td>
+  <td><span class="badge type-string">string</span></td>
+  <td class="param-desc"></td>
+  <td><div class="extra-info">
+      
+    </div></td>
+  
+</tr>
+<tr>
+  <td rowspan="1" class="path-cell" id="path-categories">/categories</td>
+  <td class="method-cell"><span class="ti safe"></span>GET</td>
+  <td></td>
+  <td></td>
+  <td></td>
+  <td></td>
+</tr>
+<tr>
+  <td rowspan="10" class="path-cell" id="path-category">/category</td>
+  <td rowspan="1" class="method-cell"><span class="ti safe"></span>GET</td>
+  <td><span class="param">id</span><span class="req">*</span></td>
+  <td><span class="badge type-int">int</span></td>
+  <td class="param-desc"></td>
+  <td><div class="extra-info">
+      
+    </div></td>
+  <td rowspan="1"></td>
+</tr>
+<tr>
+  
+  <td rowspan="4" class="method-cell"><span class="ti unsafe"></span>POST</td>
+  <td><span class="param">slug</span><span class="req">*</span></td>
+  <td><span class="badge type-string">string</span></td>
+  <td class="param-desc"></td>
+  <td><div class="extra-info">
+      
+    </div></td>
+  <td rowspan="4"></td>
+</tr>
+<tr>
+  
+  
+  <td><span class="param">name</span><span class="req">*</span></td>
+  <td><span class="badge type-string">string</span></td>
+  <td class="param-desc"></td>
+  <td><div class="extra-info">
+      
+    </div></td>
+  
+</tr>
+<tr>
+  
+  
+  <td><span class="param">description</span></td>
+  <td><span class="badge type-string">string</span></td>
+  <td class="param-desc"></td>
+  <td><div class="extra-info">
+      
+    </div></td>
+  
+</tr>
+<tr>
+  
+  
+  <td><span class="param">parentId</span></td>
+  <td><span class="badge type-int">int</span></td>
+  <td class="param-desc"></td>
+  <td><div class="extra-info">
+      
+    </div></td>
+  
+</tr>
+<tr>
+  
+  <td rowspan="4" class="method-cell"><span class="ti idempotent"></span>PUT</td>
+  <td><span class="param">id</span><span class="req">*</span></td>
+  <td><span class="badge type-int">int</span></td>
+  <td class="param-desc"></td>
+  <td><div class="extra-info">
+      
+    </div></td>
+  <td rowspan="4"></td>
+</tr>
+<tr>
+  
+  
+  <td><span class="param">name</span><span class="req">*</span></td>
+  <td><span class="badge type-string">string</span></td>
+  <td class="param-desc"></td>
+  <td><div class="extra-info">
+      
+    </div></td>
+  
+</tr>
+<tr>
+  
+  
+  <td><span class="param">description</span></td>
+  <td><span class="badge type-string">string</span></td>
+  <td class="param-desc"></td>
+  <td><div class="extra-info">
+      
+    </div></td>
+  
+</tr>
+<tr>
+  
+  
+  <td><span class="param">parentId</span></td>
+  <td><span class="badge type-int">int</span></td>
+  <td class="param-desc"></td>
+  <td><div class="extra-info">
+      
+    </div></td>
+  
+</tr>
+<tr>
+  
+  <td rowspan="1" class="method-cell"><span class="ti idempotent"></span>DELETE</td>
+  <td><span class="param">id</span><span class="req">*</span></td>
+  <td><span class="badge type-int">int</span></td>
+  <td class="param-desc"></td>
+  <td><div class="extra-info">
+      
+    </div></td>
+  <td rowspan="1"></td>
+</tr>
+<tr>
+  <td rowspan="8" class="path-cell" id="path-media">/media</td>
+  <td rowspan="1" class="method-cell"><span class="ti safe"></span>GET</td>
+  <td><span class="param">id</span><span class="req">*</span></td>
+  <td><span class="badge type-int">int</span></td>
+  <td class="param-desc"></td>
+  <td><div class="extra-info">
+      
+    </div></td>
+  <td rowspan="1"></td>
+</tr>
+<tr>
+  
+  <td rowspan="6" class="method-cell"><span class="ti unsafe"></span>POST</td>
+  <td><span class="param">filename</span><span class="req">*</span></td>
+  <td><span class="badge type-string">string</span></td>
+  <td class="param-desc"></td>
+  <td><div class="extra-info">
+      
+    </div></td>
+  <td rowspan="6"></td>
+</tr>
+<tr>
+  
+  
+  <td><span class="param">mimeType</span><span class="req">*</span></td>
+  <td><span class="badge type-string">string</span></td>
+  <td class="param-desc"></td>
+  <td><div class="extra-info">
+      
+    </div></td>
+  
+</tr>
+<tr>
+  
+  
+  <td><span class="param">url</span><span class="req">*</span></td>
+  <td><span class="badge type-string">string</span></td>
+  <td class="param-desc"></td>
+  <td><div class="extra-info">
+      
+    </div></td>
+  
+</tr>
+<tr>
+  
+  
+  <td><span class="param">alt</span></td>
+  <td><span class="badge type-string">string</span></td>
+  <td class="param-desc"></td>
+  <td><div class="extra-info">
+      
+    </div></td>
+  
+</tr>
+<tr>
+  
+  
+  <td><span class="param">width</span></td>
+  <td><span class="badge type-int">int</span></td>
+  <td class="param-desc"></td>
+  <td><div class="extra-info">
+      
+    </div></td>
+  
+</tr>
+<tr>
+  
+  
+  <td><span class="param">height</span></td>
+  <td><span class="badge type-int">int</span></td>
+  <td class="param-desc"></td>
+  <td><div class="extra-info">
+      
+    </div></td>
+  
+</tr>
+<tr>
+  
+  <td rowspan="1" class="method-cell"><span class="ti idempotent"></span>DELETE</td>
+  <td><span class="param">id</span><span class="req">*</span></td>
+  <td><span class="badge type-int">int</span></td>
+  <td class="param-desc"></td>
+  <td><div class="extra-info">
+      
+    </div></td>
+  <td rowspan="1"></td>
+</tr>
+<tr>
+  <td rowspan="4" class="path-cell" id="path-tag">/tag</td>
+  <td rowspan="1" class="method-cell"><span class="ti safe"></span>GET</td>
+  <td><span class="param">id</span><span class="req">*</span></td>
+  <td><span class="badge type-int">int</span></td>
+  <td class="param-desc"></td>
+  <td><div class="extra-info">
+      
+    </div></td>
+  <td rowspan="1"></td>
+</tr>
+<tr>
+  
+  <td rowspan="2" class="method-cell"><span class="ti unsafe"></span>POST</td>
+  <td><span class="param">slug</span><span class="req">*</span></td>
+  <td><span class="badge type-string">string</span></td>
+  <td class="param-desc"></td>
+  <td><div class="extra-info">
+      
+    </div></td>
+  <td rowspan="2"></td>
+</tr>
+<tr>
+  
+  
+  <td><span class="param">name</span><span class="req">*</span></td>
+  <td><span class="badge type-string">string</span></td>
+  <td class="param-desc"></td>
+  <td><div class="extra-info">
+      
+    </div></td>
+  
+</tr>
+<tr>
+  
+  <td rowspan="1" class="method-cell"><span class="ti idempotent"></span>DELETE</td>
+  <td><span class="param">id</span><span class="req">*</span></td>
+  <td><span class="badge type-int">int</span></td>
+  <td class="param-desc"></td>
+  <td><div class="extra-info">
+      
+    </div></td>
+  <td rowspan="1"></td>
+</tr>
+<tr>
+  <td rowspan="1" class="path-cell" id="path-tags">/tags</td>
+  <td class="method-cell"><span class="ti safe"></span>GET</td>
+  <td></td>
+  <td></td>
+  <td></td>
+  <td></td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+
+
+
+</div>
+</body>
+</html>

@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://example.com/bear-cms/media",
+  "$id": "media.json",
   "title": "Media",
   "description": "ALPS Media state",
   "type": "object",
@@ -53,31 +53,6 @@
       "type": "integer",
       "description": "Pixel height; 0 for SVG",
       "minimum": 0
-    },
-    "_links": {
-      "type": "object",
-      "properties": {
-        "self": {
-          "$ref": "#/$defs/link"
-        },
-        "doDeleteMedia": {
-          "$ref": "#/$defs/link"
-        }
-      }
-    }
-  },
-  "$defs": {
-    "link": {
-      "type": "object",
-      "required": [
-        "href"
-      ],
-      "properties": {
-        "href": {
-          "type": "string",
-          "format": "uri-reference"
-        }
-      }
     }
   }
 }
