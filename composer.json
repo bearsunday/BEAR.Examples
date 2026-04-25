@@ -1,8 +1,8 @@
 {
     "name": "my-vendor/cms",
     "type": "project",
-    "license": "proprietary",
-    "description": "",
+    "license": "MIT",
+    "description": "Reference CMS for BEAR.Sunday: ALPS-driven, BDR pattern, App-resource only.",
     "require": {
         "php": "^8.5.0",
         "bear/package": "^1.14",
