@@ -1,5 +1,6 @@
 # Fake data observations (semantic-ex Phase 2)
-Generated from /Users/akihito/git/BEAR.Cms/var/fake//*.json — 50 records per atomic entity.
+
+Generated from var/fake/*.json — 50 records per atomic entity.
 
 ## Article
 - `id` (int): min=1 max=50 nulls=0/50
@@ -16,8 +17,8 @@ Generated from /Users/akihito/git/BEAR.Cms/var/fake//*.json — 50 records per a
 - `id` (int): min=1 max=50 nulls=0/50
 - `slug` (str): min_len=2 max_len=16 typical=9 nulls=0/50
 - `name` (str): min_len=2 max_len=20 typical=9 nulls=0/50
-- `description` (str): min_len=0 max_len=61 typical=31 nulls=6/50
-- `parentId` (int): min=2 max=9 nulls=40/50
+- `description` (str): min_len=0 max_len=61 typical=31 nulls=7/50
+- `parentId` (int): min=1 max=10 nulls=40/50
 
 ## Tag
 - `id` (int): min=1 max=50 nulls=0/50
@@ -26,9 +27,9 @@ Generated from /Users/akihito/git/BEAR.Cms/var/fake//*.json — 50 records per a
 
 ## Author
 - `id` (int): min=1 max=50 nulls=0/50
-- `name` (str): min_len=4 max_len=15 typical=12 nulls=0/50
-- `email` (str): min_len=20 max_len=29 typical=26 nulls=0/50
-- `bio` (str): min_len=0 max_len=49 typical=35 nulls=0/50
+- `name` (str): min_len=5 max_len=18 typical=11 nulls=0/50
+- `email` (str): min_len=20 max_len=32 typical=25 nulls=0/50
+- `bio` (str): min_len=0 max_len=49 typical=36 nulls=0/50
 
 ## Media
 - `id` (int): min=1 max=50 nulls=0/50
@@ -38,3 +39,4 @@ Generated from /Users/akihito/git/BEAR.Cms/var/fake//*.json — 50 records per a
 - `alt` (str): min_len=0 max_len=52 typical=31 nulls=3/50
 - `width` (int): min=0 max=1920 nulls=0/50
 - `height` (int): min=0 max=1200 nulls=0/50
+

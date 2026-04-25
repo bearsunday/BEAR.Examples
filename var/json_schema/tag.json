@@ -1,32 +1,31 @@
 {
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "tag.json",
-  "title": "Tag",
-  "description": "ALPS Tag state",
-  "type": "object",
-  "required": [
-    "id",
-    "slug",
-    "name"
-  ],
-  "properties": {
-    "id": {
-      "type": "integer",
-      "description": "Primary key",
-      "minimum": 1
-    },
-    "slug": {
-      "type": "string",
-      "description": "URL-safe unique slug",
-      "minLength": 2,
-      "maxLength": 50,
-      "pattern": "^[a-z0-9][a-z0-9-]*$"
-    },
-    "name": {
-      "type": "string",
-      "description": "Display name",
-      "minLength": 3,
-      "maxLength": 50
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://example.com/bear-cms/tag",
+    "title": "Tag",
+    "type": "object",
+    "required": [
+        "id",
+        "slug",
+        "name"
+    ],
+    "properties": {
+        "id": {
+            "type": "integer",
+            "description": "Primary key",
+            "minimum": 1
+        },
+        "slug": {
+            "type": "string",
+            "description": "URL-safe unique slug",
+            "minLength": 2,
+            "maxLength": 50,
+            "pattern": "^[a-z0-9][a-z0-9-]*$"
+        },
+        "name": {
+            "type": "string",
+            "description": "Display name",
+            "minLength": 3,
+            "maxLength": 50
+        }
     }
-  }
 }
