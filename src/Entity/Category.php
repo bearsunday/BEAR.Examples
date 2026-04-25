@@ -14,4 +14,14 @@ final readonly class Category
         public int|null $parentId,
     ) {
     }
+
+    public function isTopLevel(): bool
+    {
+        return $this->parentId === null;
+    }
+
+    public function hasParent(): bool
+    {
+        return $this->parentId !== null;
+    }
 }

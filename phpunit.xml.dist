@@ -5,6 +5,9 @@
     <testsuite name="resource">
       <directory>tests/Resource</directory>
     </testsuite>
+    <testsuite name="entity">
+      <directory>tests/Entity</directory>
+    </testsuite>
     <testsuite name="hypermedia">
       <directory>tests/Hypermedia</directory>
     </testsuite>
