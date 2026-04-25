@@ -86,7 +86,7 @@ final class FakeSqlQuery implements SqlQueryInterface
 
     public function getRow(string $sqlId, array $values = [], FetchInterface|null $fetch = null): object|null
     {
-        if (preg_match('/_(add|update|delete)$/', $sqlId)) {
+        if (preg_match('/_(add|update|delete|clear|link)$/', $sqlId)) {
             // DbQueryInterceptor routes every #[DbQuery] method through getRow/getRowList
             // based on the return type. Writes (create_/update_/delete_) come through
             // here as well, so dispatch to the mutation handler and return null.
@@ -112,7 +112,7 @@ final class FakeSqlQuery implements SqlQueryInterface
 
     public function getRowList(string $sqlId, array $values = [], FetchInterface|null $fetch = null): array
     {
-        if (preg_match('/_(add|update|delete)$/', $sqlId)) {
+        if (preg_match('/_(add|update|delete|clear|link)$/', $sqlId)) {
             $this->mutate($sqlId, $values);
 
             return [];
@@ -238,6 +238,21 @@ final class FakeSqlQuery implements SqlQueryInterface
                 return;
             case 'media_delete':
                 $this->deleteRow('media', (int) $values['id']);
+
+                return;
+            case 'article_tag_clear':
+                $aid = (int) $values['articleId'];
+                $this->tables['articleTag'] = array_values(array_filter(
+                    $this->tables['articleTag'],
+                    static fn ($r) => (int) $r['articleId'] !== $aid,
+                ));
+
+                return;
+            case 'article_tag_link':
+                $this->tables['articleTag'][] = [
+                    'articleId' => (int) $values['articleId'],
+                    'tagId' => (int) $values['tagId'],
+                ];
 
                 return;
             default:

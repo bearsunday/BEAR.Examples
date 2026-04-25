@@ -92,4 +92,43 @@ final class ArticleTest extends AbstractAppTestCase
         $ro = $this->resource->delete('app://self/article', ['id' => 99999]);
         $this->assertSame(404, $ro->code);
     }
+
+    public function testCreateWithTagsLinksThemAndUpdateReplaces(): void
+    {
+        $slug = 'tagged-' . uniqid();
+        $post = $this->resource->post('app://self/article', [
+            'slug' => $slug,
+            'title' => 'Tagged',
+            'body' => 'B',
+            'authorId' => 1,
+            'categoryId' => 1,
+            'status' => 'published',
+            'tagIds' => [1, 2, 3],
+        ]);
+        $this->assertSame(201, $post->code);
+        $id = $post->body['id'];
+
+        $get = $this->resource->get('app://self/article', ['id' => $id]);
+        $rendered = json_decode((string) $get, true);
+        $tagsAfterCreate = array_column($rendered['_embedded']['goTagList']['items'], 'id');
+        sort($tagsAfterCreate);
+        $this->assertSame([1, 2, 3], $tagsAfterCreate);
+
+        $put = $this->resource->put('app://self/article', [
+            'id' => $id,
+            'title' => 'Tagged',
+            'body' => 'B',
+            'status' => 'published',
+            'tagIds' => [4, 5],
+        ]);
+        $this->assertSame(200, $put->code);
+
+        $getAgain = $this->resource->get('app://self/article', ['id' => $id]);
+        $renderedAgain = json_decode((string) $getAgain, true);
+        $tagsAfterUpdate = array_column($renderedAgain['_embedded']['goTagList']['items'], 'id');
+        sort($tagsAfterUpdate);
+        $this->assertSame([4, 5], $tagsAfterUpdate);
+
+        $this->resource->delete('app://self/article', ['id' => $id]);
+    }
 }

@@ -11,13 +11,28 @@ use BEAR\Resource\Code;
 use BEAR\Resource\ResourceObject;
 use MyVendor\Cms\Query\ArticleCommandInterface;
 use MyVendor\Cms\Query\ArticleQueryInterface;
+use MyVendor\Cms\Query\ArticleTagCommandInterface;
 
 class Article extends ResourceObject
 {
     public function __construct(
         private readonly ArticleQueryInterface $articleQuery,
         private readonly ArticleCommandInterface $articleCommand,
+        private readonly ArticleTagCommandInterface $articleTagCommand,
     ) {
+    }
+
+    /**
+     * Replace the article's tag links with the given tag id list.
+     *
+     * @param list<int> $tagIds
+     */
+    private function syncTags(int $articleId, array $tagIds): void
+    {
+        $this->articleTagCommand->clear($articleId);
+        foreach ($tagIds as $tagId) {
+            $this->articleTagCommand->link($articleId, $tagId);
+        }
     }
 
     #[Link(rel: 'goArticleList', href: 'app://self/articles')]
@@ -59,6 +74,9 @@ class Article extends ResourceObject
         return $this;
     }
 
+    /**
+     * @param list<int> $tagIds Optional list of tag ids to link to the new article.
+     */
     public function onPost(
         string $slug,
         string $title,
@@ -68,6 +86,7 @@ class Article extends ResourceObject
         string|null $excerpt = null,
         string $status = 'draft',
         string|null $publishedAt = null,
+        array $tagIds = [],
     ): static {
         $this->articleCommand->add(
             slug: $slug,
@@ -81,6 +100,10 @@ class Article extends ResourceObject
         );
 
         $created = $this->articleQuery->getBySlug($slug);
+        if ($created !== null && $tagIds !== []) {
+            $this->syncTags($created->id, $tagIds);
+        }
+
         $this->code = Code::CREATED;
         $this->headers['Location'] = $created !== null ? '/article?id=' . $created->id : '/article?slug=' . $slug;
         $this->body = [
@@ -91,6 +114,9 @@ class Article extends ResourceObject
         return $this;
     }
 
+    /**
+     * @param list<int>|null $tagIds When provided, replaces the tag set entirely.
+     */
     public function onPut(
         int $id,
         string $title,
@@ -98,6 +124,7 @@ class Article extends ResourceObject
         string $status,
         string|null $excerpt = null,
         string|null $publishedAt = null,
+        array|null $tagIds = null,
     ): static {
         if ($this->articleQuery->getById($id) === null) {
             $this->code = Code::NOT_FOUND;
@@ -114,6 +141,10 @@ class Article extends ResourceObject
             status: $status,
             publishedAt: $publishedAt,
         );
+
+        if ($tagIds !== null) {
+            $this->syncTags($id, $tagIds);
+        }
 
         $this->code = Code::OK;
         $this->body = ['id' => $id];
