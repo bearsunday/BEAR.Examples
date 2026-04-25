@@ -1,4 +1,4 @@
-{
+  {
   "project_name": "bear_cms",
   "dependencies": [
     "php@8.4",

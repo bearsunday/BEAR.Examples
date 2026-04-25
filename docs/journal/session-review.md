@@ -142,7 +142,7 @@ review-skill.md に従うなら、両方とも:
 | P0 | Bug 1 検証: 実 SQLite で `app://self/article?id=1` が 200 で返ることを確認 |
 | P0 | Bug 2 fix: ArticleFactory の bind 追加 (or ProdModule との衝突調査) |
 | P0 | Bug 2 検証: `bin/cli/article-show -i 1` が動くこと |
-| P1 | Step 6 真因再診断 (cache deferral の実態を確かめる) |
+| P1 | Step 6 真因再診断 (cache deferral の実態を確かめる) — **追記**: vendor 読み + xtrace で診断完了。`prod-app` context は `ProdQueryRepositoryModule` 経由で `LocalCacheProvider` を使い、`AdapterInterface@ResourceObjectPool` が **`FilesystemAdapter` (sys_get_temp_dir 配下、永続)** にバインドされる。NullAdapter は使われない。過去の壊れた cache 書き込みが `/private/var/folders/.../T/@/...` に残り、後続実行が stale donut をヒット → 空 body を返す → JsonSchema が失敗、という挙動。`RepositoryLogger` (`bind(RepositoryLoggerInterface)->to(RepositoryLogger)->in(SINGLETON)`) を request 前に保持して `(string) $logger` でダンプすると `try-donut-view` / `try-donut` / `no-donut-found` / `put-donut` の実イベントが見える (hal-api-app context で確認済み)。修正は cache 物理削除で OK; 「実 cache backend が必要」という deferred 時の言い訳は誤りだった。 |
 | P1 | Step 5.5 retry (`composer require bear/async -W` の挙動を見る) |
 | P2 | tests/Integration を SQLite 対応にして、CI で常時動かす (現在 MySQL 限定) |
 | P3 | Google OAuth: 最低限のオフライン token mock test を追加 (実 Google に届かなくても、provider の構築だけでも検証) |
