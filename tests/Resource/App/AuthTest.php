@@ -1,0 +1,26 @@
+<?php
+
+declare(strict_types=1);
+
+namespace MyVendor\Cms\Resource\App;
+
+use MyVendor\Cms\AbstractAppTestCase;
+
+final class AuthTest extends AbstractAppTestCase
+{
+    public function testGetReturnsAuthorizationUrl(): void
+    {
+        $ro = $this->resource->get('app://self/auth', []);
+        $this->assertSame(200, $ro->code);
+        $this->assertStringContainsString('://', (string) $ro->body['authorizationUrl']);
+    }
+
+    public function testPostExchangesCodeForUser(): void
+    {
+        $ro = $this->resource->post('app://self/auth', ['code' => 'fake-code', 'state' => 'fake-state']);
+        $this->assertSame(200, $ro->code);
+        $this->assertSame('fake-user-1', $ro->body['id']);
+        $this->assertSame('demo@example.com', $ro->body['email']);
+        $this->assertSame('Demo User', $ro->body['name']);
+    }
+}

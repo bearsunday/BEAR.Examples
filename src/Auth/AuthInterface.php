@@ -1,0 +1,14 @@
+<?php
+
+declare(strict_types=1);
+
+namespace MyVendor\Cms\Auth;
+
+interface AuthInterface
+{
+    /** Build the OAuth provider's authorisation URL (where to redirect the user). */
+    public function getAuthorizationUrl(): string;
+
+    /** Exchange the authorisation code for an authenticated user. */
+    public function authenticate(string $code, string $state): AuthenticatedUser;
+}

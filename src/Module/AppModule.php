@@ -8,6 +8,10 @@ use BEAR\Package\AbstractAppModule;
 use BEAR\Package\PackageModule;
 use BEAR\Resource\Module\JsonSchemaModule;
 use Koriym\EnvJson\EnvJson;
+use League\OAuth2\Client\Provider\Google;
+use MyVendor\Cms\Auth\AuthInterface;
+use MyVendor\Cms\Auth\GoogleAuthProvider;
+use MyVendor\Cms\Provider\GoogleProvider;
 use MyVendor\Cms\Service\CommonMarkRenderer;
 use MyVendor\Cms\Service\MarkdownRendererInterface;
 use Ray\AuraSqlModule\AuraSqlModule;
@@ -45,5 +49,9 @@ final class AppModule extends AbstractAppModule
 
         // Domain-layer services (e.g. injected into Entity via FetchInjectionFactory).
         $this->bind(MarkdownRendererInterface::class)->to(CommonMarkRenderer::class)->in(Scope::SINGLETON);
+
+        // Authentication: Google OAuth in production. FakeAuthProvider in test/fake.
+        $this->bind(Google::class)->toProvider(GoogleProvider::class)->in(Scope::SINGLETON);
+        $this->bind(AuthInterface::class)->to(GoogleAuthProvider::class)->in(Scope::SINGLETON);
     }
 }
