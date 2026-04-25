@@ -9,13 +9,13 @@ use Ray\MediaQuery\Annotation\DbQuery;
 
 interface CategoryQueryInterface
 {
-    #[DbQuery('get_category', type: 'row')]
-    public function get(int $id): Category|null;
+    #[DbQuery('category_by_id', type: 'row')]
+    public function getById(int $id): Category|null;
 
-    #[DbQuery('get_category_by_slug', type: 'row')]
+    #[DbQuery('category_by_slug', type: 'row')]
     public function getBySlug(string $slug): Category|null;
 
     /** @return list<Category> */
-    #[DbQuery('list_categories', type: 'row_list')]
+    #[DbQuery('category_list', type: 'row_list')]
     public function list(): array;
 }

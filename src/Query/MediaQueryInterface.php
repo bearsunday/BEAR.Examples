@@ -9,9 +9,9 @@ use Ray\MediaQuery\Annotation\DbQuery;
 
 interface MediaQueryInterface
 {
-    #[DbQuery('get_media', type: 'row')]
-    public function get(int $id): Media|null;
+    #[DbQuery('media_by_id', type: 'row')]
+    public function getById(int $id): Media|null;
 
-    #[DbQuery('get_media_by_filename', type: 'row')]
+    #[DbQuery('media_by_filename', type: 'row')]
     public function getByFilename(string $filename): Media|null;
 }

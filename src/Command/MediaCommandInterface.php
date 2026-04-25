@@ -8,8 +8,8 @@ use Ray\MediaQuery\Annotation\DbQuery;
 
 interface MediaCommandInterface
 {
-    #[DbQuery('create_media')]
-    public function create(
+    #[DbQuery('media_add')]
+    public function add(
         string $filename,
         string $mimeType,
         string $url,
@@ -18,6 +18,6 @@ interface MediaCommandInterface
         int $height,
     ): void;
 
-    #[DbQuery('delete_media')]
+    #[DbQuery('media_delete')]
     public function delete(int $id): void;
 }

@@ -8,9 +8,9 @@ use Ray\MediaQuery\Annotation\DbQuery;
 
 interface AuthorCommandInterface
 {
-    #[DbQuery('create_author')]
-    public function create(string $name, string $email, string $bio): void;
+    #[DbQuery('author_add')]
+    public function add(string $name, string $email, string $bio): void;
 
-    #[DbQuery('update_author')]
+    #[DbQuery('author_update')]
     public function update(int $id, string $name, string $email, string $bio): void;
 }

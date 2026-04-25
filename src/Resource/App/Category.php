@@ -22,7 +22,7 @@ class Category extends ResourceObject
     #[Link(rel: 'articles', href: 'app://self/articles{?categoryId}')]
     public function onGet(int $id): static
     {
-        $category = $this->categoryQuery->get($id);
+        $category = $this->categoryQuery->getById($id);
         if ($category === null) {
             $this->code = Code::NOT_FOUND;
             $this->body = ['message' => 'Category not found', 'id' => $id];
@@ -47,7 +47,7 @@ class Category extends ResourceObject
         string|null $description = null,
         int|null $parentId = null,
     ): static {
-        $this->categoryCommand->create(slug: $slug, name: $name, description: $description, parentId: $parentId);
+        $this->categoryCommand->add(slug: $slug, name: $name, description: $description, parentId: $parentId);
         $created = $this->categoryQuery->getBySlug($slug);
         $this->code = Code::CREATED;
         $this->headers['Location'] = $created !== null ? '/category?id=' . $created->id : '/category';
@@ -62,7 +62,7 @@ class Category extends ResourceObject
         string|null $description = null,
         int|null $parentId = null,
     ): static {
-        if ($this->categoryQuery->get($id) === null) {
+        if ($this->categoryQuery->getById($id) === null) {
             $this->code = Code::NOT_FOUND;
             $this->body = ['message' => 'Category not found', 'id' => $id];
 
@@ -78,7 +78,7 @@ class Category extends ResourceObject
 
     public function onDelete(int $id): static
     {
-        if ($this->categoryQuery->get($id) === null) {
+        if ($this->categoryQuery->getById($id) === null) {
             $this->code = Code::NOT_FOUND;
             $this->body = ['message' => 'Category not found', 'id' => $id];
 

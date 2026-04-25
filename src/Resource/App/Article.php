@@ -29,7 +29,7 @@ class Article extends ResourceObject
     #[Link(rel: 'category', href: 'app://self/category{?id}')]
     public function onGet(int $id): static
     {
-        $article = $this->articleQuery->get($id);
+        $article = $this->articleQuery->getById($id);
         if ($article === null) {
             $this->code = Code::NOT_FOUND;
             $this->body = ['message' => 'Article not found', 'id' => $id];
@@ -37,8 +37,8 @@ class Article extends ResourceObject
             return $this;
         }
 
-        $author = $this->authorQuery->get($article->authorId);
-        $category = $this->categoryQuery->get($article->categoryId);
+        $author = $this->authorQuery->getById($article->authorId);
+        $category = $this->categoryQuery->getById($article->categoryId);
         $tags = $this->tagQuery->listByArticle($article->id);
 
         $this->body = [
@@ -71,7 +71,7 @@ class Article extends ResourceObject
         string $status = 'draft',
         string|null $publishedAt = null,
     ): static {
-        $this->articleCommand->create(
+        $this->articleCommand->add(
             slug: $slug,
             title: $title,
             body: $body,
@@ -101,7 +101,7 @@ class Article extends ResourceObject
         string|null $excerpt = null,
         string|null $publishedAt = null,
     ): static {
-        if ($this->articleQuery->get($id) === null) {
+        if ($this->articleQuery->getById($id) === null) {
             $this->code = Code::NOT_FOUND;
             $this->body = ['message' => 'Article not found', 'id' => $id];
 
@@ -125,7 +125,7 @@ class Article extends ResourceObject
 
     public function onDelete(int $id): static
     {
-        if ($this->articleQuery->get($id) === null) {
+        if ($this->articleQuery->getById($id) === null) {
             $this->code = Code::NOT_FOUND;
             $this->body = ['message' => 'Article not found', 'id' => $id];
 

@@ -8,9 +8,9 @@ use Ray\MediaQuery\Annotation\DbQuery;
 
 interface TagCommandInterface
 {
-    #[DbQuery('create_tag')]
-    public function create(string $slug, string $name): void;
+    #[DbQuery('tag_add')]
+    public function add(string $slug, string $name): void;
 
-    #[DbQuery('delete_tag')]
+    #[DbQuery('tag_delete')]
     public function delete(int $id): void;
 }

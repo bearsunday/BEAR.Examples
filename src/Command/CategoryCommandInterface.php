@@ -8,15 +8,15 @@ use Ray\MediaQuery\Annotation\DbQuery;
 
 interface CategoryCommandInterface
 {
-    #[DbQuery('create_category')]
-    public function create(
+    #[DbQuery('category_add')]
+    public function add(
         string $slug,
         string $name,
         string|null $description,
         int|null $parentId,
     ): void;
 
-    #[DbQuery('update_category')]
+    #[DbQuery('category_update')]
     public function update(
         int $id,
         string $name,
@@ -24,6 +24,6 @@ interface CategoryCommandInterface
         int|null $parentId,
     ): void;
 
-    #[DbQuery('delete_category')]
+    #[DbQuery('category_delete')]
     public function delete(int $id): void;
 }

@@ -22,7 +22,7 @@ class Tag extends ResourceObject
     #[Link(rel: 'articles', href: 'app://self/articles{?tagId}')]
     public function onGet(int $id): static
     {
-        $tag = $this->tagQuery->get($id);
+        $tag = $this->tagQuery->getById($id);
         if ($tag === null) {
             $this->code = Code::NOT_FOUND;
             $this->body = ['message' => 'Tag not found', 'id' => $id];
@@ -41,7 +41,7 @@ class Tag extends ResourceObject
 
     public function onPost(string $slug, string $name): static
     {
-        $this->tagCommand->create(slug: $slug, name: $name);
+        $this->tagCommand->add(slug: $slug, name: $name);
         $created = $this->tagQuery->getBySlug($slug);
         $this->code = Code::CREATED;
         $this->headers['Location'] = $created !== null ? '/tag?id=' . $created->id : '/tag';
@@ -52,7 +52,7 @@ class Tag extends ResourceObject
 
     public function onDelete(int $id): static
     {
-        if ($this->tagQuery->get($id) === null) {
+        if ($this->tagQuery->getById($id) === null) {
             $this->code = Code::NOT_FOUND;
             $this->body = ['message' => 'Tag not found', 'id' => $id];
 

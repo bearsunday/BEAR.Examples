@@ -86,7 +86,7 @@ final class FakeSqlQuery implements SqlQueryInterface
 
     public function getRow(string $sqlId, array $values = [], FetchInterface|null $fetch = null): object|null
     {
-        if (! str_starts_with($sqlId, 'get_')) {
+        if (preg_match('/_(add|update|delete)$/', $sqlId)) {
             // DbQueryInterceptor routes every #[DbQuery] method through getRow/getRowList
             // based on the return type. Writes (create_/update_/delete_) come through
             // here as well, so dispatch to the mutation handler and return null.
@@ -96,33 +96,33 @@ final class FakeSqlQuery implements SqlQueryInterface
         }
 
         return match ($sqlId) {
-            'get_article' => $this->findArticleById((int) $values['id']),
-            'get_article_by_slug' => $this->findArticleBySlug((string) $values['slug']),
-            'get_category' => $this->findCategoryById((int) $values['id']),
-            'get_category_by_slug' => $this->findCategoryBySlug((string) $values['slug']),
-            'get_tag' => $this->findTagById((int) $values['id']),
-            'get_tag_by_slug' => $this->findTagBySlug((string) $values['slug']),
-            'get_author' => $this->findAuthorById((int) $values['id']),
-            'get_author_by_email' => $this->findAuthorByEmail((string) $values['email']),
-            'get_media' => $this->findMediaById((int) $values['id']),
-            'get_media_by_filename' => $this->findMediaByFilename((string) $values['filename']),
+            'article_by_id' => $this->findArticleById((int) $values['id']),
+            'article_by_slug' => $this->findArticleBySlug((string) $values['slug']),
+            'category_by_id' => $this->findCategoryById((int) $values['id']),
+            'category_by_slug' => $this->findCategoryBySlug((string) $values['slug']),
+            'tag_by_id' => $this->findTagById((int) $values['id']),
+            'tag_by_slug' => $this->findTagBySlug((string) $values['slug']),
+            'author_by_id' => $this->findAuthorById((int) $values['id']),
+            'author_by_email' => $this->findAuthorByEmail((string) $values['email']),
+            'media_by_id' => $this->findMediaById((int) $values['id']),
+            'media_by_filename' => $this->findMediaByFilename((string) $values['filename']),
             default => throw new LogicException("FakeSqlQuery: unknown row sqlId '{$sqlId}'"),
         };
     }
 
     public function getRowList(string $sqlId, array $values = [], FetchInterface|null $fetch = null): array
     {
-        if (! str_starts_with($sqlId, 'list_')) {
+        if (preg_match('/_(add|update|delete)$/', $sqlId)) {
             $this->mutate($sqlId, $values);
 
             return [];
         }
 
         return match ($sqlId) {
-            'list_articles' => $this->listArticles($values),
-            'list_categories' => array_map(fn ($r) => $this->toCategory($r), $this->tables['category']),
-            'list_tags' => array_map(fn ($r) => $this->toTag($r), $this->tables['tag']),
-            'list_tags_by_article' => $this->listTagsByArticle((int) $values['articleId']),
+            'article_list' => $this->listArticles($values),
+            'category_list' => array_map(fn ($r) => $this->toCategory($r), $this->tables['category']),
+            'tag_list' => array_map(fn ($r) => $this->toTag($r), $this->tables['tag']),
+            'tag_list_by_article' => $this->listTagsByArticle((int) $values['articleId']),
             default => throw new LogicException("FakeSqlQuery: unknown row_list sqlId '{$sqlId}'"),
         };
     }
@@ -139,7 +139,7 @@ final class FakeSqlQuery implements SqlQueryInterface
         $logIdx = count($this->execLog) - 1;
 
         switch ($sqlId) {
-            case 'create_article':
+            case 'article_add':
                 $id = $this->nextId['article']++;
                 $this->tables['article'][] = [
                     'id' => $id,
@@ -155,7 +155,7 @@ final class FakeSqlQuery implements SqlQueryInterface
                 $this->execLog[$logIdx]['insertedId'] = $id;
 
                 return;
-            case 'update_article':
+            case 'article_update':
                 $this->updateRow('article', (int) $values['id'], [
                     'title' => $values['title'],
                     'body' => $values['body'],
@@ -165,11 +165,11 @@ final class FakeSqlQuery implements SqlQueryInterface
                 ]);
 
                 return;
-            case 'delete_article':
+            case 'article_delete':
                 $this->deleteRow('article', (int) $values['id']);
 
                 return;
-            case 'create_category':
+            case 'category_add':
                 $id = $this->nextId['category']++;
                 $this->tables['category'][] = [
                     'id' => $id,
@@ -181,7 +181,7 @@ final class FakeSqlQuery implements SqlQueryInterface
                 $this->execLog[$logIdx]['insertedId'] = $id;
 
                 return;
-            case 'update_category':
+            case 'category_update':
                 $this->updateRow('category', (int) $values['id'], [
                     'name' => $values['name'],
                     'description' => $values['description'] ?? null,
@@ -189,21 +189,21 @@ final class FakeSqlQuery implements SqlQueryInterface
                 ]);
 
                 return;
-            case 'delete_category':
+            case 'category_delete':
                 $this->deleteRow('category', (int) $values['id']);
 
                 return;
-            case 'create_tag':
+            case 'tag_add':
                 $id = $this->nextId['tag']++;
                 $this->tables['tag'][] = ['id' => $id, 'slug' => $values['slug'], 'name' => $values['name']];
                 $this->execLog[$logIdx]['insertedId'] = $id;
 
                 return;
-            case 'delete_tag':
+            case 'tag_delete':
                 $this->deleteRow('tag', (int) $values['id']);
 
                 return;
-            case 'create_author':
+            case 'author_add':
                 $id = $this->nextId['author']++;
                 $this->tables['author'][] = [
                     'id' => $id,
@@ -214,7 +214,7 @@ final class FakeSqlQuery implements SqlQueryInterface
                 $this->execLog[$logIdx]['insertedId'] = $id;
 
                 return;
-            case 'update_author':
+            case 'author_update':
                 $this->updateRow('author', (int) $values['id'], [
                     'name' => $values['name'],
                     'email' => $values['email'],
@@ -222,7 +222,7 @@ final class FakeSqlQuery implements SqlQueryInterface
                 ]);
 
                 return;
-            case 'create_media':
+            case 'media_add':
                 $id = $this->nextId['media']++;
                 $this->tables['media'][] = [
                     'id' => $id,
@@ -236,7 +236,7 @@ final class FakeSqlQuery implements SqlQueryInterface
                 $this->execLog[$logIdx]['insertedId'] = $id;
 
                 return;
-            case 'delete_media':
+            case 'media_delete':
                 $this->deleteRow('media', (int) $values['id']);
 
                 return;
@@ -248,7 +248,7 @@ final class FakeSqlQuery implements SqlQueryInterface
     public function getCount(string $sqlId, array $values): int
     {
         return match ($sqlId) {
-            'count_articles' => count($this->filteredArticles($values)),
+            'article_count' => count($this->filteredArticles($values)),
             default => throw new LogicException("FakeSqlQuery: unknown count sqlId '{$sqlId}'"),
         };
     }

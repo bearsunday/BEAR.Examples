@@ -9,17 +9,17 @@ use Ray\MediaQuery\Annotation\DbQuery;
 
 interface TagQueryInterface
 {
-    #[DbQuery('get_tag', type: 'row')]
-    public function get(int $id): Tag|null;
+    #[DbQuery('tag_by_id', type: 'row')]
+    public function getById(int $id): Tag|null;
 
-    #[DbQuery('get_tag_by_slug', type: 'row')]
+    #[DbQuery('tag_by_slug', type: 'row')]
     public function getBySlug(string $slug): Tag|null;
 
     /** @return list<Tag> */
-    #[DbQuery('list_tags', type: 'row_list')]
+    #[DbQuery('tag_list', type: 'row_list')]
     public function list(): array;
 
     /** @return list<Tag> */
-    #[DbQuery('list_tags_by_article', type: 'row_list')]
+    #[DbQuery('tag_list_by_article', type: 'row_list')]
     public function listByArticle(int $articleId): array;
 }

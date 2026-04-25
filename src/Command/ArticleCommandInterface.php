@@ -8,8 +8,8 @@ use Ray\MediaQuery\Annotation\DbQuery;
 
 interface ArticleCommandInterface
 {
-    #[DbQuery('create_article')]
-    public function create(
+    #[DbQuery('article_add')]
+    public function add(
         string $slug,
         string $title,
         string $body,
@@ -20,7 +20,7 @@ interface ArticleCommandInterface
         int $categoryId,
     ): void;
 
-    #[DbQuery('update_article')]
+    #[DbQuery('article_update')]
     public function update(
         int $id,
         string $title,
@@ -30,6 +30,6 @@ interface ArticleCommandInterface
         string|null $publishedAt,
     ): void;
 
-    #[DbQuery('delete_article')]
+    #[DbQuery('article_delete')]
     public function delete(int $id): void;
 }

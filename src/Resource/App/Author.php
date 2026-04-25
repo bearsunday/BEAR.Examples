@@ -21,7 +21,7 @@ class Author extends ResourceObject
     #[Link(rel: 'articles', href: 'app://self/articles')]
     public function onGet(int $id): static
     {
-        $author = $this->authorQuery->get($id);
+        $author = $this->authorQuery->getById($id);
         if ($author === null) {
             $this->code = Code::NOT_FOUND;
             $this->body = ['message' => 'Author not found', 'id' => $id];
@@ -41,7 +41,7 @@ class Author extends ResourceObject
 
     public function onPost(string $name, string $email, string $bio = ''): static
     {
-        $this->authorCommand->create(name: $name, email: $email, bio: $bio);
+        $this->authorCommand->add(name: $name, email: $email, bio: $bio);
         $created = $this->authorQuery->getByEmail($email);
         $this->code = Code::CREATED;
         $this->headers['Location'] = $created !== null ? '/author?id=' . $created->id : '/author';
@@ -52,7 +52,7 @@ class Author extends ResourceObject
 
     public function onPut(int $id, string $name, string $email, string $bio = ''): static
     {
-        if ($this->authorQuery->get($id) === null) {
+        if ($this->authorQuery->getById($id) === null) {
             $this->code = Code::NOT_FOUND;
             $this->body = ['message' => 'Author not found', 'id' => $id];
 

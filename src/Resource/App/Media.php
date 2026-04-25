@@ -19,7 +19,7 @@ class Media extends ResourceObject
 
     public function onGet(int $id): static
     {
-        $media = $this->mediaQuery->get($id);
+        $media = $this->mediaQuery->getById($id);
         if ($media === null) {
             $this->code = Code::NOT_FOUND;
             $this->body = ['message' => 'Media not found', 'id' => $id];
@@ -48,7 +48,7 @@ class Media extends ResourceObject
         int $width = 0,
         int $height = 0,
     ): static {
-        $this->mediaCommand->create(
+        $this->mediaCommand->add(
             filename: $filename,
             mimeType: $mimeType,
             url: $url,
@@ -66,7 +66,7 @@ class Media extends ResourceObject
 
     public function onDelete(int $id): static
     {
-        if ($this->mediaQuery->get($id) === null) {
+        if ($this->mediaQuery->getById($id) === null) {
             $this->code = Code::NOT_FOUND;
             $this->body = ['message' => 'Media not found', 'id' => $id];
 
