@@ -9,12 +9,8 @@ use BEAR\Package\PackageModule;
 use BEAR\Resource\Module\JsonSchemaModule;
 use Koriym\EnvJson\EnvJson;
 use Ray\AuraSqlModule\AuraSqlModule;
-use Ray\MediaQuery\DbQueryConfig;
-use Ray\MediaQuery\MediaQueryBaseModule;
-use Ray\MediaQuery\MediaQueryDbModule;
-use Ray\MediaQuery\Queries;
+use Ray\MediaQuery\MediaQuerySqlModule;
 
-use function array_merge;
 use function dirname;
 use function getenv;
 
@@ -31,13 +27,12 @@ final class AppModule extends AbstractAppModule
         $password = (string) getenv('DB_PASSWORD');
         $this->install(new AuraSqlModule($dsn, $user, $password));
 
-        // Scan both Query (Read) and Command (Write) interface directories.
-        $queries = Queries::fromClasses(array_merge(
-            Queries::fromDir($this->appMeta->appDir . '/src/Query')->classes,
-            Queries::fromDir($this->appMeta->appDir . '/src/Command')->classes,
+        // Read (QueryInterface) and Write (CommandInterface) live side-by-side
+        // in src/Query so MediaQuerySqlModule scans a single directory.
+        $this->install(new MediaQuerySqlModule(
+            interfaceDir: $this->appMeta->appDir . '/src/Query',
+            sqlDir: $this->appMeta->appDir . '/var/db/sql',
         ));
-        $this->install(new MediaQueryBaseModule($queries));
-        $this->install(new MediaQueryDbModule(new DbQueryConfig($this->appMeta->appDir . '/var/db/sql')));
 
         // Validate response bodies (and optionally request params) against JSON Schemas.
         $this->install(new JsonSchemaModule(

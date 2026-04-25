@@ -8,7 +8,7 @@ use BEAR\Resource\Annotation\JsonSchema;
 use BEAR\Resource\Annotation\Link;
 use BEAR\Resource\Code;
 use BEAR\Resource\ResourceObject;
-use MyVendor\Cms\Command\AuthorCommandInterface;
+use MyVendor\Cms\Query\AuthorCommandInterface;
 use MyVendor\Cms\Query\AuthorQueryInterface;
 
 class Author extends ResourceObject

@@ -7,7 +7,7 @@ namespace MyVendor\Cms\Resource\App;
 use BEAR\Resource\Code;
 use BEAR\Resource\Annotation\JsonSchema;
 use BEAR\Resource\ResourceObject;
-use MyVendor\Cms\Command\MediaCommandInterface;
+use MyVendor\Cms\Query\MediaCommandInterface;
 use MyVendor\Cms\Query\MediaQueryInterface;
 
 class Media extends ResourceObject

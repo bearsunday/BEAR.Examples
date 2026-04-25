@@ -9,7 +9,7 @@ use BEAR\Resource\Annotation\JsonSchema;
 use BEAR\Resource\Annotation\Link;
 use BEAR\Resource\Code;
 use BEAR\Resource\ResourceObject;
-use MyVendor\Cms\Command\ArticleCommandInterface;
+use MyVendor\Cms\Query\ArticleCommandInterface;
 use MyVendor\Cms\Query\ArticleQueryInterface;
 
 class Article extends ResourceObject

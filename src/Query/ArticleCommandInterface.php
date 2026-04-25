@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms\Command;
+namespace MyVendor\Cms\Query;
 
 use Ray\MediaQuery\Annotation\DbQuery;
 

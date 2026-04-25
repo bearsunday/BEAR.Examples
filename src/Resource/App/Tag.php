@@ -8,7 +8,7 @@ use BEAR\Resource\Annotation\JsonSchema;
 use BEAR\Resource\Annotation\Link;
 use BEAR\Resource\Code;
 use BEAR\Resource\ResourceObject;
-use MyVendor\Cms\Command\TagCommandInterface;
+use MyVendor\Cms\Query\TagCommandInterface;
 use MyVendor\Cms\Query\TagQueryInterface;
 
 class Tag extends ResourceObject

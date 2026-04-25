@@ -8,7 +8,7 @@ use BEAR\Resource\Annotation\JsonSchema;
 use BEAR\Resource\Annotation\Link;
 use BEAR\Resource\Code;
 use BEAR\Resource\ResourceObject;
-use MyVendor\Cms\Command\CategoryCommandInterface;
+use MyVendor\Cms\Query\CategoryCommandInterface;
 use MyVendor\Cms\Query\CategoryQueryInterface;
 
 class Category extends ResourceObject
