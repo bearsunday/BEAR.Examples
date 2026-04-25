@@ -9,9 +9,7 @@ use Ray\Di\ProviderInterface;
 
 use function getenv;
 
-/**
- * @implements ProviderInterface<Google>
- */
+/** @implements ProviderInterface<Google> */
 final class GoogleProvider implements ProviderInterface
 {
     public function get(): Google

@@ -18,7 +18,7 @@ final class App implements AppInterface
         public readonly RouterInterface $router,
         public readonly TransferInterface $responder,
         public readonly ResourceInterface $resource,
-        public readonly ThrowableHandlerInterface $throwableHandler
+        public readonly ThrowableHandlerInterface $throwableHandler,
     ) {
     }
 }

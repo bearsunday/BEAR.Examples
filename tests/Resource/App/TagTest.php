@@ -6,6 +6,8 @@ namespace MyVendor\Cms\Resource\App;
 
 use MyVendor\Cms\AbstractAppTestCase;
 
+use function uniqid;
+
 final class TagTest extends AbstractAppTestCase
 {
     public function testListAndGet(): void

@@ -7,6 +7,9 @@ namespace MyVendor\Cms\Factory;
 use MyVendor\Cms\Entity\Article;
 use MyVendor\Cms\Service\MarkdownRendererInterface;
 
+use function str_contains;
+use function str_replace;
+
 /**
  * Builds Article entities with the MarkdownRendererInterface injected.
  *

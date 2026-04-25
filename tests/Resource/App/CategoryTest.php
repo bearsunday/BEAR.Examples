@@ -6,6 +6,8 @@ namespace MyVendor\Cms\Resource\App;
 
 use MyVendor\Cms\AbstractAppTestCase;
 
+use function uniqid;
+
 final class CategoryTest extends AbstractAppTestCase
 {
     public function testGetAndNotFound(): void

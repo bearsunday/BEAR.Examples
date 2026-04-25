@@ -4,6 +4,11 @@ declare(strict_types=1);
 
 namespace MyVendor\Cms\Integration;
 
+use function array_column;
+use function json_decode;
+use function sort;
+use function uniqid;
+
 final class ArticleMySQLTest extends AbstractMySQLTestCase
 {
     public function testReadAgainstRealDb(): void

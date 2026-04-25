@@ -7,13 +7,12 @@ namespace MyVendor\Cms\Resource\App;
 use BEAR\Cli\Attribute\Cli;
 use BEAR\Cli\Attribute\Option;
 use BEAR\Resource\Annotation\JsonSchema;
-use BEAR\RepositoryModule\Annotation\CacheableResponse;
-use BEAR\RepositoryModule\Annotation\RefreshCache;
 use BEAR\Resource\Annotation\Link;
 use BEAR\Resource\ResourceObject;
 use MyVendor\Cms\Query\ArticleQueryInterface;
 
 use function array_map;
+use function count;
 
 class Articles extends ResourceObject
 {
@@ -24,8 +23,7 @@ class Articles extends ResourceObject
 
     #[Link(rel: 'goArticle', href: 'app://self/article{?id}')]
     #[JsonSchema('articleList.json')]
-    #[Cli(name: 'article-list', description: 'List articles (paginated, filterable)', output: 'count')]
-    #[CacheableResponse]
+    #[Cli(name: 'article-list', description: 'List articles (paginated, filterable)')]
     public function onGet(
         #[Option(shortName: 'p', description: 'Page number')]
         int $page = 1,

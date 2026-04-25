@@ -6,15 +6,13 @@ namespace MyVendor\Cms\Resource\Page;
 
 use BEAR\Resource\ResourceInterface;
 use MyVendor\Cms\Injector;
-use MyVendor\Cms\Resource\Page\Index;
 use PHPUnit\Framework\TestCase;
 
 use function assert;
 
 class IndexTest extends TestCase
 {
-    /** @var ResourceInterface */
-    private $resource;
+    private ResourceInterface $resource;
 
     protected function setUp(): void
     {

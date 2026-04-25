@@ -1,7 +1,10 @@
+includes:
+  - phpstan-baseline.neon
+
 parameters:
   level: 6
+  parallel:
+    maximumNumberOfProcesses: 1
   paths:
     - src
     - tests
-  excludePaths:
-  	- tests/Http/index.php

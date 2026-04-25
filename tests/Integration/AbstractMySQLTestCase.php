@@ -10,6 +10,14 @@ use PDO;
 use PDOException;
 use PHPUnit\Framework\TestCase;
 
+use function dirname;
+use function escapeshellarg;
+use function exec;
+use function getenv;
+use function implode;
+use function putenv;
+use function sprintf;
+
 /**
  * Base for tests that exercise the real-DB Read/Write path.
  *
@@ -31,9 +39,9 @@ abstract class AbstractMySQLTestCase extends TestCase
 
     protected function setUp(): void
     {
-        $dsn = (string) (getenv('MYSQL_TEST_DSN') ?: 'mysql:host=127.0.0.1;port=3306;dbname=bear_cms;charset=utf8mb4');
-        $user = (string) (getenv('MYSQL_TEST_USER') ?: 'root');
-        $password = (string) (getenv('MYSQL_TEST_PASSWORD') ?: 'root');
+        $dsn = getenv('MYSQL_TEST_DSN') !== false ? (string) getenv('MYSQL_TEST_DSN') : 'mysql:host=127.0.0.1;port=3306;dbname=bear_cms;charset=utf8mb4';
+        $user = getenv('MYSQL_TEST_USER') !== false ? (string) getenv('MYSQL_TEST_USER') : 'root';
+        $password = getenv('MYSQL_TEST_PASSWORD') !== false ? (string) getenv('MYSQL_TEST_PASSWORD') : '';
 
         try {
             $this->pdo = new PDO($dsn, $user, $password, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
@@ -86,8 +94,10 @@ abstract class AbstractMySQLTestCase extends TestCase
             escapeshellarg(getenv('DB_PASSWORD')),
         );
         exec($cmd, $output, $code);
-        if ($code !== 0) {
-            $this->fail('bin/seed.php failed: ' . implode("\n", $output));
+        if ($code === 0) {
+            return;
         }
+
+        $this->fail('bin/seed.php failed: ' . implode("\n", $output));
     }
 }

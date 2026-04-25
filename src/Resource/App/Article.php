@@ -48,8 +48,7 @@ class Article extends ResourceObject
     public function onGet(
         #[Option(shortName: 'i', description: 'Article id')]
         int $id,
-    ): static
-    {
+    ): static {
         $article = $this->articleQuery->getById($id);
         if ($article === null) {
             $this->code = Code::NOT_FOUND;
@@ -80,9 +79,7 @@ class Article extends ResourceObject
         return $this;
     }
 
-    /**
-     * @param list<int> $tagIds Optional list of tag ids to link to the new article.
-     */
+    /** @param list<int> $tagIds Optional list of tag ids to link to the new article. */
     public function onPost(
         string $slug,
         string $title,
@@ -120,9 +117,7 @@ class Article extends ResourceObject
         return $this;
     }
 
-    /**
-     * @param list<int>|null $tagIds When provided, replaces the tag set entirely.
-     */
+    /** @param list<int>|null $tagIds When provided, replaces the tag set entirely. */
     public function onPut(
         int $id,
         string $title,

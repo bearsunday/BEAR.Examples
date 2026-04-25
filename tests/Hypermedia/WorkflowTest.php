@@ -8,6 +8,13 @@ use BEAR\Resource\ResourceInterface;
 use MyVendor\Cms\Injector;
 use PHPUnit\Framework\TestCase;
 
+use function json_decode;
+use function parse_str;
+use function parse_url;
+use function uniqid;
+
+use const PHP_URL_QUERY;
+
 /**
  * Hypermedia workflow tests = user stories.
  *

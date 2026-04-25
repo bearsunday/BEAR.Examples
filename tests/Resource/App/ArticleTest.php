@@ -6,6 +6,11 @@ namespace MyVendor\Cms\Resource\App;
 
 use MyVendor\Cms\AbstractAppTestCase;
 
+use function array_column;
+use function json_decode;
+use function sort;
+use function uniqid;
+
 final class ArticleTest extends AbstractAppTestCase
 {
     public function testOnGetReturnsEmbeddedAuthorCategoryTags(): void

@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 namespace MyVendor\Cms\Resource\App;
 
-use BEAR\Resource\Code;
 use BEAR\Resource\Annotation\JsonSchema;
-use BEAR\RepositoryModule\Annotation\CacheableResponse;
-use BEAR\RepositoryModule\Annotation\RefreshCache;
+use BEAR\Resource\Code;
 use BEAR\Resource\ResourceObject;
 use MyVendor\Cms\Query\MediaCommandInterface;
 use MyVendor\Cms\Query\MediaQueryInterface;
@@ -19,9 +17,8 @@ class Media extends ResourceObject
         private readonly MediaCommandInterface $mediaCommand,
     ) {
     }
-    #[JsonSchema('media.json')]
 
-    #[CacheableResponse]
+    #[JsonSchema('media.json')]
     public function onGet(int $id): static
     {
         $media = $this->mediaQuery->getById($id);
@@ -45,7 +42,6 @@ class Media extends ResourceObject
         return $this;
     }
 
-    #[RefreshCache]
     public function onPost(
         string $filename,
         string $mimeType,
@@ -70,7 +66,6 @@ class Media extends ResourceObject
         return $this;
     }
 
-    #[RefreshCache]
     public function onDelete(int $id): static
     {
         if ($this->mediaQuery->getById($id) === null) {

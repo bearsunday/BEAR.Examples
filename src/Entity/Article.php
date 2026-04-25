@@ -7,10 +7,11 @@ namespace MyVendor\Cms\Entity;
 use MyVendor\Cms\Service\MarkdownRendererInterface;
 use RuntimeException;
 
+/** @SuppressWarnings("PHPMD.ExcessiveParameterList") */
 final readonly class Article
 {
-    public const STATUS_DRAFT = 'draft';
-    public const STATUS_PUBLISHED = 'published';
+    public const string STATUS_DRAFT = 'draft';
+    public const string STATUS_PUBLISHED = 'published';
 
     public function __construct(
         public int $id,

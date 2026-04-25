@@ -1,0 +1,10 @@
+2026-04-25T08:58:44.6NZ mysqld_safe Logging to '/Users/akihito/git/BEAR.Cms/malt/logs/mysql_3306.log'.
+2026-04-25T08:58:44.6NZ mysqld_safe Starting mysqld daemon with databases from /Users/akihito/git/BEAR.Cms/malt/var/mysql_0
+2026-04-25T08:58:44.551785Z 0 [System] [MY-010116] [Server] /opt/homebrew/opt/mysql@8.0/bin/mysqld (mysqld 8.0.45) starting as process 41241
+2026-04-25T08:58:44.553471Z 0 [Warning] [MY-010159] [Server] Setting lower_case_table_names=2 because file system for /Users/akihito/git/BEAR.Cms/malt/var/mysql_0/ is case insensitive
+2026-04-25T08:58:44.963959Z 1 [System] [MY-013576] [InnoDB] InnoDB initialization has started.
+2026-04-25T08:58:45.039673Z 1 [System] [MY-013577] [InnoDB] InnoDB initialization has ended.
+2026-04-25T08:58:45.123553Z 0 [Warning] [MY-010068] [Server] CA certificate ca.pem is self signed.
+2026-04-25T08:58:45.123576Z 0 [System] [MY-013602] [Server] Channel mysql_main configured to support TLS. Encrypted connections are now supported for this channel.
+2026-04-25T08:58:45.136560Z 0 [System] [MY-011323] [Server] X Plugin ready for connections. Bind-address: '::' port: 33060, socket: /tmp/mysqlx.sock
+2026-04-25T08:58:45.136580Z 0 [System] [MY-010931] [Server] /opt/homebrew/opt/mysql@8.0/bin/mysqld: ready for connections. Version: '8.0.45'  socket: '/Users/akihito/git/BEAR.Cms/malt/tmp/mysql_3306.sock'  port: 3306  Homebrew.

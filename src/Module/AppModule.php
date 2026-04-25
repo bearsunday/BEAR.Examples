@@ -22,6 +22,7 @@ use Ray\MediaQuery\MediaQuerySqlModule;
 use function dirname;
 use function getenv;
 
+/** @SuppressWarnings("PHPMD.CouplingBetweenObjects") composition root by design */
 final class AppModule extends AbstractAppModule
 {
     protected function configure(): void
