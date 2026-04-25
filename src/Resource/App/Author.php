@@ -18,7 +18,7 @@ class Author extends ResourceObject
     ) {
     }
 
-    #[Link(rel: 'articles', href: 'app://self/articles')]
+    #[Link(rel: 'goArticleList', href: 'app://self/articles')]
     public function onGet(int $id): static
     {
         $author = $this->authorQuery->getById($id);

@@ -18,8 +18,8 @@ class Category extends ResourceObject
     ) {
     }
 
-    #[Link(rel: 'categories', href: 'app://self/categories')]
-    #[Link(rel: 'articles', href: 'app://self/articles{?categoryId}')]
+    #[Link(rel: 'goCategoryList', href: 'app://self/categories')]
+    #[Link(rel: 'goArticleList', href: 'app://self/articles{?categoryId}')]
     public function onGet(int $id): static
     {
         $category = $this->categoryQuery->getById($id);

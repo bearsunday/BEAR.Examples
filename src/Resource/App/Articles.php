@@ -17,7 +17,7 @@ class Articles extends ResourceObject
     ) {
     }
 
-    #[Link(rel: 'article', href: 'app://self/article{?id}')]
+    #[Link(rel: 'goArticle', href: 'app://self/article{?id}')]
     public function onGet(
         int $page = 1,
         int $perPage = 20,

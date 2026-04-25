@@ -17,7 +17,7 @@ class Tags extends ResourceObject
     ) {
     }
 
-    #[Link(rel: 'tag', href: 'app://self/tag{?id}')]
+    #[Link(rel: 'goTag', href: 'app://self/tag{?id}')]
     public function onGet(): static
     {
         $items = $this->tagQuery->list();

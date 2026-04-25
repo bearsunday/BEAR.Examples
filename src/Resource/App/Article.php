@@ -24,9 +24,9 @@ class Article extends ResourceObject
     ) {
     }
 
-    #[Link(rel: 'articles', href: 'app://self/articles')]
-    #[Link(rel: 'author', href: 'app://self/author{?id}')]
-    #[Link(rel: 'category', href: 'app://self/category{?id}')]
+    #[Link(rel: 'goArticleList', href: 'app://self/articles')]
+    #[Link(rel: 'goAuthor', href: 'app://self/author{?id}')]
+    #[Link(rel: 'goCategory', href: 'app://self/category{?id}')]
     public function onGet(int $id): static
     {
         $article = $this->articleQuery->getById($id);
