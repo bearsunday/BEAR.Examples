@@ -3391,16 +3391,16 @@
         },
         {
             "name": "ray/psr-cache-module",
-            "version": "1.5.1",
+            "version": "1.5.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ray-di/Ray.PsrCacheModule.git",
-                "reference": "7443832621679fb5007966c975ef5be1110ea530"
+                "reference": "79bf2600da361e5ae300eda90e3ab1a30d5d0388"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ray-di/Ray.PsrCacheModule/zipball/7443832621679fb5007966c975ef5be1110ea530",
-                "reference": "7443832621679fb5007966c975ef5be1110ea530",
+                "url": "https://api.github.com/repos/ray-di/Ray.PsrCacheModule/zipball/79bf2600da361e5ae300eda90e3ab1a30d5d0388",
+                "reference": "79bf2600da361e5ae300eda90e3ab1a30d5d0388",
                 "shasum": ""
             },
             "require": {
@@ -3446,9 +3446,9 @@
             "description": "PSR-6 PSR-16 cache module for Ray.Di",
             "support": {
                 "issues": "https://github.com/ray-di/Ray.PsrCacheModule/issues",
-                "source": "https://github.com/ray-di/Ray.PsrCacheModule/tree/1.5.1"
+                "source": "https://github.com/ray-di/Ray.PsrCacheModule/tree/1.5.2"
             },
-            "time": "2025-11-10T02:53:42+00:00"
+            "time": "2026-04-25T11:44:49+00:00"
         },
         {
             "name": "rize/uri-template",
