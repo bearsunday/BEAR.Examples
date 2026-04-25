@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace MyVendor\Cms\Resource\App;
 
 use BEAR\Resource\Annotation\JsonSchema;
+use BEAR\RepositoryModule\Annotation\CacheableResponse;
+use BEAR\RepositoryModule\Annotation\RefreshCache;
 use BEAR\Resource\Annotation\Link;
 use BEAR\Resource\ResourceObject;
 use MyVendor\Cms\Query\TagQueryInterface;
@@ -21,6 +23,7 @@ class Tags extends ResourceObject
 
     #[Link(rel: 'goTag', href: 'app://self/tag{?id}')]
     #[JsonSchema('tagList.json')]
+    #[CacheableResponse]
     public function onGet(int|null $articleId = null): static
     {
         $items = $articleId === null

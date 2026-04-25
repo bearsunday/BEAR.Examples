@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace MyVendor\Cms\Resource\App;
 
 use BEAR\Resource\Annotation\JsonSchema;
+use BEAR\RepositoryModule\Annotation\CacheableResponse;
+use BEAR\RepositoryModule\Annotation\RefreshCache;
 use BEAR\Resource\Annotation\Link;
 use BEAR\Resource\Code;
 use BEAR\Resource\ResourceObject;
@@ -22,6 +24,7 @@ class Category extends ResourceObject
     #[Link(rel: 'goCategoryList', href: 'app://self/categories')]
     #[Link(rel: 'goArticleList', href: 'app://self/articles{?categoryId}')]
     #[JsonSchema('category.json')]
+    #[CacheableResponse]
     public function onGet(int $id): static
     {
         $category = $this->categoryQuery->getById($id);
@@ -43,6 +46,7 @@ class Category extends ResourceObject
         return $this;
     }
 
+    #[RefreshCache]
     public function onPost(
         string $slug,
         string $name,
@@ -58,6 +62,7 @@ class Category extends ResourceObject
         return $this;
     }
 
+    #[RefreshCache]
     public function onPut(
         int $id,
         string $name,
@@ -78,6 +83,7 @@ class Category extends ResourceObject
         return $this;
     }
 
+    #[RefreshCache]
     public function onDelete(int $id): static
     {
         if ($this->categoryQuery->getById($id) === null) {

@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace MyVendor\Cms\Resource\App;
 
 use BEAR\Resource\Annotation\JsonSchema;
+use BEAR\RepositoryModule\Annotation\CacheableResponse;
+use BEAR\RepositoryModule\Annotation\RefreshCache;
 use BEAR\Resource\Annotation\Link;
 use BEAR\Resource\Code;
 use BEAR\Resource\ResourceObject;
@@ -21,6 +23,7 @@ class Author extends ResourceObject
 
     #[Link(rel: 'goArticleList', href: 'app://self/articles')]
     #[JsonSchema('author.json')]
+    #[CacheableResponse]
     public function onGet(int $id): static
     {
         $author = $this->authorQuery->getById($id);
@@ -41,6 +44,7 @@ class Author extends ResourceObject
         return $this;
     }
 
+    #[RefreshCache]
     public function onPost(string $name, string $email, string $bio = ''): static
     {
         $this->authorCommand->add(name: $name, email: $email, bio: $bio);
@@ -52,6 +56,7 @@ class Author extends ResourceObject
         return $this;
     }
 
+    #[RefreshCache]
     public function onPut(int $id, string $name, string $email, string $bio = ''): static
     {
         if ($this->authorQuery->getById($id) === null) {

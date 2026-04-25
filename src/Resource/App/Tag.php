@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace MyVendor\Cms\Resource\App;
 
 use BEAR\Resource\Annotation\JsonSchema;
+use BEAR\RepositoryModule\Annotation\CacheableResponse;
+use BEAR\RepositoryModule\Annotation\RefreshCache;
 use BEAR\Resource\Annotation\Link;
 use BEAR\Resource\Code;
 use BEAR\Resource\ResourceObject;
@@ -22,6 +24,7 @@ class Tag extends ResourceObject
     #[Link(rel: 'goTagList', href: 'app://self/tags')]
     #[Link(rel: 'goArticleList', href: 'app://self/articles{?tagId}')]
     #[JsonSchema('tag.json')]
+    #[CacheableResponse]
     public function onGet(int $id): static
     {
         $tag = $this->tagQuery->getById($id);
@@ -41,6 +44,7 @@ class Tag extends ResourceObject
         return $this;
     }
 
+    #[RefreshCache]
     public function onPost(string $slug, string $name): static
     {
         $this->tagCommand->add(slug: $slug, name: $name);
@@ -52,6 +56,7 @@ class Tag extends ResourceObject
         return $this;
     }
 
+    #[RefreshCache]
     public function onDelete(int $id): static
     {
         if ($this->tagQuery->getById($id) === null) {
