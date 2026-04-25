@@ -20,4 +20,6 @@ phpunit.xml
 /.phpcs.xml
 /.phpcs-cache
 /vendor-bin/**/vendor/
+/malt/
+/var/alps/index.html
 

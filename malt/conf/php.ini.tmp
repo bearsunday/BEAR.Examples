@@ -1,8 +1,0 @@
-memory_limit = 2048M
-error_log = "/Users/akihito/git/BEAR.Cms/malt/logs/php-error.log"
-sys_temp_dir = "/Users/akihito/git/BEAR.Cms/malt/tmp"
-upload_tmp_dir = "/Users/akihito/git/BEAR.Cms/malt/tmp"
-xdebug.output_dir = "/Users/akihito/git/BEAR.Cms/malt/tmp"
-zend_extension=/opt/homebrew/opt/xdebug@8.4/xdebug.so
-extension=/opt/homebrew/opt/pcov@8.4/pcov.so
-extension=pdo_mysql.so
