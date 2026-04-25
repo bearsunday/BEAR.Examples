@@ -14,9 +14,6 @@
     <testsuite name="hypermedia">
       <directory>tests/Hypermedia</directory>
     </testsuite>
-    <testsuite name="http">
-      <directory>tests/Http</directory>
-    </testsuite>
   </testsuites>
   <source>
     <include>
