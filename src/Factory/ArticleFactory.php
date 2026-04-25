@@ -40,10 +40,30 @@ final readonly class ArticleFactory
             body: $body,
             excerpt: $excerpt,
             status: $status,
-            publishedAt: $publishedAt,
+            publishedAt: self::normaliseDateTime($publishedAt),
             authorId: $authorId,
             categoryId: $categoryId,
             renderer: $this->renderer,
         );
+    }
+
+    /**
+     * Normalise a database datetime (`YYYY-MM-DD HH:MM:SS`) to RFC3339
+     * (`YYYY-MM-DDTHH:MM:SSZ`) so the JSON Schema `format: date-time`
+     * validation passes on both Read paths (Fake already emits RFC3339).
+     */
+    private static function normaliseDateTime(string|null $value): string|null
+    {
+        if ($value === null || $value === '') {
+            return null;
+        }
+
+        // Already RFC3339 (Fake path).
+        if (str_contains($value, 'T')) {
+            return $value;
+        }
+
+        // Native DB datetime → RFC3339 UTC.
+        return str_replace(' ', 'T', $value) . 'Z';
     }
 }
