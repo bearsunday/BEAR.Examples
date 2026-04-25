@@ -27,7 +27,7 @@ use function json_decode;
 use const JSON_THROW_ON_ERROR;
 
 /**
- * In-memory fake SqlQueryInterface backed by var/fake/data-50.*.json.
+ * In-memory fake SqlQueryInterface backed by var/fake/*.json.
  *
  * Lets the whole Read + Write stack run end-to-end without a real database.
  * Write ops update the in-memory tables and are also recorded to execLog
@@ -48,12 +48,12 @@ final class FakeSqlQuery implements SqlQueryInterface
     {
         $fakeDir ??= dirname(__DIR__, 2) . '/var/fake';
         $this->tables = [
-            'article' => $this->load($fakeDir . '/data-50.article.json'),
-            'category' => $this->load($fakeDir . '/data-50.category.json'),
-            'tag' => $this->load($fakeDir . '/data-50.tag.json'),
-            'author' => $this->load($fakeDir . '/data-50.author.json'),
-            'media' => $this->load($fakeDir . '/data-50.media.json'),
-            'articleTag' => $this->load($fakeDir . '/data-50.articleTag.json'),
+            'article' => $this->load($fakeDir . '/article.json'),
+            'category' => $this->load($fakeDir . '/category.json'),
+            'tag' => $this->load($fakeDir . '/tag.json'),
+            'author' => $this->load($fakeDir . '/author.json'),
+            'media' => $this->load($fakeDir . '/media.json'),
+            'articleTag' => $this->load($fakeDir . '/articleTag.json'),
         ];
         $this->nextId = [];
         foreach (['article', 'category', 'tag', 'author', 'media'] as $t) {

@@ -49,7 +49,7 @@ Switching contexts loads/removes modules by keyword prefix; see
 ## Regenerating fakes and schemas
 
 ```bash
-python3 bin/semantic-ex/gen-fake.py      # writes var/fake/data-50.*.json
+python3 bin/semantic-ex/gen-fake.py      # writes var/fake/*.json
 python3 bin/semantic-ex/gen-schemas.py   # writes var/schema/*.json
 ```
 

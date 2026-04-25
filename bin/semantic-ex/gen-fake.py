@@ -361,23 +361,23 @@ for i in range(1, 51):
     })
 
 # -- Write files ----------------------------------------------------------
-(OUT / "data-50.author.json").write_text(json.dumps(authors, indent=2, ensure_ascii=False))
-(OUT / "data-50.category.json").write_text(json.dumps(categories, indent=2, ensure_ascii=False))
-(OUT / "data-50.tag.json").write_text(json.dumps(tags, indent=2, ensure_ascii=False))
-(OUT / "data-50.article.json").write_text(json.dumps(articles, indent=2, ensure_ascii=False))
-(OUT / "data-50.articleTag.json").write_text(json.dumps(article_tags, indent=2, ensure_ascii=False))
-(OUT / "data-50.media.json").write_text(json.dumps(media, indent=2, ensure_ascii=False))
+(OUT / "author.json").write_text(json.dumps(authors, indent=2, ensure_ascii=False))
+(OUT / "category.json").write_text(json.dumps(categories, indent=2, ensure_ascii=False))
+(OUT / "tag.json").write_text(json.dumps(tags, indent=2, ensure_ascii=False))
+(OUT / "article.json").write_text(json.dumps(articles, indent=2, ensure_ascii=False))
+(OUT / "articleTag.json").write_text(json.dumps(article_tags, indent=2, ensure_ascii=False))
+(OUT / "media.json").write_text(json.dumps(media, indent=2, ensure_ascii=False))
 
 # list/pagination wrappers
-(OUT / "data-50.articleList.json").write_text(json.dumps({
+(OUT / "articleList.json").write_text(json.dumps({
     "items": [{k: v for k, v in a.items() if k != "body"} for a in articles[:20]],
     "page": 1, "perPage": 20, "totalCount": len(articles)
 }, indent=2, ensure_ascii=False))
-(OUT / "data-50.categoryList.json").write_text(json.dumps({
+(OUT / "categoryList.json").write_text(json.dumps({
     "items": categories[:30],
     "page": 1, "perPage": 30, "totalCount": len(categories)
 }, indent=2, ensure_ascii=False))
-(OUT / "data-50.tagList.json").write_text(json.dumps({
+(OUT / "tagList.json").write_text(json.dumps({
     "items": tags,
     "page": 1, "perPage": 50, "totalCount": len(tags)
 }, indent=2, ensure_ascii=False))

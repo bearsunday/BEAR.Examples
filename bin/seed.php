@@ -38,7 +38,7 @@ if ($truncate) {
     fwrite(STDOUT, "Truncated existing tables.\n");
 }
 
-$authors = $loadJson('data-50.author.json');
+$authors = $loadJson('author.json');
 foreach ($authors as $row) {
     $conn->insert('authors', [
         'id' => $row['id'],
@@ -51,7 +51,7 @@ foreach ($authors as $row) {
 fwrite(STDOUT, sprintf("Seeded %d authors.\n", count($authors)));
 
 // Categories: insert parentless first to satisfy FK self-reference
-$categories = $loadJson('data-50.category.json');
+$categories = $loadJson('category.json');
 usort($categories, static fn ($a, $b) => ($a['parentId'] ?? 0) <=> ($b['parentId'] ?? 0));
 foreach ($categories as $row) {
     $conn->insert('categories', [
@@ -65,7 +65,7 @@ foreach ($categories as $row) {
 
 fwrite(STDOUT, sprintf("Seeded %d categories.\n", count($categories)));
 
-$tags = $loadJson('data-50.tag.json');
+$tags = $loadJson('tag.json');
 foreach ($tags as $row) {
     $conn->insert('tags', [
         'id' => $row['id'],
@@ -76,7 +76,7 @@ foreach ($tags as $row) {
 
 fwrite(STDOUT, sprintf("Seeded %d tags.\n", count($tags)));
 
-$articles = $loadJson('data-50.article.json');
+$articles = $loadJson('article.json');
 foreach ($articles as $row) {
     $publishedAt = null;
     if (! empty($row['publishedAt'])) {
@@ -98,7 +98,7 @@ foreach ($articles as $row) {
 
 fwrite(STDOUT, sprintf("Seeded %d articles.\n", count($articles)));
 
-$articleTags = $loadJson('data-50.articleTag.json');
+$articleTags = $loadJson('articleTag.json');
 foreach ($articleTags as $row) {
     $conn->insert('article_tags', [
         'article_id' => $row['articleId'],
@@ -108,7 +108,7 @@ foreach ($articleTags as $row) {
 
 fwrite(STDOUT, sprintf("Seeded %d article_tags links.\n", count($articleTags)));
 
-$media = $loadJson('data-50.media.json');
+$media = $loadJson('media.json');
 foreach ($media as $row) {
     $conn->insert('media', [
         'id' => $row['id'],

@@ -1,5 +1,5 @@
 # Fake data observations (semantic-ex Phase 2)
-Generated from /Users/akihito/git/BEAR.Cms/var/fake/data-50.*.json — 50 records per atomic entity.
+Generated from /Users/akihito/git/BEAR.Cms/var/fake//*.json — 50 records per atomic entity.
 
 ## Article
 - `id` (int): min=1 max=50 nulls=0/50

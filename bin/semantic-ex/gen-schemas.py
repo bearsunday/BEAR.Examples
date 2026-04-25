@@ -81,11 +81,11 @@ def int_field_schema(records, key, *, description, nullable=False, minimum=None)
     return schema
 
 # -- load fake data -------------------------------------------------------
-articles   = json.loads((FAKE / "data-50.article.json").read_text())
-categories = json.loads((FAKE / "data-50.category.json").read_text())
-tags       = json.loads((FAKE / "data-50.tag.json").read_text())
-authors    = json.loads((FAKE / "data-50.author.json").read_text())
-media      = json.loads((FAKE / "data-50.media.json").read_text())
+articles   = json.loads((FAKE / "article.json").read_text())
+categories = json.loads((FAKE / "category.json").read_text())
+tags       = json.loads((FAKE / "tag.json").read_text())
+authors    = json.loads((FAKE / "author.json").read_text())
+media      = json.loads((FAKE / "media.json").read_text())
 
 link_def = {
     "type": "object",
@@ -347,7 +347,7 @@ def observe_and_log(label, records, fields):
     notes.extend(lines)
 
 notes.append("# Fake data observations (semantic-ex Phase 2)")
-notes.append(f"Generated from {FAKE}/data-50.*.json — 50 records per atomic entity.")
+notes.append(f"Generated from {FAKE}//*.json — 50 records per atomic entity.")
 observe_and_log("Article", articles, ["id","slug","title","body","excerpt","status","publishedAt","authorId","categoryId"])
 observe_and_log("Category", categories, ["id","slug","name","description","parentId"])
 observe_and_log("Tag", tags, ["id","slug","name"])
