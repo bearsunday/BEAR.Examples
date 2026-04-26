@@ -8,6 +8,7 @@ use BEAR\Package\AbstractAppModule;
 use BEAR\Package\PackageModule;
 use BEAR\Resource\Module\JsonSchemaModule;
 use Koriym\EnvJson\EnvJson;
+use League\CommonMark\CommonMarkConverter;
 use League\OAuth2\Client\Provider\Google;
 use MyVendor\Cms\Auth\AuthInterface;
 use MyVendor\Cms\Auth\GoogleAuthProvider;
@@ -59,6 +60,9 @@ final class AppModule extends AbstractAppModule
         ));
 
         // Domain-layer services (e.g. injected into Entity via FetchInjectionFactory).
+        // CommonMarkConverter has only defaultable constructor args, so a single
+        // shared instance is enough; binding it to a Provider would be over-engineering.
+        $this->bind(CommonMarkConverter::class)->toInstance(new CommonMarkConverter());
         $this->bind(MarkdownRendererInterface::class)->to(CommonMarkRenderer::class)->in(Scope::SINGLETON);
         // Explicit untargeted binding so Ray.Compiler (prod-app) can resolve the
         // factory referenced by #[DbQuery(factory: ArticleFactory::class)].
