@@ -23,7 +23,7 @@ API Document
 
 | Method | Parameters | Links |
 |--------|------------|-------|
-| GET | id* | href(goArticleList), href(goAuthor), href(goCategory), src(goAuthor), src(goCategory), src(goTagList) |
+| GET | id* | href(goArticleList), href(goAuthor), href(goCategory), src(author), src(category), src(tagList) |
 | POST | slug*, title*, body*, authorId*, categoryId*, excerpt, status, publishedAt, tagIds | - |
 | PUT | id*, title*, body*, status*, excerpt, publishedAt, tagIds | - |
 | DELETE | id* | - |
