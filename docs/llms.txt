@@ -129,14 +129,6 @@ API Document
 | File | Query |
 |------|-------|
 | article_add.sql | `INSERT INTO articles (slug, title, body, excerpt, status, published_at, autho...` |
-| article_by_id.sql | `SELECT
-    id,
-    slug,
-    title,
-    body,
-    excerpt,
-    status,
-    pu...` |
 | article_by_slug.sql | `SELECT
     id,
     slug,
@@ -146,6 +138,14 @@ API Document
     status,
     pu...` |
 | article_delete.sql | `DELETE FROM articles WHERE id = :id` |
+| article_item.sql | `SELECT
+    id,
+    slug,
+    title,
+    body,
+    excerpt,
+    status,
+    pu...` |
 | article_list.sql | `SELECT
     a.id,
     a.slug,
@@ -161,7 +161,7 @@ SET title = :title,
     excerpt = :excerpt,...` |
 | author_add.sql | `INSERT INTO authors (name, email, bio) VALUES (:name, :email, :bio)` |
 | author_by_email.sql | `SELECT id, name, email, bio FROM authors WHERE email = :email LIMIT 1` |
-| author_by_id.sql | `SELECT
+| author_item.sql | `SELECT
     id,
     name,
     email,
@@ -172,17 +172,17 @@ LIMIT 1` |
 | author_update.sql | `UPDATE authors SET name = :name, email = :email, bio = :bio WHERE id = :id` |
 | category_add.sql | `INSERT INTO categories (slug, name, description, parent_id)
 VALUES (:slug, :n...` |
-| category_by_id.sql | `SELECT
+| category_by_slug.sql | `SELECT id, slug, name, description, parent_id
+FROM categories
+WHERE slug = :s...` |
+| category_delete.sql | `DELETE FROM categories WHERE id = :id` |
+| category_item.sql | `SELECT
     id,
     slug,
     name,
     description,
     parent_id
 FROM catego...` |
-| category_by_slug.sql | `SELECT id, slug, name, description, parent_id
-FROM categories
-WHERE slug = :s...` |
-| category_delete.sql | `DELETE FROM categories WHERE id = :id` |
 | category_list.sql | `SELECT
     id,
     slug,
@@ -197,7 +197,8 @@ SET name = :name,
 | media_add.sql | `INSERT INTO media (filename, mime_type, url, alt, width, height)
 VALUES (:fil...` |
 | media_by_filename.sql | `SELECT id, filename, mime_type, url, alt, width, height FROM media WHERE file...` |
-| media_by_id.sql | `SELECT
+| media_delete.sql | `DELETE FROM media WHERE id = :id` |
+| media_item.sql | `SELECT
     id,
     filename,
     mime_type,
@@ -205,17 +206,16 @@ VALUES (:fil...` |
     alt,
     width,
     ...` |
-| media_delete.sql | `DELETE FROM media WHERE id = :id` |
 | tag_add.sql | `INSERT INTO tags (slug, name) VALUES (:slug, :name)` |
-| tag_by_id.sql | `SELECT
+| tag_by_slug.sql | `SELECT id, slug, name FROM tags WHERE slug = :slug LIMIT 1` |
+| tag_delete.sql | `DELETE FROM tags WHERE id = :id` |
+| tag_item.sql | `SELECT
     id,
     slug,
     name
 FROM tags
 WHERE id = :id
 LIMIT 1` |
-| tag_by_slug.sql | `SELECT id, slug, name FROM tags WHERE slug = :slug LIMIT 1` |
-| tag_delete.sql | `DELETE FROM tags WHERE id = :id` |
 | tag_list.sql | `SELECT
     id,
     slug,
