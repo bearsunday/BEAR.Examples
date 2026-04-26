@@ -18,6 +18,8 @@ use function implode;
 use function putenv;
 use function sprintf;
 
+use const PHP_BINARY;
+
 /**
  * Base for tests that exercise the real-DB Read/Write path.
  *
@@ -72,26 +74,31 @@ abstract class AbstractMySQLTestCase extends TestCase
 
         $this->pdo->exec('SET FOREIGN_KEY_CHECKS = 1');
 
-        // Run doctrine-migrations migrate
+        // Run doctrine-migrations migrate. Pin PHP_BINARY so the subprocess
+        // uses the same interpreter as the running test (otherwise composer's
+        // platform_check.php fires when the system `php` is older than the
+        // composer.json `php` requirement).
         $cmd = sprintf(
-            'cd %s && DB_DSN=%s DB_USER=%s DB_PASSWORD=%s vendor/bin/doctrine-migrations migrate --no-interaction 2>&1',
+            'cd %s && DB_DSN=%s DB_USER=%s DB_PASSWORD=%s %s vendor/bin/doctrine-migrations migrate --no-interaction 2>&1',
             escapeshellarg(dirname(__DIR__, 2)),
             escapeshellarg(getenv('DB_DSN')),
             escapeshellarg(getenv('DB_USER')),
             escapeshellarg(getenv('DB_PASSWORD')),
+            escapeshellarg(PHP_BINARY),
         );
         exec($cmd, $output, $code);
         if ($code !== 0) {
             $this->fail('doctrine-migrations migrate failed: ' . implode("\n", $output));
         }
 
-        // Seed via bin/seed.php
+        // Seed via bin/seed.php (same PHP_BINARY pinning as above).
         $cmd = sprintf(
-            'cd %s && DB_DSN=%s DB_USER=%s DB_PASSWORD=%s php bin/seed.php 2>&1',
+            'cd %s && DB_DSN=%s DB_USER=%s DB_PASSWORD=%s %s bin/seed.php 2>&1',
             escapeshellarg(dirname(__DIR__, 2)),
             escapeshellarg(getenv('DB_DSN')),
             escapeshellarg(getenv('DB_USER')),
             escapeshellarg(getenv('DB_PASSWORD')),
+            escapeshellarg(PHP_BINARY),
         );
         exec($cmd, $output, $code);
         if ($code === 0) {
