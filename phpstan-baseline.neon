@@ -6,62 +6,12 @@ parameters:
 			count: 1
 			path: src/Auth/GoogleAuthProvider.php
 
+		# Vendor interface limitation: Ray\MediaQuery\SqlQueryInterface::getRowList()
+		# declares array<array<mixed>> for tabular fetches, but the Fake (and the
+		# real path with FetchNewInstance) returns a list of entities. Documented
+		# in the method docblock; cannot match without losing precision.
 		-
-			message: '#^Method MyVendor\\Cms\\Fake\\FakeSqlQuery\:\:filteredArticles\(\) has parameter \$values with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
+			message: '#^Return type \(list\<object\>\) of method MyVendor\\Cms\\Fake\\FakeSqlQuery\:\:getRowList\(\) should be compatible with return type \(array\<array\<mixed\>\>\) of method Ray\\MediaQuery\\SqlQueryInterface\:\:getRowList\(\)$#'
+			identifier: method.childReturnType
 			count: 1
-			path: tests/Fake/FakeSqlQuery.php
-
-		-
-			message: '#^Method MyVendor\\Cms\\Fake\\FakeSqlQuery\:\:getRowList\(\) should return array\<array\<mixed\>\> but returns list\<MyVendor\\Cms\\Entity\\Article\|MyVendor\\Cms\\Entity\\Category\|MyVendor\\Cms\\Entity\\Tag\>\.$#'
-			identifier: return.type
-			count: 1
-			path: tests/Fake/FakeSqlQuery.php
-
-		-
-			message: '#^Method MyVendor\\Cms\\Fake\\FakeSqlQuery\:\:listArticles\(\) has parameter \$values with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: tests/Fake/FakeSqlQuery.php
-
-		-
-			message: '#^Method MyVendor\\Cms\\Fake\\FakeSqlQuery\:\:toArticle\(\) has parameter \$r with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: tests/Fake/FakeSqlQuery.php
-
-		-
-			message: '#^Method MyVendor\\Cms\\Fake\\FakeSqlQuery\:\:toAuthor\(\) has parameter \$r with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: tests/Fake/FakeSqlQuery.php
-
-		-
-			message: '#^Method MyVendor\\Cms\\Fake\\FakeSqlQuery\:\:toCategory\(\) has parameter \$r with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: tests/Fake/FakeSqlQuery.php
-
-		-
-			message: '#^Method MyVendor\\Cms\\Fake\\FakeSqlQuery\:\:toMedia\(\) has parameter \$r with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: tests/Fake/FakeSqlQuery.php
-
-		-
-			message: '#^Method MyVendor\\Cms\\Fake\\FakeSqlQuery\:\:toTag\(\) has parameter \$r with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: tests/Fake/FakeSqlQuery.php
-
-		-
-			message: '#^Method MyVendor\\Cms\\Fake\\FakeSqlQuery\:\:updateRow\(\) returns void but does not have any side effects\.$#'
-			identifier: void.pure
-			count: 1
-			path: tests/Fake/FakeSqlQuery.php
-
-		-
-			message: '#^Strict comparison using \!\=\= between mixed and null will always evaluate to true\.$#'
-			identifier: notIdentical.alwaysTrue
-			count: 3
-			path: tests/Fake/FakeSqlQuery.php
+			path: src/Fake/FakeSqlQuery.php

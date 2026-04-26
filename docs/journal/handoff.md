@@ -69,7 +69,7 @@ defeats the reference value.
 - Four contexts:
   - `hal-api-app` — production HTTP
   - `cli-hal-api-app` — `bin/app.php`, `composer app`
-  - `fake-hal-api-app` — runtime against `tests/Fake/FakeSqlQuery.php`
+  - `fake-hal-api-app` — runtime against `src/Fake/FakeSqlQuery.php`
   - `test-hal-api-app` — PHPUnit (unit suites)
 - `composer demo` is the entry point for verifying any change end-to-end.
 
@@ -96,7 +96,7 @@ If either lands, BEAR.Cms can adopt the fix:
 |------|------|---------|
 | **Step 5.5: Async `#[Embed]` parallelisation** | `bear/async ^0.1` requires `bear/resource ^1.31`; current is `^1.17`. Upgrade is a multi-package breaking change | Try `composer require bear/async -W` in a branch, fix any API drift, run full test suite |
 | **Step 6: `#[CacheableResponse]` on all reads** | Blocked on BEAR.Resource#355 (cache hit + JsonSchema interaction). Currently zero resources have the attribute | When #355 lands, restore class-level `#[CacheableResponse]` on read resources + `#[RefreshCache]` on writes |
-| **phpstan baseline (13 entries)** | Mostly `array<string,mixed>` docblocks missing in `tests/Fake/FakeSqlQuery.php`. Cosmetic | Add proper `@param` / `@return` docblocks, regenerate baseline empty |
+| **phpstan baseline (2 entries)** | One vendor-interface return-type mismatch in `src/Fake/FakeSqlQuery.php` (`getRowList` returns `list<object>` but `SqlQueryInterface` declares `array<array<mixed>>`); one OAuth provider arg-type widening. Both intentionally suppressed — see comment in `phpstan-baseline.neon`. | Wait for upstream `SqlQueryInterface` to relax its return type; then drop the entry |
 | **Write-side CLI** | Only `article-show` / `article-list` are generated. `article-add` / `article-update` / `article-delete` would round out the demo | Add `#[Cli]` to onPost/onPut/onDelete; `composer cli` regenerates |
 | **Real Google OAuth verification** | Code uses `league/oauth2-google` correctly but no integration test against real Google (needs creds + callback URL) | Add `tests/Integration/AuthGoogleTest.php` that skips unless `GOOGLE_CLIENT_ID` is set |
 
@@ -151,7 +151,7 @@ Order matters:
 6. `docs/journal/decisions-to-consult.md` — 44 design decisions with
    user feedback
 7. `var/alps/profile.json` — the ALPS profile itself
-8. `tests/Fake/FakeSqlQuery.php` — the in-memory backend; reading this
+8. `src/Fake/FakeSqlQuery.php` — the in-memory backend; reading this
    teaches the dispatch contract better than reading docs
 
 ---

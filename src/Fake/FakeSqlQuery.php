@@ -23,6 +23,7 @@ use function dirname;
 use function file_get_contents;
 use function in_array;
 use function json_decode;
+use function preg_match;
 
 use const JSON_THROW_ON_ERROR;
 
@@ -32,6 +33,17 @@ use const JSON_THROW_ON_ERROR;
  * Lets the whole Read + Write stack run end-to-end without a real database.
  * Write ops update the in-memory tables and are also recorded to execLog
  * so tests can assert what was issued.
+ *
+ * PHPMD suppressions are intentional: this class implements a wide vendor
+ * interface (`SqlQueryInterface` has many parameters per method, only some
+ * meaningful for an in-memory fake) and routes every `#[DbQuery]` SQL id
+ * through a single `mutate()` switch — a flat dispatch is easier to read
+ * than a polymorphic split for a teaching fake.
+ *
+ * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+ * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
+ * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+ * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
  */
 final class FakeSqlQuery implements SqlQueryInterface
 {
@@ -74,9 +86,11 @@ final class FakeSqlQuery implements SqlQueryInterface
     {
         $max = 0;
         foreach ($this->tables[$table] as $row) {
-            if ((int) $row['id'] > $max) {
-                $max = (int) $row['id'];
+            if ((int) $row['id'] <= $max) {
+                continue;
             }
+
+            $max = (int) $row['id'];
         }
 
         return $max;
@@ -84,6 +98,7 @@ final class FakeSqlQuery implements SqlQueryInterface
 
     // -- SqlQueryInterface ---------------------------------------------------
 
+    /** @param array<string, mixed> $values */
     public function getRow(string $sqlId, array $values = [], FetchInterface|null $fetch = null): object|null
     {
         if (preg_match('/_(add|update|delete|clear|link)$/', $sqlId)) {
@@ -110,6 +125,15 @@ final class FakeSqlQuery implements SqlQueryInterface
         };
     }
 
+    /**
+     * The interface declares `array<array<mixed>>` for tabular fetches, but
+     * with the DbQueryInterceptor + FetchNewInstance path used here the
+     * actual return is a list of entities. The override is intentional.
+     *
+     * @param array<string, mixed> $values
+     *
+     * @return list<object>
+     */
     public function getRowList(string $sqlId, array $values = [], FetchInterface|null $fetch = null): array
     {
         if (preg_match('/_(add|update|delete|clear|link)$/', $sqlId)) {
@@ -127,6 +151,7 @@ final class FakeSqlQuery implements SqlQueryInterface
         };
     }
 
+    /** @param array<string, mixed> $values */
     public function exec(string $sqlId, array $values = [], FetchInterface|null $fetch = null): void
     {
         $this->mutate($sqlId, $values);
@@ -155,6 +180,7 @@ final class FakeSqlQuery implements SqlQueryInterface
                 $this->execLog[$logIdx]['insertedId'] = $id;
 
                 return;
+
             case 'article_update':
                 $this->updateRow('article', (int) $values['id'], [
                     'title' => $values['title'],
@@ -165,10 +191,12 @@ final class FakeSqlQuery implements SqlQueryInterface
                 ]);
 
                 return;
+
             case 'article_delete':
                 $this->deleteRow('article', (int) $values['id']);
 
                 return;
+
             case 'category_add':
                 $id = $this->nextId['category']++;
                 $this->tables['category'][] = [
@@ -181,6 +209,7 @@ final class FakeSqlQuery implements SqlQueryInterface
                 $this->execLog[$logIdx]['insertedId'] = $id;
 
                 return;
+
             case 'category_update':
                 $this->updateRow('category', (int) $values['id'], [
                     'name' => $values['name'],
@@ -189,20 +218,24 @@ final class FakeSqlQuery implements SqlQueryInterface
                 ]);
 
                 return;
+
             case 'category_delete':
                 $this->deleteRow('category', (int) $values['id']);
 
                 return;
+
             case 'tag_add':
                 $id = $this->nextId['tag']++;
                 $this->tables['tag'][] = ['id' => $id, 'slug' => $values['slug'], 'name' => $values['name']];
                 $this->execLog[$logIdx]['insertedId'] = $id;
 
                 return;
+
             case 'tag_delete':
                 $this->deleteRow('tag', (int) $values['id']);
 
                 return;
+
             case 'author_add':
                 $id = $this->nextId['author']++;
                 $this->tables['author'][] = [
@@ -214,6 +247,7 @@ final class FakeSqlQuery implements SqlQueryInterface
                 $this->execLog[$logIdx]['insertedId'] = $id;
 
                 return;
+
             case 'author_update':
                 $this->updateRow('author', (int) $values['id'], [
                     'name' => $values['name'],
@@ -222,6 +256,7 @@ final class FakeSqlQuery implements SqlQueryInterface
                 ]);
 
                 return;
+
             case 'media_add':
                 $id = $this->nextId['media']++;
                 $this->tables['media'][] = [
@@ -236,10 +271,12 @@ final class FakeSqlQuery implements SqlQueryInterface
                 $this->execLog[$logIdx]['insertedId'] = $id;
 
                 return;
+
             case 'media_delete':
                 $this->deleteRow('media', (int) $values['id']);
 
                 return;
+
             case 'article_tag_clear':
                 $aid = (int) $values['articleId'];
                 $this->tables['articleTag'] = array_values(array_filter(
@@ -248,6 +285,7 @@ final class FakeSqlQuery implements SqlQueryInterface
                 ));
 
                 return;
+
             case 'article_tag_link':
                 $this->tables['articleTag'][] = [
                     'articleId' => (int) $values['articleId'],
@@ -255,11 +293,13 @@ final class FakeSqlQuery implements SqlQueryInterface
                 ];
 
                 return;
+
             default:
                 throw new LogicException("FakeSqlQuery: unknown exec sqlId '{$sqlId}'");
         }
     }
 
+    /** @param array<string, mixed> $values */
     public function getCount(string $sqlId, array $values): int
     {
         return match ($sqlId) {
@@ -268,6 +308,7 @@ final class FakeSqlQuery implements SqlQueryInterface
         };
     }
 
+    /** @param array<string, mixed> $values */
     public function getPages(string $sqlId, array $values, int $perPage, string $queryTemplate = '/{?page}', string|null $entity = null): PagesInterface
     {
         throw new LogicException('FakeSqlQuery does not support Pager/PagesInterface; use list/count directly.');
@@ -278,14 +319,16 @@ final class FakeSqlQuery implements SqlQueryInterface
     /** @param array<string, mixed> $patch */
     private function updateRow(string $table, int $id, array $patch): void
     {
-        foreach ($this->tables[$table] as &$row) {
-            if ((int) $row['id'] === $id) {
-                foreach ($patch as $k => $v) {
-                    $row[$k] = $v;
-                }
-
-                return;
+        foreach ($this->tables[$table] as $idx => $row) {
+            if ((int) $row['id'] !== $id) {
+                continue;
             }
+
+            foreach ($patch as $k => $v) {
+                $this->tables[$table][$idx][$k] = $v;
+            }
+
+            return;
         }
     }
 
@@ -407,27 +450,33 @@ final class FakeSqlQuery implements SqlQueryInterface
         return null;
     }
 
-    /** @return list<array<string, mixed>> */
+    /**
+     * @param array<string, mixed> $values
+     *
+     * @return list<array<string, mixed>>
+     */
     private function filteredArticles(array $values): array
     {
         $rows = $this->tables['article'];
-        if (isset($values['categoryId']) && $values['categoryId'] !== null) {
+        if (isset($values['categoryId'])) {
             $cat = (int) $values['categoryId'];
             $rows = array_filter($rows, static fn ($r) => (int) $r['categoryId'] === $cat);
         }
 
-        if (isset($values['status']) && $values['status'] !== null) {
+        if (isset($values['status'])) {
             $s = (string) $values['status'];
             $rows = array_filter($rows, static fn ($r) => (string) $r['status'] === $s);
         }
 
-        if (isset($values['tagId']) && $values['tagId'] !== null) {
+        if (isset($values['tagId'])) {
             $tagId = (int) $values['tagId'];
             $articleIds = [];
             foreach ($this->tables['articleTag'] as $at) {
-                if ((int) $at['tagId'] === $tagId) {
-                    $articleIds[] = (int) $at['articleId'];
+                if ((int) $at['tagId'] !== $tagId) {
+                    continue;
                 }
+
+                $articleIds[] = (int) $at['articleId'];
             }
 
             $rows = array_filter($rows, static fn ($r) => in_array((int) $r['id'], $articleIds, true));
@@ -436,7 +485,11 @@ final class FakeSqlQuery implements SqlQueryInterface
         return array_values($rows);
     }
 
-    /** @return list<Article> */
+    /**
+     * @param array<string, mixed> $values
+     *
+     * @return list<Article>
+     */
     private function listArticles(array $values): array
     {
         $rows = $this->filteredArticles($values);
@@ -452,9 +505,11 @@ final class FakeSqlQuery implements SqlQueryInterface
     {
         $tagIds = [];
         foreach ($this->tables['articleTag'] as $at) {
-            if ((int) $at['articleId'] === $articleId) {
-                $tagIds[] = (int) $at['tagId'];
+            if ((int) $at['articleId'] !== $articleId) {
+                continue;
             }
+
+            $tagIds[] = (int) $at['tagId'];
         }
 
         $tags = array_filter($this->tables['tag'], static fn ($r) => in_array((int) $r['id'], $tagIds, true));
@@ -462,6 +517,7 @@ final class FakeSqlQuery implements SqlQueryInterface
         return array_map(fn ($r) => $this->toTag($r), array_values($tags));
     }
 
+    /** @param array<string, mixed> $r */
     private function toArticle(array $r): Article
     {
         return new Article(
@@ -477,6 +533,7 @@ final class FakeSqlQuery implements SqlQueryInterface
         );
     }
 
+    /** @param array<string, mixed> $r */
     private function toCategory(array $r): Category
     {
         return new Category(
@@ -488,11 +545,13 @@ final class FakeSqlQuery implements SqlQueryInterface
         );
     }
 
+    /** @param array<string, mixed> $r */
     private function toTag(array $r): Tag
     {
         return new Tag(id: (int) $r['id'], slug: (string) $r['slug'], name: (string) $r['name']);
     }
 
+    /** @param array<string, mixed> $r */
     private function toAuthor(array $r): Author
     {
         return new Author(
@@ -503,6 +562,7 @@ final class FakeSqlQuery implements SqlQueryInterface
         );
     }
 
+    /** @param array<string, mixed> $r */
     private function toMedia(array $r): Media
     {
         return new Media(
