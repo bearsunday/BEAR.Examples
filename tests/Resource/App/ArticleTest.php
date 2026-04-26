@@ -25,9 +25,9 @@ final class ArticleTest extends AbstractAppTestCase
 
         // The HAL renderer materialises #[Embed] requests under _embedded.
         $rendered = json_decode((string) $ro, true);
-        $this->assertSame($ro->body['authorId'], $rendered['_embedded']['goAuthor']['id']);
-        $this->assertSame($ro->body['categoryId'], $rendered['_embedded']['goCategory']['id']);
-        $this->assertIsArray($rendered['_embedded']['goTagList']['items']);
+        $this->assertSame($ro->body['authorId'], $rendered['_embedded']['author']['id']);
+        $this->assertSame($ro->body['categoryId'], $rendered['_embedded']['category']['id']);
+        $this->assertIsArray($rendered['_embedded']['tagList']['items']);
 
         // _links carry the URI templates expanded with request arguments.
         $this->assertArrayHasKey('goArticleList', $rendered['_links']);
@@ -155,7 +155,7 @@ final class ArticleTest extends AbstractAppTestCase
 
         $get = $this->resource->get('app://self/article', ['id' => $id]);
         $rendered = json_decode((string) $get, true);
-        $tagsAfterCreate = array_column($rendered['_embedded']['goTagList']['items'], 'id');
+        $tagsAfterCreate = array_column($rendered['_embedded']['tagList']['items'], 'id');
         sort($tagsAfterCreate);
         $this->assertSame([1, 2, 3], $tagsAfterCreate);
 
@@ -170,7 +170,7 @@ final class ArticleTest extends AbstractAppTestCase
 
         $getAgain = $this->resource->get('app://self/article', ['id' => $id]);
         $renderedAgain = json_decode((string) $getAgain, true);
-        $tagsAfterUpdate = array_column($renderedAgain['_embedded']['goTagList']['items'], 'id');
+        $tagsAfterUpdate = array_column($renderedAgain['_embedded']['tagList']['items'], 'id');
         sort($tagsAfterUpdate);
         $this->assertSame([4, 5], $tagsAfterUpdate);
 

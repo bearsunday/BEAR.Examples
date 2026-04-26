@@ -40,9 +40,9 @@ class Article extends ResourceObject
     #[Link(rel: 'goArticleList', href: 'app://self/articles')]
     #[Link(rel: 'goAuthor', href: 'app://self/author{?id}')]
     #[Link(rel: 'goCategory', href: 'app://self/category{?id}')]
-    #[Embed(rel: 'goAuthor', src: 'app://self/author')]
-    #[Embed(rel: 'goCategory', src: 'app://self/category')]
-    #[Embed(rel: 'goTagList', src: 'app://self/tags')]
+    #[Embed(rel: 'author', src: 'app://self/author')]
+    #[Embed(rel: 'category', src: 'app://self/category')]
+    #[Embed(rel: 'tagList', src: 'app://self/tags')]
     #[JsonSchema('article.json')]
     #[Cli(name: 'article-show', description: 'Show an article by id', output: 'title')]
     public function onGet(
@@ -57,24 +57,21 @@ class Article extends ResourceObject
             return $this;
         }
 
-        // Inject runtime values into the embedded resource Requests.
-        // The Embed interceptor has already populated $this->body['goAuthor'/...]
-        // with Request objects; addQuery() supplements their query string before
-        // they materialize at render time.
-        $this->body['goAuthor']->addQuery(['id' => $article->authorId]);
-        $this->body['goCategory']->addQuery(['id' => $article->categoryId]);
-        $this->body['goTagList']->addQuery(['articleId' => $article->id]);
+        $this->body['author']->addQuery(['id' => $article->authorId]);
+        $this->body['category']->addQuery(['id' => $article->categoryId]);
+        $this->body['tagList']->addQuery(['articleId' => $article->id]);
 
-        // Article's own data fields.
-        $this->body['id'] = $article->id;
-        $this->body['slug'] = $article->slug;
-        $this->body['title'] = $article->title;
-        $this->body['body'] = $article->body;
-        $this->body['excerpt'] = $article->excerpt;
-        $this->body['status'] = $article->status;
-        $this->body['publishedAt'] = $article->publishedAt;
-        $this->body['authorId'] = $article->authorId;
-        $this->body['categoryId'] = $article->categoryId;
+        $this->body += [
+            'id' => $article->id,
+            'slug' => $article->slug,
+            'title' => $article->title,
+            'body' => $article->body,
+            'excerpt' => $article->excerpt,
+            'status' => $article->status,
+            'publishedAt' => $article->publishedAt,
+            'authorId' => $article->authorId,
+            'categoryId' => $article->categoryId,
+        ];
 
         return $this;
     }

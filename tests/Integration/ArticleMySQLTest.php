@@ -19,7 +19,7 @@ final class ArticleMySQLTest extends AbstractMySQLTestCase
 
         $rendered = json_decode((string) $ro, true);
         $this->assertArrayHasKey('_embedded', $rendered);
-        $this->assertSame(1, $rendered['_embedded']['goAuthor']['id']);
+        $this->assertSame(1, $rendered['_embedded']['author']['id']);
     }
 
     public function testWriteRoundTripAgainstRealDb(): void
@@ -39,7 +39,7 @@ final class ArticleMySQLTest extends AbstractMySQLTestCase
 
         $get = $this->resource->get('app://self/article', ['id' => $id]);
         $rendered = json_decode((string) $get, true);
-        $tagIds = array_column($rendered['_embedded']['goTagList']['items'], 'id');
+        $tagIds = array_column($rendered['_embedded']['tagList']['items'], 'id');
         sort($tagIds);
         $this->assertSame([1, 2], $tagIds);
 
