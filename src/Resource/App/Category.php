@@ -50,7 +50,7 @@ class Category extends ResourceObject
         string|null $description = null,
         int|null $parentId = null,
     ): static {
-        $this->categoryCommand->add(slug: $slug, name: $name, description: $description, parentId: $parentId);
+        $this->categoryCommand->add($slug, $name, $description, $parentId);
         $created = $this->categoryQuery->getBySlug($slug);
         $this->code = Code::CREATED;
         $this->headers['Location'] = $created !== null ? '/category?id=' . $created->id : '/category';
@@ -73,7 +73,7 @@ class Category extends ResourceObject
             return $this;
         }
 
-        $this->categoryCommand->update(id: $id, name: $name, description: $description, parentId: $parentId);
+        $this->categoryCommand->update($id, $name, $description, $parentId);
         $this->code = Code::OK;
         $this->body = ['id' => $id];
 

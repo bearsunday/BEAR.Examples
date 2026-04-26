@@ -77,14 +77,14 @@ class Article extends ResourceObject
         array $tagIds = [],
     ): static {
         $this->articleCommand->add(
-            slug: $slug,
-            title: $title,
-            body: $body,
-            excerpt: $excerpt,
-            status: $status,
-            publishedAt: $publishedAt,
-            authorId: $authorId,
-            categoryId: $categoryId,
+            $slug,
+            $title,
+            $body,
+            $excerpt,
+            $status,
+            $publishedAt,
+            $authorId,
+            $categoryId,
         );
 
         $created = $this->articleQuery->getBySlug($slug);
@@ -121,12 +121,12 @@ class Article extends ResourceObject
         }
 
         $this->articleCommand->update(
-            id: $id,
-            title: $title,
-            body: $body,
-            excerpt: $excerpt,
-            status: $status,
-            publishedAt: $publishedAt,
+            $id,
+            $title,
+            $body,
+            $excerpt,
+            $status,
+            $publishedAt,
         );
 
         if ($tagIds !== null) {

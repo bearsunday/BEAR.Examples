@@ -41,11 +41,11 @@ class Articles extends ResourceObject
         $offset = ($page - 1) * $perPage;
 
         $items = $this->articleQuery->list(
-            categoryId: $categoryId,
-            tagId: $tagId,
-            status: $status,
-            limit: $perPage,
-            offset: $offset,
+            $categoryId,
+            $tagId,
+            $status,
+            $perPage,
+            $offset,
         );
 
         $this->body = [

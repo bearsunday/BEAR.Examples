@@ -44,7 +44,7 @@ class Author extends ResourceObject
     #[JsonSchema(schema: 'write_response.json', params: 'author_create.json')]
     public function onPost(string $name, string $email, string $bio = ''): static
     {
-        $this->authorCommand->add(name: $name, email: $email, bio: $bio);
+        $this->authorCommand->add($name, $email, $bio);
         $created = $this->authorQuery->getByEmail($email);
         $this->code = Code::CREATED;
         $this->headers['Location'] = $created !== null ? '/author?id=' . $created->id : '/author';
@@ -63,7 +63,7 @@ class Author extends ResourceObject
             return $this;
         }
 
-        $this->authorCommand->update(id: $id, name: $name, email: $email, bio: $bio);
+        $this->authorCommand->update($id, $name, $email, $bio);
         $this->code = Code::OK;
         $this->body = ['id' => $id];
 

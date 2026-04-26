@@ -44,7 +44,7 @@ class Tag extends ResourceObject
     #[JsonSchema(schema: 'write_response.json', params: 'tag_create.json')]
     public function onPost(string $slug, string $name): static
     {
-        $this->tagCommand->add(slug: $slug, name: $name);
+        $this->tagCommand->add($slug, $name);
         $created = $this->tagQuery->getBySlug($slug);
         $this->code = Code::CREATED;
         $this->headers['Location'] = $created !== null ? '/tag?id=' . $created->id : '/tag';

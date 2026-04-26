@@ -39,8 +39,8 @@ final class AppModule extends AbstractAppModule
         // Read (QueryInterface) and Write (CommandInterface) live side-by-side
         // in src/Query so MediaQuerySqlModule scans a single directory.
         $this->install(new MediaQuerySqlModule(
-            interfaceDir: $this->appMeta->appDir . '/src/Query',
-            sqlDir: $this->appMeta->appDir . '/var/db/sql',
+            $this->appMeta->appDir . '/src/Query',
+            $this->appMeta->appDir . '/var/db/sql',
         ));
 
         // Validate response bodies (and optionally request params) against JSON Schemas.

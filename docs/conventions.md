@@ -137,6 +137,97 @@ The `params:` schema lives in `var/json_validate/`.
   exception originating in `src/`.
 - Read errors (not found) return 404 via `$this->code` — do not throw.
 
+### Named arguments at call sites
+**Positional is the default.** Use named arguments only where
+positional breaks the reader's ability to decode the call. The PHP
+8.0 RFC introduced named arguments for exactly two situations; we
+adopt those two, and nothing more.
+
+Use named when:
+
+1. **A literal `true` / `false` is passed.** `execute($sql, true,
+   false)` cannot be decoded from type or order; the signature has to
+   be opened. This is the RFC's flagship example (Popov: "three
+   booleans").
+   ```php
+   // bad
+   $query->execute($sql, true, false);
+   // good
+   $query->execute($sql, cache: true, strict: false);
+   ```
+   Bool passed via a *variable* (`$query->execute($sql, $useCache)`)
+   carries meaning in the variable name; positional is fine.
+
+2. **A middle optional argument is skipped.** Filling defaults just
+   to reach the one you wanted erases the call's intent.
+   ```php
+   // bad
+   htmlspecialchars($s, ENT_COMPAT | ENT_HTML401, 'UTF-8', false);
+   // good
+   htmlspecialchars($s, double_encode: false);
+   ```
+
+Stay positional otherwise — even for many-arg calls — when type and
+verb order make the call decodable:
+
+```php
+new Point($x, $y);
+new Range($min, $max);
+$fs->move($src, $dst);                    // direction-verb
+$cache->remember($key, $ttl, $callback);
+$client->request($method, $url, $options);
+$command->add($slug, $title, $body, $excerpt, $status,
+              $publishedAt, $authorId, $categoryId);
+```
+
+Argument count alone is **not** a reason to use named arguments. A
+call that's hard to read because there are too many arguments is a
+*signature-design* problem, not a call-site problem; fix the design.
+
+Decision order at the call site:
+1. Literal `true`/`false` → named
+2. Skipping a middle optional → named
+3. Otherwise → positional
+
+When named keeps creeping in, the signature is the smell:
+- **Aggregate into a value object.** Many-arg commands take one DTO.
+  Constructors of "struct objects" (Larry Garfield's term) are the
+  natural place for named.
+- **Drop `bool` parameters.** Split `save()` / `forceSave()`, or use
+  `enum SaveMode`. PHPMD `BooleanArgumentFlag` flags this for the
+  same reason.
+- **Split the method.** "`true` / `false` switches behavior" is an
+  SRP violation in disguise.
+
+Scope: this convention covers internal interfaces (Read/Write
+boundaries, Resource-layer calls). Public library APIs are
+out-of-scope — there, parameter names become part of the BC
+contract; consider `@no-named-arguments` (PHPStan / Psalm /
+PHP-CS-Fixer) instead.
+
+Explicitly **not** adopted:
+- "3+ arguments → named" — pulls in healthy calls like
+  `cache->remember($key, $ttl, $callback)` and erodes positional as
+  the default.
+- "5+ arguments → named" — count thresholds hide design problems
+  behind call-site syntax.
+- "Same-typed 2+ → named" — sweeps in `Point(x, y)` and
+  direction-verbs `move(src, dst)`.
+- "Any nullable parameter → named" — `?string` itself doesn't cause
+  swap bugs; the *skip-the-default* case is already covered by rule 2.
+- "Any `bool` parameter → named" — `$force` via a variable is
+  self-explaining. The breakage is specifically literal `true`/`false`.
+
+References:
+- PHP 8.0 named arguments RFC (Popov)
+- PHP Internals News Ep. 59 — Popov frames `true, true, false` as
+  the canonical case
+- Larry Garfield, "PHP 8.0 named arguments" — named as a *targeted*
+  tool for struct-object construction
+- PHPMD `BooleanArgumentFlag` — `bool` parameter as SRP smell
+- `@no-named-arguments` in PHPStan / Psalm / PHP-CS-Fixer — for
+  library-boundary BC, not internal style
+
 ### Method order inside a Resource
 1. `__construct`
 2. Public `on*` handlers in HTTP-verb order (`onGet`, `onPost`, `onPut`,

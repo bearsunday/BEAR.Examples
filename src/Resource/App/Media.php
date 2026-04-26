@@ -52,12 +52,12 @@ class Media extends ResourceObject
         int $height = 0,
     ): static {
         $this->mediaCommand->add(
-            filename: $filename,
-            mimeType: $mimeType,
-            url: $url,
-            alt: $alt,
-            width: $width,
-            height: $height,
+            $filename,
+            $mimeType,
+            $url,
+            $alt,
+            $width,
+            $height,
         );
         $created = $this->mediaQuery->getByFilename($filename);
         $this->code = Code::CREATED;
