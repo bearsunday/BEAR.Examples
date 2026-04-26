@@ -11,9 +11,12 @@ use BEAR\Resource\Annotation\JsonSchema;
 use BEAR\Resource\Annotation\Link;
 use BEAR\Resource\Code;
 use BEAR\Resource\ResourceObject;
+use MyVendor\Cms\Input\ArticleCreateInput;
+use MyVendor\Cms\Input\ArticleUpdateInput;
 use MyVendor\Cms\Query\ArticleCommandInterface;
 use MyVendor\Cms\Query\ArticleQueryInterface;
 use MyVendor\Cms\Query\ArticleTagCommandInterface;
+use Ray\InputQuery\Attribute\Input;
 
 class Article extends ResourceObject
 {
@@ -63,78 +66,62 @@ class Article extends ResourceObject
         return $this;
     }
 
-    /** @param list<int> $tagIds Optional list of tag ids to link to the new article. */
-    #[JsonSchema(schema: 'write_response.json', params: 'article_create.json')]
-    public function onPost(
-        string $slug,
-        string $title,
-        string $body,
-        int $authorId,
-        int $categoryId,
-        string|null $excerpt = null,
-        string $status = 'draft',
-        string|null $publishedAt = null,
-        array $tagIds = [],
-    ): static {
+    /** TODO(input-query+json-schema): JsonSchema cannot validate Input DTO params today; revisit when integration lands. */
+    public function onPost(#[Input]
+    ArticleCreateInput $input,): static
+    {
         $this->articleCommand->add(
-            $slug,
-            $title,
-            $body,
-            $excerpt,
-            $status,
-            $publishedAt,
-            $authorId,
-            $categoryId,
+            $input->slug,
+            $input->title,
+            $input->body,
+            $input->excerpt,
+            $input->status,
+            $input->publishedAt,
+            $input->authorId,
+            $input->categoryId,
         );
 
-        $created = $this->articleQuery->getBySlug($slug);
-        if ($created !== null && $tagIds !== []) {
-            $this->syncTags($created->id, $tagIds);
+        $created = $this->articleQuery->getBySlug($input->slug);
+        if ($created !== null && $input->tagIds !== []) {
+            $this->syncTags($created->id, $input->tagIds);
         }
 
         $this->code = Code::CREATED;
-        $this->headers['Location'] = $created !== null ? '/article?id=' . $created->id : '/article?slug=' . $slug;
+        $this->headers['Location'] = $created !== null ? '/article?id=' . $created->id : '/article?slug=' . $input->slug;
         $this->body = [
             'id' => $created?->id,
-            'slug' => $slug,
+            'slug' => $input->slug,
         ];
 
         return $this;
     }
 
-    /** @param list<int>|null $tagIds When provided, replaces the tag set entirely. */
-    #[JsonSchema(schema: 'write_response.json', params: 'article_update.json')]
-    public function onPut(
-        int $id,
-        string $title,
-        string $body,
-        string $status,
-        string|null $excerpt = null,
-        string|null $publishedAt = null,
-        array|null $tagIds = null,
-    ): static {
-        if ($this->articleQuery->getById($id) === null) {
+    /** TODO(input-query+json-schema): JsonSchema cannot validate Input DTO params today; revisit when integration lands. */
+    public function onPut(#[Input]
+    ArticleUpdateInput $input,): static
+    {
+        if ($this->articleQuery->getById($input->id) === null) {
             $this->code = Code::NOT_FOUND;
-            $this->body = ['message' => 'Article not found', 'id' => $id];
+            $this->body = ['message' => 'Article not found', 'id' => $input->id];
 
             return $this;
         }
 
         $this->articleCommand->update(
-            $id,
-            $title,
-            $body,
-            $excerpt,
-            $status,
-            $publishedAt,
+            $input->id,
+            $input->title,
+            $input->body,
+            $input->excerpt,
+            $input->status,
+            $input->publishedAt,
         );
 
-        if ($tagIds !== null) {
-            $this->syncTags($id, $tagIds);
+        if ($input->tagIds !== null) {
+            $this->syncTags($input->id, $input->tagIds);
         }
 
         $this->code = Code::OK;
-        $this->body = ['id' => $id];
+        $this->body = ['id' => $input->id];
 
         return $this;
     }

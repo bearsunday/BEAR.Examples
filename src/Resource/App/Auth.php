@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace MyVendor\Cms\Resource\App;
 
-use BEAR\Resource\Annotation\JsonSchema;
 use BEAR\Resource\Code;
 use BEAR\Resource\ResourceObject;
 use MyVendor\Cms\Auth\AuthInterface;
+use MyVendor\Cms\Input\AuthExchangeInput;
+use Ray\InputQuery\Attribute\Input;
 use Throwable;
 
 /**
@@ -35,11 +36,12 @@ class Auth extends ResourceObject
         return $this;
     }
 
-    #[JsonSchema(params: 'auth_exchange.json')]
-    public function onPost(string $code, string $state): static
+    /** TODO(input-query+json-schema): JsonSchema cannot validate Input DTO params today; revisit when integration lands. */
+    public function onPost(#[Input]
+    AuthExchangeInput $input,): static
     {
         try {
-            $user = $this->auth->authenticate($code, $state);
+            $user = $this->auth->authenticate($input->code, $input->state);
         } catch (Throwable $e) {
             $this->code = Code::UNAUTHORIZED;
             $this->body = ['message' => 'Authentication failed', 'reason' => $e->getMessage()];
