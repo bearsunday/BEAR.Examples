@@ -39,16 +39,14 @@
 </tr>
 <tr>
   
-  <td rowspan="9" class="method-cell"><span class="ti unsafe"></span>POST</td>
+  <td rowspan="9" class="method-cell"><span class="ti unsafe"></span>POST<div class="method-title">TODO(input-query+json-schema): JsonSchema cannot validate Input DTO params today; revisit when integration lands.</div></td>
   <td><span class="param">slug</span><span class="req">*</span></td>
   <td><span class="badge type-string">string</span></td>
   <td class="param-desc"></td>
   <td><div class="extra-info">
-      <span class="badge constraint">minLength: 3</span>
-      <span class="badge constraint">maxLength: 100</span>
-      <span class="badge constraint">pattern: ^[a-z0-9][a-z0-9-]*$</span>
+      
     </div></td>
-  <td rowspan="9"><a href="#WriteResponse" class="schema-link">WriteResponse</a></td>
+  <td rowspan="9"></td>
 </tr>
 <tr>
   
@@ -57,8 +55,7 @@
   <td><span class="badge type-string">string</span></td>
   <td class="param-desc"></td>
   <td><div class="extra-info">
-      <span class="badge constraint">minLength: 1</span>
-      <span class="badge constraint">maxLength: 255</span>
+      
     </div></td>
   
 </tr>
@@ -69,7 +66,7 @@
   <td><span class="badge type-string">string</span></td>
   <td class="param-desc"></td>
   <td><div class="extra-info">
-      <span class="badge constraint">minLength: 1</span>
+      
     </div></td>
   
 </tr>
@@ -80,7 +77,7 @@
   <td><span class="badge type-int">int</span></td>
   <td class="param-desc"></td>
   <td><div class="extra-info">
-      <span class="badge constraint">minimum: 1</span>
+      
     </div></td>
   
 </tr>
@@ -91,7 +88,7 @@
   <td><span class="badge type-int">int</span></td>
   <td class="param-desc"></td>
   <td><div class="extra-info">
-      <span class="badge constraint">minimum: 1</span>
+      
     </div></td>
   
 </tr>
@@ -113,7 +110,7 @@
   <td><span class="badge type-string">string</span></td>
   <td class="param-desc"></td>
   <td><div class="extra-info">
-      <span class="badge constraint">enum: [&quot;draft&quot;,&quot;published&quot;]</span>
+      
     </div></td>
   
 </tr>
@@ -124,7 +121,7 @@
   <td><span class="badge type-string">string</span></td>
   <td class="param-desc"></td>
   <td><div class="extra-info">
-      <span class="badge format">format: date-time</span>
+      
     </div></td>
   
 </tr>
@@ -133,7 +130,7 @@
   
   <td><span class="param">tagIds</span></td>
   <td><span class="badge type-array">array</span></td>
-  <td class="param-desc">Optional list of tag ids to link to the new article.</td>
+  <td class="param-desc"></td>
   <td><div class="extra-info">
       
     </div></td>
@@ -141,14 +138,14 @@
 </tr>
 <tr>
   
-  <td rowspan="7" class="method-cell"><span class="ti idempotent"></span>PUT</td>
+  <td rowspan="7" class="method-cell"><span class="ti idempotent"></span>PUT<div class="method-title">TODO(input-query+json-schema): JsonSchema cannot validate Input DTO params today; revisit when integration lands.</div></td>
   <td><span class="param">id</span><span class="req">*</span></td>
   <td><span class="badge type-int">int</span></td>
   <td class="param-desc"></td>
   <td><div class="extra-info">
-      <span class="badge constraint">minimum: 1</span>
+      
     </div></td>
-  <td rowspan="7"><a href="#WriteResponse" class="schema-link">WriteResponse</a></td>
+  <td rowspan="7"></td>
 </tr>
 <tr>
   
@@ -157,8 +154,7 @@
   <td><span class="badge type-string">string</span></td>
   <td class="param-desc"></td>
   <td><div class="extra-info">
-      <span class="badge constraint">minLength: 1</span>
-      <span class="badge constraint">maxLength: 255</span>
+      
     </div></td>
   
 </tr>
@@ -169,7 +165,7 @@
   <td><span class="badge type-string">string</span></td>
   <td class="param-desc"></td>
   <td><div class="extra-info">
-      <span class="badge constraint">minLength: 1</span>
+      
     </div></td>
   
 </tr>
@@ -180,7 +176,7 @@
   <td><span class="badge type-string">string</span></td>
   <td class="param-desc"></td>
   <td><div class="extra-info">
-      <span class="badge constraint">enum: [&quot;draft&quot;,&quot;published&quot;]</span>
+      
     </div></td>
   
 </tr>
@@ -202,7 +198,7 @@
   <td><span class="badge type-string">string</span></td>
   <td class="param-desc"></td>
   <td><div class="extra-info">
-      <span class="badge format">format: date-time</span>
+      
     </div></td>
   
 </tr>
@@ -211,7 +207,7 @@
   
   <td><span class="param">tagIds</span></td>
   <td><span class="badge type-array">array</span></td>
-  <td class="param-desc">When provided, replaces the tag set entirely.</td>
+  <td class="param-desc"></td>
   <td><div class="extra-info">
       
     </div></td>
@@ -293,7 +289,7 @@
 </tr>
 <tr>
   
-  <td rowspan="2" class="method-cell"><span class="ti unsafe"></span>POST</td>
+  <td rowspan="2" class="method-cell"><span class="ti unsafe"></span>POST<div class="method-title">TODO(input-query+json-schema): JsonSchema cannot validate Input DTO params today; revisit when integration lands.</div></td>
   <td><span class="param">code</span><span class="req">*</span></td>
   <td><span class="badge type-string">string</span></td>
   <td class="param-desc"></td>
@@ -829,57 +825,6 @@
 </tbody>
 </table>
 </div>
-<div class="object-section" id="WriteResponse">
-<h3 class="object-name"><a href="schemas/write_response.json" class="schema-file-link" title="JSON Schema">📄</a>WriteResponse</h3>
-<table>
-<thead>
-<tr><th>Name</th><th>Type</th><th>Description</th><th>Meta</th></tr>
-</thead>
-<tbody>
-<tr>
-  <td><span class="prop-name">id</span></td>
-  <td><span class="badge type-intnull">int|null</span></td>
-  <td class="param-desc"></td>
-  <td><div class="extra-info">
-      <span class="badge constraint">minimum: 1</span>
-    </div></td>
-</tr>
-<tr>
-  <td><span class="prop-name">slug</span></td>
-  <td><span class="badge type-string">string</span></td>
-  <td class="param-desc"></td>
-  <td><div class="extra-info">
-      
-    </div></td>
-</tr>
-<tr>
-  <td><span class="prop-name">email</span></td>
-  <td><span class="badge type-string">string</span></td>
-  <td class="param-desc"></td>
-  <td><div class="extra-info">
-      
-    </div></td>
-</tr>
-<tr>
-  <td><span class="prop-name">filename</span></td>
-  <td><span class="badge type-string">string</span></td>
-  <td class="param-desc"></td>
-  <td><div class="extra-info">
-      
-    </div></td>
-</tr>
-<tr>
-  <td><span class="prop-name">message</span></td>
-  <td><span class="badge type-string">string</span></td>
-  <td class="param-desc"></td>
-  <td><div class="extra-info">
-      
-    </div></td>
-</tr>
-
-</tbody>
-</table>
-</div>
 <div class="object-section" id="ArticleList">
 <h3 class="object-name"><a href="schemas/articleList.json" class="schema-file-link" title="JSON Schema">📄</a>ArticleList</h3>
 <table>
@@ -994,6 +939,57 @@
       <span class="badge href">href: app://self/articles</span>
     </div>
   </td>
+</tr>
+
+</tbody>
+</table>
+</div>
+<div class="object-section" id="WriteResponse">
+<h3 class="object-name"><a href="schemas/write_response.json" class="schema-file-link" title="JSON Schema">📄</a>WriteResponse</h3>
+<table>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Description</th><th>Meta</th></tr>
+</thead>
+<tbody>
+<tr>
+  <td><span class="prop-name">id</span></td>
+  <td><span class="badge type-intnull">int|null</span></td>
+  <td class="param-desc"></td>
+  <td><div class="extra-info">
+      <span class="badge constraint">minimum: 1</span>
+    </div></td>
+</tr>
+<tr>
+  <td><span class="prop-name">slug</span></td>
+  <td><span class="badge type-string">string</span></td>
+  <td class="param-desc"></td>
+  <td><div class="extra-info">
+      
+    </div></td>
+</tr>
+<tr>
+  <td><span class="prop-name">email</span></td>
+  <td><span class="badge type-string">string</span></td>
+  <td class="param-desc"></td>
+  <td><div class="extra-info">
+      
+    </div></td>
+</tr>
+<tr>
+  <td><span class="prop-name">filename</span></td>
+  <td><span class="badge type-string">string</span></td>
+  <td class="param-desc"></td>
+  <td><div class="extra-info">
+      
+    </div></td>
+</tr>
+<tr>
+  <td><span class="prop-name">message</span></td>
+  <td><span class="badge type-string">string</span></td>
+  <td class="param-desc"></td>
+  <td><div class="extra-info">
+      
+    </div></td>
 </tr>
 
 </tbody>

@@ -99,9 +99,9 @@ API Document
 | Response | Schema | Properties |
 |----------|--------|------------|
 | Article | article.json | id, slug, title, body, excerpt, status, publishedAt, authorId, categoryId |
-| Write_response | write_response.json | id, slug, email, filename, message |
 | ArticleList | articleList.json | items, page, perPage, count, totalCount |
 | Author | author.json | id, name, email, bio |
+| Write_response | write_response.json | id, slug, email, filename, message |
 | CategoryList | categoryList.json | items, totalCount |
 | Category | category.json | id, slug, name, description, parentId |
 | Media | media.json | id, filename, mimeType, url, alt, width, height |

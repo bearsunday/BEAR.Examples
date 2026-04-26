@@ -22,168 +22,18 @@
                 }
             },
             "post": {
-                "parameters": [
-                    {
-                        "name": "slug",
-                        "in": "query",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "title",
-                        "in": "query",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "body",
-                        "in": "query",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "authorId",
-                        "in": "query",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
-                        "name": "categoryId",
-                        "in": "query",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
-                        "name": "excerpt",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "status",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "publishedAt",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "tagIds",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "array"
-                        }
-                    }
-                ],
+                "summary": "TODO(input-query+json-schema): JsonSchema cannot validate Input DTO params today; revisit when integration lands.",
                 "responses": {
                     "200": {
-                        "description": "Successful response",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/WriteResponse"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request"
+                        "description": "Successful response"
                     }
                 }
             },
             "put": {
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "query",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
-                        "name": "title",
-                        "in": "query",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "body",
-                        "in": "query",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "status",
-                        "in": "query",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "excerpt",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "publishedAt",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "tagIds",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "array"
-                        }
-                    }
-                ],
+                "summary": "TODO(input-query+json-schema): JsonSchema cannot validate Input DTO params today; revisit when integration lands.",
                 "responses": {
                     "200": {
-                        "description": "Successful response",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/WriteResponse"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request"
+                        "description": "Successful response"
                     }
                 }
             },
@@ -222,8 +72,7 @@
                 }
             },
             "post": {
-                "summary": "OAuth login resource.",
-                "description": "GET  app://self/auth        \u2192 returns the authorization URL the client should redirect to\nPOST app://self/auth        \u2192 exchanges {code, state} for an AuthenticatedUser\n\nThe bound AuthInterface decides the backend (Google in production,\nFakeAuthProvider in test / fake-hal-api-app).",
+                "summary": "TODO(input-query+json-schema): JsonSchema cannot validate Input DTO params today; revisit when integration lands.",
                 "responses": {
                     "200": {
                         "description": "Successful response"
@@ -724,32 +573,6 @@
                     }
                 }
             },
-            "WriteResponse": {
-                "title": "WriteResponse",
-                "description": "Permissive shape covering POST/PUT/DELETE response bodies across all write resources. PUT returns {id}, POST returns {id, slug|email|filename}, error paths return {message, id}. Each write method points its #[JsonSchema(schema:)] at this file.",
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "type": [
-                            "integer",
-                            "null"
-                        ],
-                        "minimum": 1
-                    },
-                    "slug": {
-                        "type": "string"
-                    },
-                    "email": {
-                        "type": "string"
-                    },
-                    "filename": {
-                        "type": "string"
-                    },
-                    "message": {
-                        "type": "string"
-                    }
-                }
-            },
             "ArticleList": {
                 "title": "ArticleList",
                 "description": "Paginated list of article summaries",
@@ -867,6 +690,32 @@
                         "description": "Optional biography",
                         "minLength": 0,
                         "maxLength": 50
+                    }
+                }
+            },
+            "WriteResponse": {
+                "title": "WriteResponse",
+                "description": "Permissive shape covering POST/PUT/DELETE response bodies across all write resources. PUT returns {id}, POST returns {id, slug|email|filename}, error paths return {message, id}. Each write method points its #[JsonSchema(schema:)] at this file.",
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ],
+                        "minimum": 1
+                    },
+                    "slug": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "filename": {
+                        "type": "string"
+                    },
+                    "message": {
+                        "type": "string"
                     }
                 }
             },
