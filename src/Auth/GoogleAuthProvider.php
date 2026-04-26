@@ -6,7 +6,7 @@ namespace MyVendor\Cms\Auth;
 
 use League\OAuth2\Client\Provider\Google;
 use League\OAuth2\Client\Provider\GoogleUser;
-use RuntimeException;
+use MyVendor\Cms\Exception\UnexpectedAuthProviderResponseException;
 
 /**
  * Real Google OAuth provider.
@@ -34,7 +34,7 @@ final class GoogleAuthProvider implements AuthInterface
         $token = $this->provider->getAccessToken('authorization_code', ['code' => $code]);
         $user = $this->provider->getResourceOwner($token);
         if (! $user instanceof GoogleUser) {
-            throw new RuntimeException('Unexpected resource owner type from Google.');
+            throw new UnexpectedAuthProviderResponseException('Unexpected resource owner type from Google.');
         }
 
         return new AuthenticatedUser(
