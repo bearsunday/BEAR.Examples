@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace MyVendor\Cms\Resource\App;
 
+use BEAR\Resource\Annotation\JsonSchema;
 use BEAR\Resource\Code;
 use BEAR\Resource\ResourceObject;
 use MyVendor\Cms\Auth\AuthInterface;
@@ -34,6 +35,7 @@ class Auth extends ResourceObject
         return $this;
     }
 
+    #[JsonSchema(params: 'auth_exchange.json')]
     public function onPost(string $code, string $state): static
     {
         try {
