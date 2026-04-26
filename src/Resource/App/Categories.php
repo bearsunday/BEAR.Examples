@@ -15,7 +15,7 @@ use function count;
 class Categories extends ResourceObject
 {
     public function __construct(
-        private readonly CategoryQueryInterface $categoryQuery,
+        private readonly CategoryQueryInterface $category,
     ) {
     }
 
@@ -23,7 +23,7 @@ class Categories extends ResourceObject
     #[JsonSchema('categoryList.json')]
     public function onGet(): static
     {
-        $items = $this->categoryQuery->list();
+        $items = $this->category->list();
         $this->body = [
             'items' => array_map(static fn ($c) => [
                 'id' => $c->id,

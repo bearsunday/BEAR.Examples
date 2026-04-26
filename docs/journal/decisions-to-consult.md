@@ -66,7 +66,7 @@ BEAR.Cms 構築中、私が独断で決めて先に進めたが本来は合意�
 | 20 | Migration クラス名 | `Version20260425000001` (Doctrine 既定) | no idea |
 | 21 | ALPS Ontology 命名 | `articleId` / `articleSlug` (entity prefix) | `id` / `slug` |
 | 22 | HAL `_links` rel 名 | `articles` / `author` / `category` (HAL 慣習) | `goArticleList` / `goAuthor` (ALPS transition と揃える) |
-| 23 | `getBy{naturalKey}` メソッド名 | `getBySlug`, `getByEmail`, `getByFilename` | 一種類ならbyは不要 |
+| 23 | Query メソッド名 (PK / 自然キー / 集合) | 当初: `getById` / `getBySlug` / `getByEmail` / `getByFilename` / `findAll` | 解決: `item(int $id)` / `by<NaturalKey>(...)` / `list()` に統一。`item ↔ list` の語彙対が `Article ↔ Articles` リソース対に対応し、`item` (PK) と `by<NaturalKey>` (自然キー) で意味的役割の違いをメソッド形でエンコードする。Resource プロパティも `$<entity>` (Query) / `$<entity>Cmd` (Command) に統一。詳細は `docs/conventions.md` §3。|
 
 ## P4: 黙ってスコープから落とした項目
 

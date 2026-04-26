@@ -21,9 +21,9 @@ use Ray\InputQuery\Attribute\Input;
 class Article extends ResourceObject
 {
     public function __construct(
-        private readonly ArticleQueryInterface $articleQuery,
-        private readonly ArticleCommandInterface $articleCommand,
-        private readonly ArticleTagCommandInterface $articleTagCommand,
+        private readonly ArticleQueryInterface $article,
+        private readonly ArticleCommandInterface $articleCmd,
+        private readonly ArticleTagCommandInterface $articleTagCmd,
     ) {
     }
 
@@ -39,7 +39,7 @@ class Article extends ResourceObject
         #[Option(shortName: 'i', description: 'Article id')]
         int $id,
     ): static {
-        $article = $this->articleQuery->getById($id);
+        $article = $this->article->item($id);
         if ($article === null) {
             $this->code = Code::NOT_FOUND;
             $this->body = ['message' => 'Article not found', 'id' => $id];
@@ -67,10 +67,9 @@ class Article extends ResourceObject
     }
 
     /** TODO(input-query+json-schema): JsonSchema cannot validate Input DTO params today; revisit when integration lands. */
-    public function onPost(#[Input]
-    ArticleCreateInput $input,): static
+    public function onPost(#[Input] ArticleCreateInput $input,): static
     {
-        $this->articleCommand->add(
+        $this->articleCmd->add(
             $input->slug,
             $input->title,
             $input->body,
@@ -81,7 +80,7 @@ class Article extends ResourceObject
             $input->categoryId,
         );
 
-        $created = $this->articleQuery->getBySlug($input->slug);
+        $created = $this->article->bySlug($input->slug);
         if ($created !== null && $input->tagIds !== []) {
             $this->syncTags($created->id, $input->tagIds);
         }
@@ -100,14 +99,14 @@ class Article extends ResourceObject
     public function onPut(#[Input]
     ArticleUpdateInput $input,): static
     {
-        if ($this->articleQuery->getById($input->id) === null) {
+        if ($this->article->item($input->id) === null) {
             $this->code = Code::NOT_FOUND;
             $this->body = ['message' => 'Article not found', 'id' => $input->id];
 
             return $this;
         }
 
-        $this->articleCommand->update(
+        $this->articleCmd->update(
             $input->id,
             $input->title,
             $input->body,
@@ -128,14 +127,14 @@ class Article extends ResourceObject
 
     public function onDelete(int $id): static
     {
-        if ($this->articleQuery->getById($id) === null) {
+        if ($this->article->item($id) === null) {
             $this->code = Code::NOT_FOUND;
             $this->body = ['message' => 'Article not found', 'id' => $id];
 
             return $this;
         }
 
-        $this->articleCommand->delete($id);
+        $this->articleCmd->delete($id);
         $this->code = Code::NO_CONTENT;
         $this->body = [];
 
@@ -149,9 +148,9 @@ class Article extends ResourceObject
      */
     private function syncTags(int $articleId, array $tagIds): void
     {
-        $this->articleTagCommand->clear($articleId);
+        $this->articleTagCmd->clear($articleId);
         foreach ($tagIds as $tagId) {
-            $this->articleTagCommand->link($articleId, $tagId);
+            $this->articleTagCmd->link($articleId, $tagId);
         }
     }
 }

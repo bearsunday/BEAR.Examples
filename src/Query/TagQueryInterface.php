@@ -10,10 +10,10 @@ use Ray\MediaQuery\Annotation\DbQuery;
 interface TagQueryInterface
 {
     #[DbQuery('tag_item', type: 'row')]
-    public function getById(int $id): Tag|null;
+    public function item(int $id): Tag|null;
 
     #[DbQuery('tag_by_slug', type: 'row')]
-    public function getBySlug(string $slug): Tag|null;
+    public function bySlug(string $slug): Tag|null;
 
     /** @return list<Tag> */
     #[DbQuery('tag_list', type: 'row_list')]

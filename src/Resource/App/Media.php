@@ -13,15 +13,15 @@ use MyVendor\Cms\Query\MediaQueryInterface;
 class Media extends ResourceObject
 {
     public function __construct(
-        private readonly MediaQueryInterface $mediaQuery,
-        private readonly MediaCommandInterface $mediaCommand,
+        private readonly MediaQueryInterface $media,
+        private readonly MediaCommandInterface $mediaCmd,
     ) {
     }
 
     #[JsonSchema('media.json')]
     public function onGet(int $id): static
     {
-        $media = $this->mediaQuery->getById($id);
+        $media = $this->media->item($id);
         if ($media === null) {
             $this->code = Code::NOT_FOUND;
             $this->body = ['message' => 'Media not found', 'id' => $id];
@@ -51,7 +51,7 @@ class Media extends ResourceObject
         int $width = 0,
         int $height = 0,
     ): static {
-        $this->mediaCommand->add(
+        $this->mediaCmd->add(
             $filename,
             $mimeType,
             $url,
@@ -59,7 +59,7 @@ class Media extends ResourceObject
             $width,
             $height,
         );
-        $created = $this->mediaQuery->getByFilename($filename);
+        $created = $this->media->byFilename($filename);
         $this->code = Code::CREATED;
         $this->headers['Location'] = $created !== null ? '/media?id=' . $created->id : '/media';
         $this->body = ['id' => $created?->id, 'filename' => $filename];
@@ -69,14 +69,14 @@ class Media extends ResourceObject
 
     public function onDelete(int $id): static
     {
-        if ($this->mediaQuery->getById($id) === null) {
+        if ($this->media->item($id) === null) {
             $this->code = Code::NOT_FOUND;
             $this->body = ['message' => 'Media not found', 'id' => $id];
 
             return $this;
         }
 
-        $this->mediaCommand->delete($id);
+        $this->mediaCmd->delete($id);
         $this->code = Code::NO_CONTENT;
         $this->body = [];
 

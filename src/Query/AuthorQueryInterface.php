@@ -10,8 +10,8 @@ use Ray\MediaQuery\Annotation\DbQuery;
 interface AuthorQueryInterface
 {
     #[DbQuery('author_item', type: 'row')]
-    public function getById(int $id): Author|null;
+    public function item(int $id): Author|null;
 
     #[DbQuery('author_by_email', type: 'row')]
-    public function getByEmail(string $email): Author|null;
+    public function byEmail(string $email): Author|null;
 }

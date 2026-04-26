@@ -40,20 +40,68 @@ then the code/docs follow.
 - Write interface: `<Entity>CommandInterface` (e.g. `ArticleCommandInterface`)
 - Entity: `final readonly class` with public properties only
 
-### `getBy{NaturalKey}`
-- After INSERT, fetch the new row by natural key, not `lastInsertId`:
-  `getBySlug`, `getByEmail`, `getByFilename`. Always include `By` even
-  when only one such method exists per entity (consistency with code
-  search).
+### Query / Command method names
+**Reads use noun-form (queryable noun + qualifier); writes use verb-form
+(imperative action).** Same vocabulary as the SQL filenames below, so
+that `#[DbQuery('article_item')] public function item(int $id)` speaks
+one language across attribute and signature.
+
+| Kind | Method shape | Examples |
+|---|---|---|
+| Single-row read by primary key | `item` | `item(int $id)` |
+| Single-row read by natural key | `by<NaturalKey>` | `bySlug`, `byEmail`, `byFilename` |
+| Multi-row read | `list` (variants: `list<Variant>`) | `list()`, `listByArticle(int $articleId)` |
+| Single-row write | imperative verb | `add`, `update`, `delete` |
+| Link-table write | imperative verb | `clear`, `link` (e.g. `ArticleTagCommandInterface`) |
+
+`item` (canonical PK lookup) and `by<NaturalKey>` (alternate access
+path) are intentionally distinct shapes: PK is the technical identity
+handle, natural keys (`slug`, `email`, `filename`) are domain-meaningful
+alternates. The asymmetry encodes that real distinction.
+
+`item` ↔ `list` form a lexical pair that mirrors BEAR's resource
+shapes: `Article` (item resource) ↔ `Articles` (collection resource);
+`item($id)` ↔ `list(...)`.
+
+After INSERT, fetch the new row by natural key via `by<NaturalKey>`,
+not `lastInsertId`. The natural key is what the client supplied;
+re-SELECT gives back the assigned id without driver-dependent state.
+
+### Resource property names
+
+Resources hold dependencies on Query/Command interfaces. Reads are
+**queryable nouns**, writes are **action tools** — name them
+accordingly:
+
+| Dependency | Property pattern | Example |
+|---|---|---|
+| Primary entity's `<Entity>QueryInterface` | `$<entity>` | `private ArticleQueryInterface $article` |
+| Primary entity's `<Entity>CommandInterface` | `$<entity>Cmd` | `private ArticleCommandInterface $articleCmd` |
+| Auxiliary / link-entity's interface | `$<entity><Role>` | `private ArticleTagCommandInterface $articleTagCmd` |
+
+The asymmetric naming carries information:
+
+- `$this->article->item($id)` reads as "the article-source's item by
+  id" — receiver is a queryable noun, method qualifies the query.
+  Mirrors Rails `Article.find(id)` in role even though syntax differs.
+- `$this->articleCmd->add(...)` reads as "the article command, add" —
+  receiver is a tool, method names the action.
+
+In a Resource focused on a single entity (`Article`, `Author`, etc.),
+the unsuffixed property name reserves the read role for the primary
+entity, distinguishing it from auxiliary write-only links.
 
 ### SQL filenames
 - Pattern: `<entity>_<verb>.sql` in `var/db/sql/`
-- Verbs: `item` (single read by id), `by_<key>` (read by natural key),
-  `list` (multiple reads), `add` (insert), `update`, `delete`, plus
-  link-table verbs like `tag_clear`, `tag_link`
+- Verbs match the method names above:
+  - `item` ↔ `<entity>_item.sql`
+  - `by_<key>` ↔ `<entity>_by_<key>.sql`
+  - `list` ↔ `<entity>_list.sql`, `<entity>_list_by_<x>.sql`
+  - `add` / `update` / `delete` ↔ same
+  - link-table verbs ↔ `<link>_clear.sql`, `<link>_link.sql`
 - Examples: `article_item.sql`, `article_by_slug.sql`,
   `article_list.sql`, `article_add.sql`, `article_update.sql`,
-  `article_delete.sql`
+  `article_delete.sql`, `article_tag_clear.sql`, `article_tag_link.sql`
 
 ### ALPS Ontology
 - Entity-prefixed: `articleId`, `articleSlug`, `articleTitle`,
@@ -126,7 +174,7 @@ applies.
 
 ### After-INSERT id
 Never `lastInsertId` (driver-dependent, awkward to fake). Always
-re-SELECT via `getBy{NaturalKey}` using the natural key the client
+re-SELECT via `by<NaturalKey>` using the natural key the client
 supplied (slug / email / filename). Returns `void` from the `Command`
 side.
 

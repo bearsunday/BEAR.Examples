@@ -54,9 +54,11 @@ defeats the reference value.
   `var/db/sql/<entity>_<verb>.sql`. Read SQL columns are ordered to
   match the entity constructor (PDO::FETCH_FUNC).
 - New-id-after-INSERT pattern: Resource calls
-  `articleQuery->getBySlug($slug)` after `articleCommand->add(...)`.
+  `$this->article->bySlug($slug)` after `$this->articleCmd->add(...)`.
   Avoids driver-specific `lastInsertId`. Slug/email/filename are the
-  natural unique keys.
+  natural unique keys. See `conventions.md` §3 for the
+  `item` / `by<NaturalKey>` / `list` query method naming and the
+  `$<entity>` / `$<entity>Cmd` Resource property naming.
 - ALPS profile (`var/alps/profile.json`) is the source of truth for
   Choreography names. HAL `_links` rels match those names
   (`goArticleList`, `doCreateArticle`, etc.).

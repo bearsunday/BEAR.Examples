@@ -17,7 +17,7 @@ use function count;
 class Articles extends ResourceObject
 {
     public function __construct(
-        private readonly ArticleQueryInterface $articleQuery,
+        private readonly ArticleQueryInterface $article,
     ) {
     }
 
@@ -40,7 +40,7 @@ class Articles extends ResourceObject
         $perPage = $perPage < 1 ? 20 : ($perPage > 100 ? 100 : $perPage);
         $offset = ($page - 1) * $perPage;
 
-        $items = $this->articleQuery->list(
+        $items = $this->article->list(
             $categoryId,
             $tagId,
             $status,

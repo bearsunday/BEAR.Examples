@@ -14,8 +14,8 @@ use MyVendor\Cms\Query\AuthorQueryInterface;
 class Author extends ResourceObject
 {
     public function __construct(
-        private readonly AuthorQueryInterface $authorQuery,
-        private readonly AuthorCommandInterface $authorCommand,
+        private readonly AuthorQueryInterface $author,
+        private readonly AuthorCommandInterface $authorCmd,
     ) {
     }
 
@@ -23,7 +23,7 @@ class Author extends ResourceObject
     #[JsonSchema('author.json')]
     public function onGet(int $id): static
     {
-        $author = $this->authorQuery->getById($id);
+        $author = $this->author->item($id);
         if ($author === null) {
             $this->code = Code::NOT_FOUND;
             $this->body = ['message' => 'Author not found', 'id' => $id];
@@ -44,8 +44,8 @@ class Author extends ResourceObject
     #[JsonSchema(schema: 'write_response.json', params: 'author_create.json')]
     public function onPost(string $name, string $email, string $bio = ''): static
     {
-        $this->authorCommand->add($name, $email, $bio);
-        $created = $this->authorQuery->getByEmail($email);
+        $this->authorCmd->add($name, $email, $bio);
+        $created = $this->author->byEmail($email);
         $this->code = Code::CREATED;
         $this->headers['Location'] = $created !== null ? '/author?id=' . $created->id : '/author';
         $this->body = ['id' => $created?->id, 'email' => $email];
@@ -56,14 +56,14 @@ class Author extends ResourceObject
     #[JsonSchema(schema: 'write_response.json', params: 'author_update.json')]
     public function onPut(int $id, string $name, string $email, string $bio = ''): static
     {
-        if ($this->authorQuery->getById($id) === null) {
+        if ($this->author->item($id) === null) {
             $this->code = Code::NOT_FOUND;
             $this->body = ['message' => 'Author not found', 'id' => $id];
 
             return $this;
         }
 
-        $this->authorCommand->update($id, $name, $email, $bio);
+        $this->authorCmd->update($id, $name, $email, $bio);
         $this->code = Code::OK;
         $this->body = ['id' => $id];
 

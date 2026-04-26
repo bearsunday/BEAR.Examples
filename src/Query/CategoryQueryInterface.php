@@ -10,10 +10,10 @@ use Ray\MediaQuery\Annotation\DbQuery;
 interface CategoryQueryInterface
 {
     #[DbQuery('category_item', type: 'row')]
-    public function getById(int $id): Category|null;
+    public function item(int $id): Category|null;
 
     #[DbQuery('category_by_slug', type: 'row')]
-    public function getBySlug(string $slug): Category|null;
+    public function bySlug(string $slug): Category|null;
 
     /** @return list<Category> */
     #[DbQuery('category_list', type: 'row_list')]

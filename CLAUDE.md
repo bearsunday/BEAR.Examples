@@ -41,8 +41,11 @@ Switching contexts loads/removes modules by keyword prefix; see
   column order must match the entity's `__construct` positional args. If
   you add a column, keep the SELECT and the constructor aligned.
 - Writes return `void` from Command methods. To get the new id back, use
-  the entity's natural unique key (slug/email/filename) via a `getBy*`
-  query — see `Article::onPost`.
+  the entity's natural unique key (slug/email/filename) via a
+  `by<NaturalKey>` query (`bySlug` / `byEmail` / `byFilename`) — see
+  `Article::onPost`. Query method naming is codified in
+  `docs/conventions.md` §3 (`item` for PK, `by<Key>` for natural key,
+  `list` for collections).
 - When module bindings change, clear the DI cache:
   `rm -rf var/tmp/{fake-,test-,}hal-api-app`.
 
