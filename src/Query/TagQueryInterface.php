@@ -9,7 +9,7 @@ use Ray\MediaQuery\Annotation\DbQuery;
 
 interface TagQueryInterface
 {
-    #[DbQuery('tag_by_id', type: 'row')]
+    #[DbQuery('tag_item', type: 'row')]
     public function getById(int $id): Tag|null;
 
     #[DbQuery('tag_by_slug', type: 'row')]

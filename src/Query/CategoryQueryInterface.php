@@ -9,7 +9,7 @@ use Ray\MediaQuery\Annotation\DbQuery;
 
 interface CategoryQueryInterface
 {
-    #[DbQuery('category_by_id', type: 'row')]
+    #[DbQuery('category_item', type: 'row')]
     public function getById(int $id): Category|null;
 
     #[DbQuery('category_by_slug', type: 'row')]

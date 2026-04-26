@@ -96,15 +96,15 @@ final class FakeSqlQuery implements SqlQueryInterface
         }
 
         return match ($sqlId) {
-            'article_by_id' => $this->findArticleById((int) $values['id']),
+            'article_item' => $this->findArticleById((int) $values['id']),
             'article_by_slug' => $this->findArticleBySlug((string) $values['slug']),
-            'category_by_id' => $this->findCategoryById((int) $values['id']),
+            'category_item' => $this->findCategoryById((int) $values['id']),
             'category_by_slug' => $this->findCategoryBySlug((string) $values['slug']),
-            'tag_by_id' => $this->findTagById((int) $values['id']),
+            'tag_item' => $this->findTagById((int) $values['id']),
             'tag_by_slug' => $this->findTagBySlug((string) $values['slug']),
-            'author_by_id' => $this->findAuthorById((int) $values['id']),
+            'author_item' => $this->findAuthorById((int) $values['id']),
             'author_by_email' => $this->findAuthorByEmail((string) $values['email']),
-            'media_by_id' => $this->findMediaById((int) $values['id']),
+            'media_item' => $this->findMediaById((int) $values['id']),
             'media_by_filename' => $this->findMediaByFilename((string) $values['filename']),
             default => throw new LogicException("FakeSqlQuery: unknown row sqlId '{$sqlId}'"),
         };

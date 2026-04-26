@@ -10,7 +10,7 @@ use Ray\MediaQuery\Annotation\DbQuery;
 
 interface ArticleQueryInterface
 {
-    #[DbQuery('article_by_id', type: 'row', factory: ArticleFactory::class)]
+    #[DbQuery('article_item', type: 'row', factory: ArticleFactory::class)]
     public function getById(int $id): Article|null;
 
     #[DbQuery('article_by_slug', type: 'row', factory: ArticleFactory::class)]
