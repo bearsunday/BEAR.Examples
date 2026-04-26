@@ -22,4 +22,5 @@ phpunit.xml
 /vendor-bin/**/vendor/
 /malt/
 /var/alps/index.html
+/.claude/
 
