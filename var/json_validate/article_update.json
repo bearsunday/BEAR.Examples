@@ -1,6 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "ArticleUpdateInput",
+  "description": "Input for PUT app://self/article. Validates the named arguments of onPut. tagIds is tri-state: omitted/null = leave existing tag links untouched, [] = clear all tag links, non-empty list = replace the tag set with the given ids.",
   "type": "object",
   "required": ["id", "title", "body", "status"],
   "properties": {

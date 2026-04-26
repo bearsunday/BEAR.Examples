@@ -184,47 +184,98 @@ happen at the Resource layer, returning
 `{ items, page, perPage, count }`. Reason: faking Pagerfanta's
 PDO-backed `Pages` is cumbersome and not needed for this reference.
 
-### Input validation
-Every `onPost` / `onPut` carries `#[JsonSchema(schema: 'write_response.json', params: '<entity>_<verb>.json')]`.
-The `params:` schema lives in `var/json_validate/`.
+### Input shape & validation
 
-### Input DTOs (`#[Input]` from Ray.InputQuery)
-**Demo only on Article and Auth.** Other resources (Author, Tag, Category,
-Media) intentionally stay on raw scalars + `#[JsonSchema(params:)]`. The
-contrast is the point — pick one style by signature complexity:
+The codebase deliberately mixes two input shapes — DTO at the Resource
+boundary for some endpoints, named scalar parameters for others —
+chosen per endpoint by **what the actual signature shape calls for**,
+not by uniform rule. The pattern catalog is short on purpose; the
+educational value is in seeing each pattern *applied where it fits*.
 
-- **Stay scalar** when the write surface is a short, flat parameter list
-  whose names match the schema 1:1. `#[JsonSchema(params: '<entity>_<verb>.json')]`
-  validates the named arguments and you read the method's signature as the
+#### Current applications and rationale
+
+| Endpoint | Shape | Validation | Rationale |
+|---|---|---|---|
+| `Article::onPost` | `ArticleCreateInput` DTO | (gap†) | 9 fields including `tagIds` list — flat signature would be unreadable; cohere as a struct |
+| `Article::onPut`  | `ArticleUpdateInput` DTO | (gap†) | 7 fields including tri-state `tagIds` (`null`/`[]`/list with replace semantics) — tri-state needs typed carrier |
+| `Auth::onPost`    | `AuthExchangeInput` DTO  | (gap†) | OAuth `code`/`state` is a meaningful struct, not two unrelated scalars; readability over field count |
+| `Author::onPost`  | scalar | `#[JsonSchema(params: 'author_create.json')]` | 3 trivial fields; method signature *is* the contract |
+| `Author::onPut`   | scalar | `#[JsonSchema(params: 'author_update.json')]` | same |
+| `Tag::onPost`     | scalar | `#[JsonSchema(params: 'tag_create.json')]`    | 2 fields |
+| `Category::onPost`/`onPut` | scalar | `#[JsonSchema(params: 'category_*.json')]` | 4 fields, all independent scalars |
+| `Media::onPost`   | scalar | `#[JsonSchema(params: 'media_create.json')]`  | 6 fields but each is an independent property; no nesting or tri-state — borderline DTO territory, intentionally scalar to show the upper bound of "still readable as a flat list" |
+
+† **Known upstream gap (verified).** `BEAR\Resource\InputParam`
+materialises the DTO **before** `JsonSchemaInterceptor` runs, so the
+interceptor sees `['input' => <Dto>]` rather than the original flat
+request array — `params:` validation cannot be applied to DTO-shaped
+methods today. Wrapping the schema under an `input` key is also a
+dead end: `justinrainbow/json-schema` crashes when asked to validate
+readonly DTO properties. Endpoints using DTOs therefore have **no
+schema-driven input validation** in this codebase. The matching
+`var/json_validate/<entity>_<verb>.json` files are kept on disk so
+the contract stays documented and can be re-attached when DTO-aware
+validation lands upstream. Each affected method carries a docblock
+pointing here. See
+[`docs/journal/decisions-to-consult.md`](journal/decisions-to-consult.md)
+P8-#45 for the full diagnosis (vendor-source evidence and the
+parallel root cause for the original `JsonSchemaNotFoundException`).
+
+#### Decision rule (fit-driven)
+
+When designing a new endpoint, decide by the *shape's* needs, not by
+seeking pattern coverage:
+
+- **Stay scalar** when the parameter list is a short, flat list of
+  trivial fields whose names map 1:1 to JSON Schema properties, with
+  no nested or tri-state structure. `#[JsonSchema(params: '<entity>_<verb>.json')]`
+  validates the named arguments and the method signature *is* the
   contract. This is the default.
-- **Use an Input DTO** when the parameter list is large, has nested
-  structure, or you want a typed object you can hand to a service. Define
-  `MyVendor\Cms\Input\<Action>Input` as a `final readonly class` with
-  `#[Input]` on each constructor parameter, type the resource argument as
-  `#[Input] <Dto>`, and BEAR.Resource's `InputParam` (via
-  `Ray\InputQuery\InputQueryInterface`) materialises the object from the
-  flat request array before the method runs. No module install — bound
-  by `BEAR\Resource\Module\ResourceClientModule`.
+- **Use an Input DTO** when any of:
+  - parameter count crosses the readability threshold (~7+ fields)
+  - any field has tri-state or partial-update semantics (e.g.
+    `null` / `[]` / non-empty list, where omitted ≠ explicit empty)
+  - the fields cohere as a named struct that's meaningful beyond
+    the resource (e.g. an OAuth callback pair)
+
+  Define `MyVendor\Cms\Input\<Action>Input` as `final readonly class`
+  with `#[Input]` on each constructor parameter, type the resource
+  argument as `#[Input] <Dto>`, and BEAR.Resource's `InputParam` (via
+  `Ray\InputQuery\InputQueryInterface`) materialises the object from
+  the flat request array before the method runs. No module install —
+  bound by `BEAR\Resource\Module\ResourceClientModule`.
 
 Examples in this codebase: `src/Input/ArticleCreateInput.php`,
 `ArticleUpdateInput.php`, `AuthExchangeInput.php`, consumed by
 `Article::onPost`, `Article::onPut`, `Auth::onPost`.
 
-**Known gap.** `#[JsonSchema(params:)]` cannot validate Input DTO
-arguments today (the interceptor inspects flat scalar parameters). The
-methods using DTOs therefore have **no schema-driven input validation**;
-the matching `var/json_validate/<entity>_<verb>.json` files are kept on
-disk so the contract stays documented and can be re-attached when DTO
-support lands. A `/** TODO(input-query+json-schema): ... */` docblock
-above each affected method makes the regression visible. See
-`docs/journal/decisions-to-consult.md` P8-#45.
+#### Why DTOs are not pushed through the Command interface
 
-DTO unpacking happens at the resource layer (`$this->cmd->add($input->slug,
-$input->title, ...)`); we do not push the DTO through the Read/Write
-interfaces. Coupling `<Entity>CommandInterface` to a per-resource Input
-shape would erase the §1 layer split. Positional unpacking is consistent
-with the §4 named-arguments rule (the call has a clear verb-then-fields
-order; no literal bool, no skipped middle).
+Ray.MediaQuery natively supports Input DTOs in `#[DbQuery]` interfaces
+(verified via `vendor/ray/media-query/src/ParamConverter.php::expandInputObjects()`;
+documented in the official manual:
+https://bearsunday.github.io/manuals/1.0/ja/database_media.html#rayinputqueryとの連携).
+We deliberately do **not** use it.
+
+Reason — the Resource layer here is not a passthrough.
+`Article::onPost` / `onPut` unpacks the DTO into named scalar args at
+the Command boundary because the Resource also runs `syncTags()`,
+performs a `bySlug` round-trip, and may rearrange write/read
+sequencing. Hiding that work behind a single DTO pass would
+misrepresent what the Resource does. The unpack step (~8 lines) reads
+as documentation of which fields hit SQL versus which fields drive
+separate orchestration (e.g. `tagIds` → `syncTags`, never bound into
+`article_update.sql`).
+
+This is the per-codebase reason to keep the Command boundary scalar;
+Ray.MediaQuery's DTO support remains the right choice for codebases
+where the Resource-to-Command boundary is genuinely a passthrough.
+
+Coupling `<Entity>CommandInterface` to a per-resource `Input` shape
+would also erase the §1 Read/Write layer split. Positional unpacking
+at the call site is consistent with the §4 named-arguments rule
+below — clear verb-then-fields order, no literal bool, no skipped
+middle.
 
 ### Exceptions
 - No generic `LogicException` / `RuntimeException`. Define

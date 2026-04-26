@@ -36,9 +36,15 @@ class Auth extends ResourceObject
         return $this;
     }
 
-    /** TODO(input-query+json-schema): JsonSchema cannot validate Input DTO params today; revisit when integration lands. */
-    public function onPost(#[Input]
-    AuthExchangeInput $input,): static
+    /**
+     * Input is a `#[Input]` DTO, not flat scalars. `#[JsonSchema(params:)]` is
+     * deliberately omitted: `BEAR\Resource\InputParam` materialises the DTO
+     * before `JsonSchemaInterceptor` runs, so the interceptor only ever sees
+     * `['input' => <Dto>]` and cannot validate the original flat request.
+     * The matching `var/json_validate/auth_exchange.json` schema is kept on disk
+     * as the documented contract. See `docs/journal/decisions-to-consult.md` P8-#45.
+     */
+    public function onPost(#[Input] AuthExchangeInput $input): static
     {
         try {
             $user = $this->auth->authenticate($input->code, $input->state);

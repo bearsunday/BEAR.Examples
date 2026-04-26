@@ -32,6 +32,14 @@
         <exclude name="SlevomatCodingStandard.Classes.SuperfluousExceptionNaming"/>
         <exclude name="SlevomatCodingStandard.Classes.SuperfluousInterfaceNaming"/>
         <exclude name="Squiz.Strings.DoubleQuoteUsage.ContainsVar"/>
+        <!--
+            Allow inline parameter attributes. The Slevomat sniff defaults to
+            forcing #[Attr] onto its own line, which makes #[Input] DTO
+            signatures (function f(#[Input] Dto $input)) ugly. Class and
+            property attributes are already written on their own line by
+            convention, so excluding this sniff loses no real coverage.
+        -->
+        <exclude name="SlevomatCodingStandard.Attributes.AttributeAndTargetSpacing"/>
         <!-- Exclude files -->
         <exclude-pattern>*/tests/Fake/*</exclude-pattern>
         <exclude-pattern>*/tmp/*</exclude-pattern>
