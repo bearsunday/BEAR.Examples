@@ -35,10 +35,8 @@ class Article extends ResourceObject
     #[Embed(rel: 'tagList', src: 'app://self/tags')]
     #[JsonSchema('article.json')]
     #[Cli(name: 'article-show', description: 'Show an article by id', output: 'title')]
-    public function onGet(
-        #[Option(shortName: 'i', description: 'Article id')]
-        int $id,
-    ): static {
+    public function onGet(#[Option(shortName: 'i', description: 'Article id')] int $id): static
+    {
         $article = $this->article->item($id);
         if ($article === null) {
             $this->code = Code::NOT_FOUND;
