@@ -104,7 +104,7 @@ reference として完成度を主張するなら、これらは「あえて省�
 | 36 | Doctrine Migrations | 採用済み (元の指示) | OK |
 | 37 | Malt | 採用済み (元の指示) | OK |
 | 38 | `justinrainbow/json-schema` | 入れたが未使用 (P4-#24 のため予定) | バリデーションして確かめて |
-| 39 | `ray/input-query` | 入れたが未使用 (Write は名前付き引数で代替) | #[Input] に書き換え、これどう思う？必要な時だけ？（ドメインが２つあるとか） |
+| 39 | `ray/input-query` | Article + Auth で `#[Input]` DTO 採用済み (`src/Input/`)。Author / Tag / Category / Media は scalar + `#[JsonSchema(params:)]` のままで対比表示。 | 残課題: #45 |
 
 ---
 
@@ -117,6 +117,14 @@ reference として完成度を主張するなら、これらは「あえて省�
 | 42 | 失敗系 commit の扱い | 残している (誤評論 → セルフレビュー → 第二セルフレビュー → verified) | OK |
 | 43 | `Co-Authored-By` 行 | 全 commit に付与 | 不要　claudeだけでOK |
 | 44 | `CLAUDE.md` をレポジトリに置く | 置いた | OK |
+
+---
+
+## P8: 後追いで埋めたい穴
+
+| # | 項目 | 現状 | 判断 |
+|---|------|------|------|
+| 45 | `#[JsonSchema(params:)]` で Input DTO を validate できない | `Article::onPost` / `Article::onPut` / `Auth::onPost` を `#[Input] <Dto>` 化したが、`JsonSchemaInterceptor` は flat scalar 引数を前提とした実装で DTO 引数を見ない。`var/json_validate/article_create.json` / `article_update.json` / `auth_exchange.json` は **削除せず** 残してあり、各メソッドの直上に `/** TODO(input-query+json-schema): ... */` を貼って欠落を可視化している。`docs/conventions.md` §4 にも「Input DTO 採用部分は現状 schema 適用なし」と明記。 | 上流 (`bear/resource` の `JsonSchemaInterceptor` または `ray/input-query` 連携) に DTO 対応の道筋ができた段階で、TODO を解消し schema を再アタッチする |
 
 ---
 

@@ -140,6 +140,44 @@ PDO-backed `Pages` is cumbersome and not needed for this reference.
 Every `onPost` / `onPut` carries `#[JsonSchema(schema: 'write_response.json', params: '<entity>_<verb>.json')]`.
 The `params:` schema lives in `var/json_validate/`.
 
+### Input DTOs (`#[Input]` from Ray.InputQuery)
+**Demo only on Article and Auth.** Other resources (Author, Tag, Category,
+Media) intentionally stay on raw scalars + `#[JsonSchema(params:)]`. The
+contrast is the point — pick one style by signature complexity:
+
+- **Stay scalar** when the write surface is a short, flat parameter list
+  whose names match the schema 1:1. `#[JsonSchema(params: '<entity>_<verb>.json')]`
+  validates the named arguments and you read the method's signature as the
+  contract. This is the default.
+- **Use an Input DTO** when the parameter list is large, has nested
+  structure, or you want a typed object you can hand to a service. Define
+  `MyVendor\Cms\Input\<Action>Input` as a `final readonly class` with
+  `#[Input]` on each constructor parameter, type the resource argument as
+  `#[Input] <Dto>`, and BEAR.Resource's `InputParam` (via
+  `Ray\InputQuery\InputQueryInterface`) materialises the object from the
+  flat request array before the method runs. No module install — bound
+  by `BEAR\Resource\Module\ResourceClientModule`.
+
+Examples in this codebase: `src/Input/ArticleCreateInput.php`,
+`ArticleUpdateInput.php`, `AuthExchangeInput.php`, consumed by
+`Article::onPost`, `Article::onPut`, `Auth::onPost`.
+
+**Known gap.** `#[JsonSchema(params:)]` cannot validate Input DTO
+arguments today (the interceptor inspects flat scalar parameters). The
+methods using DTOs therefore have **no schema-driven input validation**;
+the matching `var/json_validate/<entity>_<verb>.json` files are kept on
+disk so the contract stays documented and can be re-attached when DTO
+support lands. A `/** TODO(input-query+json-schema): ... */` docblock
+above each affected method makes the regression visible. See
+`docs/journal/decisions-to-consult.md` P8-#45.
+
+DTO unpacking happens at the resource layer (`$this->cmd->add($input->slug,
+$input->title, ...)`); we do not push the DTO through the Read/Write
+interfaces. Coupling `<Entity>CommandInterface` to a per-resource Input
+shape would erase the §1 layer split. Positional unpacking is consistent
+with the §4 named-arguments rule (the call has a clear verb-then-fields
+order; no literal bool, no skipped middle).
+
 ### Exceptions
 - No generic `LogicException` / `RuntimeException`. Define
   `MyVendor\Cms\Exception\<DomainName>Exception` for any thrown
