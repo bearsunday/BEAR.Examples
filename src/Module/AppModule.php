@@ -22,7 +22,16 @@ use Ray\MediaQuery\MediaQuerySqlModule;
 use function dirname;
 use function getenv;
 
-/** @SuppressWarnings("PHPMD.CouplingBetweenObjects") composition root by design */
+/**
+ * Production / CLI bindings: real DB via AuraSqlModule + Ray.MediaQuery,
+ * JSON Schema validation, and Google OAuth.
+ *
+ * Loaded by contexts `hal-api-app` and `cli-hal-api-app`. The fake/test
+ * contexts (`fake-hal-api-app`, `test-hal-api-app`) install this and then
+ * override individual bindings via FakeModule / TestModule.
+ *
+ * @SuppressWarnings("PHPMD.CouplingBetweenObjects") composition root by design
+ */
 final class AppModule extends AbstractAppModule
 {
     protected function configure(): void
