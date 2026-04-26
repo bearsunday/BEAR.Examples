@@ -24,19 +24,6 @@ class Article extends ResourceObject
     ) {
     }
 
-    /**
-     * Replace the article's tag links with the given tag id list.
-     *
-     * @param list<int> $tagIds
-     */
-    private function syncTags(int $articleId, array $tagIds): void
-    {
-        $this->articleTagCommand->clear($articleId);
-        foreach ($tagIds as $tagId) {
-            $this->articleTagCommand->link($articleId, $tagId);
-        }
-    }
-
     #[Link(rel: 'goArticleList', href: 'app://self/articles')]
     #[Link(rel: 'goAuthor', href: 'app://self/author{?id}')]
     #[Link(rel: 'goCategory', href: 'app://self/category{?id}')]
@@ -166,5 +153,18 @@ class Article extends ResourceObject
         $this->body = [];
 
         return $this;
+    }
+
+    /**
+     * Replace the article's tag links with the given tag id list.
+     *
+     * @param list<int> $tagIds
+     */
+    private function syncTags(int $articleId, array $tagIds): void
+    {
+        $this->articleTagCommand->clear($articleId);
+        foreach ($tagIds as $tagId) {
+            $this->articleTagCommand->link($articleId, $tagId);
+        }
     }
 }

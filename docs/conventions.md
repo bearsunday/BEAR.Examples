@@ -137,6 +137,16 @@ The `params:` schema lives in `var/json_validate/`.
   exception originating in `src/`.
 - Read errors (not found) return 404 via `$this->code` — do not throw.
 
+### Method order inside a Resource
+1. `__construct`
+2. Public `on*` handlers in HTTP-verb order (`onGet`, `onPost`, `onPut`,
+   `onDelete`)
+3. `private` helpers, after every public method
+
+Reading top-to-bottom should mirror the public surface first, the
+implementation detail last. Helpers above the handlers force the reader
+to skim past internal plumbing before reaching the entry point.
+
 ## 5. Read/Write SQL contract
 
 - `SELECT` column order **must** match the Entity's `__construct`
