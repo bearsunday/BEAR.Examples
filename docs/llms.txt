@@ -94,11 +94,12 @@ API Document
 |--------|------------|-------|
 | GET | articleId | href(goTag) |
 
-## Responses (8)
+## Responses (9)
 
 | Response | Schema | Properties |
 |----------|--------|------------|
 | Article | article.json | id, slug, title, body, excerpt, status, publishedAt, authorId, categoryId |
+| Write_response | write_response.json | id, slug, email, filename, message |
 | ArticleList | articleList.json | items, page, perPage, count, totalCount |
 | Author | author.json | id, name, email, bio |
 | CategoryList | categoryList.json | items, totalCount |
