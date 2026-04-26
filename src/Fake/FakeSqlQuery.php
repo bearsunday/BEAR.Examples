@@ -40,10 +40,10 @@ use const JSON_THROW_ON_ERROR;
  * through a single `mutate()` switch — a flat dispatch is easier to read
  * than a polymorphic split for a teaching fake.
  *
- * @SuppressWarnings(PHPMD.UnusedFormalParameter)
- * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
- * @SuppressWarnings(PHPMD.CyclomaticComplexity)
- * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
+ * @SuppressWarnings("PHPMD.UnusedFormalParameter")
+ * @SuppressWarnings("PHPMD.ExcessiveClassComplexity")
+ * @SuppressWarnings("PHPMD.CyclomaticComplexity")
+ * @SuppressWarnings("PHPMD.ExcessiveMethodLength")
  */
 final class FakeSqlQuery implements SqlQueryInterface
 {
