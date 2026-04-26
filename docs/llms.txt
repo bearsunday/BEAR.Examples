@@ -113,16 +113,16 @@ API Document
 | Interface | Methods |
 |-----------|---------|
 | ArticleCommandInterface | add(slug, title, body, excerpt, status, publishedAt, authorId, categoryId):void, update(id, title, body, excerpt, status, publishedAt):void, delete(id):void |
-| ArticleQueryInterface | getById(id):Article, getBySlug(slug):Article, list(categoryId, tagId, status, limit, offset):array |
+| ArticleQueryInterface | item(id):Article, bySlug(slug):Article, list(categoryId, tagId, status, limit, offset):array |
 | ArticleTagCommandInterface | clear(articleId):void, link(articleId, tagId):void |
 | AuthorCommandInterface | add(name, email, bio):void, update(id, name, email, bio):void |
-| AuthorQueryInterface | getById(id):Author, getByEmail(email):Author |
+| AuthorQueryInterface | item(id):Author, byEmail(email):Author |
 | CategoryCommandInterface | add(slug, name, description, parentId):void, update(id, name, description, parentId):void, delete(id):void |
-| CategoryQueryInterface | getById(id):Category, getBySlug(slug):Category, list():array |
+| CategoryQueryInterface | item(id):Category, bySlug(slug):Category, list():array |
 | MediaCommandInterface | add(filename, mimeType, url, alt, width, height):void, delete(id):void |
-| MediaQueryInterface | getById(id):Media, getByFilename(filename):Media |
+| MediaQueryInterface | item(id):Media, byFilename(filename):Media |
 | TagCommandInterface | add(slug, name):void, delete(id):void |
-| TagQueryInterface | getById(id):Tag, getBySlug(slug):Tag, list():array, listByArticle(articleId):array |
+| TagQueryInterface | item(id):Tag, bySlug(slug):Tag, list():array, listByArticle(articleId):array |
 
 ## SQL (28)
 

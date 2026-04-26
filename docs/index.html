@@ -39,7 +39,11 @@
 </tr>
 <tr>
   
-  <td rowspan="9" class="method-cell"><span class="ti unsafe"></span>POST<div class="method-title">TODO(input-query+json-schema): JsonSchema cannot validate Input DTO params today; revisit when integration lands.</div></td>
+  <td rowspan="9" class="method-cell"><span class="ti unsafe"></span>POST<div class="method-title">Input is a `#[Input]` DTO, not flat scalars. `#[JsonSchema(params:)]` is
+deliberately omitted: `BEAR\Resource\InputParam` materialises the DTO
+before `JsonSchemaInterceptor` runs, so the interceptor only ever sees
+`[&#039;input&#039; =&gt; &lt;Dto&gt;]` and cannot validate the original flat request.</div><div class="method-desc">The matching `var/json_validate/*.json` schema is kept on disk as the
+documented contract. See `docs/journal/decisions-to-consult.md` P8-#45.</div></td>
   <td><span class="param">slug</span><span class="req">*</span></td>
   <td><span class="badge type-string">string</span></td>
   <td class="param-desc"></td>
@@ -138,7 +142,11 @@
 </tr>
 <tr>
   
-  <td rowspan="7" class="method-cell"><span class="ti idempotent"></span>PUT<div class="method-title">TODO(input-query+json-schema): JsonSchema cannot validate Input DTO params today; revisit when integration lands.</div></td>
+  <td rowspan="7" class="method-cell"><span class="ti idempotent"></span>PUT<div class="method-title">Input is a `#[Input]` DTO, not flat scalars. `#[JsonSchema(params:)]` is
+deliberately omitted: `BEAR\Resource\InputParam` materialises the DTO
+before `JsonSchemaInterceptor` runs, so the interceptor only ever sees
+`[&#039;input&#039; =&gt; &lt;Dto&gt;]` and cannot validate the original flat request.</div><div class="method-desc">The matching `var/json_validate/*.json` schema is kept on disk as the
+documented contract. See `docs/journal/decisions-to-consult.md` P8-#45.</div></td>
   <td><span class="param">id</span><span class="req">*</span></td>
   <td><span class="badge type-int">int</span></td>
   <td class="param-desc"></td>
@@ -289,7 +297,11 @@
 </tr>
 <tr>
   
-  <td rowspan="2" class="method-cell"><span class="ti unsafe"></span>POST<div class="method-title">TODO(input-query+json-schema): JsonSchema cannot validate Input DTO params today; revisit when integration lands.</div></td>
+  <td rowspan="2" class="method-cell"><span class="ti unsafe"></span>POST<div class="method-title">Input is a `#[Input]` DTO, not flat scalars. `#[JsonSchema(params:)]` is
+deliberately omitted: `BEAR\Resource\InputParam` materialises the DTO
+before `JsonSchemaInterceptor` runs, so the interceptor only ever sees
+`[&#039;input&#039; =&gt; &lt;Dto&gt;]` and cannot validate the original flat request.</div><div class="method-desc">The matching `var/json_validate/auth_exchange.json` schema is kept on disk
+as the documented contract. See `docs/journal/decisions-to-consult.md` P8-#45.</div></td>
   <td><span class="param">code</span><span class="req">*</span></td>
   <td><span class="badge type-string">string</span></td>
   <td class="param-desc"></td>
