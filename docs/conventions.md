@@ -16,11 +16,11 @@ then the code/docs follow.
 | What | Convention |
 |------|-----------|
 | Namespace root | `MyVendor\Cms` |
-| Layer directories | `src/Entity/`, `src/Query/`, `src/Command/`, `src/Resource/App/`, `src/Module/`, `src/Service/`, `src/Fake/` |
+| Layer directories | `src/Entity/`, `src/Query/`, `src/Resource/App/`, `src/Module/`, `src/Service/`, `src/Fake/` |
 | Fake placement | `src/Fake/` (runtime-usable, not `tests/Fake/` only) |
 | Module composition | `FakeModule` provides the binding; `TestModule` *installs* `FakeModule`. Two-stage so prod/cli/fake/test contexts can compose differently |
 | Resource placement | `src/Resource/App/<Class>.php` — every URI is a class. No `App/Index.php` unless a "/" entry-point is meaningful |
-| Read/Write split | Always two interfaces per entity: `<Entity>QueryInterface` (Read) and `<Entity>CommandInterface` (Write). Never mix |
+| Read/Write split | Always two interfaces per entity: `<Entity>QueryInterface` (Read) and `<Entity>CommandInterface` (Write). Both live in `src/Query/` — the interface name suffix carries the Read/Write distinction so `MediaQuerySqlModule` can scan a single directory. Never mix Read and Write methods on the same interface |
 
 ## 2. Contexts
 
@@ -110,10 +110,19 @@ are scalar), `+=` is the most semantically precise operator.
 | Method | Success | Not found | Validation fail |
 |--------|---------|-----------|-----------------|
 | GET | 200 | 404 | n/a |
-| POST | 201 + `Location` header | n/a | 422 (via `#[JsonSchema(params:)]`) |
+| POST (creates a resource) | 201 + `Location` header | n/a | 422 (via `#[JsonSchema(params:)]`) |
+| POST (action / non-creating) | 200 + body | n/a | 422 (via `#[JsonSchema(params:)]`) |
 | PUT | 200 | 404 | 422 |
 | DELETE | 204 | 404 | n/a |
 | Duplicate `slug` (or other unique key) | — | — | 409 (via DB `UniqueConstraintViolation`, no manual catch) |
+
+**POST is not always creation.** `201 + Location` only applies when the
+POST adds a new addressable resource (e.g. `Article::onPost` creates
+`/article?id=N`). Action-style POSTs that don't create a new URI —
+auth code-for-session exchange, password reset confirm, "log this
+event" endpoints — return `200` with the result body and no `Location`
+header. The `#[JsonSchema(params:)]` input-validation rule still
+applies.
 
 ### After-INSERT id
 Never `lastInsertId` (driver-dependent, awkward to fake). Always
