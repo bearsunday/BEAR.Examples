@@ -73,3 +73,9 @@ as-is. The additions:
 - `#[Pager]` / `PagesInterface` — deferred to avoid faking Pagerfanta's
   PDO-backed Pages. Filtering + `page`/`perPage`/`count` handled at the
   Resource layer.
+
+## See also
+
+[conventions.md](conventions.md) — the "how to write code in this
+codebase" companion. Naming rules, body construction style, HAL rel
+naming split (Choreography vs Taxonomy), file layout, etc.
