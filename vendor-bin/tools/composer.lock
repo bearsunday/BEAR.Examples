@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7e8aec314fbe7fc78f9f5bb6be944f70",
+    "content-hash": "fe39e49f5766fb32ad8377b7f0a141ab",
     "packages": [],
     "packages-dev": [
         {
@@ -823,6 +823,60 @@
                 }
             ],
             "time": "2024-08-03T19:31:26+00:00"
+        },
+        {
+            "name": "bear/conding-standard",
+            "version": "1.x-dev",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/bearsunday/coding-standard.git",
+                "reference": "2e7edd4d5e125d9dc3e536a70d240af48c1b3603"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/bearsunday/coding-standard/zipball/2e7edd4d5e125d9dc3e536a70d240af48c1b3603",
+                "reference": "2e7edd4d5e125d9dc3e536a70d240af48c1b3603",
+                "shasum": ""
+            },
+            "require": {
+                "doctrine/coding-standard": "^14.0",
+                "php": "^8.2",
+                "slevomat/coding-standard": "^8.28",
+                "squizlabs/php_codesniffer": "^4.0.1"
+            },
+            "require-dev": {
+                "dealerdirect/phpcodesniffer-composer-installer": "^1.2.0",
+                "phpunit/phpunit": "^11.5"
+            },
+            "default-branch": true,
+            "type": "phpcodesniffer-standard",
+            "autoload": {
+                "psr-4": {
+                    "BearSunday\\Sniffs\\": "BearSunday/Sniffs/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "BearSunday\\Tests\\": "BearSunday/Tests/"
+                }
+            },
+            "scripts": {
+                "phpcs": [
+                    "phpcs"
+                ],
+                "test": [
+                    "phpunit"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "PHPCS ruleset and custom sniffs for BEAR.Sunday projects",
+            "support": {
+                "source": "https://github.com/bearsunday/coding-standard/tree/1.x",
+                "issues": "https://github.com/bearsunday/coding-standard/issues"
+            },
+            "time": "2026-04-27T01:34:53+00:00"
         },
         {
             "name": "composer/pcre",
@@ -4149,11 +4203,12 @@
             "alias_normalized": "6.14.0.0"
         }
     ],
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
     "stability-flags": {
+        "bear/conding-standard": 20,
         "vimeo/psalm": 20
     },
-    "prefer-stable": false,
+    "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {},
     "platform-dev": {},
