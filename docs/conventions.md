@@ -9,6 +9,17 @@ for the original discussion log).
 When in doubt, follow what's here. New conventions land here first,
 then the code/docs follow.
 
+## Contents
+
+1. [Code structure](#1-code-structure) — namespaces, directory layout, Read/Write split
+2. [Contexts](#2-contexts) — `hal-api-app` / `cli-` / `fake-` / `test-` composition
+3. [Naming](#3-naming) — class, query method, resource property, SQL filename, ALPS, HAL rel
+4. [Resource patterns](#4-resource-patterns) — body construction, status codes, after-INSERT id, pagination, **input shape & validation**, exceptions, named arguments, method order
+5. [Read/Write SQL contract](#5-readwrite-sql-contract) — column order, fetch mode, write-id detection
+6. [File / data layout](#6-filedata-layout) — `var/` artefact placement
+7. [Tests](#7-tests) — context wiring, hermetic fakes, assertion style
+8. [Process](#8-process) — adopting a convention, retiring a deprecated one
+
 ---
 
 ## 1. Code structure

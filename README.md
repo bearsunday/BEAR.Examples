@@ -21,6 +21,34 @@ Semantic-driven, resolution-increasing pipeline:
 
 See [docs/architecture.md](docs/architecture.md) for the full BDR layout.
 
+## Using this as a reference
+
+This codebase is a working teaching artefact: BEAR.Sunday's canonical
+naming, structure, and flow rendered as a single small CMS. Read it
+in this order — both humans and AI assistants benefit from the same
+sequence:
+
+1. **[README.md](README.md)** (this file) — what the project is, how to run it.
+2. **[docs/architecture.md](docs/architecture.md)** — BDR layout, dispatch quirks, design rationale.
+3. **[docs/conventions.md](docs/conventions.md)** — *the* canonical rulebook. Naming, resource patterns, Read/Write SQL contract, test policy. New code lands here first.
+4. **[docs/resources.md](docs/resources.md)** — URI map and body shapes.
+5. **[docs/alps.md](docs/alps.md)** + **[var/alps/profile.json](var/alps/profile.json)** — semantic source of truth (Choreography names, Taxonomy nouns).
+6. **[docs/journal/build-log.md](docs/journal/build-log.md)** — phase-by-phase construction history.
+7. **[docs/journal/decisions-to-consult.md](docs/journal/decisions-to-consult.md)** — every decision with the discussion that shaped it.
+8. **[tests/Fake/FakeSqlQuery.php](tests/Fake/FakeSqlQuery.php)** — reading this teaches the dispatch contract better than any doc.
+
+### Index by question
+
+| If you're asking… | Start here |
+|---|---|
+| What do I name a class / method / SQL file / property? | [conventions.md §3 Naming](docs/conventions.md#3-naming) |
+| How do I shape a Resource (body, status, embed, link)? | [conventions.md §4 Resource patterns](docs/conventions.md#4-resource-patterns) |
+| Scalar params or Input DTO? | [conventions.md §4 "Input shape & validation"](docs/conventions.md#4-resource-patterns) |
+| How do Read and Write share an entity? | [conventions.md §5 Read/Write SQL contract](docs/conventions.md#5-readwrite-sql-contract) |
+| Why was this decision made? | [journal/decisions-to-consult.md](docs/journal/decisions-to-consult.md) (P0–P8 by topic) |
+| What changed phase-by-phase? | [journal/build-log.md](docs/journal/build-log.md) |
+| What is the next session expected to know? | [journal/handoff.md](docs/journal/handoff.md) |
+
 ## Setup
 
 ### Fake (no database)

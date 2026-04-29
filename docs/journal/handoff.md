@@ -146,20 +146,12 @@ Until they move, they live in this project's journal.
 
 ## Files an AI should read before writing code
 
-Order matters:
-
-1. `README.md` — what the project is
-2. `docs/architecture.md` — BDR pattern, dispatch quirks, design
-   rationale
-3. `docs/resources.md` — URI map and body shapes
-4. `docs/alps.md` — semantic source of truth
-5. `docs/journal/build-log.md` — how the project was constructed,
-   phase by phase
-6. `docs/journal/decisions-to-consult.md` — 44 design decisions with
-   user feedback
-7. `var/alps/profile.json` — the ALPS profile itself
-8. `tests/Fake/FakeSqlQuery.php` — the in-memory backend; reading this
-   teaches the dispatch contract better than reading docs
+Read order and per-question index live in `README.md` →
+"Using this as a reference". The rulebook is `docs/conventions.md`;
+new code lands there first. This handoff intentionally does not
+duplicate the list — keeping a single source of truth means an
+update to the canonical reading order propagates without touching
+this file.
 
 ---
 
