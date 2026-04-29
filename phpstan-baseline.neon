@@ -14,4 +14,4 @@ parameters:
 			message: '#^Return type \(list\<object\>\) of method MyVendor\\Cms\\Fake\\FakeSqlQuery\:\:getRowList\(\) should be compatible with return type \(array\<array\<mixed\>\>\) of method Ray\\MediaQuery\\SqlQueryInterface\:\:getRowList\(\)$#'
 			identifier: method.childReturnType
 			count: 1
-			path: src/Fake/FakeSqlQuery.php
+			path: tests/Fake/FakeSqlQuery.php

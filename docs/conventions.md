@@ -16,8 +16,8 @@ then the code/docs follow.
 | What | Convention |
 |------|-----------|
 | Namespace root | `MyVendor\Cms` |
-| Layer directories | `src/Entity/`, `src/Query/`, `src/Resource/App/`, `src/Module/`, `src/Service/`, `src/Fake/` |
-| Fake placement | `src/Fake/` (runtime-usable, not `tests/Fake/` only) |
+| Layer directories | `src/Entity/`, `src/Query/`, `src/Resource/App/`, `src/Module/`, `src/Service/` |
+| Fake placement | `tests/Fake/` — `composer.json` maps `MyVendor\Cms\` to both `src/` and `tests/` (autoload + autoload-dev), so `fake-hal-api-app` (dev) and `test-hal-api-app` (test) both resolve `MyVendor\Cms\Fake\*`. Production (`composer install --no-dev`) does not load `tests/`, keeping the prod artefact free of fake bindings |
 | Module composition | `FakeModule` provides the binding; `TestModule` *installs* `FakeModule`. Two-stage so prod/cli/fake/test contexts can compose differently |
 | Resource placement | `src/Resource/App/<Class>.php` — every URI is a class. No `App/Index.php` unless a "/" entry-point is meaningful |
 | Read/Write split | Always two interfaces per entity: `<Entity>QueryInterface` (Read) and `<Entity>CommandInterface` (Write). Both live in `src/Query/` — the interface name suffix carries the Read/Write distinction so `MediaQuerySqlModule` can scan a single directory. Never mix Read and Write methods on the same interface |
@@ -28,7 +28,7 @@ then the code/docs follow.
 |---------|--------------|
 | `hal-api-app` | Production HTTP |
 | `cli-hal-api-app` | `bin/app.php`, `composer app`, `bin/cli/*` scripts |
-| `fake-hal-api-app` | Runtime against `FakeSqlQuery` (no DB) |
+| `fake-hal-api-app` | Dev runtime against `FakeSqlQuery` (no DB) — e.g. `composer fake`, manual exploration |
 | `test-hal-api-app` | PHPUnit (composes `FakeModule`) |
 
 `fake-` and `test-` are the canonical prefixes; do not invent variants.
@@ -416,7 +416,7 @@ to skim past internal plumbing before reaching the entry point.
 - Integration tests (real DB): run against MySQL (not SQLite). Auto-skip
   when MySQL is unreachable.
 - No mocks. External services use Docker; internal dependencies use
-  Fake classes from `src/Fake/`.
+  Fake classes from `tests/Fake/`.
 
 ## 8. Process
 
