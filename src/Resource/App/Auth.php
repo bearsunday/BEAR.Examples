@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace MyVendor\Cms\Resource\App;
 
+use BEAR\Resource\Annotation\JsonSchema;
 use BEAR\Resource\Code;
 use BEAR\Resource\ResourceObject;
 use MyVendor\Cms\Auth\AuthInterface;
@@ -36,14 +37,7 @@ class Auth extends ResourceObject
         return $this;
     }
 
-    /**
-     * Input is a `#[Input]` DTO, not flat scalars. `#[JsonSchema(params:)]` is
-     * deliberately omitted: `BEAR\Resource\InputParam` materialises the DTO
-     * before `JsonSchemaInterceptor` runs, so the interceptor only ever sees
-     * `['input' => <Dto>]` and cannot validate the original flat request.
-     * The matching `var/json_validate/auth_exchange.json` schema is kept on disk
-     * as the documented contract. See `docs/journal/decisions-to-consult.md` P8-#45.
-     */
+    #[JsonSchema(schema: 'auth_response.json', params: 'auth_exchange.json')]
     public function onPost(#[Input] AuthExchangeInput $input): static
     {
         try {

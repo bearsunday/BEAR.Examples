@@ -64,14 +64,7 @@ class Article extends ResourceObject
         return $this;
     }
 
-    /**
-     * Input is a `#[Input]` DTO, not flat scalars. `#[JsonSchema(params:)]` is
-     * deliberately omitted: `BEAR\Resource\InputParam` materialises the DTO
-     * before `JsonSchemaInterceptor` runs, so the interceptor only ever sees
-     * `['input' => <Dto>]` and cannot validate the original flat request.
-     * The matching `var/json_validate/*.json` schema is kept on disk as the
-     * documented contract. See `docs/journal/decisions-to-consult.md` P8-#45.
-     */
+    #[JsonSchema(schema: 'write_response.json', params: 'article_create.json')]
     public function onPost(#[Input] ArticleCreateInput $input): static
     {
         $this->articleCmd->add(
@@ -100,14 +93,7 @@ class Article extends ResourceObject
         return $this;
     }
 
-    /**
-     * Input is a `#[Input]` DTO, not flat scalars. `#[JsonSchema(params:)]` is
-     * deliberately omitted: `BEAR\Resource\InputParam` materialises the DTO
-     * before `JsonSchemaInterceptor` runs, so the interceptor only ever sees
-     * `['input' => <Dto>]` and cannot validate the original flat request.
-     * The matching `var/json_validate/*.json` schema is kept on disk as the
-     * documented contract. See `docs/journal/decisions-to-consult.md` P8-#45.
-     */
+    #[JsonSchema(schema: 'write_response.json', params: 'article_update.json')]
     public function onPut(#[Input] ArticleUpdateInput $input): static
     {
         if ($this->article->item($input->id) === null) {

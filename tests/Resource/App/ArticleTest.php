@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace MyVendor\Cms\Resource\App;
 
+use BEAR\Resource\Exception\JsonSchemaException;
 use BEAR\Resource\Exception\ParameterException;
 use MyVendor\Cms\AbstractAppTestCase;
 
@@ -112,16 +113,10 @@ final class ArticleTest extends AbstractAppTestCase
         ]);
     }
 
-    public function testPostInputShapeValidationIsCurrentlyDeferred(): void
+    public function testPostInputShapeValidationRejectsBadFields(): void
     {
-        // While Article::onPost takes an `#[Input] ArticleCreateInput`, the
-        // `#[JsonSchema(params:)]` interceptor cannot yet inspect Input DTO
-        // arguments, so per-field shape rules ('slug' pattern, 'status' enum,
-        // etc.) defined in var/json_validate/article_create.json are not
-        // enforced at the moment. This test pins the *current* behaviour so
-        // the regression is visible until JsonSchema-Input integration ships;
-        // see the TODO above Article::onPost.
-        $post = $this->resource->post('app://self/article', [
+        $this->expectException(JsonSchemaException::class);
+        $this->resource->post('app://self/article', [
             'slug' => 'INVALID Slug With Spaces',
             'title' => 'T',
             'body' => 'B',
@@ -129,11 +124,6 @@ final class ArticleTest extends AbstractAppTestCase
             'categoryId' => 1,
             'status' => 'invalid-status-value',
         ]);
-        $this->assertSame(201, $post->code);
-
-        // Clean up so the polluted row does not bleed into other tests
-        // sharing the singleton FakeSqlQuery in this Injector cache.
-        $this->resource->delete('app://self/article', ['id' => $post->body['id']]);
     }
 
     public function testCreateWithTagsLinksThemAndUpdateReplaces(): void

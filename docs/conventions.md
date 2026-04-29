@@ -196,30 +196,33 @@ educational value is in seeing each pattern *applied where it fits*.
 
 | Endpoint | Shape | Validation | Rationale |
 |---|---|---|---|
-| `Article::onPost` | `ArticleCreateInput` DTO | (gap†) | 9 fields including `tagIds` list — flat signature would be unreadable; cohere as a struct |
-| `Article::onPut`  | `ArticleUpdateInput` DTO | (gap†) | 7 fields including tri-state `tagIds` (`null`/`[]`/list with replace semantics) — tri-state needs typed carrier |
-| `Auth::onPost`    | `AuthExchangeInput` DTO  | (gap†) | OAuth `code`/`state` is a meaningful struct, not two unrelated scalars; readability over field count |
+| `Article::onPost` | `ArticleCreateInput` DTO | `#[JsonSchema(schema: 'write_response.json', params: 'article_create.json')]` | 9 fields including `tagIds` list — flat signature would be unreadable; cohere as a struct |
+| `Article::onPut`  | `ArticleUpdateInput` DTO | `#[JsonSchema(schema: 'write_response.json', params: 'article_update.json')]` | 7 fields including tri-state `tagIds` (`null`/`[]`/list with replace semantics) — tri-state needs typed carrier |
+| `Auth::onPost`    | `AuthExchangeInput` DTO  | `#[JsonSchema(schema: 'auth_response.json', params: 'auth_exchange.json')]` | OAuth `code`/`state` is a meaningful struct, not two unrelated scalars; readability over field count |
 | `Author::onPost`  | scalar | `#[JsonSchema(params: 'author_create.json')]` | 3 trivial fields; method signature *is* the contract |
 | `Author::onPut`   | scalar | `#[JsonSchema(params: 'author_update.json')]` | same |
 | `Tag::onPost`     | scalar | `#[JsonSchema(params: 'tag_create.json')]`    | 2 fields |
 | `Category::onPost`/`onPut` | scalar | `#[JsonSchema(params: 'category_*.json')]` | 4 fields, all independent scalars |
 | `Media::onPost`   | scalar | `#[JsonSchema(params: 'media_create.json')]`  | 6 fields but each is an independent property; no nesting or tri-state — borderline DTO territory, intentionally scalar to show the upper bound of "still readable as a flat list" |
 
-† **Known upstream gap (verified).** `BEAR\Resource\InputParam`
-materialises the DTO **before** `JsonSchemaInterceptor` runs, so the
-interceptor sees `['input' => <Dto>]` rather than the original flat
-request array — `params:` validation cannot be applied to DTO-shaped
-methods today. Wrapping the schema under an `input` key is also a
-dead end: `justinrainbow/json-schema` crashes when asked to validate
-readonly DTO properties. Endpoints using DTOs therefore have **no
-schema-driven input validation** in this codebase. The matching
-`var/json_validate/<entity>_<verb>.json` files are kept on disk so
-the contract stays documented and can be re-attached when DTO-aware
-validation lands upstream. Each affected method carries a docblock
-pointing here. See
+**DTO-shaped methods are validated end-to-end** as of
+[BEAR.Resource 1.31.1](https://github.com/bearsunday/BEAR.Resource/releases/tag/1.31.1)
+([#356](https://github.com/bearsunday/BEAR.Resource/issues/356)) and
+[BEAR.ApiDoc 1.9.1](https://github.com/bearsunday/BEAR.ApiDoc/releases/tag/1.9.1)
+([#81](https://github.com/bearsunday/BEAR.ApiDoc/issues/81)).
+`JsonSchemaInterceptor` now unpacks `#[Input]` DTO arguments before
+validating against the `params:` schema, so `var/json_validate/<entity>_<verb>.json`
+constraints (slug regex, status enum, length limits, …) are enforced
+at the resource boundary. `OpenApiGenerator` emits the matching
+`requestBody` schema, so the openapi contract reflects the same
+shape. See
 [`docs/journal/decisions-to-consult.md`](journal/decisions-to-consult.md)
-P8-#45 for the full diagnosis (vendor-source evidence and the
-parallel root cause for the original `JsonSchemaNotFoundException`).
+P8-#45 for the diagnosis history.
+
+`Auth::onPost` uses a dedicated `auth_response.json` (string subject
+id from the OAuth provider) rather than the shared
+`write_response.json` (integer DB id) — pick the response schema by
+what the endpoint actually returns, not by template.
 
 #### Decision rule (fit-driven)
 

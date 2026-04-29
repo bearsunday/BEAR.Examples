@@ -39,18 +39,16 @@
 </tr>
 <tr>
   
-  <td rowspan="9" class="method-cell"><span class="ti unsafe"></span>POST<div class="method-title">Input is a `#[Input]` DTO, not flat scalars. `#[JsonSchema(params:)]` is
-deliberately omitted: `BEAR\Resource\InputParam` materialises the DTO
-before `JsonSchemaInterceptor` runs, so the interceptor only ever sees
-`[&#039;input&#039; =&gt; &lt;Dto&gt;]` and cannot validate the original flat request.</div><div class="method-desc">The matching `var/json_validate/*.json` schema is kept on disk as the
-documented contract. See `docs/journal/decisions-to-consult.md` P8-#45.</div></td>
+  <td rowspan="9" class="method-cell"><span class="ti unsafe"></span>POST</td>
   <td><span class="param">slug</span><span class="req">*</span></td>
   <td><span class="badge type-string">string</span></td>
   <td class="param-desc"></td>
   <td><div class="extra-info">
-      
+      <span class="badge constraint">minLength: 3</span>
+      <span class="badge constraint">maxLength: 100</span>
+      <span class="badge constraint">pattern: ^[a-z0-9][a-z0-9-]*$</span>
     </div></td>
-  <td rowspan="9"></td>
+  <td rowspan="9"><a href="#WriteResponse" class="schema-link">WriteResponse</a></td>
 </tr>
 <tr>
   
@@ -59,7 +57,8 @@ documented contract. See `docs/journal/decisions-to-consult.md` P8-#45.</div></t
   <td><span class="badge type-string">string</span></td>
   <td class="param-desc"></td>
   <td><div class="extra-info">
-      
+      <span class="badge constraint">minLength: 1</span>
+      <span class="badge constraint">maxLength: 255</span>
     </div></td>
   
 </tr>
@@ -70,7 +69,7 @@ documented contract. See `docs/journal/decisions-to-consult.md` P8-#45.</div></t
   <td><span class="badge type-string">string</span></td>
   <td class="param-desc"></td>
   <td><div class="extra-info">
-      
+      <span class="badge constraint">minLength: 1</span>
     </div></td>
   
 </tr>
@@ -81,7 +80,7 @@ documented contract. See `docs/journal/decisions-to-consult.md` P8-#45.</div></t
   <td><span class="badge type-int">int</span></td>
   <td class="param-desc"></td>
   <td><div class="extra-info">
-      
+      <span class="badge constraint">minimum: 1</span>
     </div></td>
   
 </tr>
@@ -92,7 +91,7 @@ documented contract. See `docs/journal/decisions-to-consult.md` P8-#45.</div></t
   <td><span class="badge type-int">int</span></td>
   <td class="param-desc"></td>
   <td><div class="extra-info">
-      
+      <span class="badge constraint">minimum: 1</span>
     </div></td>
   
 </tr>
@@ -114,7 +113,7 @@ documented contract. See `docs/journal/decisions-to-consult.md` P8-#45.</div></t
   <td><span class="badge type-string">string</span></td>
   <td class="param-desc"></td>
   <td><div class="extra-info">
-      
+      <span class="badge constraint">enum: [&quot;draft&quot;,&quot;published&quot;]</span>
     </div></td>
   
 </tr>
@@ -125,7 +124,7 @@ documented contract. See `docs/journal/decisions-to-consult.md` P8-#45.</div></t
   <td><span class="badge type-string">string</span></td>
   <td class="param-desc"></td>
   <td><div class="extra-info">
-      
+      <span class="badge format">format: date-time</span>
     </div></td>
   
 </tr>
@@ -142,18 +141,14 @@ documented contract. See `docs/journal/decisions-to-consult.md` P8-#45.</div></t
 </tr>
 <tr>
   
-  <td rowspan="7" class="method-cell"><span class="ti idempotent"></span>PUT<div class="method-title">Input is a `#[Input]` DTO, not flat scalars. `#[JsonSchema(params:)]` is
-deliberately omitted: `BEAR\Resource\InputParam` materialises the DTO
-before `JsonSchemaInterceptor` runs, so the interceptor only ever sees
-`[&#039;input&#039; =&gt; &lt;Dto&gt;]` and cannot validate the original flat request.</div><div class="method-desc">The matching `var/json_validate/*.json` schema is kept on disk as the
-documented contract. See `docs/journal/decisions-to-consult.md` P8-#45.</div></td>
+  <td rowspan="7" class="method-cell"><span class="ti idempotent"></span>PUT</td>
   <td><span class="param">id</span><span class="req">*</span></td>
   <td><span class="badge type-int">int</span></td>
   <td class="param-desc"></td>
   <td><div class="extra-info">
-      
+      <span class="badge constraint">minimum: 1</span>
     </div></td>
-  <td rowspan="7"></td>
+  <td rowspan="7"><a href="#WriteResponse" class="schema-link">WriteResponse</a></td>
 </tr>
 <tr>
   
@@ -162,7 +157,8 @@ documented contract. See `docs/journal/decisions-to-consult.md` P8-#45.</div></t
   <td><span class="badge type-string">string</span></td>
   <td class="param-desc"></td>
   <td><div class="extra-info">
-      
+      <span class="badge constraint">minLength: 1</span>
+      <span class="badge constraint">maxLength: 255</span>
     </div></td>
   
 </tr>
@@ -173,7 +169,7 @@ documented contract. See `docs/journal/decisions-to-consult.md` P8-#45.</div></t
   <td><span class="badge type-string">string</span></td>
   <td class="param-desc"></td>
   <td><div class="extra-info">
-      
+      <span class="badge constraint">minLength: 1</span>
     </div></td>
   
 </tr>
@@ -184,7 +180,7 @@ documented contract. See `docs/journal/decisions-to-consult.md` P8-#45.</div></t
   <td><span class="badge type-string">string</span></td>
   <td class="param-desc"></td>
   <td><div class="extra-info">
-      
+      <span class="badge constraint">enum: [&quot;draft&quot;,&quot;published&quot;]</span>
     </div></td>
   
 </tr>
@@ -206,7 +202,7 @@ documented contract. See `docs/journal/decisions-to-consult.md` P8-#45.</div></t
   <td><span class="badge type-string">string</span></td>
   <td class="param-desc"></td>
   <td><div class="extra-info">
-      
+      <span class="badge format">format: date-time</span>
     </div></td>
   
 </tr>
@@ -297,18 +293,15 @@ documented contract. See `docs/journal/decisions-to-consult.md` P8-#45.</div></t
 </tr>
 <tr>
   
-  <td rowspan="2" class="method-cell"><span class="ti unsafe"></span>POST<div class="method-title">Input is a `#[Input]` DTO, not flat scalars. `#[JsonSchema(params:)]` is
-deliberately omitted: `BEAR\Resource\InputParam` materialises the DTO
-before `JsonSchemaInterceptor` runs, so the interceptor only ever sees
-`[&#039;input&#039; =&gt; &lt;Dto&gt;]` and cannot validate the original flat request.</div><div class="method-desc">The matching `var/json_validate/auth_exchange.json` schema is kept on disk
-as the documented contract. See `docs/journal/decisions-to-consult.md` P8-#45.</div></td>
+  <td rowspan="2" class="method-cell"><span class="ti unsafe"></span>POST</td>
   <td><span class="param">code</span><span class="req">*</span></td>
   <td><span class="badge type-string">string</span></td>
   <td class="param-desc"></td>
   <td><div class="extra-info">
-      
+      <span class="badge constraint">minLength: 1</span>
+      <span class="badge constraint">maxLength: 2048</span>
     </div></td>
-  <td rowspan="2"></td>
+  <td rowspan="2"><a href="#AuthResponse" class="schema-link">AuthResponse</a></td>
 </tr>
 <tr>
   
@@ -317,7 +310,8 @@ as the documented contract. See `docs/journal/decisions-to-consult.md` P8-#45.</
   <td><span class="badge type-string">string</span></td>
   <td class="param-desc"></td>
   <td><div class="extra-info">
-      
+      <span class="badge constraint">minLength: 1</span>
+      <span class="badge constraint">maxLength: 256</span>
     </div></td>
   
 </tr>
@@ -837,6 +831,57 @@ as the documented contract. See `docs/journal/decisions-to-consult.md` P8-#45.</
 </tbody>
 </table>
 </div>
+<div class="object-section" id="WriteResponse">
+<h3 class="object-name"><a href="schemas/write_response.json" class="schema-file-link" title="JSON Schema">📄</a>WriteResponse</h3>
+<table>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Description</th><th>Meta</th></tr>
+</thead>
+<tbody>
+<tr>
+  <td><span class="prop-name">id</span></td>
+  <td><span class="badge type-intnull">int|null</span></td>
+  <td class="param-desc"></td>
+  <td><div class="extra-info">
+      <span class="badge constraint">minimum: 1</span>
+    </div></td>
+</tr>
+<tr>
+  <td><span class="prop-name">slug</span></td>
+  <td><span class="badge type-string">string</span></td>
+  <td class="param-desc"></td>
+  <td><div class="extra-info">
+      
+    </div></td>
+</tr>
+<tr>
+  <td><span class="prop-name">email</span></td>
+  <td><span class="badge type-string">string</span></td>
+  <td class="param-desc"></td>
+  <td><div class="extra-info">
+      
+    </div></td>
+</tr>
+<tr>
+  <td><span class="prop-name">filename</span></td>
+  <td><span class="badge type-string">string</span></td>
+  <td class="param-desc"></td>
+  <td><div class="extra-info">
+      
+    </div></td>
+</tr>
+<tr>
+  <td><span class="prop-name">message</span></td>
+  <td><span class="badge type-string">string</span></td>
+  <td class="param-desc"></td>
+  <td><div class="extra-info">
+      
+    </div></td>
+</tr>
+
+</tbody>
+</table>
+</div>
 <div class="object-section" id="ArticleList">
 <h3 class="object-name"><a href="schemas/articleList.json" class="schema-file-link" title="JSON Schema">📄</a>ArticleList</h3>
 <table>
@@ -899,6 +944,57 @@ as the documented contract. See `docs/journal/decisions-to-consult.md` P8-#45.</
 </tbody>
 </table>
 </div>
+<div class="object-section" id="AuthResponse">
+<h3 class="object-name"><a href="schemas/auth_response.json" class="schema-file-link" title="JSON Schema">📄</a>AuthResponse</h3>
+<table>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Description</th><th>Meta</th></tr>
+</thead>
+<tbody>
+<tr>
+  <td><span class="prop-name">id</span></td>
+  <td><span class="badge type-string">string</span></td>
+  <td class="param-desc"></td>
+  <td><div class="extra-info">
+      
+    </div></td>
+</tr>
+<tr>
+  <td><span class="prop-name">email</span></td>
+  <td><span class="badge type-string">string</span></td>
+  <td class="param-desc"></td>
+  <td><div class="extra-info">
+      <span class="badge format">format: email</span>
+    </div></td>
+</tr>
+<tr>
+  <td><span class="prop-name">name</span></td>
+  <td><span class="badge type-string">string</span></td>
+  <td class="param-desc"></td>
+  <td><div class="extra-info">
+      
+    </div></td>
+</tr>
+<tr>
+  <td><span class="prop-name">message</span></td>
+  <td><span class="badge type-string">string</span></td>
+  <td class="param-desc"></td>
+  <td><div class="extra-info">
+      
+    </div></td>
+</tr>
+<tr>
+  <td><span class="prop-name">reason</span></td>
+  <td><span class="badge type-string">string</span></td>
+  <td class="param-desc"></td>
+  <td><div class="extra-info">
+      
+    </div></td>
+</tr>
+
+</tbody>
+</table>
+</div>
 <div class="object-section" id="Author">
 <h3 class="object-name"><a href="schemas/author.json" class="schema-file-link" title="JSON Schema">📄</a>Author</h3>
 <table>
@@ -951,57 +1047,6 @@ as the documented contract. See `docs/journal/decisions-to-consult.md` P8-#45.</
       <span class="badge href">href: app://self/articles</span>
     </div>
   </td>
-</tr>
-
-</tbody>
-</table>
-</div>
-<div class="object-section" id="WriteResponse">
-<h3 class="object-name"><a href="schemas/write_response.json" class="schema-file-link" title="JSON Schema">📄</a>WriteResponse</h3>
-<table>
-<thead>
-<tr><th>Name</th><th>Type</th><th>Description</th><th>Meta</th></tr>
-</thead>
-<tbody>
-<tr>
-  <td><span class="prop-name">id</span></td>
-  <td><span class="badge type-intnull">int|null</span></td>
-  <td class="param-desc"></td>
-  <td><div class="extra-info">
-      <span class="badge constraint">minimum: 1</span>
-    </div></td>
-</tr>
-<tr>
-  <td><span class="prop-name">slug</span></td>
-  <td><span class="badge type-string">string</span></td>
-  <td class="param-desc"></td>
-  <td><div class="extra-info">
-      
-    </div></td>
-</tr>
-<tr>
-  <td><span class="prop-name">email</span></td>
-  <td><span class="badge type-string">string</span></td>
-  <td class="param-desc"></td>
-  <td><div class="extra-info">
-      
-    </div></td>
-</tr>
-<tr>
-  <td><span class="prop-name">filename</span></td>
-  <td><span class="badge type-string">string</span></td>
-  <td class="param-desc"></td>
-  <td><div class="extra-info">
-      
-    </div></td>
-</tr>
-<tr>
-  <td><span class="prop-name">message</span></td>
-  <td><span class="badge type-string">string</span></td>
-  <td class="param-desc"></td>
-  <td><div class="extra-info">
-      
-    </div></td>
 </tr>
 
 </tbody>

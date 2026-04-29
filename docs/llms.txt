@@ -94,14 +94,15 @@ API Document
 |--------|------------|-------|
 | GET | articleId | href(goTag) |
 
-## Responses (9)
+## Responses (10)
 
 | Response | Schema | Properties |
 |----------|--------|------------|
 | Article | article.json | id, slug, title, body, excerpt, status, publishedAt, authorId, categoryId |
-| ArticleList | articleList.json | items, page, perPage, count, totalCount |
-| Author | author.json | id, name, email, bio |
 | Write_response | write_response.json | id, slug, email, filename, message |
+| ArticleList | articleList.json | items, page, perPage, count, totalCount |
+| Auth_response | auth_response.json | id, email, name, message, reason |
+| Author | author.json | id, name, email, bio |
 | CategoryList | categoryList.json | items, totalCount |
 | Category | category.json | id, slug, name, description, parentId |
 | Media | media.json | id, filename, mimeType, url, alt, width, height |
