@@ -56,6 +56,16 @@ final class WorkflowTest extends TestCase
         // The expanded link points at the actual author the resource is about to embed.
         $this->assertStringContainsString('id=' . $articleBody['authorId'], $articleBody['_links']['goAuthor']['href']);
 
+        // HAL contract: `#[Embed]` rels use ALPS Taxonomy nouns (author/
+        // category/tagList), not the Choreography verbs (goAuthor/…) which
+        // belong in `_links` only. Pin the embedded keys here so the
+        // workflow-level test catches accidental rel renames per
+        // docs/conventions.md §3.
+        $this->assertArrayHasKey('author', $articleBody['_embedded']);
+        $this->assertArrayHasKey('category', $articleBody['_embedded']);
+        $this->assertArrayHasKey('tagList', $articleBody['_embedded']);
+        $this->assertSame($articleBody['authorId'], $articleBody['_embedded']['author']['id']);
+
         $author = $this->resource->get('app://self/author', ['id' => $articleBody['authorId']]);
         $authorBody = json_decode((string) $author, true);
 

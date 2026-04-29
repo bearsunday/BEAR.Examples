@@ -113,16 +113,62 @@ final class ArticleTest extends AbstractAppTestCase
         ]);
     }
 
-    public function testPostInputShapeValidationRejectsBadFields(): void
+    public function testPostRejectsInvalidSlugPattern(): void
     {
         $this->expectException(JsonSchemaException::class);
         $this->resource->post('app://self/article', [
             'slug' => 'INVALID Slug With Spaces',
-            'title' => 'T',
-            'body' => 'B',
+            'title' => 'Title',
+            'body' => 'Body',
+            'authorId' => 1,
+            'categoryId' => 1,
+            'status' => 'draft',
+        ]);
+    }
+
+    public function testPostRejectsInvalidStatusEnum(): void
+    {
+        $this->expectException(JsonSchemaException::class);
+        $this->resource->post('app://self/article', [
+            'slug' => 'valid-slug-' . uniqid(),
+            'title' => 'Title',
+            'body' => 'Body',
             'authorId' => 1,
             'categoryId' => 1,
             'status' => 'invalid-status-value',
+        ]);
+    }
+
+    /**
+     * `JsonSchemaInterceptor` validates params *after* DTO hydration
+     * (BEAR.Resource 1.31.1). A scalar `tagIds` would therefore hit the
+     * typed `array` property in `ArticleCreateInput` as a TypeError → 5xx
+     * unless the DTO rejects non-array shapes up front. Pin the
+     * 400-class behaviour so the failure path stays a client error.
+     */
+    public function testPostRejectsScalarTagIds(): void
+    {
+        $this->expectException(ParameterException::class);
+        $this->resource->post('app://self/article', [
+            'slug' => 'valid-slug-' . uniqid(),
+            'title' => 'Title',
+            'body' => 'Body',
+            'authorId' => 1,
+            'categoryId' => 1,
+            'status' => 'draft',
+            'tagIds' => 1,
+        ]);
+    }
+
+    public function testPutRejectsScalarTagIds(): void
+    {
+        $this->expectException(ParameterException::class);
+        $this->resource->put('app://self/article', [
+            'id' => 1,
+            'title' => 'T',
+            'body' => 'B',
+            'status' => 'draft',
+            'tagIds' => 'not-an-array',
         ]);
     }
 

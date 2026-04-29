@@ -18,6 +18,8 @@ use MyVendor\Cms\Query\ArticleQueryInterface;
 use MyVendor\Cms\Query\ArticleTagCommandInterface;
 use Ray\InputQuery\Attribute\Input;
 
+use function assert;
+
 class Article extends ResourceObject
 {
     public function __construct(
@@ -78,15 +80,20 @@ class Article extends ResourceObject
             $input->categoryId,
         );
 
+        // Per docs/conventions.md §4 "After-INSERT id": bySlug after add is the
+        // canonical id-recovery path and is treated as invariant. Failure here
+        // means a unique-key constraint or replica-lag anomaly — let it surface
+        // as a 5xx rather than silently dropping tagIds.
         $created = $this->article->bySlug($input->slug);
-        if ($created !== null && $input->tagIds !== []) {
+        assert($created !== null);
+        if ($input->tagIds !== []) {
             $this->syncTags($created->id, $input->tagIds);
         }
 
         $this->code = Code::CREATED;
-        $this->headers['Location'] = $created !== null ? '/article?id=' . $created->id : '/article?slug=' . $input->slug;
+        $this->headers['Location'] = '/article?id=' . $created->id;
         $this->body = [
-            'id' => $created?->id,
+            'id' => $created->id,
             'slug' => $input->slug,
         ];
 

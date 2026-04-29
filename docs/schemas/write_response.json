@@ -5,7 +5,7 @@
   "description": "Permissive shape covering POST/PUT/DELETE response bodies across all write resources. PUT returns {id}, POST returns {id, slug|email|filename}, error paths return {message, id}. Each write method points its #[JsonSchema(schema:)] at this file.",
   "type": "object",
   "properties": {
-    "id":       {"type": ["integer", "null"], "minimum": 1},
+    "id":       {"type": "integer", "minimum": 1},
     "slug":     {"type": "string"},
     "email":    {"type": "string"},
     "filename": {"type": "string"},

@@ -11,6 +11,8 @@ use BEAR\Resource\ResourceObject;
 use MyVendor\Cms\Query\AuthorCommandInterface;
 use MyVendor\Cms\Query\AuthorQueryInterface;
 
+use function assert;
+
 class Author extends ResourceObject
 {
     public function __construct(
@@ -45,10 +47,12 @@ class Author extends ResourceObject
     public function onPost(string $name, string $email, string $bio = ''): static
     {
         $this->authorCmd->add($name, $email, $bio);
+        // byEmail after add is invariant per docs/conventions.md §4.
         $created = $this->author->byEmail($email);
+        assert($created !== null);
         $this->code = Code::CREATED;
-        $this->headers['Location'] = $created !== null ? '/author?id=' . $created->id : '/author';
-        $this->body = ['id' => $created?->id, 'email' => $email];
+        $this->headers['Location'] = '/author?id=' . $created->id;
+        $this->body = ['id' => $created->id, 'email' => $email];
 
         return $this;
     }

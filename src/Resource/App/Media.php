@@ -10,6 +10,8 @@ use BEAR\Resource\ResourceObject;
 use MyVendor\Cms\Query\MediaCommandInterface;
 use MyVendor\Cms\Query\MediaQueryInterface;
 
+use function assert;
+
 class Media extends ResourceObject
 {
     public function __construct(
@@ -59,10 +61,12 @@ class Media extends ResourceObject
             $width,
             $height,
         );
+        // byFilename after add is invariant per docs/conventions.md §4.
         $created = $this->media->byFilename($filename);
+        assert($created !== null);
         $this->code = Code::CREATED;
-        $this->headers['Location'] = $created !== null ? '/media?id=' . $created->id : '/media';
-        $this->body = ['id' => $created?->id, 'filename' => $filename];
+        $this->headers['Location'] = '/media?id=' . $created->id;
+        $this->body = ['id' => $created->id, 'filename' => $filename];
 
         return $this;
     }

@@ -23,7 +23,6 @@ use function dirname;
 use function file_get_contents;
 use function in_array;
 use function json_decode;
-use function preg_match;
 
 use const JSON_THROW_ON_ERROR;
 
@@ -47,6 +46,28 @@ use const JSON_THROW_ON_ERROR;
  */
 final class FakeSqlQuery implements SqlQueryInterface
 {
+    /**
+     * Write SQL ids handled by `mutate()`. An allowlist (rather than a regex
+     * over verb suffixes) avoids false-positive dispatch if a future read
+     * sqlId happens to end in `_link` / `_clear` / etc.
+     */
+    private const array WRITE_SQL_IDS = [
+        'article_add',
+        'article_update',
+        'article_delete',
+        'category_add',
+        'category_update',
+        'category_delete',
+        'tag_add',
+        'tag_delete',
+        'author_add',
+        'author_update',
+        'media_add',
+        'media_delete',
+        'article_tag_clear',
+        'article_tag_link',
+    ];
+
     /** @var array<string, list<array<string, mixed>>> */
     private array $tables;
 
@@ -101,7 +122,7 @@ final class FakeSqlQuery implements SqlQueryInterface
     /** @param array<string, mixed> $values */
     public function getRow(string $sqlId, array $values = [], FetchInterface|null $fetch = null): object|null
     {
-        if (preg_match('/_(add|update|delete|clear|link)$/', $sqlId)) {
+        if (in_array($sqlId, self::WRITE_SQL_IDS, true)) {
             // DbQueryInterceptor routes every #[DbQuery] method through getRow/getRowList
             // based on the return type. Writes (create_/update_/delete_) come through
             // here as well, so dispatch to the mutation handler and return null.
@@ -136,7 +157,7 @@ final class FakeSqlQuery implements SqlQueryInterface
      */
     public function getRowList(string $sqlId, array $values = [], FetchInterface|null $fetch = null): array
     {
-        if (preg_match('/_(add|update|delete|clear|link)$/', $sqlId)) {
+        if (in_array($sqlId, self::WRITE_SQL_IDS, true)) {
             $this->mutate($sqlId, $values);
 
             return [];

@@ -11,6 +11,8 @@ use BEAR\Resource\ResourceObject;
 use MyVendor\Cms\Query\TagCommandInterface;
 use MyVendor\Cms\Query\TagQueryInterface;
 
+use function assert;
+
 class Tag extends ResourceObject
 {
     public function __construct(
@@ -45,10 +47,12 @@ class Tag extends ResourceObject
     public function onPost(string $slug, string $name): static
     {
         $this->tagCmd->add($slug, $name);
+        // bySlug after add is invariant per docs/conventions.md §4.
         $created = $this->tag->bySlug($slug);
+        assert($created !== null);
         $this->code = Code::CREATED;
-        $this->headers['Location'] = $created !== null ? '/tag?id=' . $created->id : '/tag';
-        $this->body = ['id' => $created?->id, 'slug' => $slug];
+        $this->headers['Location'] = '/tag?id=' . $created->id;
+        $this->body = ['id' => $created->id, 'slug' => $slug];
 
         return $this;
     }

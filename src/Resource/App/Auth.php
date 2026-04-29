@@ -42,9 +42,13 @@ class Auth extends ResourceObject
     {
         try {
             $user = $this->auth->authenticate($input->code, $input->state);
-        } catch (Throwable $e) {
+        } catch (Throwable) {
+            // The OAuth-provider message can leak provider-internal detail
+            // (token introspection results, server-side error strings). A
+            // production CMS would log the exception via a logger binding;
+            // the public response intentionally exposes no reason field.
             $this->code = Code::UNAUTHORIZED;
-            $this->body = ['message' => 'Authentication failed', 'reason' => $e->getMessage()];
+            $this->body = ['message' => 'Authentication failed'];
 
             return $this;
         }

@@ -4,7 +4,11 @@ declare(strict_types=1);
 
 namespace MyVendor\Cms\Input;
 
+use BEAR\Resource\Exception\ParameterException;
 use Ray\InputQuery\Attribute\Input;
+
+use function array_values;
+use function is_array;
 
 /**
  * Input DTO for `PUT app://self/article`.
@@ -16,11 +20,17 @@ use Ray\InputQuery\Attribute\Input;
  * attached via `#[JsonSchema(params:)]` on `Article::onPut`; see
  * `ArticleCreateInput` for the broader DTO rationale.
  *
+ * `tagIds` is declared `mixed` and gated through an `is_array` check
+ * because `JsonSchemaInterceptor` validates after DTO hydration; see
+ * `ArticleCreateInput` for the rationale.
+ *
  * @psalm-suppress PossiblyUnusedProperty resolved at the resource layer
  */
 final readonly class ArticleUpdateInput
 {
-    /** @param list<int>|null $tagIds null (or omitted) = leave existing links, [] = clear, non-empty list = replace. */
+    /** @var list<int>|null null = leave existing links, [] = clear, non-empty list = replace. */
+    public array|null $tagIds;
+
     public function __construct(
         #[Input]
         public int $id,
@@ -35,7 +45,20 @@ final readonly class ArticleUpdateInput
         #[Input]
         public string|null $publishedAt = null,
         #[Input]
-        public array|null $tagIds = null,
+        mixed $tagIds = null,
     ) {
+        if ($tagIds !== null && ! is_array($tagIds)) {
+            throw new ParameterException('tagIds must be an array of integers or null');
+        }
+
+        if ($tagIds === null) {
+            $this->tagIds = null;
+
+            return;
+        }
+
+        /** @var list<int> $normalised */
+        $normalised = array_values($tagIds);
+        $this->tagIds = $normalised;
     }
 }

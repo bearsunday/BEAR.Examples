@@ -219,6 +219,25 @@ shape. See
 [`docs/journal/decisions-to-consult.md`](journal/decisions-to-consult.md)
 P8-#45 for the diagnosis history.
 
+#### Pitfall: typed-array DTO fields and the validation order
+
+Validation runs *after* DTO hydration, so a malformed value for a
+typed property (e.g. a scalar `tagIds=1` against `public array
+$tagIds`) reaches the constructor first and raises `TypeError` →
+5xx, never reaching `JsonSchemaInterceptor`. Until BEAR.Resource
+moves params validation in front of hydration, defend the typed
+fields inside the DTO: declare the parameter `mixed`, type-check it
+explicitly, and throw `BEAR\Resource\Exception\ParameterException`
+(maps to 400) for bad shapes. `ArticleCreateInput::tagIds` and
+`ArticleUpdateInput::tagIds` follow this pattern. Keep the runtime
+check minimal — `is_array` only — and let the JSON Schema's
+`items` / `minimum` keep doing the per-element validation it
+already does. Note that `mixed` always allows null in
+`Ray\InputQuery`'s default-value resolution: an omitted `tagIds`
+arrives as `null`, not as the constructor's declared default, so
+coalesce `null` to your intended default (`[]` for create-style,
+`null` for tri-state update) before the `is_array` gate.
+
 `Auth::onPost` uses a dedicated `auth_response.json` (string subject
 id from the OAuth provider) rather than the shared
 `write_response.json` (integer DB id) — pick the response schema by

@@ -36,6 +36,9 @@ use const PHP_BINARY;
  */
 abstract class AbstractMySQLTestCase extends TestCase
 {
+    /** @var array<string, string|false> */
+    private array $previousEnv = [];
+
     protected ResourceInterface $resource;
     protected PDO $pdo;
 
@@ -51,6 +54,12 @@ abstract class AbstractMySQLTestCase extends TestCase
             $this->markTestSkipped(sprintf('MySQL not reachable at %s: %s', $dsn, $e->getMessage()));
         }
 
+        // Snapshot prior values so tearDown() can restore them; otherwise these
+        // putenv calls leak DB_* into subsequent (non-MySQL) suites in the same process.
+        foreach (['DB_DSN', 'DB_USER', 'DB_PASSWORD'] as $name) {
+            $this->previousEnv[$name] = getenv($name);
+        }
+
         // Set env vars for the BEAR app so AppModule's AuraSqlModule sees them.
         putenv('DB_DSN=' . $dsn);
         putenv('DB_USER=' . $user);
@@ -62,6 +71,15 @@ abstract class AbstractMySQLTestCase extends TestCase
         // Fresh injector each test so env vars and schema state are picked up.
         $injector = Injector::getInstance('hal-api-app');
         $this->resource = $injector->getInstance(ResourceInterface::class);
+    }
+
+    protected function tearDown(): void
+    {
+        foreach ($this->previousEnv as $name => $value) {
+            putenv($value === false ? $name : sprintf('%s=%s', $name, $value));
+        }
+
+        $this->previousEnv = [];
     }
 
     private function migrateAndSeed(): void

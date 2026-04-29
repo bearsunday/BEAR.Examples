@@ -11,6 +11,8 @@ use BEAR\Resource\ResourceObject;
 use MyVendor\Cms\Query\CategoryCommandInterface;
 use MyVendor\Cms\Query\CategoryQueryInterface;
 
+use function assert;
+
 class Category extends ResourceObject
 {
     public function __construct(
@@ -51,10 +53,12 @@ class Category extends ResourceObject
         int|null $parentId = null,
     ): static {
         $this->categoryCmd->add($slug, $name, $description, $parentId);
+        // bySlug after add is invariant per docs/conventions.md §4.
         $created = $this->category->bySlug($slug);
+        assert($created !== null);
         $this->code = Code::CREATED;
-        $this->headers['Location'] = $created !== null ? '/category?id=' . $created->id : '/category';
-        $this->body = ['id' => $created?->id, 'slug' => $slug];
+        $this->headers['Location'] = '/category?id=' . $created->id;
+        $this->body = ['id' => $created->id, 'slug' => $slug];
 
         return $this;
     }
