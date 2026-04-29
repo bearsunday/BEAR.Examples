@@ -14,7 +14,8 @@ use Ray\InputQuery\Attribute\Input;
  * conventions §4: it does not create a new addressable resource, it returns
  * the authenticated user.
  *
- * Companion shape contract lives in `var/json_validate/auth_exchange.json`.
+ * Validated by `#[JsonSchema(params: 'auth_exchange.json')]` on
+ * `Auth::onPost`; the schema lives in `var/json_validate/auth_exchange.json`.
  *
  * @psalm-suppress PossiblyUnusedProperty resolved at the resource layer
  */

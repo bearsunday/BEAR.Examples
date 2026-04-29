@@ -16,10 +16,10 @@ use Ray\InputQuery\Attribute\Input;
  * `InputQueryInterface::newInstance()`, which materialises this object before
  * the resource method runs.
  *
- * Field set mirrors the previous flat signature of `Article::onPost`; see
- * `var/json_validate/article_create.json` for the matching shape contract
- * (left in place for documentation, currently not auto-attached because
- * `#[JsonSchema(params:)]` cannot validate Input DTO arguments today).
+ * Per-field shape (`slug` regex, `status` enum, length bounds, …) is
+ * validated by `#[JsonSchema(params: 'article_create.json')]` on
+ * `Article::onPost`; the matching schema lives in
+ * `var/json_validate/article_create.json`.
  *
  * @psalm-suppress PossiblyUnusedProperty resolved at the resource layer
  */
