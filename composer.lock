@@ -409,16 +409,16 @@
         },
         {
             "name": "bear/resource",
-            "version": "1.29.0",
+            "version": "1.31.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/bearsunday/BEAR.Resource.git",
-                "reference": "d559ae793bb399612398654ffad1f501291d5607"
+                "reference": "b2450059aa605cff9dde9a1619f033ffd4926cce"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/bearsunday/BEAR.Resource/zipball/d559ae793bb399612398654ffad1f501291d5607",
-                "reference": "d559ae793bb399612398654ffad1f501291d5607",
+                "url": "https://api.github.com/repos/bearsunday/BEAR.Resource/zipball/b2450059aa605cff9dde9a1619f033ffd4926cce",
+                "reference": "b2450059aa605cff9dde9a1619f033ffd4926cce",
                 "shasum": ""
             },
             "require": {
@@ -430,7 +430,7 @@
                 "koriym/hal": "^1.1",
                 "koriym/http-constants": "^1.1",
                 "php": "^8.2",
-                "phpdocumentor/reflection-docblock": "^5.2",
+                "phpdocumentor/reflection-docblock": "^6.0",
                 "psr/log": "^1.1 || ^2.0 || ^3.0",
                 "ray/aop": "^2.18.0",
                 "ray/di": "^2.18.0",
@@ -485,9 +485,9 @@
             ],
             "support": {
                 "issues": "https://github.com/bearsunday/BEAR.Resource/issues",
-                "source": "https://github.com/bearsunday/BEAR.Resource/tree/1.29.0"
+                "source": "https://github.com/bearsunday/BEAR.Resource/tree/1.31.1"
             },
-            "time": "2025-12-28T18:22:31+00:00"
+            "time": "2026-04-29T08:58:15+00:00"
         },
         {
             "name": "bear/streamer",
@@ -2271,16 +2271,16 @@
         },
         {
             "name": "phpdocumentor/reflection-docblock",
-            "version": "5.6.7",
+            "version": "6.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpDocumentor/ReflectionDocBlock.git",
-                "reference": "31a105931bc8ffa3a123383829772e832fd8d903"
+                "reference": "7bae67520aa9f5ecc506d646810bd40d9da54582"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpDocumentor/ReflectionDocBlock/zipball/31a105931bc8ffa3a123383829772e832fd8d903",
-                "reference": "31a105931bc8ffa3a123383829772e832fd8d903",
+                "url": "https://api.github.com/repos/phpDocumentor/ReflectionDocBlock/zipball/7bae67520aa9f5ecc506d646810bd40d9da54582",
+                "reference": "7bae67520aa9f5ecc506d646810bd40d9da54582",
                 "shasum": ""
             },
             "require": {
@@ -2288,8 +2288,8 @@
                 "ext-filter": "*",
                 "php": "^7.4 || ^8.0",
                 "phpdocumentor/reflection-common": "^2.2",
-                "phpdocumentor/type-resolver": "^1.7",
-                "phpstan/phpdoc-parser": "^1.7|^2.0",
+                "phpdocumentor/type-resolver": "^2.0",
+                "phpstan/phpdoc-parser": "^2.0",
                 "webmozart/assert": "^1.9.1 || ^2"
             },
             "require-dev": {
@@ -2299,7 +2299,8 @@
                 "phpstan/phpstan-mockery": "^1.1",
                 "phpstan/phpstan-webmozart-assert": "^1.2",
                 "phpunit/phpunit": "^9.5",
-                "psalm/phar": "^5.26"
+                "psalm/phar": "^5.26",
+                "shipmonk/dead-code-detector": "^0.5.1"
             },
             "type": "library",
             "extra": {
@@ -2329,44 +2330,44 @@
             "description": "With this component, a library can provide support for annotations via DocBlocks or otherwise retrieve information that is embedded in a DocBlock.",
             "support": {
                 "issues": "https://github.com/phpDocumentor/ReflectionDocBlock/issues",
-                "source": "https://github.com/phpDocumentor/ReflectionDocBlock/tree/5.6.7"
+                "source": "https://github.com/phpDocumentor/ReflectionDocBlock/tree/6.0.3"
             },
-            "time": "2026-03-18T20:47:46+00:00"
+            "time": "2026-03-18T20:49:53+00:00"
         },
         {
             "name": "phpdocumentor/type-resolver",
-            "version": "1.12.0",
+            "version": "2.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpDocumentor/TypeResolver.git",
-                "reference": "92a98ada2b93d9b201a613cb5a33584dde25f195"
+                "reference": "327a05bbee54120d4786a0dc67aad30226ad4cf9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpDocumentor/TypeResolver/zipball/92a98ada2b93d9b201a613cb5a33584dde25f195",
-                "reference": "92a98ada2b93d9b201a613cb5a33584dde25f195",
+                "url": "https://api.github.com/repos/phpDocumentor/TypeResolver/zipball/327a05bbee54120d4786a0dc67aad30226ad4cf9",
+                "reference": "327a05bbee54120d4786a0dc67aad30226ad4cf9",
                 "shasum": ""
             },
             "require": {
                 "doctrine/deprecations": "^1.0",
-                "php": "^7.3 || ^8.0",
+                "php": "^7.4 || ^8.0",
                 "phpdocumentor/reflection-common": "^2.0",
-                "phpstan/phpdoc-parser": "^1.18|^2.0"
+                "phpstan/phpdoc-parser": "^2.0"
             },
             "require-dev": {
                 "ext-tokenizer": "*",
                 "phpbench/phpbench": "^1.2",
-                "phpstan/extension-installer": "^1.1",
-                "phpstan/phpstan": "^1.8",
-                "phpstan/phpstan-phpunit": "^1.1",
+                "phpstan/extension-installer": "^1.4",
+                "phpstan/phpstan": "^2.1",
+                "phpstan/phpstan-phpunit": "^2.0",
                 "phpunit/phpunit": "^9.5",
-                "rector/rector": "^0.13.9",
-                "vimeo/psalm": "^4.25"
+                "psalm/phar": "^4"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-1.x": "1.x-dev"
+                    "dev-1.x": "1.x-dev",
+                    "dev-2.x": "2.x-dev"
                 }
             },
             "autoload": {
@@ -2387,9 +2388,9 @@
             "description": "A PSR-5 based resolver of Class names, Types and Structural Element Names",
             "support": {
                 "issues": "https://github.com/phpDocumentor/TypeResolver/issues",
-                "source": "https://github.com/phpDocumentor/TypeResolver/tree/1.12.0"
+                "source": "https://github.com/phpDocumentor/TypeResolver/tree/2.0.0"
             },
-            "time": "2025-11-21T15:09:14+00:00"
+            "time": "2026-01-06T21:53:42+00:00"
         },
         {
             "name": "phpstan/phpdoc-parser",
@@ -3274,16 +3275,16 @@
         },
         {
             "name": "ray/media-query",
-            "version": "1.0.2",
+            "version": "1.0.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ray-di/Ray.MediaQuery.git",
-                "reference": "0f43c1bd2691c7e7d8d6e02149c74d7b601a3758"
+                "reference": "a3a9a523e0022362a6fe7a4c7b516fa2ef45570a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ray-di/Ray.MediaQuery/zipball/0f43c1bd2691c7e7d8d6e02149c74d7b601a3758",
-                "reference": "0f43c1bd2691c7e7d8d6e02149c74d7b601a3758",
+                "url": "https://api.github.com/repos/ray-di/Ray.MediaQuery/zipball/a3a9a523e0022362a6fe7a4c7b516fa2ef45570a",
+                "reference": "a3a9a523e0022362a6fe7a4c7b516fa2ef45570a",
                 "shasum": ""
             },
             "require": {
@@ -3295,8 +3296,8 @@
                 "koriym/null-object": "^1.0.1",
                 "pagerfanta/pagerfanta": "^3.5 || ^4.7",
                 "php": "^8.2",
-                "phpdocumentor/reflection-docblock": "^5.3",
-                "phpdocumentor/type-resolver": "^1.6.1",
+                "phpdocumentor/reflection-docblock": "^6.0",
+                "phpdocumentor/type-resolver": "^2.0",
                 "ray/aop": "^2.19",
                 "ray/aura-sql-module": "^1.17",
                 "ray/di": "^2.19",
@@ -3336,9 +3337,9 @@
             "description": "PHP interface-based SQL framework",
             "support": {
                 "issues": "https://github.com/ray-di/Ray.MediaQuery/issues",
-                "source": "https://github.com/ray-di/Ray.MediaQuery/tree/1.0.2"
+                "source": "https://github.com/ray-di/Ray.MediaQuery/tree/1.0.4"
             },
-            "time": "2025-12-28T18:22:39+00:00"
+            "time": "2026-04-13T23:05:29+00:00"
         },
         {
             "name": "ray/object-visual-grapher",
@@ -3763,7 +3764,7 @@
         },
         {
             "name": "symfony/polyfill-php80",
-            "version": "v1.36.0",
+            "version": "v1.37.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-php80.git",
@@ -3823,7 +3824,7 @@
                 "shim"
             ],
             "support": {
-                "source": "https://github.com/symfony/polyfill-php80/tree/v1.36.0"
+                "source": "https://github.com/symfony/polyfill-php80/tree/v1.37.0"
             },
             "funding": [
                 {
@@ -3847,7 +3848,7 @@
         },
         {
             "name": "symfony/polyfill-php83",
-            "version": "v1.36.0",
+            "version": "v1.37.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-php83.git",
@@ -3903,7 +3904,7 @@
                 "shim"
             ],
             "support": {
-                "source": "https://github.com/symfony/polyfill-php83/tree/v1.36.0"
+                "source": "https://github.com/symfony/polyfill-php83/tree/v1.37.0"
             },
             "funding": [
                 {
@@ -4215,16 +4216,16 @@
         },
         {
             "name": "bear/api-doc",
-            "version": "1.8.0",
+            "version": "1.9.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/bearsunday/BEAR.ApiDoc.git",
-                "reference": "1a78ef368d41144030bd3e38d3dc95a5a739c0cf"
+                "reference": "dab77969a1a242c6c011432290aaef89b5be8291"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/bearsunday/BEAR.ApiDoc/zipball/1a78ef368d41144030bd3e38d3dc95a5a739c0cf",
-                "reference": "1a78ef368d41144030bd3e38d3dc95a5a739c0cf",
+                "url": "https://api.github.com/repos/bearsunday/BEAR.ApiDoc/zipball/dab77969a1a242c6c011432290aaef89b5be8291",
+                "reference": "dab77969a1a242c6c011432290aaef89b5be8291",
                 "shasum": ""
             },
             "require": {
@@ -4241,7 +4242,7 @@
                 "koriym/psr4list": "^1.0.1",
                 "michelf/php-markdown": "^1.9.1 || ^2.0",
                 "php": "^8.2",
-                "phpdocumentor/reflection-docblock": "^4.3 || ^5.2",
+                "phpdocumentor/reflection-docblock": "^5.2 || ^6.0",
                 "ray/aop": "^2.10",
                 "ray/di": "^2.16",
                 "ray/input-query": "^1.0",
@@ -4281,9 +4282,9 @@
             ],
             "support": {
                 "issues": "https://github.com/bearsunday/BEAR.ApiDoc/issues",
-                "source": "https://github.com/bearsunday/BEAR.ApiDoc/tree/1.8.0"
+                "source": "https://github.com/bearsunday/BEAR.ApiDoc/tree/1.9.1"
             },
-            "time": "2026-02-16T16:28:21+00:00"
+            "time": "2026-04-29T10:49:08+00:00"
         },
         {
             "name": "bear/cli",
@@ -7829,7 +7830,7 @@
         },
         {
             "name": "symfony/polyfill-ctype",
-            "version": "v1.36.0",
+            "version": "v1.37.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-ctype.git",
@@ -7888,7 +7889,7 @@
                 "portable"
             ],
             "support": {
-                "source": "https://github.com/symfony/polyfill-ctype/tree/v1.36.0"
+                "source": "https://github.com/symfony/polyfill-ctype/tree/v1.37.0"
             },
             "funding": [
                 {
@@ -7912,16 +7913,16 @@
         },
         {
             "name": "symfony/polyfill-intl-grapheme",
-            "version": "v1.36.0",
+            "version": "v1.37.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-intl-grapheme.git",
-                "reference": "ad1b7b9092976d6c948b8a187cec9faaea9ec1df"
+                "reference": "4864388bfbd3001ce88e234fab652acd91fdc57e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-intl-grapheme/zipball/ad1b7b9092976d6c948b8a187cec9faaea9ec1df",
-                "reference": "ad1b7b9092976d6c948b8a187cec9faaea9ec1df",
+                "url": "https://api.github.com/repos/symfony/polyfill-intl-grapheme/zipball/4864388bfbd3001ce88e234fab652acd91fdc57e",
+                "reference": "4864388bfbd3001ce88e234fab652acd91fdc57e",
                 "shasum": ""
             },
             "require": {
@@ -7970,7 +7971,7 @@
                 "shim"
             ],
             "support": {
-                "source": "https://github.com/symfony/polyfill-intl-grapheme/tree/v1.36.0"
+                "source": "https://github.com/symfony/polyfill-intl-grapheme/tree/v1.37.0"
             },
             "funding": [
                 {
@@ -7990,11 +7991,11 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-04-10T16:19:22+00:00"
+            "time": "2026-04-26T13:13:48+00:00"
         },
         {
             "name": "symfony/polyfill-intl-normalizer",
-            "version": "v1.36.0",
+            "version": "v1.37.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-intl-normalizer.git",
@@ -8055,7 +8056,7 @@
                 "shim"
             ],
             "support": {
-                "source": "https://github.com/symfony/polyfill-intl-normalizer/tree/v1.36.0"
+                "source": "https://github.com/symfony/polyfill-intl-normalizer/tree/v1.37.0"
             },
             "funding": [
                 {
@@ -8079,7 +8080,7 @@
         },
         {
             "name": "symfony/polyfill-mbstring",
-            "version": "v1.36.0",
+            "version": "v1.37.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-mbstring.git",
@@ -8140,7 +8141,7 @@
                 "shim"
             ],
             "support": {
-                "source": "https://github.com/symfony/polyfill-mbstring/tree/v1.36.0"
+                "source": "https://github.com/symfony/polyfill-mbstring/tree/v1.37.0"
             },
             "funding": [
                 {
