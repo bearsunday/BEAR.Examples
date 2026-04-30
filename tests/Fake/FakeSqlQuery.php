@@ -9,6 +9,7 @@ use MyVendor\Cms\Entity\Author;
 use MyVendor\Cms\Entity\Category;
 use MyVendor\Cms\Entity\Media;
 use MyVendor\Cms\Entity\Tag;
+use MyVendor\Cms\Service\MarkdownRendererInterface;
 use Ray\MediaQuery\Exception\LogicException;
 use Ray\MediaQuery\FetchInterface;
 use Ray\MediaQuery\PagesInterface;
@@ -77,8 +78,10 @@ final class FakeSqlQuery implements SqlQueryInterface
     /** @var array<string, int> */
     private array $nextId;
 
-    public function __construct(string|null $fakeDir = null)
-    {
+    public function __construct(
+        string|null $fakeDir = null,
+        private readonly MarkdownRendererInterface|null $renderer = null,
+    ) {
         $fakeDir ??= dirname(__DIR__, 2) . '/var/fake';
         $this->tables = [
             'article' => $this->load($fakeDir . '/article.json'),
@@ -623,6 +626,7 @@ final class FakeSqlQuery implements SqlQueryInterface
             publishedAt: $r['publishedAt'] ?? null,
             authorId: (int) $r['authorId'],
             categoryId: (int) $r['categoryId'],
+            renderer: $this->renderer,
         );
     }
 
