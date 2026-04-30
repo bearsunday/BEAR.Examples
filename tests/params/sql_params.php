@@ -64,7 +64,7 @@ return [
     // categories -------------------------------------------------------
     'category_add.sql' => ['slug' => 'smoke', 'name' => 'Smoke', 'description' => null, 'parentId' => null],
     'category_by_slug.sql' => ['slug' => 'technology'],
-    'category_delete.sql' => ['id' => 50],
+    'category_delete.sql' => ['id' => 999],
     'category_item.sql' => ['id' => 1],
     'category_list.sql' => [],
     'category_update.sql' => ['name' => 'Updated', 'description' => null, 'parentId' => null, 'id' => 1],

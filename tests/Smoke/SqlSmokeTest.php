@@ -115,10 +115,18 @@ final class SqlSmokeTest extends TestCase
     protected function setUp(): void
     {
         self::$dbPath = self::$templatePath . '.' . uniqid('case', true);
-        copy(self::$templatePath, self::$dbPath);
+        $this->assertTrue(
+            copy(self::$templatePath, self::$dbPath),
+            sprintf('Failed to copy seeded SQLite template DB to %s', self::$dbPath),
+        );
+
         $this->pdo = new PDO('sqlite:' . self::$dbPath, null, null, [
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
         ]);
+        $this->assertNotFalse(
+            $this->pdo->exec('PRAGMA foreign_keys = ON'),
+            'Failed to enable SQLite foreign key constraints',
+        );
     }
 
     protected function tearDown(): void
@@ -147,8 +155,8 @@ final class SqlSmokeTest extends TestCase
         $missing = array_diff($files, array_keys($params));
         $extra = array_diff(array_keys($params), $files);
 
-        self::assertSame([], $missing, 'SQL files without params entry: ' . implode(', ', $missing));
-        self::assertSame([], $extra, 'Params entries without matching SQL file: ' . implode(', ', $extra));
+        $this->assertSame([], $missing, 'SQL files without params entry: ' . implode(', ', $missing));
+        $this->assertSame([], $extra, 'Params entries without matching SQL file: ' . implode(', ', $extra));
     }
 
     public function testEverySqlFileParamsMatchPlaceholders(): void
@@ -162,7 +170,7 @@ final class SqlSmokeTest extends TestCase
             $actual = array_keys($params[$name] ?? []);
             sort($actual);
 
-            self::assertSame(
+            $this->assertSame(
                 self::placeholderNames((string) file_get_contents((string) $path)),
                 $actual,
                 "{$name} params do not match SQL placeholders",
@@ -179,9 +187,9 @@ final class SqlSmokeTest extends TestCase
         $this->pdo->beginTransaction();
         try {
             $stmt = $this->pdo->prepare($sql);
-            self::assertNotFalse($stmt, "Failed to prepare {$sqlFile}");
+            $this->assertNotFalse($stmt, "Failed to prepare {$sqlFile}");
             $ok = $stmt->execute($params);
-            self::assertTrue($ok, "Failed to execute {$sqlFile}");
+            $this->assertTrue($ok, "Failed to execute {$sqlFile}");
             if ($stmt->columnCount() > 0) {
                 // Drain results so SQLite releases the statement before rollback.
                 $stmt->fetchAll(PDO::FETCH_ASSOC);
