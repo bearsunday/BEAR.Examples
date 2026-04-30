@@ -6,19 +6,32 @@
 正規のエンドポイントは `src/Resource/App/Article.php` です。ここにある
 クラスは、実装方針の違いを読むための教材です。
 
+これらは競合する API 設計案ではありません。同じようなレスポンス shape を
+保ったまま、1つずつ軸を変えた読み物です。どの責務がどこへ移動するかを見る
+ためにあります。
+
 デモは次のコマンドで実行できます。
 
 ```bash
 composer demo:variations
 ```
 
-## 見どころ
+## 読みどころ
+
+読む時は、次の3点に注目します。
+
+- Article の不変条件がどこにあるか: Entity、Resource、SQL row、DB access。
+- Resource がどれだけ自分でレスポンスを整形しているか。
+- MediaQuery が Resource から何を取り除いているか: SQL 探索、parameter bind、
+  fetch mode、query naming。
+
+## 各クラスの見どころ
 
 | クラス | 比較軸 | 見るポイント |
 |---|---|---|
-| `ArticleAsArray` | Entity と array | `#[DbQuery]` で取得した行を、そのままレスポンス配列へ整形します。短く書けますが、型変換やレスポンス shape の責務が Resource に残ります。 |
-| `ArticleSqlQuery` | 宣言的 query と programmatic query | `SqlQueryInterface` を使い、複数の read と PHP 側の処理を Resource が組み立てます。reading time や previous/next のような付加情報がある場合の見本です。 |
-| `ArticleRawPdo` | MediaQuery と raw PDO | `ExtendedPdoInterface` で SQL を直接実行します。DB アクセスの実体が見えやすい一方で、MediaQuery が SQL 探索、bind、fetch strategy、query 名管理を引き受けていることも分かります。 |
+| `ArticleAsArray` | Entity と array | Entity を使わない最小版です。array shape、cast、datetime normalization が明示され、`Article` object が担っていた意味が Resource 側へ移ることを見ます。 |
+| `ArticleSqlQuery` | 宣言的 query と programmatic query | 1つの `#[DbQuery]` では収まらない場面です。reading time と previous/next によって、Resource が複数 query の結果を組み立てます。 |
+| `ArticleRawPdo` | MediaQuery と raw PDO | フレームワークの助けを外した DB access です。SQL がクラス内に見える代わりに、MediaQuery が普段隠している責務も見えるようになります。 |
 
 ## 読む順番
 

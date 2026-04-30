@@ -6,19 +6,32 @@ This directory contains comparison-only implementations of the Article GET
 resource. The canonical endpoint is `src/Resource/App/Article.php`; these
 classes are reading material for understanding the tradeoffs.
 
+These classes are not competing API designs. They are a controlled reading
+guide: the response shape is intentionally similar, so the differences show
+where responsibility moves when you change one axis at a time.
+
 Run the demo with:
 
 ```bash
 composer demo:variations
 ```
 
-## What To Look For
+## Reading Guide
+
+Read for three things:
+
+- Where the Article invariant lives: entity, Resource, SQL row, or DB access.
+- How much response shaping the Resource must do itself.
+- What MediaQuery removes from the Resource: SQL lookup, parameter binding,
+  fetch mode, and query naming.
+
+## Highlights
 
 | Class | Focus | What it shows |
 |---|---|---|
-| `ArticleAsArray` | Entity vs array | Uses `#[DbQuery]` and maps the row directly into a response array. This is short, but response shaping, type casts, and invariants stay inside the resource. |
-| `ArticleSqlQuery` | Declarative query vs programmatic query orchestration | Uses `SqlQueryInterface` when the resource needs multiple reads and PHP-side work such as reading time and previous/next navigation. |
-| `ArticleRawPdo` | MediaQuery vs raw PDO | Runs explicit SQL through `ExtendedPdoInterface`. This makes the database path visible, while also showing what MediaQuery normally centralizes: SQL discovery, binding, fetch strategy, and query naming. |
+| `ArticleAsArray` | Entity vs array | Shows the smallest non-entity version. Notice the explicit array shape, casts, datetime normalization, and how domain meaning is no longer carried by an `Article` object. |
+| `ArticleSqlQuery` | Declarative query vs programmatic query orchestration | Shows the point where one `#[DbQuery]` call is no longer the whole story. Reading time and previous/next navigation make the Resource coordinate multiple query results. |
+| `ArticleRawPdo` | MediaQuery vs raw PDO | Shows the database path with the framework help removed. The SQL is visible in the class, and so are the concerns MediaQuery normally hides. |
 
 ## Reading Order
 
