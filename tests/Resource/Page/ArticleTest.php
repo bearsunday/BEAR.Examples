@@ -29,7 +29,7 @@ final class ArticleTest extends AbstractPageTestCase
 
         $this->assertStringContainsString('<!DOCTYPE html>', $html);
         $this->assertStringContainsString('<link rel="profile" href="/profile/alps.json">', $html);
-        $this->assertStringContainsString('<link rel="stylesheet" href="/css/level1.css">', $html);
+        $this->assertStringContainsString('<link rel="stylesheet" href="/css/level3.css">', $html);
         $this->assertStringContainsString('<header>', $html);
         $this->assertStringContainsString('<main>', $html);
         $this->assertStringContainsString('<nav>', $html);
@@ -84,5 +84,26 @@ final class ArticleTest extends AbstractPageTestCase
         $ro = $this->resource->get('page://self/article', ['id' => 99999]);
 
         $this->assertSame(404, $ro->code);
+    }
+
+    public function testCssLevelDefaultsToThreeAndIsOverridableByQuery(): void
+    {
+        $defaultRo = $this->resource->get('page://self/article', ['id' => 1]);
+        $defaultHtml = $defaultRo->toString();
+        $this->assertStringContainsString('href="/css/level3.css"', $defaultHtml);
+        $this->assertStringContainsString('<strong>level3</strong>', $defaultHtml);
+
+        $level2Ro = $this->resource->get('page://self/article', ['id' => 1, 'css' => 2]);
+        $level2Html = $level2Ro->toString();
+        $this->assertStringContainsString('href="/css/level2.css"', $level2Html);
+        $this->assertStringContainsString('<strong>level2</strong>', $level2Html);
+    }
+
+    public function testInvalidCssLevelFallsBackToDefault(): void
+    {
+        $ro = $this->resource->get('page://self/article', ['id' => 1, 'css' => 99]);
+        $html = $ro->toString();
+
+        $this->assertStringContainsString('href="/css/level3.css"', $html);
     }
 }

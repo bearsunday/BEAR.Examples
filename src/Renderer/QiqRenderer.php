@@ -11,11 +11,16 @@ use Qiq\Template;
 use Throwable;
 
 use function array_key_exists;
+use function http_build_query;
+use function in_array;
 use function is_array;
 use function ltrim;
 
 final readonly class QiqRenderer implements RenderInterface
 {
+    private const int DEFAULT_CSS_LEVEL = 3;
+    private const array CSS_LEVELS = [1, 2, 3];
+
     public function __construct(
         private Template $template,
     ) {
@@ -29,6 +34,7 @@ final readonly class QiqRenderer implements RenderInterface
         }
 
         $vars = is_array($ro->body) ? $ro->body : ['value' => $ro->body];
+        $vars += $this->cssVars($ro);
         if ($ro->code >= 400) {
             return $this->renderError($ro, $vars);
         }
@@ -40,8 +46,31 @@ final readonly class QiqRenderer implements RenderInterface
         } catch (Throwable $e) {
             $ro->code = 500;
 
-            return $this->renderError($ro, ['message' => $e->getMessage()]);
+            return $this->renderError($ro, ['message' => $e->getMessage()] + $vars);
         }
+    }
+
+    /** @return array{cssLevel: int, cssLinks: array<int, string>} */
+    private function cssVars(ResourceObject $ro): array
+    {
+        $query = $ro->uri->query;
+        $requested = isset($query['css']) ? (int) $query['css'] : self::DEFAULT_CSS_LEVEL;
+        $level = in_array($requested, self::CSS_LEVELS, true) ? $requested : self::DEFAULT_CSS_LEVEL;
+
+        $base = $query;
+        unset($base['css']);
+        $path = $ro->uri->path;
+        if ($path === '' || $path === '/index') {
+            $path = '/';
+        }
+
+        $links = [];
+        foreach (self::CSS_LEVELS as $n) {
+            $merged = $base + ['css' => $n];
+            $links[$n] = $path . '?' . http_build_query($merged);
+        }
+
+        return ['cssLevel' => $level, 'cssLinks' => $links];
     }
 
     /** @param array<string, mixed> $vars */
