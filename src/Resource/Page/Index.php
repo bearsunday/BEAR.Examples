@@ -8,14 +8,12 @@ use BEAR\Resource\ResourceObject;
 
 class Index extends ResourceObject
 {
-    /** @var array{greeting: string} */
+    /** @var array{name: string} */
     public $body;
 
     public function onGet(string $name = 'BEAR.Sunday'): static
     {
-        $this->body = [
-            'greeting' => 'Hello ' . $name,
-        ];
+        $this->body = ['name' => $name];
 
         return $this;
     }

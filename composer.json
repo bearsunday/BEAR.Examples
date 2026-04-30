@@ -12,6 +12,7 @@
         "koriym/env-json": "^1.0",
         "league/commonmark": "^2.8",
         "league/oauth2-google": "^5.0",
+        "qiq/qiq": "^3.0",
         "ray/aop": "^2.12",
         "ray/aura-sql-module": "^1.17",
         "ray/di": "^2.14",
