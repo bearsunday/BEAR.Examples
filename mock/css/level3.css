@@ -1,0 +1,178 @@
+/* level3.css — Production quality */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@500;600&display=swap');
+
+:root {
+  --brand-50: #faf8f5;
+  --brand-100: #f0ece4;
+  --brand-200: #d9cfb9;
+  --brand-600: #8a7350;
+  --brand-700: #6b5839;
+  --brand-900: #2c2518;
+  --gray-100: #f6f6f4;
+  --gray-300: #d8d6d2;
+  --gray-600: #6c6a66;
+  --gray-900: #1f1d1a;
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --transition: 300ms ease;
+  --space: 1rem;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  font-family: var(--font-sans);
+  color: var(--gray-900);
+  background: var(--brand-50);
+  margin: 0;
+  padding: 0;
+  line-height: 1.65;
+}
+
+header, main, nav, footer {
+  max-width: 48rem;
+  margin: 0 auto;
+  padding: calc(var(--space) * 1.5);
+}
+
+header {
+  border-bottom: 1px solid var(--brand-200);
+  padding-bottom: var(--space);
+  margin-bottom: var(--space);
+}
+
+header h1 {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gray-600);
+  margin: 0;
+}
+
+.Article .title {
+  font-family: var(--font-display);
+  font-size: 2.25rem;
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--brand-900);
+  margin: 0 0 var(--space);
+}
+
+.Article .status {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.125rem 0.5rem;
+  border-radius: 2px;
+  background: var(--brand-100);
+  color: var(--brand-700);
+}
+
+.Article .publishedAt {
+  display: block;
+  font-size: 0.875rem;
+  color: var(--gray-600);
+  margin: var(--space) 0;
+}
+
+.Article .excerpt {
+  font-size: 1.1rem;
+  font-style: italic;
+  color: var(--gray-600);
+  border-left: 3px solid var(--brand-200);
+  padding-left: var(--space);
+  margin: calc(var(--space) * 1.5) 0;
+}
+
+.Article .body {
+  font-size: 1rem;
+  line-height: 1.8;
+}
+
+.Author, .Category, .Tag {
+  display: inline-block;
+  font-size: 0.875rem;
+  margin-right: var(--space);
+}
+
+.Author .name, .Category .name, .Tag .name {
+  font-weight: 500;
+  color: var(--brand-700);
+}
+
+nav {
+  border-top: 1px solid var(--brand-200);
+  padding-top: var(--space);
+  margin-top: calc(var(--space) * 2);
+}
+
+nav h2 {
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--gray-600);
+  margin: 0 0 var(--space);
+}
+
+nav ul { list-style: none; padding: 0; margin: 0; }
+nav li { margin: 0.5rem 0; }
+
+nav a {
+  color: var(--brand-700);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color var(--transition);
+}
+
+nav a:hover { border-bottom-color: var(--brand-700); }
+
+form {
+  background: var(--gray-100);
+  padding: var(--space);
+  margin: var(--space) 0;
+  border: 1px solid var(--gray-300);
+}
+
+form label { display: block; font-size: 0.875rem; margin-bottom: 0.25rem; color: var(--gray-600); }
+form input, form textarea, form select {
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  padding: 0.5rem;
+  border: 1px solid var(--gray-300);
+  background: white;
+  width: 100%;
+  margin-bottom: var(--space);
+}
+
+button, [type="submit"] {
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.75rem 1.5rem;
+  border: 1px solid var(--brand-900);
+  background: white;
+  color: var(--brand-900);
+  cursor: pointer;
+  transition: all var(--transition);
+}
+
+button:hover, [type="submit"]:hover {
+  background: var(--brand-900);
+  color: var(--brand-50);
+}
+
+footer {
+  border-top: 1px solid var(--brand-200);
+  padding-top: var(--space);
+  margin-top: calc(var(--space) * 2);
+  font-size: 0.75rem;
+  color: var(--gray-600);
+  text-align: center;
+}

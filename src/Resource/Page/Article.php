@@ -30,6 +30,8 @@ class Article extends ResourceObject
 
     public function onGet(int $id): static
     {
+        $this->headers['Content-Type'] = 'text/html; charset=utf-8';
+
         $article = $this->article->item($id);
         if ($article === null) {
             $this->code = 404;
