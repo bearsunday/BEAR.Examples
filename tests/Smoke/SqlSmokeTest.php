@@ -20,7 +20,6 @@ use function file_get_contents;
 use function glob;
 use function implode;
 use function is_string;
-use function putenv;
 use function scandir;
 use function sort;
 use function sprintf;
@@ -95,14 +94,11 @@ final class SqlSmokeTest extends TestCase
             $seedOut,
             $seedCode,
         );
-        if ($seedCode !== 0) {
-            self::fail('bin/seed.php failed: ' . implode("\n", $seedOut));
+        if ($seedCode === 0) {
+            return;
         }
 
-        // Reset DB_* envs so the rest of the suite is unaffected.
-        foreach (['DB_DSN', 'DB_USER', 'DB_PASSWORD'] as $name) {
-            putenv($name);
-        }
+        self::fail('bin/seed.php failed: ' . implode("\n", $seedOut));
     }
 
     public static function tearDownAfterClass(): void
