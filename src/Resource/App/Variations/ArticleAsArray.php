@@ -7,10 +7,8 @@ namespace MyVendor\Cms\Resource\App\Variations;
 use BEAR\Resource\Annotation\JsonSchema;
 use BEAR\Resource\Code;
 use BEAR\Resource\ResourceObject;
-use Ray\MediaQuery\SqlQueryInterface;
+use MyVendor\Cms\Query\Variations\ArticleAsArrayQueryInterface;
 
-use function get_object_vars;
-use function is_array;
 use function str_contains;
 use function str_replace;
 
@@ -23,14 +21,14 @@ use function str_replace;
 class ArticleAsArray extends ResourceObject
 {
     public function __construct(
-        private readonly SqlQueryInterface $sqlQuery,
+        private readonly ArticleAsArrayQueryInterface $article,
     ) {
     }
 
     #[JsonSchema('article.json')]
     public function onGet(int $id): static
     {
-        $row = $this->sqlQuery->getRow('article_as_array_item', ['id' => $id]);
+        $row = $this->article->item($id);
         if ($row === null) {
             $this->code = Code::NOT_FOUND;
             $this->body = ['message' => 'Article not found', 'id' => $id];
@@ -38,8 +36,6 @@ class ArticleAsArray extends ResourceObject
             return $this;
         }
 
-        /** @var array<string, mixed> $row */
-        $row = is_array($row) ? $row : get_object_vars($row);
         $this->body = self::articleBody($row);
 
         return $this;
