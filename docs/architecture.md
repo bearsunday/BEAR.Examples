@@ -1,5 +1,7 @@
 # Architecture
 
+[日本語](ja/architecture.md)
+
 ## Resolution-increasing build-up
 
 The code is built bottom-up, each phase adding resolution:

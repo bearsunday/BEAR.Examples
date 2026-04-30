@@ -1,5 +1,7 @@
 # Conventions
 
+[日本語](ja/conventions.md)
+
 Cross-cutting "how to write code in this codebase" rules. Architecture
 and pattern explanations live in [architecture.md](architecture.md);
 this file is the companion that codifies the *decisions* made during

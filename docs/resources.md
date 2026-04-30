@@ -1,5 +1,7 @@
 # App resources
 
+[日本語](ja/resources.md)
+
 All resources return HAL+JSON. Shapes below use the entity JSON Schema
 under [../var/schema/](../var/schema) as the source of truth.
 

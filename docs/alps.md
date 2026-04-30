@@ -1,5 +1,7 @@
 # ALPS profile
 
+[日本語](ja/alps.md)
+
 [var/alps/profile.json](../var/alps/profile.json) is the source of truth
 for CMS semantics.
 
