@@ -1,5 +1,6 @@
 <?php
 /**
+ * @var \MyVendor\Cms\Entity\Category $category
  * @var list<\MyVendor\Cms\Entity\Article> $articles
  */
 ?>
@@ -8,46 +9,53 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BEAR.Cms Reference CMS</title>
+  <title>{{h $category->name }} - BEAR.Cms Reference CMS</title>
   <link rel="profile" href="/profile/alps.json">
   <link rel="stylesheet" href="/css/level1.css">
 </head>
 <body>
   <header>
-    <h1 class="ArticleList">BEAR.Cms Reference CMS</h1>
+    <h1 class="Category">Category Detail</h1>
   </header>
   <main>
+    <section class="Category">
+      <input type="hidden" class="id" value="{{h $category->id }}">
+      <h2 class="name">{{h $category->name }}</h2>
+      <span class="slug">{{h $category->slug }}</span>
+      <?php if ($category->description !== null): ?>
+        <p class="description">{{h $category->description }}</p>
+      <?php endif ?>
+      <?php if ($category->parentId !== null): ?>
+        <p>Parent category: <a class="goCategory" href="/category?id={{h $category->parentId }}">#{{h $category->parentId }}</a></p>
+      <?php endif ?>
+    </section>
+
     <section class="ArticleList">
+      <h2>Articles in this category</h2>
       <?php if ($articles === []): ?>
-        <p>No published articles.</p>
+        <p>No articles in this category yet.</p>
       <?php endif ?>
       <?php foreach ($articles as $article): ?>
         <article class="Article">
           <input type="hidden" class="id" value="{{h $article->id }}">
-          <h2 class="title">
+          <h3 class="title">
             <a class="goArticle" href="/article?id={{h $article->id }}">{{h $article->title }}</a>
-          </h2>
+          </h3>
           <span class="slug">{{h $article->slug }}</span>
-          <span class="status">{{h $article->status }}</span>
           <?php $publishedAtLabel = $article->publishedAtLabel(); ?>
           <?php if ($publishedAtLabel !== null): ?>
             <time class="publishedAt" datetime="{{h $publishedAtLabel }}">{{h $publishedAtLabel }}</time>
-          <?php endif ?>
-          <?php $summary = $article->summary(); ?>
-          <?php if ($summary !== null): ?>
-            <p class="excerpt">{{h $summary }}</p>
           <?php endif ?>
         </article>
       <?php endforeach ?>
     </section>
   </main>
   <nav>
-    <h2>Browse</h2>
+    <h2>Links</h2>
     <ul>
-      <li><a href="/articlelist" class="goArticleList">All articles</a></li>
-      <li><a href="/categorylist" class="goCategoryList">Categories</a></li>
-      <li><a href="/taglist" class="goTagList">Tags</a></li>
-      <li><a href="/mock/html/article.html">Static design mock (no PHP)</a></li>
+      <li><a href="/articlelist?categoryId={{h $category->id }}" class="goArticleList">All articles in this category</a></li>
+      <li><a href="/categorylist" class="goCategoryList">Browse categories</a></li>
+      <li><a href="/" class="goIndex">Home</a></li>
     </ul>
   </nav>
   <footer>

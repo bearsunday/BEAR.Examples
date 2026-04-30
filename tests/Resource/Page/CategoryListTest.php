@@ -1,0 +1,26 @@
+<?php
+
+declare(strict_types=1);
+
+namespace MyVendor\Cms\Resource\Page;
+
+use MyVendor\Cms\AbstractPageTestCase;
+
+use function assert;
+
+final class CategoryListTest extends AbstractPageTestCase
+{
+    public function testOnGetReturnsCategoryList(): void
+    {
+        $ro = $this->resource->get('page://self/categorylist');
+        assert($ro instanceof CategoryList);
+
+        $this->assertSame(200, $ro->code);
+        $this->assertSame('text/html; charset=utf-8', $ro->headers['Content-Type']);
+
+        $html = $ro->toString();
+        $this->assertStringContainsString('<h1 class="CategoryList">Categories</h1>', $html);
+        $this->assertStringContainsString('class="goCategory"', $html);
+        $this->assertStringContainsString('href="/category?id=', $html);
+    }
+}

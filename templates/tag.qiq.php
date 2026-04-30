@@ -1,5 +1,6 @@
 <?php
 /**
+ * @var \MyVendor\Cms\Entity\Tag $tag
  * @var list<\MyVendor\Cms\Entity\Article> $articles
  */
 ?>
@@ -8,46 +9,47 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BEAR.Cms Reference CMS</title>
+  <title>{{h $tag->name }} - BEAR.Cms Reference CMS</title>
   <link rel="profile" href="/profile/alps.json">
   <link rel="stylesheet" href="/css/level1.css">
 </head>
 <body>
   <header>
-    <h1 class="ArticleList">BEAR.Cms Reference CMS</h1>
+    <h1 class="Tag">Tag Detail</h1>
   </header>
   <main>
+    <section class="Tag">
+      <input type="hidden" class="id" value="{{h $tag->id }}">
+      <h2 class="name">{{h $tag->name }}</h2>
+      <span class="slug">{{h $tag->slug }}</span>
+    </section>
+
     <section class="ArticleList">
+      <h2>Tagged articles</h2>
       <?php if ($articles === []): ?>
-        <p>No published articles.</p>
+        <p>No articles tagged with this tag yet.</p>
       <?php endif ?>
       <?php foreach ($articles as $article): ?>
         <article class="Article">
           <input type="hidden" class="id" value="{{h $article->id }}">
-          <h2 class="title">
+          <h3 class="title">
             <a class="goArticle" href="/article?id={{h $article->id }}">{{h $article->title }}</a>
-          </h2>
+          </h3>
           <span class="slug">{{h $article->slug }}</span>
-          <span class="status">{{h $article->status }}</span>
           <?php $publishedAtLabel = $article->publishedAtLabel(); ?>
           <?php if ($publishedAtLabel !== null): ?>
             <time class="publishedAt" datetime="{{h $publishedAtLabel }}">{{h $publishedAtLabel }}</time>
-          <?php endif ?>
-          <?php $summary = $article->summary(); ?>
-          <?php if ($summary !== null): ?>
-            <p class="excerpt">{{h $summary }}</p>
           <?php endif ?>
         </article>
       <?php endforeach ?>
     </section>
   </main>
   <nav>
-    <h2>Browse</h2>
+    <h2>Links</h2>
     <ul>
-      <li><a href="/articlelist" class="goArticleList">All articles</a></li>
-      <li><a href="/categorylist" class="goCategoryList">Categories</a></li>
-      <li><a href="/taglist" class="goTagList">Tags</a></li>
-      <li><a href="/mock/html/article.html">Static design mock (no PHP)</a></li>
+      <li><a href="/articlelist?tagId={{h $tag->id }}" class="goArticleList">All articles with this tag</a></li>
+      <li><a href="/taglist" class="goTagList">Browse tags</a></li>
+      <li><a href="/" class="goIndex">Home</a></li>
     </ul>
   </nav>
   <footer>
