@@ -10,16 +10,17 @@ use function assert;
 
 class IndexTest extends AbstractPageTestCase
 {
-    public function testOnGet(): void
+    public function testOnGetRendersArticleList(): void
     {
-        $ro = $this->resource->get('page://self/index', ['name' => 'BEAR.Sunday']);
+        $ro = $this->resource->get('page://self/index');
         assert($ro instanceof Index);
 
         $this->assertSame(200, $ro->code);
-        $html = $ro->toString();
-
         $this->assertSame('text/html; charset=utf-8', $ro->headers['Content-Type']);
-        $this->assertStringContainsString('<p>Hello BEAR.Sunday</p>', $html);
+
+        $html = $ro->toString();
+        $this->assertStringContainsString('<!DOCTYPE html>', $html);
+        $this->assertStringContainsString('<a class="goArticle" href="/article?id=1">', $html);
         $this->assertSame($html, $ro->view);
     }
 }
