@@ -1,0 +1,21 @@
+<?php
+
+declare(strict_types=1);
+
+namespace MyVendor\Cms\Resource\App\Variations;
+
+use MyVendor\Cms\AbstractAppTestCase;
+
+final class ArticleSqlQueryTest extends AbstractAppTestCase
+{
+    public function testOnGetAddsReadingTimeAndAdjacentArticles(): void
+    {
+        $ro = $this->resource->get('app://self/variations/articlesqlquery', ['id' => 2]);
+
+        $this->assertSame(200, $ro->code);
+        $this->assertSame(2, $ro->body['id']);
+        $this->assertSame(1, $ro->body['readingTimeMinutes']);
+        $this->assertSame(25, $ro->body['previous']['id']);
+        $this->assertSame(38, $ro->body['next']['id']);
+    }
+}

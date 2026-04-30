@@ -33,6 +33,22 @@ then the code/docs follow.
 | Resource placement | `src/Resource/App/<Class>.php` — every URI is a class. No `App/Index.php` unless a "/" entry-point is meaningful |
 | Read/Write split | Always two interfaces per entity: `<Entity>QueryInterface` (Read) and `<Entity>CommandInterface` (Write). Both live in `src/Query/` — the interface name suffix carries the Read/Write distinction so `MediaQuerySqlModule` can scan a single directory. Never mix Read and Write methods on the same interface |
 
+### Variation resources
+
+`src/Resource/App/Variations/` contains exactly three comparison-only
+Article GET implementations. They are not registered in the ALPS profile
+and must not change the canonical `src/Resource/App/Article.php` path.
+
+| Variation | Axis | Question it answers |
+|---|---|---|
+| [`Variations\ArticleAsArray`](../src/Resource/App/Variations/ArticleAsArray.php) | data shape (entity vs array) | "Is the entity class worth the ceremony?" |
+| [`Variations\ArticleSqlQuery`](../src/Resource/App/Variations/ArticleSqlQuery.php) | abstraction level (declarative `#[DbQuery]` vs programmatic `SqlQuery` class) | "What if `#[DbQuery]` isn't enough?" |
+| [`Variations\ArticleRawPdo`](../src/Resource/App/Variations/ArticleRawPdo.php) | framework presence (MediaQuery vs raw `ExtendedPdoInterface`) | "What is MediaQuery actually doing for me?" |
+
+Do not add a fourth variation. Use `composer demo:variations` when the
+goal is to compare these alternatives; keep `composer demo` as the main
+golden path.
+
 ## 2. Contexts
 
 | Context | Where it runs |

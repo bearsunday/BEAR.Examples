@@ -112,7 +112,8 @@
         "app": "php bin/app.php",
         "page": "php bin/page.php",
         "profile": "php -dzend_extension=xdebug.so -dxdebug.mode=profile -dxdebug.output_dir=./var/log -dxdebug.profiler_output_name=cachegrind.out.%t bin/page.php get /",
-        "demo": "php bin/demo.php"
+        "demo": "php bin/demo.php",
+        "demo:variations": "php bin/demo-variations.php"
     },
     "scripts-descriptions": {
         "setup": "Setup the project",
@@ -132,7 +133,8 @@
         "serve": "Start built-in server",
         "app": "Request app resource",
         "page": "Request page resource",
-        "profile": "Profile page request (customize endpoint as needed)"
+        "profile": "Profile page request (customize endpoint as needed)",
+        "demo:variations": "Run the Article GET variations demo"
     },
     "config": {
         "sort-packages": true,

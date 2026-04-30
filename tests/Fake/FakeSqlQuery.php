@@ -120,7 +120,7 @@ final class FakeSqlQuery implements SqlQueryInterface
     // -- SqlQueryInterface ---------------------------------------------------
 
     /** @param array<string, mixed> $values */
-    public function getRow(string $sqlId, array $values = [], FetchInterface|null $fetch = null): object|null
+    public function getRow(string $sqlId, array $values = [], FetchInterface|null $fetch = null): array|object|null
     {
         if (in_array($sqlId, self::WRITE_SQL_IDS, true)) {
             // DbQueryInterceptor routes every #[DbQuery] method through getRow/getRowList
@@ -134,6 +134,10 @@ final class FakeSqlQuery implements SqlQueryInterface
         return match ($sqlId) {
             'article_item' => $this->findArticleById((int) $values['id']),
             'article_by_slug' => $this->findArticleBySlug((string) $values['slug']),
+            'article_as_array_item' => $this->findArticleRowById((int) $values['id']),
+            'article_sqlquery_item' => $this->findArticleRowById((int) $values['id']),
+            'article_sqlquery_previous' => $this->findPreviousArticleRow((string) $values['publishedAt'], (int) $values['id']),
+            'article_sqlquery_next' => $this->findNextArticleRow((string) $values['publishedAt'], (int) $values['id']),
             'category_item' => $this->findCategoryById((int) $values['id']),
             'category_by_slug' => $this->findCategoryBySlug((string) $values['slug']),
             'tag_item' => $this->findTagById((int) $values['id']),
@@ -381,6 +385,74 @@ final class FakeSqlQuery implements SqlQueryInterface
         }
 
         return null;
+    }
+
+    /** @return array<string, mixed>|null */
+    private function findArticleRowById(int $id): array|null
+    {
+        foreach ($this->tables['article'] as $r) {
+            if ((int) $r['id'] === $id) {
+                return $r;
+            }
+        }
+
+        return null;
+    }
+
+    /** @return array<string, mixed>|null */
+    private function findPreviousArticleRow(string $publishedAt, int $id): array|null
+    {
+        $best = null;
+        foreach ($this->tables['article'] as $r) {
+            if ((string) $r['status'] !== Article::STATUS_PUBLISHED || empty($r['publishedAt'])) {
+                continue;
+            }
+
+            $candidatePublishedAt = (string) $r['publishedAt'];
+            $candidateId = (int) $r['id'];
+            if ($candidatePublishedAt > $publishedAt || ($candidatePublishedAt === $publishedAt && $candidateId >= $id)) {
+                continue;
+            }
+
+            $isBetter = $best === null
+                || (string) $best['publishedAt'] < $candidatePublishedAt
+                || ((string) $best['publishedAt'] === $candidatePublishedAt && (int) $best['id'] < $candidateId);
+            if (! $isBetter) {
+                continue;
+            }
+
+            $best = $r;
+        }
+
+        return $best;
+    }
+
+    /** @return array<string, mixed>|null */
+    private function findNextArticleRow(string $publishedAt, int $id): array|null
+    {
+        $best = null;
+        foreach ($this->tables['article'] as $r) {
+            if ((string) $r['status'] !== Article::STATUS_PUBLISHED || empty($r['publishedAt'])) {
+                continue;
+            }
+
+            $candidatePublishedAt = (string) $r['publishedAt'];
+            $candidateId = (int) $r['id'];
+            if ($candidatePublishedAt < $publishedAt || ($candidatePublishedAt === $publishedAt && $candidateId <= $id)) {
+                continue;
+            }
+
+            $isBetter = $best === null
+                || (string) $best['publishedAt'] > $candidatePublishedAt
+                || ((string) $best['publishedAt'] === $candidatePublishedAt && (int) $best['id'] > $candidateId);
+            if (! $isBetter) {
+                continue;
+            }
+
+            $best = $r;
+        }
+
+        return $best;
     }
 
     private function findCategoryById(int $id): Category|null
