@@ -71,12 +71,15 @@ Then read composition and test support:
 
 Use the focused comparison docs when reading tradeoffs:
 
-- `src/Resource/App/Variations/README.md` for the Article GET variation set.
-- `src/Resource/App/Variations/README.ja.md` for the Japanese version.
-- `docs/conventions.md` when you need the rule behind a naming or shape choice.
+- [`src/Resource/App/Variations/README.md`](../../src/Resource/App/Variations/README.md)
+  for the Article GET variation set.
+- [`src/Resource/App/Variations/README.ja.md`](../../src/Resource/App/Variations/README.ja.md)
+  for the Japanese version.
+- [`docs/conventions.md`](../conventions.md) when you need the rule behind a
+  naming or shape choice.
 
 ## Reading Rule
 
-Treat `docs/conventions.md` as the current rulebook. Treat
-`docs/journal/*` as historical context: useful for understanding why a decision
-exists, but not the source of truth for new code.
+Treat [`docs/conventions.md`](../conventions.md) as the current rulebook.
+Treat `docs/journal/*` as historical context: useful for understanding why a
+decision exists, but not the source of truth for new code.

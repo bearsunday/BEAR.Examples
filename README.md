@@ -29,7 +29,7 @@ in this order — both humans and AI assistants benefit from the same
 sequence:
 
 1. **[README.md](README.md)** (this file) — what the project is, how to run it.
-2. **[docs/reading-guide.md](docs/reading-guide.md)** — where to start reading the code and what to notice by layer.
+2. **[docs/en/reading-guide.md](docs/en/reading-guide.md)** — where to start reading the code and what to notice by layer.
 3. **[docs/architecture.md](docs/architecture.md)** — BDR layout, dispatch quirks, design rationale.
 4. **[docs/conventions.md](docs/conventions.md)** — *the* canonical rulebook. Naming, resource patterns, Read/Write SQL contract, test policy. New code lands here first.
 5. **[docs/resources.md](docs/resources.md)** — URI map and body shapes.
@@ -42,7 +42,7 @@ sequence:
 
 | If you're asking… | Start here |
 |---|---|
-| Where should I start reading the code? | [docs/reading-guide.md](docs/reading-guide.md) |
+| Where should I start reading the code? | [docs/en/reading-guide.md](docs/en/reading-guide.md) |
 | What do I name a class / method / SQL file / property? | [conventions.md §3 Naming](docs/conventions.md#3-naming) |
 | How do I shape a Resource (body, status, embed, link)? | [conventions.md §4 Resource patterns](docs/conventions.md#4-resource-patterns) |
 | Scalar params or Input DTO? | [conventions.md §4 "Input shape & validation"](docs/conventions.md#4-resource-patterns) |
