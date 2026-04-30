@@ -14,6 +14,9 @@
     <testsuite name="hypermedia">
       <directory>tests/Hypermedia</directory>
     </testsuite>
+    <testsuite name="smoke">
+      <directory>tests/Smoke</directory>
+    </testsuite>
   </testsuites>
   <source>
     <include>
