@@ -49,6 +49,8 @@ Do not add a fourth variation. Use `composer demo:variations` when the
 goal is to compare these alternatives; keep `composer demo` as the main
 golden path. See
 [`src/Resource/App/Variations/README.md`](../src/Resource/App/Variations/README.md)
+or
+[`README.ja.md`](../src/Resource/App/Variations/README.ja.md)
 for the short reading guide.
 
 ## 2. Contexts

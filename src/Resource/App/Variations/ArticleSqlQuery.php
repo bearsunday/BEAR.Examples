@@ -9,8 +9,8 @@ use BEAR\Resource\Code;
 use BEAR\Resource\ResourceObject;
 use Ray\MediaQuery\SqlQueryInterface;
 
+use function assert;
 use function ceil;
-use function get_object_vars;
 use function is_array;
 use function max;
 use function preg_match;
@@ -66,18 +66,9 @@ class ArticleSqlQuery extends ResourceObject
     private function row(string $sqlId, array $values): array|null
     {
         $row = $this->sqlQuery->getRow($sqlId, $values);
-        if ($row === null) {
-            return null;
-        }
+        assert($row === null || is_array($row));
 
-        if (is_array($row)) {
-            return $row;
-        }
-
-        /** @var array<string, mixed> $vars */
-        $vars = get_object_vars($row);
-
-        return $vars;
+        return $row;
     }
 
     /**

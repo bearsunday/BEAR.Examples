@@ -15,6 +15,8 @@ final class ArticleSqlQueryTest extends AbstractAppTestCase
         $this->assertSame(200, $ro->code);
         $this->assertSame(2, $ro->body['id']);
         $this->assertSame(1, $ro->body['readingTimeMinutes']);
+
+        // The adjacent ids come from deterministic fake fixtures generated with random.seed(42).
         $this->assertSame(25, $ro->body['previous']['id']);
         $this->assertSame(38, $ro->body['next']['id']);
     }

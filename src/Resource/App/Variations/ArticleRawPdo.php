@@ -17,8 +17,6 @@ use function str_replace;
  *
  * Mainline keeps MediaQuery because it externalises SQL and centralises
  * parameter conversion, fetch strategy, logging, and SQL-file discovery.
- *
- * @psalm-import-type ArticleBody from ArticleAsArray
  */
 class ArticleRawPdo extends ResourceObject
 {
@@ -62,7 +60,7 @@ SQL;
     /**
      * @param array<string, mixed> $row
      *
-     * @psalm-return ArticleBody
+     * @return array{id: int, slug: string, title: string, body: string, excerpt: ?string, status: string, publishedAt: ?string, authorId: int, categoryId: int}
      */
     private function toResponseBody(array $row): array
     {
