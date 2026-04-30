@@ -16,7 +16,6 @@ final class TagTest extends AbstractPageTestCase
         assert($ro instanceof Tag);
 
         $this->assertSame(200, $ro->code);
-        $this->assertSame('text/html; charset=utf-8', $ro->headers['Content-Type']);
 
         $html = $ro->toString();
         $this->assertStringContainsString('<section class="Tag">', $html);

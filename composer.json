@@ -6,6 +6,7 @@
     "require": {
         "php": "^8.5.0",
         "bear/package": "^1.14",
+        "bear/qiq-module": "^2.0",
         "bear/query-repository": "^1.15",
         "bear/resource": "^1.17",
         "bear/sunday": "^1.6",

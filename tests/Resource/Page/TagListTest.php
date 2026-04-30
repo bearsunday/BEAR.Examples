@@ -16,7 +16,6 @@ final class TagListTest extends AbstractPageTestCase
         assert($ro instanceof TagList);
 
         $this->assertSame(200, $ro->code);
-        $this->assertSame('text/html; charset=utf-8', $ro->headers['Content-Type']);
 
         $html = $ro->toString();
         $this->assertStringContainsString('<h1 class="TagList">Tags</h1>', $html);

@@ -8,11 +8,9 @@ use BEAR\Resource\ResourceObject;
 use MyVendor\Cms\Entity\Author as AuthorEntity;
 use MyVendor\Cms\Query\AuthorQueryInterface;
 
+/** @property array{message: string}|array{author: AuthorEntity} $body */
 class Author extends ResourceObject
 {
-    /** @var array{message: string}|array{author: AuthorEntity} */
-    public $body;
-
     public function __construct(
         private readonly AuthorQueryInterface $author,
     ) {
@@ -20,8 +18,6 @@ class Author extends ResourceObject
 
     public function onGet(int $id): static
     {
-        $this->headers['Content-Type'] = 'text/html; charset=utf-8';
-
         $author = $this->author->item($id);
         if ($author === null) {
             $this->code = 404;

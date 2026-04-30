@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace MyVendor\Cms\Factory;
 
 use MyVendor\Cms\Entity\Article;
-use MyVendor\Cms\Service\MarkdownRendererInterface;
+use MyVendor\Cms\Entity\ArticleStatus;
 
 use function str_contains;
 use function str_replace;
 
 /**
- * Builds Article entities with the MarkdownRendererInterface injected.
+ * Builds Article entities from the database.
  *
  * Wired via #[DbQuery(factory: ArticleFactory::class)] on the Read-side
  * methods of ArticleQueryInterface. Ray.MediaQuery's FetchInjectionFactory
@@ -20,11 +20,6 @@ use function str_replace;
  */
 final readonly class ArticleFactory
 {
-    public function __construct(
-        private MarkdownRendererInterface $renderer,
-    ) {
-    }
-
     public function factory(
         int $id,
         string $slug,
@@ -42,11 +37,10 @@ final readonly class ArticleFactory
             $title,
             $body,
             $excerpt,
-            $status,
+            ArticleStatus::from($status),
             self::normaliseDateTime($publishedAt),
             $authorId,
             $categoryId,
-            $this->renderer,
         );
     }
 
@@ -61,12 +55,10 @@ final readonly class ArticleFactory
             return null;
         }
 
-        // Already RFC3339 (Fake path).
         if (str_contains($value, 'T')) {
             return $value;
         }
 
-        // Native DB datetime → RFC3339 UTC.
         return str_replace(' ', 'T', $value) . 'Z';
     }
 }

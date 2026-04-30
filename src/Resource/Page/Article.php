@@ -12,26 +12,24 @@ use MyVendor\Cms\Query\ArticleQueryInterface;
 use MyVendor\Cms\Query\AuthorQueryInterface;
 use MyVendor\Cms\Query\CategoryQueryInterface;
 use MyVendor\Cms\Query\TagQueryInterface;
+use MyVendor\Cms\Service\MarkdownRendererInterface;
 
 use function array_map;
 
+/** @property array{message: string}|array{article: ArticleEntity, bodyHtml: string, author: Author|null, category: Category|null, tags: list<array{id: int, slug: string, name: string}>} $body */
 class Article extends ResourceObject
 {
-    /** @var array{message: string}|array{article: ArticleEntity, author: Author|null, category: Category|null, tags: list<array{id: int, slug: string, name: string}>} */
-    public $body;
-
     public function __construct(
         private readonly ArticleQueryInterface $article,
         private readonly AuthorQueryInterface $author,
         private readonly CategoryQueryInterface $category,
         private readonly TagQueryInterface $tag,
+        private readonly MarkdownRendererInterface $markdown,
     ) {
     }
 
     public function onGet(int $id): static
     {
-        $this->headers['Content-Type'] = 'text/html; charset=utf-8';
-
         $article = $this->article->item($id);
         if ($article === null) {
             $this->code = 404;
@@ -42,6 +40,7 @@ class Article extends ResourceObject
 
         $this->body = [
             'article' => $article,
+            'bodyHtml' => $this->markdown->render($article->body),
             'author' => $this->author->item($article->authorId),
             'category' => $this->category->item($article->categoryId),
             'tags' => array_map(static fn ($tag) => [

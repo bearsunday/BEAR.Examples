@@ -33,6 +33,8 @@ class Articles extends ResourceObject
         int|null $categoryId = null,
         #[Option(shortName: 't', description: 'Filter by tag id')]
         int|null $tagId = null,
+        #[Option(shortName: 'a', description: 'Filter by author id')]
+        int|null $authorId = null,
         #[Option(shortName: 's', description: 'Filter by status (draft|published)')]
         string|null $status = null,
     ): static {
@@ -41,11 +43,12 @@ class Articles extends ResourceObject
         $offset = ($page - 1) * $perPage;
 
         $items = $this->article->list(
-            $categoryId,
-            $tagId,
-            $status,
-            $perPage,
-            $offset,
+            categoryId: $categoryId,
+            tagId: $tagId,
+            authorId: $authorId,
+            status: $status,
+            limit: $perPage,
+            offset: $offset,
         );
 
         $this->body = [
@@ -54,7 +57,7 @@ class Articles extends ResourceObject
                 'slug' => $a->slug,
                 'title' => $a->title,
                 'excerpt' => $a->excerpt,
-                'status' => $a->status,
+                'status' => $a->status->value,
                 'publishedAt' => $a->publishedAt,
                 'authorId' => $a->authorId,
                 'categoryId' => $a->categoryId,

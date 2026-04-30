@@ -8,11 +8,9 @@ use BEAR\Resource\ResourceObject;
 use MyVendor\Cms\Entity\Category;
 use MyVendor\Cms\Query\CategoryQueryInterface;
 
+/** @property array{categories: list<Category>} $body */
 class CategoryList extends ResourceObject
 {
-    /** @var array{categories: list<Category>} */
-    public $body;
-
     public function __construct(
         private readonly CategoryQueryInterface $category,
     ) {
@@ -20,7 +18,6 @@ class CategoryList extends ResourceObject
 
     public function onGet(): static
     {
-        $this->headers['Content-Type'] = 'text/html; charset=utf-8';
         $this->body = ['categories' => $this->category->list()];
 
         return $this;

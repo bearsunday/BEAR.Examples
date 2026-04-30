@@ -16,7 +16,6 @@ final class ArticleListTest extends AbstractPageTestCase
         assert($ro instanceof ArticleList);
 
         $this->assertSame(200, $ro->code);
-        $this->assertSame('text/html; charset=utf-8', $ro->headers['Content-Type']);
 
         $html = $ro->toString();
         $this->assertStringContainsString('<h1 class="ArticleList">Article List</h1>', $html);

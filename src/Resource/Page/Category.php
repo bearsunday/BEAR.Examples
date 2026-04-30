@@ -10,12 +10,10 @@ use MyVendor\Cms\Entity\Category as CategoryEntity;
 use MyVendor\Cms\Query\ArticleQueryInterface;
 use MyVendor\Cms\Query\CategoryQueryInterface;
 
+/** @property array{message: string}|array{category: CategoryEntity, articles: list<Article>} $body */
 class Category extends ResourceObject
 {
     private const int RECENT_LIMIT = 10;
-
-    /** @var array{message: string}|array{category: CategoryEntity, articles: list<Article>} */
-    public $body;
 
     public function __construct(
         private readonly CategoryQueryInterface $category,
@@ -25,8 +23,6 @@ class Category extends ResourceObject
 
     public function onGet(int $id): static
     {
-        $this->headers['Content-Type'] = 'text/html; charset=utf-8';
-
         $category = $this->category->item($id);
         if ($category === null) {
             $this->code = 404;

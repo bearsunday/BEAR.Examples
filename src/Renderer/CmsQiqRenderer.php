@@ -8,18 +8,23 @@ use BEAR\Resource\RenderInterface;
 use BEAR\Resource\ResourceObject;
 use Override;
 use Qiq\Template;
+use Ray\Aop\WeavedInterface;
+use ReflectionClass;
 use Throwable;
 
 use function array_key_exists;
 use function http_build_query;
 use function in_array;
 use function is_array;
-use function ltrim;
+use function str_replace;
+use function strpos;
+use function substr;
 
-final readonly class QiqRenderer implements RenderInterface
+final readonly class CmsQiqRenderer implements RenderInterface
 {
     private const int DEFAULT_CSS_LEVEL = 3;
     private const array CSS_LEVELS = [1, 2, 3];
+    private const int RESOURCE_DIR_LEN = 13;
 
     public function __construct(
         private Template $template,
@@ -40,7 +45,10 @@ final readonly class QiqRenderer implements RenderInterface
         }
 
         try {
-            $ro->view = $this->template->render($this->templateName($ro), $vars);
+            $template = clone $this->template;
+            $template->setData($vars);
+            $template->setView($this->templateName($ro));
+            $ro->view = ($template)();
 
             return $ro->view;
         } catch (Throwable $e) {
@@ -48,6 +56,29 @@ final readonly class QiqRenderer implements RenderInterface
 
             return $this->renderError($ro, ['message' => $e->getMessage()] + $vars);
         }
+    }
+
+    private function templateName(ResourceObject $ro): string
+    {
+        $reflection = $ro instanceof WeavedInterface
+            ? (new ReflectionClass($ro))->getParentClass()
+            : new ReflectionClass($ro);
+        $fileName = (string) $reflection->getFileName();
+        $pos = strpos($fileName, 'src/Resource/');
+        $relativePath = substr($fileName, (int) $pos + self::RESOURCE_DIR_LEN);
+
+        return str_replace('.php', '', $relativePath);
+    }
+
+    /** @param array<string, mixed> $vars */
+    private function renderError(ResourceObject $ro, array $vars): string
+    {
+        $ro->view = $this->template->render('Error', [
+            'code' => $ro->code,
+            'message' => (string) ($vars['message'] ?? 'An error occurred'),
+        ]);
+
+        return $ro->view;
     }
 
     /** @return array{cssLevel: int, cssLinks: array<int, string>} */
@@ -71,27 +102,5 @@ final readonly class QiqRenderer implements RenderInterface
         }
 
         return ['cssLevel' => $level, 'cssLinks' => $links];
-    }
-
-    /** @param array<string, mixed> $vars */
-    private function renderError(ResourceObject $ro, array $vars): string
-    {
-        $message = (string) ($vars['message'] ?? 'An error occurred');
-        $ro->view = $this->template->render('error', [
-            'code' => $ro->code,
-            'message' => $message,
-        ]);
-
-        return $ro->view;
-    }
-
-    private function templateName(ResourceObject $ro): string
-    {
-        $path = ltrim($ro->uri->path, '/');
-        if ($path === '') {
-            return 'index';
-        }
-
-        return $path;
     }
 }

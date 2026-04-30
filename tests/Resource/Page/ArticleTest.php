@@ -16,7 +16,6 @@ final class ArticleTest extends AbstractPageTestCase
         assert($ro instanceof Article);
 
         $this->assertSame(200, $ro->code);
-        $this->assertSame('text/html; charset=utf-8', $ro->headers['Content-Type']);
 
         $html = $ro->toString();
         $this->assertSame($html, $ro->view);

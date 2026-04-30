@@ -10,12 +10,10 @@ use MyVendor\Cms\Entity\Tag as TagEntity;
 use MyVendor\Cms\Query\ArticleQueryInterface;
 use MyVendor\Cms\Query\TagQueryInterface;
 
+/** @property array{message: string}|array{tag: TagEntity, articles: list<Article>} $body */
 class Tag extends ResourceObject
 {
     private const int RECENT_LIMIT = 10;
-
-    /** @var array{message: string}|array{tag: TagEntity, articles: list<Article>} */
-    public $body;
 
     public function __construct(
         private readonly TagQueryInterface $tag,
@@ -25,8 +23,6 @@ class Tag extends ResourceObject
 
     public function onGet(int $id): static
     {
-        $this->headers['Content-Type'] = 'text/html; charset=utf-8';
-
         $tag = $this->tag->item($id);
         if ($tag === null) {
             $this->code = 404;
