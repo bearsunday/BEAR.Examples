@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace MyVendor\Cms\Entity;
 
+use MyVendor\Cms\Exception\MissingMarkdownRendererException;
 use MyVendor\Cms\Service\MarkdownRendererInterface;
-use RuntimeException;
 
 /** @SuppressWarnings("PHPMD.ExcessiveParameterList") */
 final readonly class Article
@@ -27,7 +27,7 @@ final readonly class Article
          * Injected by ArticleFactory in production. Null in pure unit tests
          * where the entity is constructed without a Markdown service.
          */
-        private MarkdownRendererInterface|null $renderer = null,
+        public MarkdownRendererInterface|null $renderer = null,
     ) {
     }
 
@@ -60,7 +60,7 @@ final readonly class Article
     public function renderHtml(): string
     {
         if ($this->renderer === null) {
-            throw new RuntimeException('Article was constructed without a MarkdownRendererInterface — call via ArticleFactory or pass one explicitly.');
+            throw new MissingMarkdownRendererException('Article was constructed without a MarkdownRendererInterface — call via ArticleFactory or pass one explicitly.');
         }
 
         return $this->renderer->render($this->body);

@@ -25,9 +25,9 @@ final class ArticleTest extends AbstractAppTestCase
 
         // The HAL renderer materialises #[Embed] requests under _embedded.
         $rendered = json_decode((string) $ro, true);
-        $this->assertSame($ro->body['authorId'], $rendered['_embedded']['goAuthor']['id']);
-        $this->assertSame($ro->body['categoryId'], $rendered['_embedded']['goCategory']['id']);
-        $this->assertIsArray($rendered['_embedded']['goTagList']['items']);
+        $this->assertSame($ro->body['authorId'], $rendered['_embedded']['author']['id']);
+        $this->assertSame($ro->body['categoryId'], $rendered['_embedded']['category']['id']);
+        $this->assertIsArray($rendered['_embedded']['tagList']['items']);
 
         // _links carry the URI templates expanded with request arguments.
         $this->assertArrayHasKey('goArticleList', $rendered['_links']);
@@ -100,23 +100,11 @@ final class ArticleTest extends AbstractAppTestCase
         $this->assertSame(404, $ro->code);
     }
 
-    public function testPostWithInvalidSlugRejectedByJsonSchema(): void
+    public function testPostMissingRequiredFieldsRejected(): void
     {
-        $this->expectException(JsonSchemaException::class);
-        $this->resource->post('app://self/article', [
-            'slug' => 'INVALID Slug With Spaces',
-            'title' => 'T',
-            'body' => 'B',
-            'authorId' => 1,
-            'categoryId' => 1,
-        ]);
-    }
-
-    public function testPostMissingRequiredFieldsRejectedBeforeJsonSchema(): void
-    {
-        // PHP-level required parameter check (RequiredParam) fires before
-        // JsonSchema's `params:` validation. Documented behaviour, not a bug:
-        // JsonSchema validates the *shape* of present args, not their existence.
+        // BEAR.Resource's `InputParam` raises InvalidArgumentException for
+        // missing required built-in fields when materialising the Input DTO.
+        // The framework wraps it as ParameterException at the resource boundary.
         $this->expectException(ParameterException::class);
         $this->resource->post('app://self/article', [
             'slug' => 'valid-slug',
@@ -125,16 +113,62 @@ final class ArticleTest extends AbstractAppTestCase
         ]);
     }
 
-    public function testPostWithBadStatusRejectedByJsonSchema(): void
+    public function testPostRejectsInvalidSlugPattern(): void
     {
         $this->expectException(JsonSchemaException::class);
         $this->resource->post('app://self/article', [
-            'slug' => 'valid-slug',
-            'title' => 'T',
-            'body' => 'B',
+            'slug' => 'INVALID Slug With Spaces',
+            'title' => 'Title',
+            'body' => 'Body',
+            'authorId' => 1,
+            'categoryId' => 1,
+            'status' => 'draft',
+        ]);
+    }
+
+    public function testPostRejectsInvalidStatusEnum(): void
+    {
+        $this->expectException(JsonSchemaException::class);
+        $this->resource->post('app://self/article', [
+            'slug' => 'valid-slug-' . uniqid(),
+            'title' => 'Title',
+            'body' => 'Body',
             'authorId' => 1,
             'categoryId' => 1,
             'status' => 'invalid-status-value',
+        ]);
+    }
+
+    /**
+     * `JsonSchemaInterceptor` validates params *after* DTO hydration
+     * (BEAR.Resource 1.31.1). A scalar `tagIds` would therefore hit the
+     * typed `array` property in `ArticleCreateInput` as a TypeError → 5xx
+     * unless the DTO rejects non-array shapes up front. Pin the
+     * 400-class behaviour so the failure path stays a client error.
+     */
+    public function testPostRejectsScalarTagIds(): void
+    {
+        $this->expectException(ParameterException::class);
+        $this->resource->post('app://self/article', [
+            'slug' => 'valid-slug-' . uniqid(),
+            'title' => 'Title',
+            'body' => 'Body',
+            'authorId' => 1,
+            'categoryId' => 1,
+            'status' => 'draft',
+            'tagIds' => 1,
+        ]);
+    }
+
+    public function testPutRejectsScalarTagIds(): void
+    {
+        $this->expectException(ParameterException::class);
+        $this->resource->put('app://self/article', [
+            'id' => 1,
+            'title' => 'T',
+            'body' => 'B',
+            'status' => 'draft',
+            'tagIds' => 'not-an-array',
         ]);
     }
 
@@ -155,7 +189,7 @@ final class ArticleTest extends AbstractAppTestCase
 
         $get = $this->resource->get('app://self/article', ['id' => $id]);
         $rendered = json_decode((string) $get, true);
-        $tagsAfterCreate = array_column($rendered['_embedded']['goTagList']['items'], 'id');
+        $tagsAfterCreate = array_column($rendered['_embedded']['tagList']['items'], 'id');
         sort($tagsAfterCreate);
         $this->assertSame([1, 2, 3], $tagsAfterCreate);
 
@@ -170,7 +204,7 @@ final class ArticleTest extends AbstractAppTestCase
 
         $getAgain = $this->resource->get('app://self/article', ['id' => $id]);
         $renderedAgain = json_decode((string) $getAgain, true);
-        $tagsAfterUpdate = array_column($renderedAgain['_embedded']['goTagList']['items'], 'id');
+        $tagsAfterUpdate = array_column($renderedAgain['_embedded']['tagList']['items'], 'id');
         sort($tagsAfterUpdate);
         $this->assertSame([4, 5], $tagsAfterUpdate);
 

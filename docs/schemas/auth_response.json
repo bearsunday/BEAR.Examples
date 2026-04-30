@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/bear-cms/authResponse",
+  "title": "AuthResponse",
+  "description": "POST /auth response. Subject `id` is the OAuth provider's user identifier (opaque string), not a DB integer. Failure path returns {message, reason}.",
+  "type": "object",
+  "properties": {
+    "id":      {"type": "string"},
+    "email":   {"type": "string", "format": "email"},
+    "name":    {"type": "string"},
+    "message": {"type": "string"},
+    "reason":  {"type": "string"}
+  }
+}

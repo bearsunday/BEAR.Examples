@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace MyVendor\Cms\Resource\App;
 
+use BEAR\Resource\Annotation\JsonSchema;
 use BEAR\Resource\Code;
 use BEAR\Resource\ResourceObject;
 use MyVendor\Cms\Auth\AuthInterface;
+use MyVendor\Cms\Input\AuthExchangeInput;
+use Ray\InputQuery\Attribute\Input;
 use Throwable;
 
 /**
@@ -34,13 +37,18 @@ class Auth extends ResourceObject
         return $this;
     }
 
-    public function onPost(string $code, string $state): static
+    #[JsonSchema(schema: 'auth_response.json', params: 'auth_exchange.json')]
+    public function onPost(#[Input] AuthExchangeInput $input): static
     {
         try {
-            $user = $this->auth->authenticate($code, $state);
-        } catch (Throwable $e) {
+            $user = $this->auth->authenticate($input->code, $input->state);
+        } catch (Throwable) {
+            // The OAuth-provider message can leak provider-internal detail
+            // (token introspection results, server-side error strings). A
+            // production CMS would log the exception via a logger binding;
+            // the public response intentionally exposes no reason field.
             $this->code = Code::UNAUTHORIZED;
-            $this->body = ['message' => 'Authentication failed', 'reason' => $e->getMessage()];
+            $this->body = ['message' => 'Authentication failed'];
 
             return $this;
         }

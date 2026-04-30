@@ -54,7 +54,6 @@
         "cli": "./vendor/bin/bear-cli-gen 'MyVendor\\Cms'",
         "malt:up": [
             "malt install",
-            "malt create",
             "malt start",
             "@malt:db"
         ],

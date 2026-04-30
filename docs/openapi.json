@@ -8,6 +8,16 @@
     "paths": {
         "/article": {
             "get": {
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Successful response",
@@ -22,20 +32,135 @@
                 }
             },
             "post": {
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "slug": {
+                                        "type": "string"
+                                    },
+                                    "title": {
+                                        "type": "string"
+                                    },
+                                    "body": {
+                                        "type": "string"
+                                    },
+                                    "authorId": {
+                                        "type": "integer"
+                                    },
+                                    "categoryId": {
+                                        "type": "integer"
+                                    },
+                                    "excerpt": {
+                                        "type": "string"
+                                    },
+                                    "status": {
+                                        "type": "string"
+                                    },
+                                    "publishedAt": {
+                                        "type": "string"
+                                    },
+                                    "tagIds": {
+                                        "type": "array"
+                                    }
+                                },
+                                "required": [
+                                    "slug",
+                                    "title",
+                                    "body",
+                                    "authorId",
+                                    "categoryId"
+                                ]
+                            }
+                        }
+                    },
+                    "required": true
+                },
                 "responses": {
                     "200": {
-                        "description": "Successful response"
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/WriteResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
                     }
                 }
             },
             "put": {
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "id": {
+                                        "type": "integer"
+                                    },
+                                    "title": {
+                                        "type": "string"
+                                    },
+                                    "body": {
+                                        "type": "string"
+                                    },
+                                    "status": {
+                                        "type": "string"
+                                    },
+                                    "excerpt": {
+                                        "type": "string"
+                                    },
+                                    "publishedAt": {
+                                        "type": "string"
+                                    },
+                                    "tagIds": {
+                                        "type": "array"
+                                    }
+                                },
+                                "required": [
+                                    "id",
+                                    "title",
+                                    "body",
+                                    "status"
+                                ]
+                            }
+                        }
+                    },
+                    "required": true
+                },
                 "responses": {
                     "200": {
-                        "description": "Successful response"
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/WriteResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
                     }
                 }
             },
             "delete": {
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Successful response"
@@ -45,6 +170,48 @@
         },
         "/articles": {
             "get": {
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "perPage",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "categoryId",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "tagId",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Successful response",
@@ -72,15 +239,57 @@
             "post": {
                 "summary": "OAuth login resource.",
                 "description": "GET  app://self/auth        \u2192 returns the authorization URL the client should redirect to\nPOST app://self/auth        \u2192 exchanges {code, state} for an AuthenticatedUser\n\nThe bound AuthInterface decides the backend (Google in production,\nFakeAuthProvider in test / fake-hal-api-app).",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "code": {
+                                        "type": "string"
+                                    },
+                                    "state": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "code",
+                                    "state"
+                                ]
+                            }
+                        }
+                    },
+                    "required": true
+                },
                 "responses": {
                     "200": {
-                        "description": "Successful response"
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AuthResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
                     }
                 }
             }
         },
         "/author": {
             "get": {
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Successful response",
@@ -95,16 +304,90 @@
                 }
             },
             "post": {
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "email": {
+                                        "type": "string"
+                                    },
+                                    "bio": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "name",
+                                    "email"
+                                ]
+                            }
+                        }
+                    },
+                    "required": true
+                },
                 "responses": {
                     "200": {
-                        "description": "Successful response"
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/WriteResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
                     }
                 }
             },
             "put": {
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "id": {
+                                        "type": "integer"
+                                    },
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "email": {
+                                        "type": "string"
+                                    },
+                                    "bio": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "id",
+                                    "name",
+                                    "email"
+                                ]
+                            }
+                        }
+                    },
+                    "required": true
+                },
                 "responses": {
                     "200": {
-                        "description": "Successful response"
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/WriteResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
                     }
                 }
             }
@@ -127,6 +410,16 @@
         },
         "/category": {
             "get": {
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Successful response",
@@ -141,20 +434,106 @@
                 }
             },
             "post": {
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "slug": {
+                                        "type": "string"
+                                    },
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "description": {
+                                        "type": "string"
+                                    },
+                                    "parentId": {
+                                        "type": "integer"
+                                    }
+                                },
+                                "required": [
+                                    "slug",
+                                    "name"
+                                ]
+                            }
+                        }
+                    },
+                    "required": true
+                },
                 "responses": {
                     "200": {
-                        "description": "Successful response"
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/WriteResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
                     }
                 }
             },
             "put": {
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "id": {
+                                        "type": "integer"
+                                    },
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "description": {
+                                        "type": "string"
+                                    },
+                                    "parentId": {
+                                        "type": "integer"
+                                    }
+                                },
+                                "required": [
+                                    "id",
+                                    "name"
+                                ]
+                            }
+                        }
+                    },
+                    "required": true
+                },
                 "responses": {
                     "200": {
-                        "description": "Successful response"
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/WriteResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
                     }
                 }
             },
             "delete": {
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Successful response"
@@ -164,6 +543,16 @@
         },
         "/media": {
             "get": {
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Successful response",
@@ -178,13 +567,68 @@
                 }
             },
             "post": {
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "filename": {
+                                        "type": "string"
+                                    },
+                                    "mimeType": {
+                                        "type": "string"
+                                    },
+                                    "url": {
+                                        "type": "string"
+                                    },
+                                    "alt": {
+                                        "type": "string"
+                                    },
+                                    "width": {
+                                        "type": "integer"
+                                    },
+                                    "height": {
+                                        "type": "integer"
+                                    }
+                                },
+                                "required": [
+                                    "filename",
+                                    "mimeType",
+                                    "url"
+                                ]
+                            }
+                        }
+                    },
+                    "required": true
+                },
                 "responses": {
                     "200": {
-                        "description": "Successful response"
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/WriteResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
                     }
                 }
             },
             "delete": {
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Successful response"
@@ -194,6 +638,16 @@
         },
         "/tag": {
             "get": {
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Successful response",
@@ -208,13 +662,55 @@
                 }
             },
             "post": {
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "slug": {
+                                        "type": "string"
+                                    },
+                                    "name": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "slug",
+                                    "name"
+                                ]
+                            }
+                        }
+                    },
+                    "required": true
+                },
                 "responses": {
                     "200": {
-                        "description": "Successful response"
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/WriteResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
                     }
                 }
             },
             "delete": {
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Successful response"
@@ -224,6 +720,16 @@
         },
         "/tags": {
             "get": {
+                "parameters": [
+                    {
+                        "name": "articleId",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Successful response",
@@ -316,6 +822,32 @@
                     }
                 }
             },
+            "WriteResponse": {
+                "title": "WriteResponse",
+                "description": "Permissive shape covering POST/PUT/DELETE response bodies across all write resources. PUT returns {id}, POST returns {id, slug|email|filename}, error paths return {message, id}. Each write method points its #[JsonSchema(schema:)] at this file.",
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ],
+                        "minimum": 1
+                    },
+                    "slug": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "filename": {
+                        "type": "string"
+                    },
+                    "message": {
+                        "type": "string"
+                    }
+                }
+            },
             "ArticleList": {
                 "title": "ArticleList",
                 "description": "Paginated list of article summaries",
@@ -395,6 +927,29 @@
                     "totalCount": {
                         "type": "integer",
                         "minimum": 0
+                    }
+                }
+            },
+            "AuthResponse": {
+                "title": "AuthResponse",
+                "description": "POST /auth response. Subject `id` is the OAuth provider's user identifier (opaque string), not a DB integer. Failure path returns {message, reason}.",
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "reason": {
+                        "type": "string"
                     }
                 }
             },

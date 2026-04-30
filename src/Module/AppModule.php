@@ -8,6 +8,7 @@ use BEAR\Package\AbstractAppModule;
 use BEAR\Package\PackageModule;
 use BEAR\Resource\Module\JsonSchemaModule;
 use Koriym\EnvJson\EnvJson;
+use League\CommonMark\CommonMarkConverter;
 use League\OAuth2\Client\Provider\Google;
 use MyVendor\Cms\Auth\AuthInterface;
 use MyVendor\Cms\Auth\GoogleAuthProvider;
@@ -22,7 +23,16 @@ use Ray\MediaQuery\MediaQuerySqlModule;
 use function dirname;
 use function getenv;
 
-/** @SuppressWarnings("PHPMD.CouplingBetweenObjects") composition root by design */
+/**
+ * Production / CLI bindings: real DB via AuraSqlModule + Ray.MediaQuery,
+ * JSON Schema validation, and Google OAuth.
+ *
+ * Loaded by contexts `hal-api-app` and `cli-hal-api-app`. The fake/test
+ * contexts (`fake-hal-api-app`, `test-hal-api-app`) install this and then
+ * override individual bindings via FakeModule / TestModule.
+ *
+ * @SuppressWarnings("PHPMD.CouplingBetweenObjects") composition root by design
+ */
 final class AppModule extends AbstractAppModule
 {
     protected function configure(): void
@@ -39,8 +49,8 @@ final class AppModule extends AbstractAppModule
         // Read (QueryInterface) and Write (CommandInterface) live side-by-side
         // in src/Query so MediaQuerySqlModule scans a single directory.
         $this->install(new MediaQuerySqlModule(
-            interfaceDir: $this->appMeta->appDir . '/src/Query',
-            sqlDir: $this->appMeta->appDir . '/var/db/sql',
+            $this->appMeta->appDir . '/src/Query',
+            $this->appMeta->appDir . '/var/db/sql',
         ));
 
         // Validate response bodies (and optionally request params) against JSON Schemas.
@@ -50,6 +60,9 @@ final class AppModule extends AbstractAppModule
         ));
 
         // Domain-layer services (e.g. injected into Entity via FetchInjectionFactory).
+        // CommonMarkConverter has only defaultable constructor args, so a single
+        // shared instance is enough; binding it to a Provider would be over-engineering.
+        $this->bind(CommonMarkConverter::class)->toInstance(new CommonMarkConverter());
         $this->bind(MarkdownRendererInterface::class)->to(CommonMarkRenderer::class)->in(Scope::SINGLETON);
         // Explicit untargeted binding so Ray.Compiler (prod-app) can resolve the
         // factory referenced by #[DbQuery(factory: ArticleFactory::class)].

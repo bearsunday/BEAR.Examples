@@ -54,9 +54,11 @@ defeats the reference value.
   `var/db/sql/<entity>_<verb>.sql`. Read SQL columns are ordered to
   match the entity constructor (PDO::FETCH_FUNC).
 - New-id-after-INSERT pattern: Resource calls
-  `articleQuery->getBySlug($slug)` after `articleCommand->add(...)`.
+  `$this->article->bySlug($slug)` after `$this->articleCmd->add(...)`.
   Avoids driver-specific `lastInsertId`. Slug/email/filename are the
-  natural unique keys.
+  natural unique keys. See `conventions.md` §3 for the
+  `item` / `by<NaturalKey>` / `list` query method naming and the
+  `$<entity>` / `$<entity>Cmd` Resource property naming.
 - ALPS profile (`var/alps/profile.json`) is the source of truth for
   Choreography names. HAL `_links` rels match those names
   (`goArticleList`, `doCreateArticle`, etc.).
@@ -64,10 +66,17 @@ defeats the reference value.
   `#[JsonSchema('<entity>.json')]`. Input schemas in
   `var/json_validate/` validate request params via
   `#[JsonSchema(schema: 'write_response.json', params: '<entity>_<verb>.json')]`.
+  Validation runs *after* DTO hydration in BEAR.Resource 1.31.1, so
+  typed-array DTO fields (e.g. `public array $tagIds`) must defend
+  themselves against malformed shapes — declare them `mixed`, gate
+  with `is_array`, and throw `ParameterException` (→ 400). See
+  `conventions.md` §4 "Pitfall: typed-array DTO fields and the
+  validation order" and `src/Input/ArticleCreateInput.php` for the
+  canonical pattern.
 - Four contexts:
   - `hal-api-app` — production HTTP
   - `cli-hal-api-app` — `bin/app.php`, `composer app`
-  - `fake-hal-api-app` — runtime against `tests/Fake/FakeSqlQuery.php`
+  - `fake-hal-api-app` — dev runtime against `tests/Fake/FakeSqlQuery.php`
   - `test-hal-api-app` — PHPUnit (unit suites)
 - `composer demo` is the entry point for verifying any change end-to-end.
 
@@ -94,7 +103,7 @@ If either lands, BEAR.Cms can adopt the fix:
 |------|------|---------|
 | **Step 5.5: Async `#[Embed]` parallelisation** | `bear/async ^0.1` requires `bear/resource ^1.31`; current is `^1.17`. Upgrade is a multi-package breaking change | Try `composer require bear/async -W` in a branch, fix any API drift, run full test suite |
 | **Step 6: `#[CacheableResponse]` on all reads** | Blocked on BEAR.Resource#355 (cache hit + JsonSchema interaction). Currently zero resources have the attribute | When #355 lands, restore class-level `#[CacheableResponse]` on read resources + `#[RefreshCache]` on writes |
-| **phpstan baseline (13 entries)** | Mostly `array<string,mixed>` docblocks missing in `tests/Fake/FakeSqlQuery.php`. Cosmetic | Add proper `@param` / `@return` docblocks, regenerate baseline empty |
+| **phpstan baseline (2 entries)** | One vendor-interface return-type mismatch in `tests/Fake/FakeSqlQuery.php` (`getRowList` returns `list<object>` but `SqlQueryInterface` declares `array<array<mixed>>`); one OAuth provider arg-type widening. Both intentionally suppressed — see comment in `phpstan-baseline.neon`. | Wait for upstream `SqlQueryInterface` to relax its return type; then drop the entry |
 | **Write-side CLI** | Only `article-show` / `article-list` are generated. `article-add` / `article-update` / `article-delete` would round out the demo | Add `#[Cli]` to onPost/onPut/onDelete; `composer cli` regenerates |
 | **Real Google OAuth verification** | Code uses `league/oauth2-google` correctly but no integration test against real Google (needs creds + callback URL) | Add `tests/Integration/AuthGoogleTest.php` that skips unless `GOOGLE_CLIENT_ID` is set |
 
@@ -137,20 +146,12 @@ Until they move, they live in this project's journal.
 
 ## Files an AI should read before writing code
 
-Order matters:
-
-1. `README.md` — what the project is
-2. `docs/architecture.md` — BDR pattern, dispatch quirks, design
-   rationale
-3. `docs/resources.md` — URI map and body shapes
-4. `docs/alps.md` — semantic source of truth
-5. `docs/journal/build-log.md` — how the project was constructed,
-   phase by phase
-6. `docs/journal/decisions-to-consult.md` — 44 design decisions with
-   user feedback
-7. `var/alps/profile.json` — the ALPS profile itself
-8. `tests/Fake/FakeSqlQuery.php` — the in-memory backend; reading this
-   teaches the dispatch contract better than reading docs
+Read order and per-question index live in `README.md` →
+"Using this as a reference". The rulebook is `docs/conventions.md`;
+new code lands there first. This handoff intentionally does not
+duplicate the list — keeping a single source of truth means an
+update to the canonical reading order propagates without touching
+this file.
 
 ---
 

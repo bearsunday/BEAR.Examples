@@ -3,6 +3,10 @@
 BEAR.Cms 構築中、私が独断で決めて先に進めたが本来は合意を取るべきだった項目。
 作者からの判断が欲しいもの順に並べる。
 
+> **Note:** ここで「OK」と確定した項目は [../conventions.md](../conventions.md)
+> に集約済み。新規にコードを書くときは conventions.md を参照すること。
+> このファイルは合意プロセスの履歴として残す。
+
 凡例:
 - **P0**: プロジェクトのアイデンティティに関わる。次に何かする前に合意必要
 - **P1**: BEAR.Sunday 流儀との適合度。reference 実装として広まる前に確認したい
@@ -62,7 +66,7 @@ BEAR.Cms 構築中、私が独断で決めて先に進めたが本来は合意�
 | 20 | Migration クラス名 | `Version20260425000001` (Doctrine 既定) | no idea |
 | 21 | ALPS Ontology 命名 | `articleId` / `articleSlug` (entity prefix) | `id` / `slug` |
 | 22 | HAL `_links` rel 名 | `articles` / `author` / `category` (HAL 慣習) | `goArticleList` / `goAuthor` (ALPS transition と揃える) |
-| 23 | `getBy{naturalKey}` メソッド名 | `getBySlug`, `getByEmail`, `getByFilename` | 一種類ならbyは不要 |
+| 23 | Query メソッド名 (PK / 自然キー / 集合) | 当初: `getById` / `getBySlug` / `getByEmail` / `getByFilename` / `findAll` | 解決: `item(int $id)` / `by<NaturalKey>(...)` / `list()` に統一。`item ↔ list` の語彙対が `Article ↔ Articles` リソース対に対応し、`item` (PK) と `by<NaturalKey>` (自然キー) で意味的役割の違いをメソッド形でエンコードする。Resource プロパティも `$<entity>` (Query) / `$<entity>Cmd` (Command) に統一。詳細は `docs/conventions.md` §3。|
 
 ## P4: 黙ってスコープから落とした項目
 
@@ -100,7 +104,7 @@ reference として完成度を主張するなら、これらは「あえて省�
 | 36 | Doctrine Migrations | 採用済み (元の指示) | OK |
 | 37 | Malt | 採用済み (元の指示) | OK |
 | 38 | `justinrainbow/json-schema` | 入れたが未使用 (P4-#24 のため予定) | バリデーションして確かめて |
-| 39 | `ray/input-query` | 入れたが未使用 (Write は名前付き引数で代替) | #[Input] に書き換え、これどう思う？必要な時だけ？（ドメインが２つあるとか） |
+| 39 | `ray/input-query` | Article + Auth で `#[Input]` DTO 採用済み (`src/Input/`)。Author / Tag / Category / Media は scalar + `#[JsonSchema(params:)]` のままで対比表示。 | 残課題: #45 |
 
 ---
 
@@ -113,6 +117,15 @@ reference として完成度を主張するなら、これらは「あえて省�
 | 42 | 失敗系 commit の扱い | 残している (誤評論 → セルフレビュー → 第二セルフレビュー → verified) | OK |
 | 43 | `Co-Authored-By` 行 | 全 commit に付与 | 不要　claudeだけでOK |
 | 44 | `CLAUDE.md` をレポジトリに置く | 置いた | OK |
+
+---
+
+## P8: 後追いで埋めたい穴
+
+| # | 項目 | 現状 | 判断 |
+|---|------|------|------|
+| 45 | ~~`#[JsonSchema(params:)]` で Input DTO を validate できない~~ **resolved (2026-04-29)** | 経緯メモ — `Article::onPost` / `Article::onPut` / `Auth::onPost` を `#[Input] <Dto>` 化したところ、当時の `JsonSchemaInterceptor` は flat scalar 引数前提で DTO を見ず、`OpenApiGenerator` も `#[JsonSchema]` 不在で early return するため openapi に requestBody が出ない、という上流ギャップが 2 件並んでいた。Codex によるベンダソース読みで `BEAR\Resource\InputParam` が呼び出し前に DTO を materialize → `getNamedArguments()` が `['input' => FooInput]` を見に行く、という挙動を特定。<br /><br />**着地 (2026-04-29):** 両ギャップが上流で塞がった。(a) [BEAR.Resource 1.31.1](https://github.com/bearsunday/BEAR.Resource/releases/tag/1.31.1) で [#356](https://github.com/bearsunday/BEAR.Resource/issues/356) (DTO 認識) を解消。(b) [BEAR.ApiDoc 1.9.1](https://github.com/bearsunday/BEAR.ApiDoc/releases/tag/1.9.1) (retag) で [#81](https://github.com/bearsunday/BEAR.ApiDoc/issues/81) を解消、同時に [PR #82](https://github.com/bearsunday/BEAR.ApiDoc/pull/82) で `phpdocumentor/reflection-docblock: ^5.2 \|\| ^6.0` に緩和して --prefer-lowest を維持。<br /><br />**MyVendor.Cms 側:** `composer update -W` で bear/resource 1.31.1 + bear/api-doc 1.9.1 に追従し、3 メソッドに `#[JsonSchema(schema: 'write_response.json'\|'auth_response.json', params: '<input>.json')]` を再付与。Auth は subject id が string (OAuth provider id) なので response schema を専用 `auth_response.json` に分離。`tests/Resource/App/ArticleTest.php` の deferred test を `testPostInputShapeValidationRejectsBadFields` に書き換え、validation が実際に効くことを assertion で固定。 | クローズ。Article/Auth の gap 説明 docblock も削除済み。 |
+| 46 | typed-array DTO field と validation 順序の落とし穴 **resolved (2026-04-29)** | `JsonSchemaInterceptor` (BEAR.Resource 1.31.1) は DTO **hydration の後** に `params:` schema を回す。そのため `public array $tagIds` のような typed property に scalar (`tagIds=1`) が来ると、JSON Schema が見る前に constructor で `TypeError` → 5xx になる。Codex adversarial review で発覚 ([job 019dd995-…](https://github.com/bearsunday/MyVendor.Cms/pull/1))。<br /><br />**当面の canonical:** DTO 側で `#[Input] mixed $tagIds` で受け、`is_array` ガード → `BEAR\Resource\Exception\ParameterException` (→ 400) に変換。`mixed` は `Ray\InputQuery` の default-resolution で常に null 許容になるので、omitted 時は `null` で来る点に注意 (Create では `[]`、Update では tri-state 維持の `null` に正規化)。実装は `src/Input/ArticleCreateInput.php` / `ArticleUpdateInput.php`、回帰テストは `tests/Resource/App/ArticleTest.php::testPostRejectsScalarTagIds` / `testPutRejectsScalarTagIds`、設計記述は `docs/conventions.md` §4 "Pitfall: typed-array DTO fields and the validation order"。<br /><br />**上流に持っていきたい:** params validation を hydration の前に回せれば DTO 側のガードは削除できる。`JsonSchemaInterceptor` は flat request 配列を見ているので、技術的には実行順を入れ替えるだけで成立するはず。issue 化候補。 | クローズ (defensive guard で対症)。上流対応待ちの follow-up は別 issue で。 |
 
 ---
 

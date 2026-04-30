@@ -4,7 +4,7 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="vendor-bin/tools/vendor/squizlabs/php_codesniffer/phpcs.xsd"
 >
-    <description>MyVendor.Cms Coding Standard</description>
+    <description>MyVendor.Cms uses the BEAR.Sunday coding standard.</description>
     <arg name="basepath" value="."/>
     <arg name="extensions" value="php"/>
     <arg name="parallel" value="80"/>
@@ -21,47 +21,48 @@
     <file>tests</file>
     <exclude-pattern>*/tests/tmp/*</exclude-pattern>
 
-    <!-- PSR12 Coding Standard -->
-    <rule ref="PSR12"/>
-
-    <!-- Doctrine Coding Standard -->
-    <rule ref="Doctrine">
-        <!-- Inapplicable for this project -->
-        <exclude name="Generic.Formatting.MultipleStatementAlignment.NotSame"/>
-        <exclude name="SlevomatCodingStandard.Classes.SuperfluousAbstractClassNaming"/>
-        <exclude name="SlevomatCodingStandard.Classes.SuperfluousExceptionNaming"/>
+    <!-- BEAR.Sunday Coding Standard (extends Doctrine with BEAR-specific sniffs) -->
+    <rule ref="BearSunday">
+        <!--
+            BEAR.Sunday convention: every injectable interface ends in *Interface
+            (ResourceInterface, MarkdownRendererInterface, …). The Slevomat sniff
+            treats these as superfluous; we treat them as the project's spelling
+            of dependency-shape clarity. Candidate to bake into the standard.
+        -->
         <exclude name="SlevomatCodingStandard.Classes.SuperfluousInterfaceNaming"/>
+        <!--
+            Same reasoning for domain exceptions (UnauthorizedException,
+            BadRequestException, …) — the *Exception suffix makes catch-site
+            search trivial. Candidate to bake into the standard.
+        -->
+        <exclude name="SlevomatCodingStandard.Classes.SuperfluousExceptionNaming"/>
+        <!--
+            Abstract test bases (AbstractAppTestCase, AbstractMySQLTestCase) and
+            the Abstract* prefix are an established BEAR.Sunday spelling.
+            Candidate to bake into the standard.
+        -->
+        <exclude name="SlevomatCodingStandard.Classes.SuperfluousAbstractClassNaming"/>
+        <!--
+            Equals-sign alignment makes adding a single variable reformat N
+            surrounding lines, producing noisy diffs. Project preference is to
+            not align.
+        -->
+        <exclude name="Generic.Formatting.MultipleStatementAlignment.NotSame"/>
+        <!--
+            "$var" interpolation reads better than '. $var .' concatenation in
+            short strings (e.g. SQL ids). Project preference.
+        -->
         <exclude name="Squiz.Strings.DoubleQuoteUsage.ContainsVar"/>
-        <!-- Exclude files -->
-        <exclude-pattern>*/tests/Fake/*</exclude-pattern>
-        <exclude-pattern>*/tmp/*</exclude-pattern>
     </rule>
-    
-    <!-- Additional Rules -->
-    <rule ref="SlevomatCodingStandard.Namespaces.UnusedUses">
-        <properties>
-            <property name="searchAnnotations" value="true"/>
-        </properties>
-    </rule>
-    <rule ref="SlevomatCodingStandard.Commenting.DocCommentSpacing">
-        <properties>
-            <property name="annotationsGroups" type="array">
-                <element value="@param, @psalm-param, @phpstan-param"/>
-                <element value="@return, @psalm-return, @phpstan-return"/>
-                <element value="@Inject, @Named"/>
-                <element value="@throws"/>
-            </property>
-        </properties>
-    </rule>
+
+    <!--
+        MissingNativeTypeHint conflicts with phpstan's `property.extraNativeType`
+        when overriding a parent's untyped property (e.g. ResourceObject::$body).
+        Restrict to src/Module/* and tests/* where DI bindings + test fixtures
+        legitimately want native types.
+    -->
     <rule ref="SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint">
         <include-pattern>src/Module/*</include-pattern>
         <include-pattern>tests/*</include-pattern>
-    </rule>
-    <rule ref="SlevomatCodingStandard.Classes.PropertySpacing">
-        <properties>
-            <property name="minLinesCountBeforeWithComment" value="1"/>
-            <property name="maxLinesCountBeforeWithComment" value="1"/>
-            <property name="maxLinesCountBeforeWithoutComment" value="0"/>
-        </properties>
     </rule>
 </ruleset>

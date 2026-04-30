@@ -37,16 +37,16 @@ final readonly class ArticleFactory
         int $categoryId,
     ): Article {
         return new Article(
-            id: $id,
-            slug: $slug,
-            title: $title,
-            body: $body,
-            excerpt: $excerpt,
-            status: $status,
-            publishedAt: self::normaliseDateTime($publishedAt),
-            authorId: $authorId,
-            categoryId: $categoryId,
-            renderer: $this->renderer,
+            $id,
+            $slug,
+            $title,
+            $body,
+            $excerpt,
+            $status,
+            self::normaliseDateTime($publishedAt),
+            $authorId,
+            $categoryId,
+            $this->renderer,
         );
     }
 

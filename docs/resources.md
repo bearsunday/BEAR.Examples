@@ -51,7 +51,10 @@ Body:
 `201` + `Location: /article?id={new_id}` + `{"id": N, "slug": "…"}`.
 
 ### PUT `{id}`
-Body: `title`, `body`, `status`, optional `excerpt`, `publishedAt`. `200` / `404`.
+Body: `title`, `body`, `status`, optional `excerpt`, `publishedAt`,
+optional `tagIds` (tri-state — omitted/`null`: leave existing tag links
+untouched, `[]`: clear all tag links, non-empty list: replace the tag
+set with the given ids). `200` / `404`.
 
 ### DELETE `{id}`
 `204` / `404`.

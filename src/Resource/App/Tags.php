@@ -15,7 +15,7 @@ use function count;
 class Tags extends ResourceObject
 {
     public function __construct(
-        private readonly TagQueryInterface $tagQuery,
+        private readonly TagQueryInterface $tag,
     ) {
     }
 
@@ -24,8 +24,8 @@ class Tags extends ResourceObject
     public function onGet(int|null $articleId = null): static
     {
         $items = $articleId === null
-            ? $this->tagQuery->list()
-            : $this->tagQuery->listByArticle($articleId);
+            ? $this->tag->list()
+            : $this->tag->listByArticle($articleId);
 
         $this->body = [
             'items' => array_map(static fn ($t) => [

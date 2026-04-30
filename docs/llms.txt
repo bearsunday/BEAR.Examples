@@ -23,7 +23,7 @@ API Document
 
 | Method | Parameters | Links |
 |--------|------------|-------|
-| GET | id* | href(goArticleList), href(goAuthor), href(goCategory), src(goAuthor), src(goCategory), src(goTagList) |
+| GET | id* | href(goArticleList), href(goAuthor), href(goCategory), src(author), src(category), src(tagList) |
 | POST | slug*, title*, body*, authorId*, categoryId*, excerpt, status, publishedAt, tagIds | - |
 | PUT | id*, title*, body*, status*, excerpt, publishedAt, tagIds | - |
 | DELETE | id* | - |
@@ -94,12 +94,14 @@ API Document
 |--------|------------|-------|
 | GET | articleId | href(goTag) |
 
-## Responses (8)
+## Responses (10)
 
 | Response | Schema | Properties |
 |----------|--------|------------|
 | Article | article.json | id, slug, title, body, excerpt, status, publishedAt, authorId, categoryId |
+| Write_response | write_response.json | id, slug, email, filename, message |
 | ArticleList | articleList.json | items, page, perPage, count, totalCount |
+| Auth_response | auth_response.json | id, email, name, message, reason |
 | Author | author.json | id, name, email, bio |
 | CategoryList | categoryList.json | items, totalCount |
 | Category | category.json | id, slug, name, description, parentId |
@@ -112,30 +114,22 @@ API Document
 | Interface | Methods |
 |-----------|---------|
 | ArticleCommandInterface | add(slug, title, body, excerpt, status, publishedAt, authorId, categoryId):void, update(id, title, body, excerpt, status, publishedAt):void, delete(id):void |
-| ArticleQueryInterface | getById(id):Article, getBySlug(slug):Article, list(categoryId, tagId, status, limit, offset):array |
+| ArticleQueryInterface | item(id):Article, bySlug(slug):Article, list(categoryId, tagId, status, limit, offset):array |
 | ArticleTagCommandInterface | clear(articleId):void, link(articleId, tagId):void |
 | AuthorCommandInterface | add(name, email, bio):void, update(id, name, email, bio):void |
-| AuthorQueryInterface | getById(id):Author, getByEmail(email):Author |
+| AuthorQueryInterface | item(id):Author, byEmail(email):Author |
 | CategoryCommandInterface | add(slug, name, description, parentId):void, update(id, name, description, parentId):void, delete(id):void |
-| CategoryQueryInterface | getById(id):Category, getBySlug(slug):Category, list():array |
+| CategoryQueryInterface | item(id):Category, bySlug(slug):Category, list():array |
 | MediaCommandInterface | add(filename, mimeType, url, alt, width, height):void, delete(id):void |
-| MediaQueryInterface | getById(id):Media, getByFilename(filename):Media |
+| MediaQueryInterface | item(id):Media, byFilename(filename):Media |
 | TagCommandInterface | add(slug, name):void, delete(id):void |
-| TagQueryInterface | getById(id):Tag, getBySlug(slug):Tag, list():array, listByArticle(articleId):array |
+| TagQueryInterface | item(id):Tag, bySlug(slug):Tag, list():array, listByArticle(articleId):array |
 
 ## SQL (28)
 
 | File | Query |
 |------|-------|
 | article_add.sql | `INSERT INTO articles (slug, title, body, excerpt, status, published_at, autho...` |
-| article_by_id.sql | `SELECT
-    id,
-    slug,
-    title,
-    body,
-    excerpt,
-    status,
-    pu...` |
 | article_by_slug.sql | `SELECT
     id,
     slug,
@@ -145,6 +139,14 @@ API Document
     status,
     pu...` |
 | article_delete.sql | `DELETE FROM articles WHERE id = :id` |
+| article_item.sql | `SELECT
+    id,
+    slug,
+    title,
+    body,
+    excerpt,
+    status,
+    pu...` |
 | article_list.sql | `SELECT
     a.id,
     a.slug,
@@ -160,7 +162,7 @@ SET title = :title,
     excerpt = :excerpt,...` |
 | author_add.sql | `INSERT INTO authors (name, email, bio) VALUES (:name, :email, :bio)` |
 | author_by_email.sql | `SELECT id, name, email, bio FROM authors WHERE email = :email LIMIT 1` |
-| author_by_id.sql | `SELECT
+| author_item.sql | `SELECT
     id,
     name,
     email,
@@ -171,17 +173,17 @@ LIMIT 1` |
 | author_update.sql | `UPDATE authors SET name = :name, email = :email, bio = :bio WHERE id = :id` |
 | category_add.sql | `INSERT INTO categories (slug, name, description, parent_id)
 VALUES (:slug, :n...` |
-| category_by_id.sql | `SELECT
+| category_by_slug.sql | `SELECT id, slug, name, description, parent_id
+FROM categories
+WHERE slug = :s...` |
+| category_delete.sql | `DELETE FROM categories WHERE id = :id` |
+| category_item.sql | `SELECT
     id,
     slug,
     name,
     description,
     parent_id
 FROM catego...` |
-| category_by_slug.sql | `SELECT id, slug, name, description, parent_id
-FROM categories
-WHERE slug = :s...` |
-| category_delete.sql | `DELETE FROM categories WHERE id = :id` |
 | category_list.sql | `SELECT
     id,
     slug,
@@ -196,7 +198,8 @@ SET name = :name,
 | media_add.sql | `INSERT INTO media (filename, mime_type, url, alt, width, height)
 VALUES (:fil...` |
 | media_by_filename.sql | `SELECT id, filename, mime_type, url, alt, width, height FROM media WHERE file...` |
-| media_by_id.sql | `SELECT
+| media_delete.sql | `DELETE FROM media WHERE id = :id` |
+| media_item.sql | `SELECT
     id,
     filename,
     mime_type,
@@ -204,17 +207,16 @@ VALUES (:fil...` |
     alt,
     width,
     ...` |
-| media_delete.sql | `DELETE FROM media WHERE id = :id` |
 | tag_add.sql | `INSERT INTO tags (slug, name) VALUES (:slug, :name)` |
-| tag_by_id.sql | `SELECT
+| tag_by_slug.sql | `SELECT id, slug, name FROM tags WHERE slug = :slug LIMIT 1` |
+| tag_delete.sql | `DELETE FROM tags WHERE id = :id` |
+| tag_item.sql | `SELECT
     id,
     slug,
     name
 FROM tags
 WHERE id = :id
 LIMIT 1` |
-| tag_by_slug.sql | `SELECT id, slug, name FROM tags WHERE slug = :slug LIMIT 1` |
-| tag_delete.sql | `DELETE FROM tags WHERE id = :id` |
 | tag_list.sql | `SELECT
     id,
     slug,

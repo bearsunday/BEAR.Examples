@@ -48,13 +48,15 @@ exact order each entity's `__construct` expects.
 returns `[]` for non-SELECT. For `FakeSqlQuery` we follow the same
 convention and dispatch writes inside `getRow`/`getRowList`.
 
-## Why getBySlug / getByEmail / getByFilename
+## Why bySlug / byEmail / byFilename
 
 After `INSERT`, we need the row's new id. Rather than leak lastInsertId
 (which differs across drivers and is awkward to fake), each Resource
-`onPost` calls a `getBy*` method using the natural unique key the client
-just supplied. This is portable (SQLite/MySQL/Postgres), fakeable, and
-keeps the Command interface `void`-returning.
+`onPost` calls a `by<NaturalKey>` method using the natural unique key
+the client just supplied. This is portable (SQLite/MySQL/Postgres),
+fakeable, and keeps the Command interface `void`-returning. See
+`docs/conventions.md` §3 for the broader `item` / `by<NaturalKey>` /
+`list` query-naming rule.
 
 ## Contexts
 
@@ -73,3 +75,9 @@ as-is. The additions:
 - `#[Pager]` / `PagesInterface` — deferred to avoid faking Pagerfanta's
   PDO-backed Pages. Filtering + `page`/`perPage`/`count` handled at the
   Resource layer.
+
+## See also
+
+[conventions.md](conventions.md) — the "how to write code in this
+codebase" companion. Naming rules, body construction style, HAL rel
+naming split (Choreography vs Taxonomy), file layout, etc.

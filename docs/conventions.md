@@ -1,0 +1,471 @@
+# Conventions
+
+Cross-cutting "how to write code in this codebase" rules. Architecture
+and pattern explanations live in [architecture.md](architecture.md);
+this file is the companion that codifies the *decisions* made during
+construction (see [journal/decisions-to-consult.md](journal/decisions-to-consult.md)
+for the original discussion log).
+
+When in doubt, follow what's here. New conventions land here first,
+then the code/docs follow.
+
+## Contents
+
+1. [Code structure](#1-code-structure) — namespaces, directory layout, Read/Write split
+2. [Contexts](#2-contexts) — `hal-api-app` / `cli-` / `fake-` / `test-` composition
+3. [Naming](#3-naming) — class, query method, resource property, SQL filename, ALPS, HAL rel
+4. [Resource patterns](#4-resource-patterns) — body construction, status codes, after-INSERT id, pagination, **input shape & validation**, exceptions, named arguments, method order
+5. [Read/Write SQL contract](#5-readwrite-sql-contract) — column order, fetch mode, write-id detection
+6. [File / data layout](#6-filedata-layout) — `var/` artefact placement
+7. [Tests](#7-tests) — context wiring, hermetic fakes, assertion style
+8. [Process](#8-process) — adopting a convention, retiring a deprecated one
+
+---
+
+## 1. Code structure
+
+| What | Convention |
+|------|-----------|
+| Namespace root | `MyVendor\Cms` |
+| Layer directories | `src/Entity/`, `src/Query/`, `src/Resource/App/`, `src/Module/`, `src/Service/` |
+| Fake placement | `tests/Fake/` — `composer.json` maps `MyVendor\Cms\` to both `src/` and `tests/` (autoload + autoload-dev), so `fake-hal-api-app` (dev) and `test-hal-api-app` (test) both resolve `MyVendor\Cms\Fake\*`. Production (`composer install --no-dev`) does not load `tests/`, keeping the prod artefact free of fake bindings |
+| Module composition | `FakeModule` provides the binding; `TestModule` *installs* `FakeModule`. Two-stage so prod/cli/fake/test contexts can compose differently |
+| Resource placement | `src/Resource/App/<Class>.php` — every URI is a class. No `App/Index.php` unless a "/" entry-point is meaningful |
+| Read/Write split | Always two interfaces per entity: `<Entity>QueryInterface` (Read) and `<Entity>CommandInterface` (Write). Both live in `src/Query/` — the interface name suffix carries the Read/Write distinction so `MediaQuerySqlModule` can scan a single directory. Never mix Read and Write methods on the same interface |
+
+## 2. Contexts
+
+| Context | Where it runs |
+|---------|--------------|
+| `hal-api-app` | Production HTTP |
+| `cli-hal-api-app` | `bin/app.php`, `composer app`, `bin/cli/*` scripts |
+| `fake-hal-api-app` | Dev runtime against `FakeSqlQuery` (no DB) — e.g. `composer fake`, manual exploration |
+| `test-hal-api-app` | PHPUnit (composes `FakeModule`) |
+
+`fake-` and `test-` are the canonical prefixes; do not invent variants.
+
+## 3. Naming
+
+### Class / interface
+- Read interface: `<Entity>QueryInterface` (e.g. `ArticleQueryInterface`)
+- Write interface: `<Entity>CommandInterface` (e.g. `ArticleCommandInterface`)
+- Entity: `final readonly class` with public properties only
+
+### Query / Command method names
+**Reads use noun-form (queryable noun + qualifier); writes use verb-form
+(imperative action).** Same vocabulary as the SQL filenames below, so
+that `#[DbQuery('article_item')] public function item(int $id)` speaks
+one language across attribute and signature.
+
+| Kind | Method shape | Examples |
+|---|---|---|
+| Single-row read by primary key | `item` | `item(int $id)` |
+| Single-row read by natural key | `by<NaturalKey>` | `bySlug`, `byEmail`, `byFilename` |
+| Multi-row read | `list` (variants: `list<Variant>`) | `list()`, `listByArticle(int $articleId)` |
+| Single-row write | imperative verb | `add`, `update`, `delete` |
+| Link-table write | imperative verb | `clear`, `link` (e.g. `ArticleTagCommandInterface`) |
+
+`item` (canonical PK lookup) and `by<NaturalKey>` (alternate access
+path) are intentionally distinct shapes: PK is the technical identity
+handle, natural keys (`slug`, `email`, `filename`) are domain-meaningful
+alternates. The asymmetry encodes that real distinction.
+
+`item` ↔ `list` form a lexical pair that mirrors BEAR's resource
+shapes: `Article` (item resource) ↔ `Articles` (collection resource);
+`item($id)` ↔ `list(...)`.
+
+After INSERT, fetch the new row by natural key via `by<NaturalKey>`,
+not `lastInsertId`. The natural key is what the client supplied;
+re-SELECT gives back the assigned id without driver-dependent state.
+
+### Resource property names
+
+Resources hold dependencies on Query/Command interfaces. Reads are
+**queryable nouns**, writes are **action tools** — name them
+accordingly:
+
+| Dependency | Property pattern | Example |
+|---|---|---|
+| Primary entity's `<Entity>QueryInterface` | `$<entity>` | `private ArticleQueryInterface $article` |
+| Primary entity's `<Entity>CommandInterface` | `$<entity>Cmd` | `private ArticleCommandInterface $articleCmd` |
+| Auxiliary / link-entity's interface | `$<entity><Role>` | `private ArticleTagCommandInterface $articleTagCmd` |
+
+The asymmetric naming carries information:
+
+- `$this->article->item($id)` reads as "the article-source's item by
+  id" — receiver is a queryable noun, method qualifies the query.
+  Mirrors Rails `Article.find(id)` in role even though syntax differs.
+- `$this->articleCmd->add(...)` reads as "the article command, add" —
+  receiver is a tool, method names the action.
+
+In a Resource focused on a single entity (`Article`, `Author`, etc.),
+the unsuffixed property name reserves the read role for the primary
+entity, distinguishing it from auxiliary write-only links.
+
+### SQL filenames
+- Pattern: `<entity>_<verb>.sql` in `var/db/sql/`
+- Verbs match the method names above:
+  - `item` ↔ `<entity>_item.sql`
+  - `by_<key>` ↔ `<entity>_by_<key>.sql`
+  - `list` ↔ `<entity>_list.sql`, `<entity>_list_by_<x>.sql`
+  - `add` / `update` / `delete` ↔ same
+  - link-table verbs ↔ `<link>_clear.sql`, `<link>_link.sql`
+- Examples: `article_item.sql`, `article_by_slug.sql`,
+  `article_list.sql`, `article_add.sql`, `article_update.sql`,
+  `article_delete.sql`, `article_tag_clear.sql`, `article_tag_link.sql`
+
+### ALPS Ontology
+- Entity-prefixed: `articleId`, `articleSlug`, `articleTitle`,
+  `categoryParentId`, `mediaAlt`. Not `id` / `slug` (collision risk
+  across entities).
+
+### HAL rel naming — split by ALPS layer
+This is the critical rule. ALPS has two distinct layers and HAL has
+two distinct collections (`_links` and `_embedded`); align them:
+
+| Where | Source layer | Examples |
+|-------|--------------|----------|
+| `#[Link]` rel | ALPS **Choreography** (transition verbs) | `goArticleList`, `goAuthor`, `doCreateArticle`, `doDeleteTag` |
+| `#[Embed]` rel | ALPS **Taxonomy** (entity nouns) | `author`, `category`, `tagList` |
+
+Do not mix: `#[Embed(rel: 'goAuthor', ...)]` is wrong because `go*` is a
+Choreography (client-followable transition), while embed is a
+server-included taxonomy instance. Keep the namespaces separate.
+
+## 4. Resource patterns
+
+### Body construction
+`$this->body` is the single output channel of a `ResourceObject`. The
+`Embed` interceptor injects `Request` objects into `$this->body[$rel]`
+*before* `onGet` runs. Therefore:
+
+- **`onGet` with `#[Embed]`**: use `+=` (no-overwrite union). This
+  protects the embed-injected slots and makes the intent explicit
+  ("add own data, do not touch what was already there"):
+  ```php
+  $this->body['author']->addQuery(['id' => $article->authorId]);
+  $this->body['category']->addQuery(['id' => $article->categoryId]);
+  $this->body['tagList']->addQuery(['articleId' => $article->id]);
+
+  $this->body += [
+      'id' => $article->id,
+      'slug' => $article->slug,
+      // ...
+  ];
+  ```
+- **`onGet` without `#[Embed]`, `onPost`, `onPut`, `onDelete`, error
+  paths**: literal `$this->body = [...]`. The shape is readable
+  top-to-bottom as JSON.
+- **Sequential `$this->body['k'] = $v;` is not used.** It hides the
+  response shape across many lines and provides no semantic over `+=`
+  or literal.
+
+Reasoning: `+` ("union") is "do not overwrite", not "left wins by
+priority". When the entity's own fields can never collide with embed
+rels (which is enforced by §3 — embeds use taxonomy nouns, body fields
+are scalar), `+=` is the most semantically precise operator.
+
+### Status codes
+| Method | Success | Not found | Validation fail |
+|--------|---------|-----------|-----------------|
+| GET | 200 | 404 | n/a |
+| POST (creates a resource) | 201 + `Location` header | n/a | 422 (via `#[JsonSchema(params:)]`) |
+| POST (action / non-creating) | 200 + body | n/a | 422 (via `#[JsonSchema(params:)]`) |
+| PUT | 200 | 404 | 422 |
+| DELETE | 204 | 404 | n/a |
+| Duplicate `slug` (or other unique key) | — | — | 409 (via DB `UniqueConstraintViolation`, no manual catch) |
+
+**POST is not always creation.** `201 + Location` only applies when the
+POST adds a new addressable resource (e.g. `Article::onPost` creates
+`/article?id=N`). Action-style POSTs that don't create a new URI —
+auth code-for-session exchange, password reset confirm, "log this
+event" endpoints — return `200` with the result body and no `Location`
+header. The `#[JsonSchema(params:)]` input-validation rule still
+applies.
+
+### After-INSERT id
+Never `lastInsertId` (driver-dependent, awkward to fake). Always
+re-SELECT via `by<NaturalKey>` using the natural key the client
+supplied (slug / email / filename). Returns `void` from the `Command`
+side.
+
+### Pagination
+`#[Pager]` / `PagesInterface` is **not used**. Filtering and counting
+happen at the Resource layer, returning
+`{ items, page, perPage, count }`. Reason: faking Pagerfanta's
+PDO-backed `Pages` is cumbersome and not needed for this reference.
+
+### Input shape & validation
+
+The codebase deliberately mixes two input shapes — DTO at the Resource
+boundary for some endpoints, named scalar parameters for others —
+chosen per endpoint by **what the actual signature shape calls for**,
+not by uniform rule. The pattern catalog is short on purpose; the
+educational value is in seeing each pattern *applied where it fits*.
+
+#### Current applications and rationale
+
+| Endpoint | Shape | Validation | Rationale |
+|---|---|---|---|
+| `Article::onPost` | `ArticleCreateInput` DTO | `#[JsonSchema(schema: 'write_response.json', params: 'article_create.json')]` | 9 fields including `tagIds` list — flat signature would be unreadable; cohere as a struct |
+| `Article::onPut`  | `ArticleUpdateInput` DTO | `#[JsonSchema(schema: 'write_response.json', params: 'article_update.json')]` | 7 fields including tri-state `tagIds` (`null`/`[]`/list with replace semantics) — tri-state needs typed carrier |
+| `Auth::onPost`    | `AuthExchangeInput` DTO  | `#[JsonSchema(schema: 'auth_response.json', params: 'auth_exchange.json')]` | OAuth `code`/`state` is a meaningful struct, not two unrelated scalars; readability over field count |
+| `Author::onPost`  | scalar | `#[JsonSchema(params: 'author_create.json')]` | 3 trivial fields; method signature *is* the contract |
+| `Author::onPut`   | scalar | `#[JsonSchema(params: 'author_update.json')]` | same |
+| `Tag::onPost`     | scalar | `#[JsonSchema(params: 'tag_create.json')]`    | 2 fields |
+| `Category::onPost`/`onPut` | scalar | `#[JsonSchema(params: 'category_*.json')]` | 4 fields, all independent scalars |
+| `Media::onPost`   | scalar | `#[JsonSchema(params: 'media_create.json')]`  | 6 fields but each is an independent property; no nesting or tri-state — borderline DTO territory, intentionally scalar to show the upper bound of "still readable as a flat list" |
+
+**DTO-shaped methods are validated end-to-end** as of
+[BEAR.Resource 1.31.1](https://github.com/bearsunday/BEAR.Resource/releases/tag/1.31.1)
+([#356](https://github.com/bearsunday/BEAR.Resource/issues/356)) and
+[BEAR.ApiDoc 1.9.1](https://github.com/bearsunday/BEAR.ApiDoc/releases/tag/1.9.1)
+([#81](https://github.com/bearsunday/BEAR.ApiDoc/issues/81)).
+`JsonSchemaInterceptor` now unpacks `#[Input]` DTO arguments before
+validating against the `params:` schema, so `var/json_validate/<entity>_<verb>.json`
+constraints (slug regex, status enum, length limits, …) are enforced
+at the resource boundary. `OpenApiGenerator` emits the matching
+`requestBody` schema, so the openapi contract reflects the same
+shape. See
+[`docs/journal/decisions-to-consult.md`](journal/decisions-to-consult.md)
+P8-#45 for the diagnosis history.
+
+#### Pitfall: typed-array DTO fields and the validation order
+
+Validation runs *after* DTO hydration, so a malformed value for a
+typed property (e.g. a scalar `tagIds=1` against `public array
+$tagIds`) reaches the constructor first and raises `TypeError` →
+5xx, never reaching `JsonSchemaInterceptor`. Until BEAR.Resource
+moves params validation in front of hydration, defend the typed
+fields inside the DTO: declare the parameter `mixed`, type-check it
+explicitly, and throw `BEAR\Resource\Exception\ParameterException`
+(maps to 400) for bad shapes. `ArticleCreateInput::tagIds` and
+`ArticleUpdateInput::tagIds` follow this pattern. Keep the runtime
+check minimal — `is_array` only — and let the JSON Schema's
+`items` / `minimum` keep doing the per-element validation it
+already does. Note that `mixed` always allows null in
+`Ray\InputQuery`'s default-value resolution: an omitted `tagIds`
+arrives as `null`, not as the constructor's declared default, so
+coalesce `null` to your intended default (`[]` for create-style,
+`null` for tri-state update) before the `is_array` gate.
+
+`Auth::onPost` uses a dedicated `auth_response.json` (string subject
+id from the OAuth provider) rather than the shared
+`write_response.json` (integer DB id) — pick the response schema by
+what the endpoint actually returns, not by template.
+
+#### Decision rule (fit-driven)
+
+When designing a new endpoint, decide by the *shape's* needs, not by
+seeking pattern coverage:
+
+- **Stay scalar** when the parameter list is a short, flat list of
+  trivial fields whose names map 1:1 to JSON Schema properties, with
+  no nested or tri-state structure. `#[JsonSchema(params: '<entity>_<verb>.json')]`
+  validates the named arguments and the method signature *is* the
+  contract. This is the default.
+- **Use an Input DTO** when any of:
+  - parameter count crosses the readability threshold (~7+ fields)
+  - any field has tri-state or partial-update semantics (e.g.
+    `null` / `[]` / non-empty list, where omitted ≠ explicit empty)
+  - the fields cohere as a named struct that's meaningful beyond
+    the resource (e.g. an OAuth callback pair)
+
+  Define `MyVendor\Cms\Input\<Action>Input` as `final readonly class`
+  with `#[Input]` on each constructor parameter, type the resource
+  argument as `#[Input] <Dto>`, and BEAR.Resource's `InputParam` (via
+  `Ray\InputQuery\InputQueryInterface`) materialises the object from
+  the flat request array before the method runs. No module install —
+  bound by `BEAR\Resource\Module\ResourceClientModule`.
+
+Examples in this codebase: `src/Input/ArticleCreateInput.php`,
+`ArticleUpdateInput.php`, `AuthExchangeInput.php`, consumed by
+`Article::onPost`, `Article::onPut`, `Auth::onPost`.
+
+#### Why DTOs are not pushed through the Command interface
+
+Ray.MediaQuery natively supports Input DTOs in `#[DbQuery]` interfaces
+(verified via `vendor/ray/media-query/src/ParamConverter.php::expandInputObjects()`;
+documented in the official manual:
+https://bearsunday.github.io/manuals/1.0/ja/database_media.html#rayinputqueryとの連携).
+We deliberately do **not** use it.
+
+Reason — the Resource layer here is not a passthrough.
+`Article::onPost` / `onPut` unpacks the DTO into named scalar args at
+the Command boundary because the Resource also runs `syncTags()`,
+performs a `bySlug` round-trip, and may rearrange write/read
+sequencing. Hiding that work behind a single DTO pass would
+misrepresent what the Resource does. The unpack step (~8 lines) reads
+as documentation of which fields hit SQL versus which fields drive
+separate orchestration (e.g. `tagIds` → `syncTags`, never bound into
+`article_update.sql`).
+
+This is the per-codebase reason to keep the Command boundary scalar;
+Ray.MediaQuery's DTO support remains the right choice for codebases
+where the Resource-to-Command boundary is genuinely a passthrough.
+
+Coupling `<Entity>CommandInterface` to a per-resource `Input` shape
+would also erase the §1 Read/Write layer split. Positional unpacking
+at the call site is consistent with the §4 named-arguments rule
+below — clear verb-then-fields order, no literal bool, no skipped
+middle.
+
+### Exceptions
+- No generic `LogicException` / `RuntimeException`. Define
+  `MyVendor\Cms\Exception\<DomainName>Exception` for any thrown
+  exception originating in `src/`.
+- Read errors (not found) return 404 via `$this->code` — do not throw.
+
+### Named arguments at call sites
+**Positional is the default.** Use named arguments only where
+positional breaks the reader's ability to decode the call. The PHP
+8.0 RFC introduced named arguments for exactly two situations; we
+adopt those two, and nothing more.
+
+Use named when:
+
+1. **A literal `true` / `false` is passed.** `execute($sql, true,
+   false)` cannot be decoded from type or order; the signature has to
+   be opened. This is the RFC's flagship example (Popov: "three
+   booleans").
+   ```php
+   // bad
+   $query->execute($sql, true, false);
+   // good
+   $query->execute($sql, cache: true, strict: false);
+   ```
+   Bool passed via a *variable* (`$query->execute($sql, $useCache)`)
+   carries meaning in the variable name; positional is fine.
+
+2. **A middle optional argument is skipped.** Filling defaults just
+   to reach the one you wanted erases the call's intent.
+   ```php
+   // bad
+   htmlspecialchars($s, ENT_COMPAT | ENT_HTML401, 'UTF-8', false);
+   // good
+   htmlspecialchars($s, double_encode: false);
+   ```
+
+Stay positional otherwise — even for many-arg calls — when type and
+verb order make the call decodable:
+
+```php
+new Point($x, $y);
+new Range($min, $max);
+$fs->move($src, $dst);                    // direction-verb
+$cache->remember($key, $ttl, $callback);
+$client->request($method, $url, $options);
+$command->add($slug, $title, $body, $excerpt, $status,
+              $publishedAt, $authorId, $categoryId);
+```
+
+Argument count alone is **not** a reason to use named arguments. A
+call that's hard to read because there are too many arguments is a
+*signature-design* problem, not a call-site problem; fix the design.
+
+Decision order at the call site:
+1. Literal `true`/`false` → named
+2. Skipping a middle optional → named
+3. Otherwise → positional
+
+When named keeps creeping in, the signature is the smell:
+- **Aggregate into a value object.** Many-arg commands take one DTO.
+  Constructors of "struct objects" (Larry Garfield's term) are the
+  natural place for named.
+- **Drop `bool` parameters.** Split `save()` / `forceSave()`, or use
+  `enum SaveMode`. PHPMD `BooleanArgumentFlag` flags this for the
+  same reason.
+- **Split the method.** "`true` / `false` switches behavior" is an
+  SRP violation in disguise.
+
+Scope: this convention covers internal interfaces (Read/Write
+boundaries, Resource-layer calls). Public library APIs are
+out-of-scope — there, parameter names become part of the BC
+contract; consider `@no-named-arguments` (PHPStan / Psalm /
+PHP-CS-Fixer) instead.
+
+Explicitly **not** adopted:
+- "3+ arguments → named" — pulls in healthy calls like
+  `cache->remember($key, $ttl, $callback)` and erodes positional as
+  the default.
+- "5+ arguments → named" — count thresholds hide design problems
+  behind call-site syntax.
+- "Same-typed 2+ → named" — sweeps in `Point(x, y)` and
+  direction-verbs `move(src, dst)`.
+- "Any nullable parameter → named" — `?string` itself doesn't cause
+  swap bugs; the *skip-the-default* case is already covered by rule 2.
+- "Any `bool` parameter → named" — `$force` via a variable is
+  self-explaining. The breakage is specifically literal `true`/`false`.
+
+References:
+- PHP 8.0 named arguments RFC (Popov)
+- PHP Internals News Ep. 59 — Popov frames `true, true, false` as
+  the canonical case
+- Larry Garfield, "PHP 8.0 named arguments" — named as a *targeted*
+  tool for struct-object construction
+- PHPMD `BooleanArgumentFlag` — `bool` parameter as SRP smell
+- `@no-named-arguments` in PHPStan / Psalm / PHP-CS-Fixer — for
+  library-boundary BC, not internal style
+
+### Method order inside a Resource
+1. `__construct`
+2. Public `on*` handlers in HTTP-verb order (`onGet`, `onPost`, `onPut`,
+   `onDelete`)
+3. `private` helpers, after every public method
+
+Reading top-to-bottom should mirror the public surface first, the
+implementation detail last. Helpers above the handlers force the reader
+to skim past internal plumbing before reaching the entry point.
+
+## 5. Read/Write SQL contract
+
+- `SELECT` column order **must** match the Entity's `__construct`
+  positional argument order (PDO::FETCH_FUNC contract via Ray.MediaQuery's
+  `FetchNewInstance`). Adding a column means updating both files in
+  lock-step.
+- `DbQueryInterceptor` routes every `#[DbQuery]` call through
+  `getRow` / `getRowList` based on the return type. Writes (`void`
+  return) still go through the same path; do **not** call `exec()`
+  directly.
+
+## 6. File/data layout
+
+| Kind | Location |
+|------|----------|
+| Read/Write SQL | `var/db/sql/<entity>_<verb>.sql` |
+| Doctrine migrations | `var/db/migrations/Version<timestamp>.php` |
+| Response JSON Schema | `var/json_schema/<entity>.json` (flat, no subdirs) |
+| Input JSON Schema | `var/json_validate/<entity>_<verb>.json` |
+| Fake data | `var/fake/<entity>.json` (deterministic, `mt_srand(42)`) |
+| ALPS profile | `var/alps/profile.json` (single source of truth for semantics) |
+| Generated apidoc | `docs/index.html`, `docs/openapi.json`, `docs/llms.txt`, `docs/schemas/*` |
+
+## 7. Tests
+
+- Unit tests (no DB): default suite, run by `vendor/bin/phpunit`.
+- Integration tests (real DB): run against MySQL (not SQLite). Auto-skip
+  when MySQL is unreachable.
+- No mocks. External services use Docker; internal dependencies use
+  Fake classes from `tests/Fake/`.
+
+## 8. Process
+
+| What | Convention |
+|------|-----------|
+| Commit message | English, multi-paragraph allowed for non-trivial change |
+| Commit granularity | One logical phase per commit |
+| Failed/exploratory commits | Kept as history, not squashed |
+| `Co-Authored-By` line | Not used (Claude-only contribution acknowledged via commit message body if needed) |
+| `CLAUDE.md` in repo | Yes — project-specific gotchas for future AI sessions |
+| Branch from main (`1.x`) | Always create a feature branch; never commit to `1.x` directly |
+
+---
+
+## See also
+
+- [architecture.md](architecture.md) — BDR pattern, contexts,
+  intentionally-not-built list
+- [alps.md](alps.md) — ALPS profile flow into code
+- [resources.md](resources.md) — HAL response shapes per resource
+- [journal/decisions-to-consult.md](journal/decisions-to-consult.md) —
+  original discussion log; the "OK" outcomes there are codified above

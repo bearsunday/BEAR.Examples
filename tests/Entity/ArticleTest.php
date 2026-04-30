@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace MyVendor\Cms\Entity;
 
+use League\CommonMark\CommonMarkConverter;
+use MyVendor\Cms\Exception\MissingMarkdownRendererException;
 use MyVendor\Cms\Service\CommonMarkRenderer;
 use PHPUnit\Framework\TestCase;
-use RuntimeException;
 
 final class ArticleTest extends TestCase
 {
@@ -46,13 +47,13 @@ final class ArticleTest extends TestCase
     public function testRenderHtmlThrowsWithoutInjectedRenderer(): void
     {
         $a = $this->make();
-        $this->expectException(RuntimeException::class);
+        $this->expectException(MissingMarkdownRendererException::class);
         $a->renderHtml();
     }
 
     public function testRenderHtmlConvertsMarkdownWhenRendererInjected(): void
     {
-        $renderer = new CommonMarkRenderer();
+        $renderer = new CommonMarkRenderer(new CommonMarkConverter());
         $a = new Article(
             id: 1,
             slug: 's',

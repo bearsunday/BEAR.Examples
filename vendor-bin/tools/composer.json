@@ -1,7 +1,14 @@
 {
     "name": "bear/qatools",
     "description": "QA tools",
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/bearsunday/coding-standard"
+        }
+    ],
     "require-dev": {
+        "bear/conding-standard": "1.x-dev",
         "doctrine/coding-standard": "^14.0",
         "phpmd/phpmd": "^2.15",
         "phpstan/phpstan": "^2.1",
@@ -9,6 +16,8 @@
         "vimeo/psalm": "6.x-dev as 6.14.0",
         "phpstan/phpstan-phpunit": "^2.0"
     },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
     "config": {
         "allow-plugins": {
             "dealerdirect/phpcodesniffer-composer-installer": true,

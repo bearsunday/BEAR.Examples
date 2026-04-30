@@ -18,6 +18,8 @@ use function implode;
 use function putenv;
 use function sprintf;
 
+use const PHP_BINARY;
+
 /**
  * Base for tests that exercise the real-DB Read/Write path.
  *
@@ -34,6 +36,9 @@ use function sprintf;
  */
 abstract class AbstractMySQLTestCase extends TestCase
 {
+    /** @var array<string, string|false> */
+    private array $previousEnv = [];
+
     protected ResourceInterface $resource;
     protected PDO $pdo;
 
@@ -49,6 +54,12 @@ abstract class AbstractMySQLTestCase extends TestCase
             $this->markTestSkipped(sprintf('MySQL not reachable at %s: %s', $dsn, $e->getMessage()));
         }
 
+        // Snapshot prior values so tearDown() can restore them; otherwise these
+        // putenv calls leak DB_* into subsequent (non-MySQL) suites in the same process.
+        foreach (['DB_DSN', 'DB_USER', 'DB_PASSWORD'] as $name) {
+            $this->previousEnv[$name] = getenv($name);
+        }
+
         // Set env vars for the BEAR app so AppModule's AuraSqlModule sees them.
         putenv('DB_DSN=' . $dsn);
         putenv('DB_USER=' . $user);
@@ -62,6 +73,15 @@ abstract class AbstractMySQLTestCase extends TestCase
         $this->resource = $injector->getInstance(ResourceInterface::class);
     }
 
+    protected function tearDown(): void
+    {
+        foreach ($this->previousEnv as $name => $value) {
+            putenv($value === false ? $name : sprintf('%s=%s', $name, $value));
+        }
+
+        $this->previousEnv = [];
+    }
+
     private function migrateAndSeed(): void
     {
         // Drop and recreate all tables to start clean.
@@ -72,26 +92,31 @@ abstract class AbstractMySQLTestCase extends TestCase
 
         $this->pdo->exec('SET FOREIGN_KEY_CHECKS = 1');
 
-        // Run doctrine-migrations migrate
+        // Run doctrine-migrations migrate. Pin PHP_BINARY so the subprocess
+        // uses the same interpreter as the running test (otherwise composer's
+        // platform_check.php fires when the system `php` is older than the
+        // composer.json `php` requirement).
         $cmd = sprintf(
-            'cd %s && DB_DSN=%s DB_USER=%s DB_PASSWORD=%s vendor/bin/doctrine-migrations migrate --no-interaction 2>&1',
+            'cd %s && DB_DSN=%s DB_USER=%s DB_PASSWORD=%s %s vendor/bin/doctrine-migrations migrate --no-interaction 2>&1',
             escapeshellarg(dirname(__DIR__, 2)),
             escapeshellarg(getenv('DB_DSN')),
             escapeshellarg(getenv('DB_USER')),
             escapeshellarg(getenv('DB_PASSWORD')),
+            escapeshellarg(PHP_BINARY),
         );
         exec($cmd, $output, $code);
         if ($code !== 0) {
             $this->fail('doctrine-migrations migrate failed: ' . implode("\n", $output));
         }
 
-        // Seed via bin/seed.php
+        // Seed via bin/seed.php (same PHP_BINARY pinning as above).
         $cmd = sprintf(
-            'cd %s && DB_DSN=%s DB_USER=%s DB_PASSWORD=%s php bin/seed.php 2>&1',
+            'cd %s && DB_DSN=%s DB_USER=%s DB_PASSWORD=%s %s bin/seed.php 2>&1',
             escapeshellarg(dirname(__DIR__, 2)),
             escapeshellarg(getenv('DB_DSN')),
             escapeshellarg(getenv('DB_USER')),
             escapeshellarg(getenv('DB_PASSWORD')),
+            escapeshellarg(PHP_BINARY),
         );
         exec($cmd, $output, $code);
         if ($code === 0) {

@@ -92,8 +92,8 @@ fwrite(STDOUT, "GET app://self/article?id=1 → {$ro->code}\n");
 $rendered = json_decode((string) $ro, true);
 fwrite(STDOUT, "  title:           {$rendered['title']}\n");
 fwrite(STDOUT, "  publishedAt:     {$rendered['publishedAt']}\n");
-fwrite(STDOUT, "  embedded.author: {$rendered['_embedded']['goAuthor']['name']}\n");
-fwrite(STDOUT, "  embedded.tags:   " . count($rendered['_embedded']['goTagList']['items']) . " tag(s)\n");
+fwrite(STDOUT, "  embedded.author: {$rendered['_embedded']['author']['name']}\n");
+fwrite(STDOUT, "  embedded.tags:   " . count($rendered['_embedded']['tagList']['items']) . " tag(s)\n");
 
 $post = $fakeRes->post('app://self/article', [
     'slug' => 'demo-post-' . uniqid(),
@@ -132,7 +132,7 @@ $rendered2 = json_decode((string) $realRo, true);
 fwrite(STDOUT, "GET app://self/article?id=1 → {$realRo->code}\n");
 fwrite(STDOUT, "  title:           {$rendered2['title']}\n");
 fwrite(STDOUT, "  publishedAt:     {$rendered2['publishedAt']}\n");
-fwrite(STDOUT, "  embedded.author: {$rendered2['_embedded']['goAuthor']['name']}\n");
+fwrite(STDOUT, "  embedded.author: {$rendered2['_embedded']['author']['name']}\n");
 
 // ── 3.5) Auth (Fake provider) ─────────────────────────────────────
 section('3.5) Auth — AuthInterface bound to FakeAuthProvider in test/fake context');
