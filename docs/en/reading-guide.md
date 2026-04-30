@@ -1,5 +1,7 @@
 # Code Reading Guide
 
+[日本語](../ja/reading-guide.md)
+
 This guide is for reading the repository as code, not for learning every API
 surface. Article GET is the first tour because it is small and touches the
 main layers; the later passes cover writes, collections, contexts, and fakes.
