@@ -40,6 +40,3 @@ Read for three things:
    query results.
 3. Read `ArticleRawPdo` last to compare the same response shape without
    MediaQuery.
-
-These resources should stay outside the ALPS profile and should not grow into a
-parallel API surface.
