@@ -1,5 +1,7 @@
 # Article GET Variations
 
+[日本語](README.ja.md)
+
 This directory contains comparison-only implementations of the Article GET
 resource. The canonical endpoint is `src/Resource/App/Article.php`; these
 classes are reading material for understanding the tradeoffs.
