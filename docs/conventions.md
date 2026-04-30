@@ -47,7 +47,9 @@ and must not change the canonical `src/Resource/App/Article.php` path.
 
 Do not add a fourth variation. Use `composer demo:variations` when the
 goal is to compare these alternatives; keep `composer demo` as the main
-golden path.
+golden path. See
+[`src/Resource/App/Variations/README.md`](../src/Resource/App/Variations/README.md)
+for the short reading guide.
 
 ## 2. Contexts
 
