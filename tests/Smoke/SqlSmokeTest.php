@@ -10,6 +10,7 @@ use PHPUnit\Framework\TestCase;
 
 use function array_diff;
 use function array_keys;
+use function array_unique;
 use function basename;
 use function copy;
 use function dirname;
@@ -20,6 +21,7 @@ use function file_get_contents;
 use function glob;
 use function implode;
 use function is_string;
+use function preg_match_all;
 use function scandir;
 use function sort;
 use function sprintf;
@@ -149,6 +151,25 @@ final class SqlSmokeTest extends TestCase
         self::assertSame([], $extra, 'Params entries without matching SQL file: ' . implode(', ', $extra));
     }
 
+    public function testEverySqlFileParamsMatchPlaceholders(): void
+    {
+        $params = require self::PARAMS_FILE;
+        $files = (array) glob(self::SQL_DIR . '/*.sql');
+        sort($files);
+
+        foreach ($files as $path) {
+            $name = basename((string) $path);
+            $actual = array_keys($params[$name] ?? []);
+            sort($actual);
+
+            self::assertSame(
+                self::placeholderNames((string) file_get_contents((string) $path)),
+                $actual,
+                "{$name} params do not match SQL placeholders",
+            );
+        }
+    }
+
     /** @param array<string, mixed> $params */
     #[DataProvider('sqlProvider')]
     public function testSqlExecutes(string $sqlFile, array $params): void
@@ -184,5 +205,17 @@ final class SqlSmokeTest extends TestCase
 
             yield $name => [$name, $params[$name] ?? []];
         }
+    }
+
+    /** @return array<int, string> */
+    private static function placeholderNames(string $sql): array
+    {
+        $matches = [];
+        preg_match_all('/(?<!:):([A-Za-z_][A-Za-z0-9_]*)/', $sql, $matches);
+
+        $names = array_unique($matches[1]);
+        sort($names);
+
+        return $names;
     }
 }
