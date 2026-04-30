@@ -16,6 +16,9 @@ require dirname(__DIR__) . '/autoload.php';
 $root = dirname(__DIR__);
 $db = '/tmp/bear_cms_variations.db';
 $dsn = 'sqlite:' . $db;
+$migrations = escapeshellarg($root . '/vendor/bin/doctrine-migrations');
+$seed = escapeshellarg($root . '/bin/seed.php');
+$tmpDir = escapeshellarg($root . '/var/tmp/hal-api-app');
 
 function section(string $title): void
 {
@@ -26,7 +29,15 @@ function section(string $title): void
 function run(string $cmd): void
 {
     fwrite(STDOUT, "$ {$cmd}\n");
-    passthru($cmd);
+    passthru($cmd, $exitCode);
+    if ($exitCode !== 0) {
+        throw new RuntimeException("Command failed ({$exitCode}): {$cmd}");
+    }
+}
+
+function tailOutput(string $cmd): string
+{
+    return 'bash -c ' . escapeshellarg('set -o pipefail; ' . $cmd . ' 2>&1 | tail -3');
 }
 
 @unlink($db);
@@ -35,12 +46,12 @@ putenv('DB_USER=');
 putenv('DB_PASSWORD=');
 
 section('Prepare SQLite');
-run("DB_DSN='{$dsn}' {$root}/vendor/bin/doctrine-migrations migrate --no-interaction 2>&1 | tail -3");
-run("DB_DSN='{$dsn}' php {$root}/bin/seed.php 2>&1 | tail -3");
-run("rm -rf {$root}/var/tmp/hal-api-app");
+run(tailOutput('DB_DSN=' . escapeshellarg($dsn) . ' ' . $migrations . ' migrate --no-interaction'));
+run(tailOutput('DB_DSN=' . escapeshellarg($dsn) . ' ' . escapeshellarg(PHP_BINARY) . ' ' . $seed));
+run('rm -rf ' . $tmpDir);
 
-/** @var ResourceInterface $resource */
 $resource = Injector::getInstance('hal-api-app')->getInstance(ResourceInterface::class);
+assert($resource instanceof ResourceInterface);
 
 section('Article GET variations');
 $targets = [
@@ -53,9 +64,11 @@ foreach ($targets as $label => $uri) {
     $ro = $resource->get($uri, ['id' => 2]);
     $body = $ro->body;
     fwrite(STDOUT, "{$label}: {$ro->code} {$body['title']}\n");
-    if (isset($body['readingTimeMinutes'])) {
-        fwrite(STDOUT, "  readingTimeMinutes: {$body['readingTimeMinutes']}\n");
-        fwrite(STDOUT, "  previous: {$body['previous']['title']}\n");
-        fwrite(STDOUT, "  next: {$body['next']['title']}\n");
+    if (! isset($body['readingTimeMinutes'])) {
+        continue;
     }
+
+    fwrite(STDOUT, "  readingTimeMinutes: {$body['readingTimeMinutes']}\n");
+    fwrite(STDOUT, '  previous: ' . ($body['previous']['title'] ?? '(none)') . "\n");
+    fwrite(STDOUT, '  next: ' . ($body['next']['title'] ?? '(none)') . "\n");
 }

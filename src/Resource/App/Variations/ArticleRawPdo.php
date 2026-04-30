@@ -9,7 +9,7 @@ use BEAR\Resource\Annotation\JsonSchema;
 use BEAR\Resource\Code;
 use BEAR\Resource\ResourceObject;
 
-use function str_contains;
+use function preg_match;
 use function str_replace;
 
 /**
@@ -87,6 +87,11 @@ SQL;
 
         $value = (string) $value;
 
-        return str_contains($value, 'T') ? $value : str_replace(' ', 'T', $value) . 'Z';
+        $value = str_replace(' ', 'T', $value);
+        if (preg_match('/(?:Z|[+\-]\d{2}:\d{2})$/i', $value) === 1) {
+            return $value;
+        }
+
+        return $value . 'Z';
     }
 }

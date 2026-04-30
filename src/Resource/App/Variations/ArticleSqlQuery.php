@@ -13,7 +13,7 @@ use function ceil;
 use function get_object_vars;
 use function is_array;
 use function max;
-use function str_contains;
+use function preg_match;
 use function str_replace;
 use function str_word_count;
 
@@ -46,8 +46,9 @@ class ArticleSqlQuery extends ResourceObject
         $body['previous'] = null;
         $body['next'] = null;
 
-        if ($row['publishedAt'] !== null && $row['publishedAt'] !== '') {
-            $params = ['id' => $body['id'], 'publishedAt' => $row['publishedAt']];
+        $publishedAt = $row['publishedAt'] ?? null;
+        if ($publishedAt !== null && $publishedAt !== '') {
+            $params = ['id' => $body['id'], 'publishedAt' => $publishedAt];
             $body['previous'] = self::articleSummary($this->row('article_sqlquery_previous', $params));
             $body['next'] = self::articleSummary($this->row('article_sqlquery_next', $params));
         }
@@ -131,6 +132,11 @@ class ArticleSqlQuery extends ResourceObject
 
         $value = (string) $value;
 
-        return str_contains($value, 'T') ? $value : str_replace(' ', 'T', $value) . 'Z';
+        $value = str_replace(' ', 'T', $value);
+        if (preg_match('/(?:Z|[+\-]\d{2}:\d{2})$/i', $value) === 1) {
+            return $value;
+        }
+
+        return $value . 'Z';
     }
 }
