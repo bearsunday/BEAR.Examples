@@ -104,6 +104,93 @@ header h1 {
   color: var(--brand-700);
 }
 
+.ArticleList, .CategoryList, .TagList {
+  display: grid;
+  gap: var(--space);
+}
+
+.ArticleList > .page, .ArticleList > .perPage {
+  display: none;
+}
+
+.CategoryList .Category,
+.TagList .Tag,
+.ArticleList .Article {
+  display: block;
+  margin: 0;
+  padding: var(--space);
+  background: white;
+  border: 1px solid var(--brand-200);
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.TagList ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: var(--space);
+}
+
+.TagList .Tag a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.CategoryList .Category .name {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  margin: 0 0 0.25rem;
+}
+
+.CategoryList .Category .name a {
+  text-decoration: none;
+  color: var(--brand-900);
+}
+
+.CategoryList .Category .slug,
+.TagList .Tag .slug {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.75rem;
+  color: var(--gray-600);
+  margin-right: 0.5rem;
+}
+
+.CategoryList .Category .parentId {
+  font-size: 0.75rem;
+  color: var(--gray-600);
+}
+
+.CategoryList .Category .description {
+  margin: 0.5rem 0 0;
+  font-size: 0.95rem;
+  color: var(--gray-900);
+}
+
+.TagList .Tag .name {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  margin-right: 0.5rem;
+}
+
+.ArticleList .Article .title {
+  font-size: 1.5rem;
+  margin: 0 0 0.5rem;
+}
+
+.ArticleList .Article .title a {
+  text-decoration: none;
+  color: var(--brand-900);
+}
+
+.ArticleList .Article .slug {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.75rem;
+  color: var(--gray-600);
+  margin-right: 0.5rem;
+}
+
 nav {
   border-top: 1px solid var(--brand-200);
   padding-top: var(--space);
