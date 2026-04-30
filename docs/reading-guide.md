@@ -1,9 +1,10 @@
 # Code Reading Guide
 
 This guide is for reading the repository as code, not for learning every API
-surface. Start from one canonical flow, then branch out.
+surface. Article GET is the first tour because it is small and touches the
+main layers; the later passes cover writes, collections, contexts, and fakes.
 
-## First Pass
+## Pass 1: Canonical Read Flow
 
 Read Article GET first. It touches the main architectural pieces without the
 extra write-path concerns.
@@ -20,7 +21,42 @@ extra write-path concerns.
 6. `tests/Fake/FakeSqlQuery.php` — fake dispatch rules; this explains the
    query contract more concretely than the interface alone.
 
-## What To Notice
+## Pass 2: Write Flow
+
+Read Article writes next. This shows how input validation, commands, and
+response reconstruction fit together.
+
+1. `src/Resource/App/Article.php::onPost()` and `onPut()` — Resource-level
+   input DTOs, status codes, and response body construction.
+2. `src/Input/ArticleCreateInput.php` and `ArticleUpdateInput.php` — boundary
+   normalization before the Resource calls command methods.
+3. `src/Query/ArticleCommandInterface.php` and
+   `src/Query/ArticleTagCommandInterface.php` — write contracts.
+4. `var/db/sql/article_add.sql`, `article_update.sql`, and
+   `article_tag_*.sql` — SQL-side effects and parameter names.
+5. `tests/Resource/App/ArticleTest.php` — create/update/delete behavior.
+
+## Pass 3: Resource Families
+
+After Article, read the smaller families to see the same conventions without
+the full Article surface:
+
+- `Author.php`, `Category.php`, and `Tag.php` for simple item resources.
+- `Articles.php`, `Categories.php`, and `Tags.php` for collection resources.
+- `Media.php` for upload-like data and filename-based lookup.
+- `Auth.php` for an action-style resource that is not CRUD-shaped.
+
+## Pass 4: Runtime Contexts
+
+Then read composition and test support:
+
+- `src/Module/AppModule.php`, `FakeModule.php`, and `TestModule.php` for
+  context-specific bindings.
+- `tests/Fake/FakeSqlQuery.php` for in-memory MediaQuery behavior.
+- `tests/Fake/FakeExtendedPdoProvider.php` for the raw-PDO variation tests.
+- `bin/demo.php` and `bin/demo-variations.php` for runnable examples.
+
+## What To Notice By Layer
 
 | Area | Files | Reading focus |
 |---|---|---|
@@ -31,14 +67,12 @@ extra write-path concerns.
 | Composition | `src/Module/*` | Context-specific wiring: production, fake, and test. |
 | Tests and fakes | `tests/*` | The executable contract. Fakes should preserve semantics, not merely return convenient data. |
 
-## Second Pass
+## Comparison Guides
 
-After the canonical Article flow, compare these variations:
+Use the focused comparison docs when reading tradeoffs:
 
-- `src/Resource/App/Articles.php` for collection filtering and pagination shape.
-- `src/Resource/App/Article.php::onPost()` and `onPut()` for input DTOs,
-  write commands, and re-select-after-write.
-- `src/Resource/App/Variations/README.md` for the Article GET comparison set.
+- `src/Resource/App/Variations/README.md` for the Article GET variation set.
+- `src/Resource/App/Variations/README.ja.md` for the Japanese version.
 - `docs/conventions.md` when you need the rule behind a naming or shape choice.
 
 ## Reading Rule
