@@ -191,8 +191,8 @@ final class SqlSmokeTest extends TestCase
             $ok = $stmt->execute($params);
             $this->assertTrue($ok, "Failed to execute {$sqlFile}");
             if ($stmt->columnCount() > 0) {
-                // Drain results so SQLite releases the statement before rollback.
-                $stmt->fetchAll(PDO::FETCH_ASSOC);
+                // Close SELECT cursors before rolling back the per-test transaction.
+                $stmt->closeCursor();
             }
         } finally {
             if ($this->pdo->inTransaction()) {
