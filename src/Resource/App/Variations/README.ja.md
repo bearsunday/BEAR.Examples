@@ -39,5 +39,5 @@ composer demo:variations
 2. `ArticleSqlQuery` で、Resource が複数 query を調停する場面を見ます。
 3. `ArticleRawPdo` で、MediaQuery を外した場合の差分を確認します。
 
-これらの Resource は ALPS profile には含めません。また、正規 API と並ぶ
-別系統の API surface に育てないでください。
+これらの Resource は ALPS profile には含めません。また、正規 API とは別の
+公開 API として増やさないでください。
