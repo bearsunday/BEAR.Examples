@@ -8,7 +8,8 @@ BEAR.Cms を ALPS → Fake → 実SQL の順に解像度を上げながら構築
 - プロジェクトディレクトリ: `/Users/akihito/git/BEAR.Cms`
 - VENDOR/PACKAGE: `MyVendor/Cms`
 - 開発DB: MySQL 8 (malt前提)、CI・試用は SQLite でも可
-- スコープ: App リソースのみ。Admin / HTML / Twig / JS なし
+- 初期スコープ: App リソースのみ。後続セッションで Qiq HTML と未認証の
+  Article 管理画面を追加。
 - 構築期間: 2026-04-25 (1セッション)
 
 ## フェーズ別作業

@@ -1,7 +1,8 @@
 # BEAR.Cms
 
 Reference CMS built on [BEAR.Sunday](https://bearsunday.github.io/).
-App-resource only (no admin UI, no frontend): pure HAL+JSON over Ray.MediaQuery.
+HAL+JSON App resources over Ray.MediaQuery, plus Qiq Page resources for
+reader-facing HTML and a minimal unauthenticated Article admin.
 
 Entities: Article, Category, Tag, Author, Media.
 Read + Write (GET/POST/PUT/DELETE) across every resource, plus an Auth
@@ -18,6 +19,7 @@ Semantic-driven, resolution-increasing pipeline:
 5. **Write path** — Command interfaces (`src/Query/*CommandInterface.php`) fronted by Resource `onPost/onPut/onDelete`.
 6. **Real DB** — Doctrine Migrations + seed script load the same fake data into a real backend, with matching SQL in `var/db/sql/`.
 7. **Hypermedia** — `#[Embed]` + `addQuery()` materialise `_embedded`; `#[JsonSchema]` validates response bodies.
+8. **Qiq HTML** — Page resources render public pages and the Article admin without JavaScript.
 
 See [docs/architecture.md](docs/architecture.md) for the full BDR layout.
 
@@ -70,7 +72,8 @@ source <(malt env)
 cp .env.dist .env       # edit DB_DSN / DB_USER / DB_PASSWORD
 vendor/bin/doctrine-migrations migrate --no-interaction
 php bin/seed.php
-composer serve          # http://127.0.0.1:8080
+composer serve          # HAL JSON API at http://127.0.0.1:8080
+composer serve:page     # Qiq HTML at http://127.0.0.1:8081/
 ```
 
 ### Real database via docker-compose (cross-platform)
@@ -91,16 +94,20 @@ rm -f /tmp/bear_cms.db
 DB_DSN="sqlite:/tmp/bear_cms.db" vendor/bin/doctrine-migrations migrate --no-interaction
 DB_DSN="sqlite:/tmp/bear_cms.db" php bin/seed.php
 DB_DSN="sqlite:/tmp/bear_cms.db" composer serve
+DB_DSN="sqlite:/tmp/bear_cms.db" composer serve:page
 ```
 
 ## Contexts
 
 | Context               | Purpose                                            | DB required |
 |-----------------------|----------------------------------------------------|-------------|
-| `hal-api-app`         | Production HTTP                                    | yes         |
-| `cli-hal-api-app`     | `composer app` / `bin/app.php`                     | yes         |
-| `fake-hal-api-app`    | Dev runtime against FakeSqlQuery                   | no          |
-| `test-hal-api-app`    | PHPUnit                                            | no          |
+| `hal-api-app`              | Production HAL JSON HTTP                      | yes         |
+| `html-hal-app`             | Production Qiq/Page HTML HTTP                  | yes         |
+| `cli-hal-api-app`          | `composer app` / `bin/app.php`                 | yes         |
+| `cli-html-hal-app`         | `composer page` / `bin/page.php`               | yes         |
+| `fake-hal-api-app`         | Dev runtime against FakeSqlQuery               | no          |
+| `test-hal-api-app`         | PHPUnit App resource tests                     | no          |
+| `html-test-hal-api-app`    | PHPUnit Page/Qiq tests                         | no          |
 
 `fake-` prepends [src/Module/FakeModule.php](src/Module/FakeModule.php),
 `test-` prepends [src/Module/TestModule.php](src/Module/TestModule.php).
@@ -119,6 +126,13 @@ See [docs/resources.md](docs/resources.md) for the full URI + schema map.
 | `app://self/media{?id}`                                            | GET, POST, DELETE      |
 | `app://self/auth`                                                  | GET, POST              |
 
+HTML Page resources are served by `composer serve:page` on
+`http://127.0.0.1:8081/`. Public pages include `/`, `/articlelist`, and
+`/article?id=1`. The current admin entry point is `/admin/articlelist`;
+create/edit/delete flows live under `/admin/article` and
+`/admin/articledelete`. This first admin version is intentionally
+unauthenticated for local development only.
+
 ## CLI
 
 `#[Cli]` attributes generate stand-alone CLI commands:
@@ -132,13 +146,14 @@ bin/cli/article-list -s published -n 5
 ## Useful composer scripts
 
 ```bash
-composer test       # PHPUnit (resource + entity + hypermedia + skipped integration)
+composer test       # PHPUnit suite (integration auto-skips without MySQL)
 composer fake       # regenerate var/fake/*.json
 composer schema     # regenerate var/json_schema/*.json from fake
 composer semantic   # fake then schema (the full semantic-ex pass)
 composer doc        # regenerate docs/index.html, docs/openapi.json, docs/llms.txt
 composer cli        # regenerate bin/cli/* from #[Cli] attributes
-composer serve      # PHP built-in server on :8080
+composer serve      # HAL JSON API server on :8080
+composer serve:page # Qiq/Page HTML server on :8081
 ```
 
 ## Tests
@@ -147,10 +162,9 @@ composer serve      # PHP built-in server on :8080
 vendor/bin/phpunit
 ```
 
-Runs `resource` + `entity` + `hypermedia` suites against FakeSqlQuery.
-The `integration` suite (`tests/Integration/`) skips automatically unless
-MySQL is reachable — bring it up with `docker compose up -d` (or malt) to
-include it.
+Runs Resource, Entity, Hypermedia, Smoke, and Integration suites. The
+`integration` suite (`tests/Integration/`) skips automatically unless MySQL
+is reachable — bring it up with `docker compose up -d` (or malt) to include it.
 
 ## Project journal
 

@@ -39,9 +39,15 @@ final readonly class CmsQiqRenderer implements RenderInterface
             $ro->headers['Content-Type'] = 'text/html; charset=utf-8';
         }
 
+        if ($ro->code >= 300 && $ro->code < 400 && array_key_exists('Location', $ro->headers)) {
+            $ro->view = '';
+
+            return '';
+        }
+
         $vars = is_array($ro->body) ? $ro->body : ['value' => $ro->body];
         $vars += $this->cssVars($ro);
-        if ($ro->code >= 400) {
+        if ($ro->code >= 500) {
             return $this->renderError($ro);
         }
 
@@ -53,6 +59,10 @@ final readonly class CmsQiqRenderer implements RenderInterface
 
             return $ro->view;
         } catch (Throwable) {
+            if ($ro->code >= 400) {
+                return $this->renderError($ro);
+            }
+
             $ro->code = 500;
 
             return $this->renderError($ro);

@@ -67,11 +67,14 @@ as-is. The additions:
 - `fake-hal-api-app` — runtime context that installs FakeModule. Lets the
   app run with no DB (e.g. for demos).
 - `test-hal-api-app` — TestModule composes FakeModule.
+- `html-hal-app` / `cli-html-hal-app` — Page resources rendered through Qiq.
+- `html-test-hal-api-app` — Page tests with TestModule + HtmlModule.
 
 ## What was intentionally *not* built
 
-- Admin UI / HTML / JS
-- Authentication / authorisation
+- Authentication / authorisation around the admin routes. The current
+  Article admin is intentionally unauthenticated for local development.
+- JavaScript-enhanced admin interactions.
 - Cache invalidation (`#[Cacheable]`, `#[Purge]`) — left as a hook-in
   point; not needed for a reference
 - `#[Pager]` / `PagesInterface` — deferred to avoid faking Pagerfanta's

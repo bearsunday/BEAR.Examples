@@ -37,6 +37,7 @@
     <li><a href="/authorlist" class="goAuthorList">Authors</a></li>
     <li><a href="/categorylist" class="goCategoryList">Categories</a></li>
     <li><a href="/taglist" class="goTagList">Tags</a></li>
+    <li><a href="/admin/articlelist" class="goAdminArticleList">Article administration</a></li>
     <li><a href="/mock/html/article.html">Static design mock (no PHP)</a></li>
   </ul>
 </nav>

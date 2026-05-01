@@ -67,11 +67,14 @@ BEAR.Sunday の `prod-hal-api-app` / `test-hal-api-app` 規約はそのまま使
 - `fake-hal-api-app` — FakeModule をインストールするランタイム context。
   DB なしでアプリを動かせます (デモ用途など)。
 - `test-hal-api-app` — TestModule が FakeModule を install します。
+- `html-hal-app` / `cli-html-hal-app` — Qiq で Page リソースを HTML レンダリングします。
+- `html-test-hal-api-app` — TestModule + HtmlModule の Page テスト用 context です。
 
 ## 意図的に *作らなかった* もの
 
-- 管理 UI / HTML / JS
-- 認証 / 認可
+- 管理ルートの認証 / 認可。現在の Article 管理画面はローカル開発向けに
+  意図的に未認証です。
+- JavaScript で拡張した管理操作
 - キャッシュ無効化 (`#[Cacheable]`、`#[Purge]`) — フックポイントとして残しているが、
   リファレンスとしては不要
 - `#[Pager]` / `PagesInterface` — Pagerfanta の PDO-backed Pages を fake する
