@@ -140,10 +140,26 @@ All work stays inside `bear/api-doc`; no schema or runtime changes elsewhere.
    exposing `lookup(string $id): ?AlpsRef` where `AlpsRef` carries
    `{id, kind, title, doc, def, rt, type}`.
 
-2. **Default the profile path** — `Config::$alps` is empty unless declared
-   in `apidoc.xml` (`Config.php:55,100-103`). Default to
+2. **Default the profile path, with explicit error policy** —
+   `Config::$alps` is empty unless declared in `apidoc.xml`
+   (`Config.php:55,100-103`). Default to
    `<projectDir>/var/alps/profile.json` when the file exists, so
    semantic-ex projects get cross-references without configuration.
+   Error policy is split by how the path arrived:
+   - **Auto-discovered (default path)** — fail-open. File absent →
+     silent skip (current behaviour). File exists but unreadable or
+     malformed JSON → log one warning to STDERR including path and
+     parser message, leave `Config::$alps` empty, continue
+     doc-generation. A broken default profile must never break the
+     build.
+   - **Explicitly configured** (`<alps>` element in `apidoc.xml`) —
+     fail-fast. Missing file keeps the current
+     `AlpsFileNotFoundException`; unreadable / malformed JSON throws a
+     new `AlpsProfileParseException` carrying path + parser message.
+     The user opted in, so a silent fallback would hide the bug.
+
+   `ApiDoc::registerAlpsProfile()` (`ApiDoc.php:194-211`) is the single
+   point where both branches converge, so the catch/log goes there.
 
 3. **Auto-resolve `#[Link]` / `#[Embed]` rels** — extend
    `DocMethod::getLinks()` / `getEmbeds()` (`DocMethod.php:184-232`) to
@@ -160,9 +176,29 @@ All work stays inside `bear/api-doc`; no schema or runtime changes elsewhere.
 5. **Method-level fallback for `#[Alps]`** —
    `DocMethod::getAlpsSection()` (`DocMethod.php:255-272`) only fires on
    explicit `#[Alps(id:)]`. When that attribute is absent, derive the id
-   from the matching transition rel (one `#[Link]` whose rel exists in
-   the index) so the existing ALPS section renders for free; keep the
-   explicit attribute as an override.
+   via this fixed precedence (first match wins, lower matches still
+   render in their own Embeds/Links table but do **not** populate the
+   method-level ALPS section):
+
+   1. Explicit `#[Alps(id:)]` — always wins (current behaviour
+      preserved). Multiple `#[Alps]` attributes on one method keep
+      today's "comma-joined ids" rendering.
+   2. First `#[Link]` (in source declaration order, as returned by
+      `ReflectionMethod::getAttributes()`) whose rel resolves in the
+      `AlpsIndex`. Choreography is the canonical method-level mapping
+      (e.g. `goArticle` for `Article::onGet`, `doCreateArticle` for
+      `onPost`).
+   3. First `#[Embed]` (declaration order) whose rel resolves in the
+      index. Used only when the method declares no resolvable `#[Link]`
+      — uncommon, but covers methods that compose state without
+      announcing a transition.
+   4. No match → no ALPS section emitted (current behaviour when
+      `#[Alps]` is absent).
+
+   The same resolved id flows to `OpenApiGenerator::operationId`
+   (`OpenApiGenerator.php:147-151`) and to the `externalDocs` anchor,
+   so Markdown / HTML / OpenAPI all agree on which descriptor "owns"
+   the method.
 
 6. **OpenAPI surface** — in `OpenApiGenerator.php`:
    - emit `x-alps` on each operation (`{descriptor, type, rt}`) using the
@@ -192,6 +228,26 @@ All work stays inside `bear/api-doc`; no schema or runtime changes elsewhere.
   - `def` URI appears in the property description;
   - `#[Alps]` override still wins when both rel-resolution and explicit
     attribute exist.
+- **Rel-resolution precedence** — dedicated tests for the order in step 5:
+  - method with only `#[Alps]` → uses the explicit id;
+  - method with `#[Alps]` + resolvable `#[Link]` → `#[Alps]` wins;
+  - method with multiple resolvable `#[Link]`s → first declared wins,
+    others stay in the Links table only;
+  - method with only resolvable `#[Embed]` (no Link) → Embed id is used;
+  - method with both resolvable `#[Link]` and `#[Embed]` → Link wins;
+  - method with no resolvable rels and no `#[Alps]` → no ALPS section
+    (parity with today).
+- **Profile-load error policy** — auto-discovered path:
+  - file absent → silent skip, output identical to no-profile path;
+  - file present but malformed JSON → one STDERR warning containing
+    path + parser message, generation completes, output identical to
+    no-profile path.
+
+  Explicitly configured path:
+  - missing file → `AlpsFileNotFoundException` (regression guard for
+    today's behaviour);
+  - malformed JSON → new `AlpsProfileParseException` with path +
+    parser message.
 - **OpenApiGenerator** — assert `x-alps` and `externalDocs` present on
   operations and property schemas; assert generated YAML still validates
   against the OpenAPI 3.1 schema.
