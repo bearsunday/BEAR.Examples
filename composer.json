@@ -137,7 +137,7 @@
         "security": "Run security scan",
         "metrics": "Build metrics report",
         "clean": "Clear cache files",
-        "serve": "Start built-in server (HAL API at http://127.0.0.1:8080)",
+        "serve": "Start built-in server (HTML at http://127.0.0.1:8080)",
         "serve:page": "Start built-in server for Page context (HTML at http://127.0.0.1:8081)",
         "app": "Request app resource",
         "page": "Request page resource",
