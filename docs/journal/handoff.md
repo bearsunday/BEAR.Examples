@@ -26,11 +26,11 @@ composer install
 composer fake               # regenerate var/fake/*.json (deterministic, mt_srand(42))
 composer schema             # regenerate var/json_schema/*.json from the fake
 composer test               # full PHPUnit suite; integration auto-skips
-                            # if MySQL is unreachable
-composer serve              # HAL JSON API at http://127.0.0.1:8080
-composer serve:page         # Qiq HTML at http://127.0.0.1:8081/
+                            # when MySQL is unreachable
 composer demo               # 7-section walkthrough that exercises everything
                             # (auto-detects malt → docker → sqlite for the real-DB section)
+composer serve              # Qiq/Page HTML at http://127.0.0.1:8081
+composer serve:api          # HAL JSON API at http://127.0.0.1:8080
 ```
 
 Real DB setup: `composer malt:up` (macOS), `composer docker:up`
@@ -75,14 +75,14 @@ defeats the reference value.
   `conventions.md` §4 "Pitfall: typed-array DTO fields and the
   validation order" and `src/Input/ArticleCreateInput.php` for the
   canonical pattern.
-- Four contexts:
+- App contexts:
   - `hal-api-app` — production HTTP
   - `html-hal-app` — Qiq/Page HTML HTTP
   - `cli-hal-api-app` — `bin/app.php`, `composer app`
   - `cli-html-hal-app` — `bin/page.php`, `composer page`
   - `fake-hal-api-app` — dev runtime against `tests/Fake/FakeSqlQuery.php`
   - `test-hal-api-app` — PHPUnit (unit suites)
-  - `html-test-hal-api-app` — PHPUnit Page/Qiq suites
+  - `html-test-hal-api-app` — PHPUnit Page/Qiq suites against FakeSqlQuery
 - `composer demo` is the entry point for verifying any change end-to-end.
 
 ---

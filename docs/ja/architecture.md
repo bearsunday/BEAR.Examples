@@ -19,7 +19,9 @@ FakeSqlQuery (in-memory) — full Read+Write stack runs without a DB
    ↓
 Doctrine Migrations + seed — real schema + same seed data
    ↓
-SQL files — production backend; Fake and real produce the same body shape
+SQL files — production backend; Fake and real produce the same App body shape
+   ↓
+Page resources + Qiq templates — 同じ query に対する read-only HTML projection
 ```
 
 各ステップは単独でテスト可能です。テストは Fake (高速・hermetic) でも
@@ -32,9 +34,10 @@ real (DB) でも実行でき、どちらも同じ Resource コードを動かし
 | Layer     | Directory            | Role                                               |
 |-----------|----------------------|----------------------------------------------------|
 | Bound     | `src/Resource/App/*` | HTTP method binding、Link/Embed、validation gates  |
+|           | `src/Resource/Page/*` | Read-only Qiq/Page HTML projection                 |
 | Domain    | `src/Entity/*`       | Final readonly classes: 不変データ                  |
 | Resource  | `src/Query/*`        | `#[DbQuery]` Read interfaces → entity              |
-|           | `src/Command/*`      | `#[DbQuery]` Write interfaces → `void`             |
+|           | `src/Query/*`        | `#[DbQuery]` Write interfaces → `void`             |
 
 ここでは Factory を使いません。最もシンプルなパスは `FetchNewInstance` 経由の
 PDO::FETCH_FUNC で、SELECT のカラム順から entity を positional に構築します。
@@ -67,8 +70,9 @@ BEAR.Sunday の `prod-hal-api-app` / `test-hal-api-app` 規約はそのまま使
 - `fake-hal-api-app` — FakeModule をインストールするランタイム context。
   DB なしでアプリを動かせます (デモ用途など)。
 - `test-hal-api-app` — TestModule が FakeModule を install します。
-- `html-hal-app` / `cli-html-hal-app` — Qiq で Page リソースを HTML レンダリングします。
-- `html-test-hal-api-app` — TestModule + HtmlModule の Page テスト用 context です。
+- `html-hal-app` / `cli-html-hal-app` — real DB を使う Qiq/Page HTML context。
+- `html-test-hal-api-app` — PHPUnit の Page context。TestModule と HtmlModule を
+  合成し、FakeSqlQuery に対して HTML を render します。
 
 ## 意図的に *作らなかった* もの
 

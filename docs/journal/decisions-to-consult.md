@@ -75,7 +75,7 @@ reference として完成度を主張するなら、これらは「あえて省�
 
 | # | 項目 | 状況 | 判断 |
 |---|------|------|------|
-| 24 | JSON Schema による Input validation | schema は `var/schema/` にある、使っていない | 見送り |
+| 24 | JSON Schema による Input validation | schema は `var/json_schema/` にある、使っていない | 見送り |
 | 25 | `Articles` レスポンスの `totalCount` | schema に定義済み、実装で欠落 | 必要な時だけ入れる、普段話 |
 | 26 | `ArticleTag` の onPost 同期 | Read で `_embedded.tags` を返すが、Create/Update でタグ指定不可 | 実装 |
 | 27 | `#[Cacheable]` / `#[Refresh]` / `#[Purge]` | 配線していない | あったほうがいい TTLのcacheableじゃなくてイベントで消去するCachableResponseの方 |
@@ -91,7 +91,7 @@ reference として完成度を主張するなら、これらは「あえて省�
 |---|------|------|------|
 | 31 | semantic-ex 生成スクリプト | `bin/semantic-ex/*.py` | そもそもphpに |
 | 32 | Fake JSON 命名 | `var/fake/data-50.{entity}.json` | `50` 数値を外す data-50冗長 |
-| 33 | `var/schema/*.json` の場所 | 直下 | OK |
+| 33 | `var/json_schema/*.json` の場所 | 直下 | OK |
 | 34 | SQL / Migration 配置 | `var/db/sql/`, `var/db/migrations/` | OK |
 | 35 | reflection 系 docs | `docs/` 直下に build-log / verified / wishes / critique / skill 等が並列 | サブディレクトリで整理 |
 
