@@ -8,7 +8,7 @@
 
 ## Project Shape
 
-- This is a BEAR.Sunday reference CMS: App-resource only, HAL+JSON API, no admin UI and no JavaScript frontend.
+- This is a BEAR.Sunday reference CMS: HAL+JSON App resource API plus read-only Qiq/Page HTML. Admin write UI and JavaScript frontend are not built yet.
 - Canonical implementation rules live in `docs/conventions.md`; read it before changing resource, query, SQL, schema, or fake-data behavior.
 - Useful orientation docs:
   - `README.md` for setup and the reading order.

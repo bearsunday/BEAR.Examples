@@ -8,10 +8,11 @@ the project up. It is intentionally short — pointers, not narrative.
 ## What BEAR.Cms is
 
 A reference implementation of a CMS built on **BEAR.Sunday + ALPS +
-semantic-ex + Ray.MediaQuery + BDR pattern**. App-resource only (no
-admin UI, no frontend), pure HAL+JSON. Designed so that an AI (or human)
-reading the codebase can learn the canonical naming, structure, and
-flow.
+semantic-ex + Ray.MediaQuery + BDR pattern**. The primary surface is a
+HAL+JSON App resource API, with a read-only Qiq/Page HTML projection for
+browser inspection. Authenticated/admin write UI is not built yet.
+Designed so that an AI (or human) reading the codebase can learn the
+canonical naming, structure, and flow.
 
 Five entities: Article, Category, Tag, Author, Media. Read + Write
 across each, plus an Auth resource (Google OAuth via league/oauth2-google,
@@ -25,10 +26,12 @@ swappable to FakeAuthProvider in tests).
 composer install
 composer fake               # regenerate var/fake/*.json (deterministic, mt_srand(42))
 composer schema             # regenerate var/json_schema/*.json from the fake
-composer test               # 32 unit + 11 integration (integration auto-skips
-                            # if MySQL is unreachable)
+composer test               # default PHPUnit suites; integration auto-skips
+                            # when MySQL is unreachable
 composer demo               # 7-section walkthrough that exercises everything
                             # (auto-detects malt → docker → sqlite for the real-DB section)
+composer serve:api          # HAL JSON API at http://127.0.0.1:8080
+composer serve:html         # Qiq/Page HTML at http://127.0.0.1:8081
 ```
 
 Real DB setup: `composer malt:up` (macOS), `composer docker:up`
@@ -73,11 +76,15 @@ defeats the reference value.
   `conventions.md` §4 "Pitfall: typed-array DTO fields and the
   validation order" and `src/Input/ArticleCreateInput.php` for the
   canonical pattern.
-- Four contexts:
+- App contexts:
   - `hal-api-app` — production HTTP
   - `cli-hal-api-app` — `bin/app.php`, `composer app`
   - `fake-hal-api-app` — dev runtime against `tests/Fake/FakeSqlQuery.php`
   - `test-hal-api-app` — PHPUnit (unit suites)
+- HTML contexts:
+  - `html-hal-app` — production Page/Qiq HTTP
+  - `cli-html-hal-app` — `bin/page.php`, `composer page`
+  - `html-test-hal-api-app` — PHPUnit Page tests against FakeSqlQuery
 - `composer demo` is the entry point for verifying any change end-to-end.
 
 ---

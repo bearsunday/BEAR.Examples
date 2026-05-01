@@ -1,7 +1,8 @@
 # BEAR.Cms
 
 Reference CMS built on [BEAR.Sunday](https://bearsunday.github.io/).
-App-resource only (no admin UI, no frontend): pure HAL+JSON over Ray.MediaQuery.
+Primary surface: HAL+JSON App resource API over Ray.MediaQuery, with
+read-only Qiq/Page HTML for browser inspection. Admin write UI is not built yet.
 
 Entities: Article, Category, Tag, Author, Media.
 Read + Write (GET/POST/PUT/DELETE) across every resource, plus an Auth
@@ -127,7 +128,7 @@ See [docs/resources.md](docs/resources.md) for the full URI + schema map.
 | URI                                                                | Methods                |
 |--------------------------------------------------------------------|------------------------|
 | `app://self/article{?id}`                                          | GET, POST, PUT, DELETE |
-| `app://self/articles{?page,perPage,categoryId,tagId,status}`       | GET                    |
+| `app://self/articles{?page,perPage,categoryId,tagId,authorId,status}` | GET                  |
 | `app://self/category{?id}`, `app://self/categories`                | GET[+POST/PUT/DELETE]  |
 | `app://self/tag{?id}`, `app://self/tags`                           | GET[+POST/DELETE]      |
 | `app://self/author{?id}`                                           | GET, POST, PUT         |

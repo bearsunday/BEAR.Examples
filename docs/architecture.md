@@ -19,7 +19,9 @@ FakeSqlQuery (in-memory) — full Read+Write stack runs without a DB
    ↓
 Doctrine Migrations + seed — real schema + same seed data
    ↓
-SQL files — production backend; Fake and real produce the same body shape
+SQL files — production backend; Fake and real produce the same App body shape
+   ↓
+Page resources + Qiq templates — read-only HTML projection over the same queries
 ```
 
 Each step is testable in isolation. Tests can run on Fake (fast, hermetic)
@@ -32,9 +34,10 @@ See [BDR_PATTERN-ja.md](https://github.com/ray-di/Ray.MediaQuery/blob/1.x/BDR_PA
 | Layer     | Directory            | Role                                               |
 |-----------|----------------------|----------------------------------------------------|
 | Bound     | `src/Resource/App/*` | HTTP method binding, Link/Embed, validation gates  |
+|           | `src/Resource/Page/*` | Read-only Qiq/Page HTML projection                |
 | Domain    | `src/Entity/*`       | Final readonly classes: invariant data             |
 | Resource  | `src/Query/*`        | `#[DbQuery]` Read interfaces → entity              |
-|           | `src/Command/*`      | `#[DbQuery]` Write interfaces → `void`             |
+|           | `src/Query/*`        | `#[DbQuery]` Write interfaces → `void`             |
 
 Factories are not used here: the simplest path is `FetchNewInstance` via
 PDO::FETCH_FUNC, which constructs the entity positionally from the SELECT
@@ -67,10 +70,15 @@ as-is. The additions:
 - `fake-hal-api-app` — runtime context that installs FakeModule. Lets the
   app run with no DB (e.g. for demos).
 - `test-hal-api-app` — TestModule composes FakeModule.
+- `html-hal-app` / `cli-html-hal-app` — real-DB Qiq/Page HTML contexts.
+- `html-test-hal-api-app` — PHPUnit Page context; composes TestModule and
+  HtmlModule so HTML tests render against FakeSqlQuery.
 
 ## What was intentionally *not* built
 
-- Admin UI / HTML / JS
+- Admin UI / JavaScript frontend. A read-only Qiq/Page HTML surface exists
+  under `src/Resource/Page/*` and `templates/Page/*`; write-side
+  administration is still deferred.
 - Authentication / authorisation
 - Cache invalidation (`#[Cacheable]`, `#[Purge]`) — left as a hook-in
   point; not needed for a reference
