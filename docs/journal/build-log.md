@@ -8,7 +8,8 @@ BEAR.Cms を ALPS → Fake → 実SQL の順に解像度を上げながら構築
 - プロジェクトディレクトリ: `/Users/akihito/git/BEAR.Cms`
 - VENDOR/PACKAGE: `MyVendor/Cms`
 - 開発DB: MySQL 8 (malt前提)、CI・試用は SQLite でも可
-- スコープ: App リソースのみ。Admin / HTML / Twig / JS なし
+- 当初スコープ: App リソースのみ。Admin / HTML / Twig / JS なし
+  (後続で read-only Qiq/Page HTML projection を追加)
 - 構築期間: 2026-04-25 (1セッション)
 
 ## フェーズ別作業
@@ -51,7 +52,7 @@ BEAR.Cms を ALPS → Fake → 実SQL の順に解像度を上げながら構築
 - Phase 3 (Constraints): 観察値から maxLength 等を導出 → JSON Schema
 
 250件 (5エンティティ×50) の Fake を手書きは現実的でないため、
-`bin/semantic-ex/gen-fake.py` を書いて `random.seed(42)` で再現可能に。
+`bin/semantic-ex/gen-fake.php` を書いて `mt_srand(42)` で再現可能に。
 参照整合性を保証: article.authorId / categoryId は必ず存在するID。
 
 **躓き 1:** `publishedAt` を `"2026-01-01 10:07:00"` 形式で生成したが JSON Schema
@@ -156,8 +157,8 @@ NULL の扱い (SQLiteは null、Fakeは `""` の場合あり) のみ。想定�
 採用理由: ポータブル (全DB対応)、Fake化簡単、Command interface を `void` 戻り型の
 ままキープできる。slug/email/filename は UNIQUE 制約で保護済み。
 
-- `src/Command/*` — `#[DbQuery]` Write interface ×5
-- `src/Query/*` に `getBySlug` / `getByEmail` / `getByFilename` を追加
+- `src/Query/*CommandInterface.php` — `#[DbQuery]` Write interface ×5
+- `src/Query/*QueryInterface.php` に `bySlug` / `byEmail` / `byFilename` を追加
 - 各 Resource に `onPost` / `onPut` / `onDelete` を追加
 - `var/db/sql/` に create/update/delete と getBy* のSQLを追加
 
@@ -211,7 +212,7 @@ ArticleTest は POST→GET→PUT→GET→DELETE→GET の完全ラウンドト�
    入れるのは Entity に依存注入が必要になったタイミング。
 5. **新ID 取得は `getBy{naturalKey}`** — driver依存の lastInsertId を回避。
 6. **ALPS → Fake → 実SQL のパイプラインを bin/semantic-ex/ に保存** — 再生成
-   可能、`random.seed(42)` で決定的。
+   可能、`mt_srand(42)` で決定的。
 
 ## ハマったポイント (次回のため)
 
@@ -280,7 +281,7 @@ ead13ff Phase 2: Add ALPS profile for CMS (Read + Write transitions)
 
 ### あまりエレガントでなかった所
 
-- **`onPost` で `getBySlug` を後追い fetch する設計。** 動作は portable で
+- **`onPost` で `bySlug` を後追い fetch する設計。** 動作は portable で
   Fake にも優しいが、INSERT 直後の SELECT は本当は Repository パターンで
   隠したい操作。今は Resource 層に「INSERT して再取得する」という手続きが
   そのまま見えている。BEAR ぽくない。次に手を入れるなら `ArticleService`

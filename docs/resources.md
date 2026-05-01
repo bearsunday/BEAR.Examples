@@ -2,8 +2,10 @@
 
 [日本語](ja/resources.md)
 
-All resources return HAL+JSON. Shapes below use the entity JSON Schema
-under [../var/schema/](../var/schema) as the source of truth.
+All App resources return HAL+JSON. Shapes below use the entity JSON Schema
+under [../var/json_schema/](../var/json_schema) as the source of truth.
+Page resources under `page://self/*` render Qiq HTML and are intentionally
+separate from this App resource map.
 
 ## `app://self/`
 
@@ -27,7 +29,10 @@ Entry point. Links to the main collections.
   "_embedded": {
     "author": { "id": 1, "name": "…", "email": "…", "bio": "…" },
     "category": { "id": 1, "slug": "technology", "name": "…", … },
-    "tags": [ { "id": 4, "slug": "media-query", "name": "MediaQuery" } ]
+    "tagList": {
+      "items": [ { "id": 4, "slug": "media-query", "name": "MediaQuery" } ],
+      "count": 1
+    }
   }
 }
 ```
@@ -46,7 +51,8 @@ Body:
   "categoryId": 1,
   "status": "draft|published",
   "excerpt": "string|null",
-  "publishedAt": "RFC3339 string|null"
+  "publishedAt": "RFC3339 string|null",
+  "tagIds": [1, 2]
 }
 ```
 
@@ -64,7 +70,7 @@ set with the given ids). `200` / `404`.
 ## `app://self/articles`
 
 GET. Query params: `page`, `perPage` (clamped 1..100, default 20),
-`categoryId`, `tagId`, `status`. Response:
+`categoryId`, `tagId`, `authorId`, `status`. Response:
 ```json
 {"items": [...article summaries...], "page": 1, "perPage": 20, "count": 20}
 ```
@@ -97,11 +103,12 @@ Each Resource declares `#[Link]` attributes with URI templates (RFC 6570).
 Example from `Article::onGet`:
 
 ```php
-#[Link(rel: 'articles', href: 'app://self/articles')]
-#[Link(rel: 'author', href: 'app://self/author{?id}')]
-#[Link(rel: 'category', href: 'app://self/category{?id}')]
+#[Link(rel: 'goArticleList', href: 'app://self/articles')]
+#[Link(rel: 'goAuthor', href: 'app://self/author{?id}')]
+#[Link(rel: 'goCategory', href: 'app://self/category{?id}')]
 ```
 
 Renderers for `hal-api-app` expand these into `_links` on the response.
-Embedded resources (`_embedded.author` etc.) are populated manually inside
-`onGet` because the IDs aren't known until the article row is fetched.
+Embedded resources (`_embedded.author`, `_embedded.category`,
+`_embedded.tagList`, etc.) are populated manually inside `onGet` because
+the IDs aren't known until the article row is fetched.

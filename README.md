@@ -1,7 +1,8 @@
 # BEAR.Cms
 
 Reference CMS built on [BEAR.Sunday](https://bearsunday.github.io/).
-App-resource only (no admin UI, no frontend): pure HAL+JSON over Ray.MediaQuery.
+Primary surface: HAL+JSON App resource API over Ray.MediaQuery, with
+read-only Qiq/Page HTML for browser inspection. Admin write UI is not built yet.
 
 Entities: Article, Category, Tag, Author, Media.
 Read + Write (GET/POST/PUT/DELETE) across every resource, plus an Auth
@@ -70,7 +71,8 @@ source <(malt env)
 cp .env.dist .env       # edit DB_DSN / DB_USER / DB_PASSWORD
 vendor/bin/doctrine-migrations migrate --no-interaction
 php bin/seed.php
-composer serve          # http://127.0.0.1:8080
+composer serve:api      # HAL JSON API at http://127.0.0.1:8080
+composer serve          # Qiq/Page HTML at http://127.0.0.1:8081
 ```
 
 ### Real database via docker-compose (cross-platform)
@@ -90,8 +92,30 @@ DB_DSN='mysql:host=127.0.0.1;dbname=bear_cms;charset=utf8mb4' DB_USER=root DB_PA
 rm -f /tmp/bear_cms.db
 DB_DSN="sqlite:/tmp/bear_cms.db" vendor/bin/doctrine-migrations migrate --no-interaction
 DB_DSN="sqlite:/tmp/bear_cms.db" php bin/seed.php
-DB_DSN="sqlite:/tmp/bear_cms.db" composer serve
+DB_DSN="sqlite:/tmp/bear_cms.db" composer serve         # Qiq/Page HTML on :8081
+# or to expose the HAL JSON API on :8080:
+# DB_DSN="sqlite:/tmp/bear_cms.db" composer serve:api
 ```
+
+### Built-in servers
+
+Two explicit scripts, one per surface. Each is blocking, so run them in
+separate terminals:
+
+```bash
+# terminal 1
+composer serve           # Qiq/Page HTML at http://127.0.0.1:8081
+
+# terminal 2
+composer serve:api       # HAL JSON API at http://127.0.0.1:8080
+```
+
+HTML pages are available at `http://127.0.0.1:8081/`,
+`http://127.0.0.1:8081/articlelist`, and the other Page routes (see
+[docs/resources.md](docs/resources.md)). The HAL JSON API is what
+`bin/cli/*` and `composer demo` exercise via `bin/app.php`; use
+`serve:api` when you want to hit it from curl/HTTPie or run the OAuth
+callback (which is wired to port 8080 in `.env.dist`).
 
 ## Contexts
 
@@ -112,7 +136,7 @@ See [docs/resources.md](docs/resources.md) for the full URI + schema map.
 | URI                                                                | Methods                |
 |--------------------------------------------------------------------|------------------------|
 | `app://self/article{?id}`                                          | GET, POST, PUT, DELETE |
-| `app://self/articles{?page,perPage,categoryId,tagId,status}`       | GET                    |
+| `app://self/articles{?page,perPage,categoryId,tagId,authorId,status}` | GET                  |
 | `app://self/category{?id}`, `app://self/categories`                | GET[+POST/PUT/DELETE]  |
 | `app://self/tag{?id}`, `app://self/tags`                           | GET[+POST/DELETE]      |
 | `app://self/author{?id}`                                           | GET, POST, PUT         |
@@ -138,7 +162,8 @@ composer schema     # regenerate var/json_schema/*.json from fake
 composer semantic   # fake then schema (the full semantic-ex pass)
 composer doc        # regenerate docs/index.html, docs/openapi.json, docs/llms.txt
 composer cli        # regenerate bin/cli/* from #[Cli] attributes
-composer serve      # PHP built-in server on :8080
+composer serve      # Qiq/Page HTML server on :8081
+composer serve:api  # HAL JSON API server on :8080
 ```
 
 ## Tests

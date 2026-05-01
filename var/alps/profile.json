@@ -3,7 +3,7 @@
   "alps": {
     "title": "BEAR.Cms Reference CMS",
     "doc": {
-      "value": "ALPS profile for a BEAR.Sunday reference CMS. App-resource only (no admin/UI). Covers articles, categories, tags, authors and media with read and write transitions."
+      "value": "ALPS profile for the BEAR.Cms App resource API. Covers articles, categories, tags, authors and media with read and write transitions."
     },
     "descriptor": [
       {"id": "id", "title": "Identifier", "def": "https://schema.org/identifier"},
