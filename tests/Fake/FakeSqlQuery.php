@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace MyVendor\Cms\Fake;
 
 use MyVendor\Cms\Entity\Article;
+use MyVendor\Cms\Entity\ArticleStatus;
 use MyVendor\Cms\Entity\Author;
 use MyVendor\Cms\Entity\Category;
 use MyVendor\Cms\Entity\Media;
@@ -77,8 +78,9 @@ final class FakeSqlQuery implements SqlQueryInterface
     /** @var array<string, int> */
     private array $nextId;
 
-    public function __construct(string|null $fakeDir = null)
-    {
+    public function __construct(
+        string|null $fakeDir = null,
+    ) {
         $fakeDir ??= dirname(__DIR__, 2) . '/var/fake';
         $this->tables = [
             'article' => $this->load($fakeDir . '/article.json'),
@@ -172,6 +174,7 @@ final class FakeSqlQuery implements SqlQueryInterface
             'category_list' => array_map(fn ($r) => $this->toCategory($r), $this->tables['category']),
             'tag_list' => array_map(fn ($r) => $this->toTag($r), $this->tables['tag']),
             'tag_list_by_article' => $this->listTagsByArticle((int) $values['articleId']),
+            'author_list' => array_map(fn ($r) => $this->toAuthor($r), $this->tables['author']),
             default => throw new LogicException("FakeSqlQuery: unknown row_list sqlId '{$sqlId}'"),
         };
     }
@@ -404,7 +407,7 @@ final class FakeSqlQuery implements SqlQueryInterface
     {
         $best = null;
         foreach ($this->tables['article'] as $r) {
-            if ((string) $r['status'] !== Article::STATUS_PUBLISHED || empty($r['publishedAt'])) {
+            if ((string) $r['status'] !== ArticleStatus::Published->value || empty($r['publishedAt'])) {
                 continue;
             }
 
@@ -432,7 +435,7 @@ final class FakeSqlQuery implements SqlQueryInterface
     {
         $best = null;
         foreach ($this->tables['article'] as $r) {
-            if ((string) $r['status'] !== Article::STATUS_PUBLISHED || empty($r['publishedAt'])) {
+            if ((string) $r['status'] !== ArticleStatus::Published->value || empty($r['publishedAt'])) {
                 continue;
             }
 
@@ -556,6 +559,11 @@ final class FakeSqlQuery implements SqlQueryInterface
             $rows = array_filter($rows, static fn ($r) => (int) $r['categoryId'] === $cat);
         }
 
+        if (isset($values['authorId'])) {
+            $au = (int) $values['authorId'];
+            $rows = array_filter($rows, static fn ($r) => (int) $r['authorId'] === $au);
+        }
+
         if (isset($values['status'])) {
             $s = (string) $values['status'];
             $rows = array_filter($rows, static fn ($r) => (string) $r['status'] === $s);
@@ -619,7 +627,7 @@ final class FakeSqlQuery implements SqlQueryInterface
             title: (string) $r['title'],
             body: (string) $r['body'],
             excerpt: isset($r['excerpt']) ? (string) $r['excerpt'] : null,
-            status: (string) $r['status'],
+            status: ArticleStatus::from((string) $r['status']),
             publishedAt: $r['publishedAt'] ?? null,
             authorId: (int) $r['authorId'],
             categoryId: (int) $r['categoryId'],

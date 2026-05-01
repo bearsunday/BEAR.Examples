@@ -57,7 +57,7 @@ class Article extends ResourceObject
             'title' => $article->title,
             'body' => $article->body,
             'excerpt' => $article->excerpt,
-            'status' => $article->status,
+            'status' => $article->status->value,
             'publishedAt' => $article->publishedAt,
             'authorId' => $article->authorId,
             'categoryId' => $article->categoryId,

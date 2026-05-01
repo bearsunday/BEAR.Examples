@@ -1,0 +1,15 @@
+/* level1.css — Bare readability */
+body {
+  max-width: 64rem;
+  margin: 0 auto;
+  padding: 2rem;
+  font-family: system-ui, sans-serif;
+  line-height: 1.6;
+  color: #333;
+}
+a { color: #0366d6; }
+img { max-width: 100%; }
+table { border-collapse: collapse; width: 100%; }
+th, td { padding: 0.5rem; border-bottom: 1px solid #ddd; text-align: left; }
+button, [type="submit"] { padding: 0.5rem 1rem; cursor: pointer; }
+input, textarea, select { padding: 0.25rem 0.5rem; }
