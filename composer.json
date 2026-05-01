@@ -29,6 +29,7 @@
         "doctrine/dbal": "^4.4",
         "doctrine/migrations": "^3.9",
         "justinrainbow/json-schema": "^6.8",
+        "koriym/app-state-diagram": "^0.11",
         "phpunit/phpunit": "^10.0",
         "roave/security-advisories": "dev-latest"
     },
@@ -49,7 +50,10 @@
         ],
         "setup": "php bin/setup.php",
         "compile": "./vendor/bin/bear.compile 'MyVendor\\Cms' prod-app ./",
-        "doc": "./vendor/bin/apidoc",
+        "doc": [
+            "./vendor/bin/apidoc",
+            "asd -e var/alps/profile.json > docs/alps.html"
+        ],
         "fake": "php bin/semantic-ex/gen-fake.php",
         "schema": "php bin/semantic-ex/gen-schemas.php",
         "semantic": ["@fake", "@schema"],

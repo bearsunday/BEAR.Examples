@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace MyVendor\Cms\Resource\App;
 
+use BEAR\ApiDoc\Annotation\Alps;
 use BEAR\Resource\Annotation\JsonSchema;
 use BEAR\Resource\Annotation\Link;
 use BEAR\Resource\Code;
@@ -13,6 +14,7 @@ use MyVendor\Cms\Query\CategoryQueryInterface;
 
 use function assert;
 
+#[Alps('Category')]
 class Category extends ResourceObject
 {
     public function __construct(
@@ -21,6 +23,7 @@ class Category extends ResourceObject
     ) {
     }
 
+    #[Alps('goCategory')]
     #[Link(rel: 'goCategoryList', href: 'app://self/categories')]
     #[Link(rel: 'goArticleList', href: 'app://self/articles{?categoryId}')]
     #[JsonSchema('category.json')]
@@ -45,6 +48,7 @@ class Category extends ResourceObject
         return $this;
     }
 
+    #[Alps('doCreateCategory')]
     #[JsonSchema(schema: 'write_response.json', params: 'category_create.json')]
     public function onPost(
         string $slug,
@@ -63,6 +67,7 @@ class Category extends ResourceObject
         return $this;
     }
 
+    #[Alps('doUpdateCategory')]
     #[JsonSchema(schema: 'write_response.json', params: 'category_update.json')]
     public function onPut(
         int $id,
@@ -84,6 +89,7 @@ class Category extends ResourceObject
         return $this;
     }
 
+    #[Alps('doDeleteCategory')]
     public function onDelete(int $id): static
     {
         if ($this->category->item($id) === null) {

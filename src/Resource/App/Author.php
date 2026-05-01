@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace MyVendor\Cms\Resource\App;
 
+use BEAR\ApiDoc\Annotation\Alps;
 use BEAR\Resource\Annotation\JsonSchema;
 use BEAR\Resource\Annotation\Link;
 use BEAR\Resource\Code;
@@ -13,6 +14,7 @@ use MyVendor\Cms\Query\AuthorQueryInterface;
 
 use function assert;
 
+#[Alps('Author')]
 class Author extends ResourceObject
 {
     public function __construct(
@@ -21,6 +23,7 @@ class Author extends ResourceObject
     ) {
     }
 
+    #[Alps('goAuthor')]
     #[Link(rel: 'goArticleList', href: 'app://self/articles')]
     #[JsonSchema('author.json')]
     public function onGet(int $id): static
@@ -43,6 +46,7 @@ class Author extends ResourceObject
         return $this;
     }
 
+    #[Alps('doCreateAuthor')]
     #[JsonSchema(schema: 'write_response.json', params: 'author_create.json')]
     public function onPost(string $name, string $email, string $bio = ''): static
     {
@@ -57,6 +61,7 @@ class Author extends ResourceObject
         return $this;
     }
 
+    #[Alps('doUpdateAuthor')]
     #[JsonSchema(schema: 'write_response.json', params: 'author_update.json')]
     public function onPut(int $id, string $name, string $email, string $bio = ''): static
     {

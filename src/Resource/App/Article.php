@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace MyVendor\Cms\Resource\App;
 
+use BEAR\ApiDoc\Annotation\Alps;
 use BEAR\Cli\Attribute\Cli;
 use BEAR\Cli\Attribute\Option;
 use BEAR\Resource\Annotation\Embed;
@@ -20,6 +21,7 @@ use Ray\InputQuery\Attribute\Input;
 
 use function assert;
 
+#[Alps('Article')]
 class Article extends ResourceObject
 {
     public function __construct(
@@ -29,6 +31,7 @@ class Article extends ResourceObject
     ) {
     }
 
+    #[Alps('goArticle')]
     #[Link(rel: 'goArticleList', href: 'app://self/articles')]
     #[Link(rel: 'goAuthor', href: 'app://self/author{?id}')]
     #[Link(rel: 'goCategory', href: 'app://self/category{?id}')]
@@ -66,6 +69,7 @@ class Article extends ResourceObject
         return $this;
     }
 
+    #[Alps('doCreateArticle')]
     #[JsonSchema(schema: 'write_response.json', params: 'article_create.json')]
     public function onPost(#[Input] ArticleCreateInput $input): static
     {
@@ -100,6 +104,7 @@ class Article extends ResourceObject
         return $this;
     }
 
+    #[Alps('doUpdateArticle')]
     #[JsonSchema(schema: 'write_response.json', params: 'article_update.json')]
     public function onPut(#[Input] ArticleUpdateInput $input): static
     {
@@ -129,6 +134,7 @@ class Article extends ResourceObject
         return $this;
     }
 
+    #[Alps('doDeleteArticle')]
     public function onDelete(int $id): static
     {
         if ($this->article->item($id) === null) {
