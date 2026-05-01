@@ -14,4 +14,8 @@ interface AuthorQueryInterface
 
     #[DbQuery('author_by_email')]
     public function byEmail(string $email): Author|null;
+
+    /** @return list<Author> */
+    #[DbQuery('author_list')]
+    public function list(): array;
 }

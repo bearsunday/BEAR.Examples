@@ -1,0 +1,55 @@
+{
+  "id": 1,
+  "slug": "getting-started-with-bear-sunday",
+  "title": "Getting Started with BEAR.Sunday",
+  "body": "BEAR.Sunday is a resource-oriented framework for PHP. Resources are the unit of composition, identified by URI and exposing safe / unsafe transitions through HTTP-style verbs.",
+  "excerpt": "A brief introduction to BEAR.Sunday's resource-oriented design.",
+  "status": "published",
+  "publishedAt": "2026-01-01T00:00:00",
+  "authorId": 1,
+  "categoryId": 1,
+  "_embedded": {
+    "Author": {
+      "id": 1,
+      "slug": "jane-smith",
+      "name": "Jane Smith",
+      "email": "jane@example.com",
+      "bio": "Author Name"
+    },
+    "Category": {
+      "id": 1,
+      "slug": "framework",
+      "name": "Framework",
+      "description": "Articles about web application frameworks.",
+      "parentId": null
+    },
+    "Tag": [
+      { "id": 1, "slug": "php", "name": "php" },
+      { "id": 2, "slug": "bear", "name": "bear" },
+      { "id": 3, "slug": "hal", "name": "hal" }
+    ]
+  },
+  "_links": {
+    "self": { "href": "/api/article/1" },
+    "goArticleList": {
+      "href": "/api/articlelist",
+      "title": "Go to Article List Screen"
+    },
+    "goAuthor": {
+      "href": "/api/author/1",
+      "title": "Go to Author Screen"
+    },
+    "goCategory": {
+      "href": "/api/category/1",
+      "title": "Go to Category Screen"
+    },
+    "doUpdateArticle": {
+      "href": "/api/article/1",
+      "title": "Update Article"
+    },
+    "doDeleteArticle": {
+      "href": "/api/articlelist",
+      "title": "Delete Article"
+    }
+  }
+}

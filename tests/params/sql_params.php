@@ -36,6 +36,7 @@ return [
     'article_item.sql' => ['id' => 1],
     'article_list.sql' => [
         'categoryId' => null,
+        'authorId' => null,
         'status' => 'published',
         'tagId' => null,
         'limit' => 10,
@@ -59,6 +60,7 @@ return [
     'author_add.sql' => ['name' => 'Smoke', 'email' => 'smoke@example.com', 'bio' => ''],
     'author_by_email.sql' => ['email' => 'evelyn.moore1@example.com'],
     'author_item.sql' => ['id' => 1],
+    'author_list.sql' => [],
     'author_update.sql' => ['name' => 'Updated', 'email' => 'updated@example.com', 'bio' => '', 'id' => 1],
 
     // categories -------------------------------------------------------

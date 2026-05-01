@@ -6,12 +6,14 @@
     "require": {
         "php": "^8.5.0",
         "bear/package": "^1.14",
+        "bear/qiq-module": "^2.0",
         "bear/query-repository": "^1.15",
         "bear/resource": "^1.17",
         "bear/sunday": "^1.6",
         "koriym/env-json": "^1.0",
         "league/commonmark": "^2.8",
         "league/oauth2-google": "^5.0",
+        "qiq/qiq": "^3.0",
         "ray/aop": "^2.12",
         "ray/aura-sql-module": "^1.17",
         "ray/di": "^2.14",
@@ -27,6 +29,7 @@
         "doctrine/dbal": "^4.4",
         "doctrine/migrations": "^3.9",
         "justinrainbow/json-schema": "^6.8",
+        "koriym/app-state-diagram": "^0.11",
         "phpunit/phpunit": "^10.0",
         "roave/security-advisories": "dev-latest"
     },
@@ -47,7 +50,10 @@
         ],
         "setup": "php bin/setup.php",
         "compile": "./vendor/bin/bear.compile 'MyVendor\\Cms' prod-app ./",
-        "doc": "./vendor/bin/apidoc",
+        "doc": [
+            "./vendor/bin/apidoc",
+            "asd -e var/alps/profile.json > docs/alps.html"
+        ],
         "fake": "php bin/semantic-ex/gen-fake.php",
         "schema": "php bin/semantic-ex/gen-schemas.php",
         "semantic": ["@fake", "@schema"],
@@ -109,6 +115,7 @@
             "@metrics"
         ],
         "serve": "COMPOSER_PROCESS_TIMEOUT=0 php -dzend_extension=xdebug.so -S 127.0.0.1:8080 -t public",
+        "serve:page": "COMPOSER_PROCESS_TIMEOUT=0 php -S 127.0.0.1:8081 -t public public/page.php",
         "app": "php bin/app.php",
         "page": "php bin/page.php",
         "profile": "php -dzend_extension=xdebug.so -dxdebug.mode=profile -dxdebug.output_dir=./var/log -dxdebug.profiler_output_name=cachegrind.out.%t bin/page.php get /",
@@ -130,7 +137,8 @@
         "security": "Run security scan",
         "metrics": "Build metrics report",
         "clean": "Clear cache files",
-        "serve": "Start built-in server",
+        "serve": "Start built-in server (HAL API at http://127.0.0.1:8080)",
+        "serve:page": "Start built-in server for Page context (HTML at http://127.0.0.1:8081)",
         "app": "Request app resource",
         "page": "Request page resource",
         "profile": "Profile page request (customize endpoint as needed)",

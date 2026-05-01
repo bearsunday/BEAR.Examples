@@ -548,5 +548,16 @@
         "publishedAt": "2026-02-22T11:50:00Z",
         "authorId": 50,
         "categoryId": 50
+    },
+    {
+        "id": 51,
+        "slug": "xss-regression",
+        "title": "<script>alert(\"xss\")</script>Bad",
+        "body": "Plain text body for XSS regression test.",
+        "excerpt": "Excerpt with <em>html</em> and & ampersand.",
+        "status": "draft",
+        "publishedAt": "2020-01-01T00:00:00Z",
+        "authorId": 1,
+        "categoryId": 1
     }
 ]

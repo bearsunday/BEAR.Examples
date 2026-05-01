@@ -10,6 +10,7 @@ SELECT
     a.category_id
 FROM articles a
 WHERE (:categoryId IS NULL OR a.category_id = :categoryId)
+  AND (:authorId IS NULL OR a.author_id = :authorId)
   AND (:status IS NULL OR a.status = :status)
   AND (
     :tagId IS NULL

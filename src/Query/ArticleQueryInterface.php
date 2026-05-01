@@ -21,6 +21,7 @@ interface ArticleQueryInterface
     public function list(
         int|null $categoryId = null,
         int|null $tagId = null,
+        int|null $authorId = null,
         string|null $status = null,
         int $limit = 20,
         int $offset = 0,
