@@ -34,7 +34,7 @@ return [
     ],
     'ArticleQueryInterface::bySlug' => ['getting-started-with-bear-sunday'],
     'ArticleQueryInterface::item' => [1],
-    'ArticleQueryInterface::list' => [null, null, 'published', 10, 0],
+    'ArticleQueryInterface::list' => [null, null, null, 'published', 10, 0],
     'ArticleAsArrayQueryInterface::item' => [1],
     'ArticleTagCommandInterface::clear' => [999],
     'ArticleTagCommandInterface::link' => [999, 50],
@@ -44,6 +44,7 @@ return [
     'AuthorCommandInterface::update' => [999, 'Updated', 'updated@example.com', ''],
     'AuthorQueryInterface::byEmail' => ['evelyn.moore1@example.com'],
     'AuthorQueryInterface::item' => [1],
+    'AuthorQueryInterface::list' => [],
 
     // categories -------------------------------------------------------
     'CategoryCommandInterface::add' => ['smoke-media-query', 'Smoke', null, null],
