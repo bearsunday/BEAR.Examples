@@ -54,13 +54,16 @@
         {"href": "#doDeleteArticle"}
       ], "tag": "article"},
 
-      {"id": "ArticleList", "title": "Article List", "doc": {"value": "Paginated list of articles; supports filtering by category, tag, or status."}, "descriptor": [
+      {"id": "ArticleList", "title": "Article List", "doc": {"value": "Paginated list of articles; supports filtering by category, tag, author, or status."}, "descriptor": [
         {"href": "#id"},
         {"href": "#slug"},
         {"href": "#title"},
         {"href": "#excerpt"},
         {"href": "#status"},
         {"href": "#publishedAt"},
+        {"href": "#authorId"},
+        {"href": "#categoryId"},
+        {"href": "#tagId"},
         {"href": "#page"},
         {"href": "#perPage"},
         {"href": "#totalCount"},
@@ -111,9 +114,18 @@
         {"href": "#name"},
         {"href": "#email"},
         {"href": "#bio"},
+        {"href": "#goAuthorList"},
         {"href": "#goArticleList"},
         {"href": "#doUpdateAuthor"}
       ], "tag": "author"},
+
+      {"id": "AuthorList", "title": "Author List", "descriptor": [
+        {"href": "#id"},
+        {"href": "#name"},
+        {"href": "#email"},
+        {"href": "#goAuthor"},
+        {"href": "#doCreateAuthor"}
+      ], "tag": "author flow-browse"},
 
       {"id": "Media", "title": "Media Detail", "descriptor": [
         {"href": "#id"},
@@ -126,11 +138,12 @@
         {"href": "#doDeleteMedia"}
       ], "tag": "media"},
 
-      {"id": "goArticleList", "type": "safe", "rt": "#ArticleList", "title": "View Article List", "doc": {"value": "List published articles, filterable by category, tag or status."}, "tag": "article flow-browse", "descriptor": [
+      {"id": "goArticleList", "type": "safe", "rt": "#ArticleList", "title": "View Article List", "doc": {"value": "List published articles, filterable by category, tag, author or status."}, "tag": "article flow-browse", "descriptor": [
         {"href": "#page"},
         {"href": "#perPage"},
         {"href": "#categoryId"},
         {"href": "#tagId"},
+        {"href": "#authorId"},
         {"href": "#status"}
       ]},
       {"id": "goArticle", "type": "safe", "rt": "#Article", "title": "View Article", "doc": {"value": "Retrieve a single article by id with embedded Author/Category/Tags."}, "tag": "article", "descriptor": [
@@ -141,6 +154,7 @@
         {"href": "#id"}
       ]},
       {"id": "goTagList", "type": "safe", "rt": "#TagList", "title": "View Tag List", "tag": "tag flow-browse"},
+      {"id": "goAuthorList", "type": "safe", "rt": "#AuthorList", "title": "View Author List", "tag": "author flow-browse"},
       {"id": "goTag", "type": "safe", "rt": "#Tag", "title": "View Tag", "tag": "tag", "descriptor": [
         {"href": "#id"}
       ]},

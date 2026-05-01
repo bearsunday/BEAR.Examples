@@ -6,6 +6,7 @@ namespace MyVendor\Cms\Renderer;
 
 use BEAR\Resource\RenderInterface;
 use BEAR\Resource\ResourceObject;
+use MyVendor\Cms\Renderer\Exception\InvalidResourcePathException;
 use Override;
 use Qiq\Template;
 use Ray\Aop\WeavedInterface;
@@ -41,7 +42,7 @@ final readonly class CmsQiqRenderer implements RenderInterface
         $vars = is_array($ro->body) ? $ro->body : ['value' => $ro->body];
         $vars += $this->cssVars($ro);
         if ($ro->code >= 400) {
-            return $this->renderError($ro, $vars);
+            return $this->renderError($ro);
         }
 
         try {
@@ -51,10 +52,10 @@ final readonly class CmsQiqRenderer implements RenderInterface
             $ro->view = ($template)();
 
             return $ro->view;
-        } catch (Throwable $e) {
+        } catch (Throwable) {
             $ro->code = 500;
 
-            return $this->renderError($ro, ['message' => $e->getMessage()] + $vars);
+            return $this->renderError($ro);
         }
     }
 
@@ -63,19 +64,21 @@ final readonly class CmsQiqRenderer implements RenderInterface
         $reflection = $ro instanceof WeavedInterface
             ? (new ReflectionClass($ro))->getParentClass()
             : new ReflectionClass($ro);
-        $fileName = (string) $reflection->getFileName();
+        $fileName = str_replace('\\', '/', (string) $reflection->getFileName());
         $pos = strpos($fileName, 'src/Resource/');
-        $relativePath = substr($fileName, (int) $pos + self::RESOURCE_DIR_LEN);
+        if ($pos === false) {
+            throw new InvalidResourcePathException($fileName);
+        }
+
+        $relativePath = substr($fileName, $pos + self::RESOURCE_DIR_LEN);
 
         return str_replace('.php', '', $relativePath);
     }
 
-    /** @param array<string, mixed> $vars */
-    private function renderError(ResourceObject $ro, array $vars): string
+    private function renderError(ResourceObject $ro): string
     {
         $ro->view = $this->template->render('Error', [
             'code' => $ro->code,
-            'message' => (string) ($vars['message'] ?? 'An error occurred'),
         ]);
 
         return $ro->view;

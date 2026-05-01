@@ -1,5 +1,5 @@
 /* level3.css — Production quality */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@500;600&display=swap');
+@import 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@500;600&display=swap';
 
 :root {
   --brand-50: #faf8f5;
@@ -12,7 +12,7 @@
   --gray-300: #d8d6d2;
   --gray-600: #6c6a66;
   --gray-900: #1f1d1a;
-  --font-display: 'Playfair Display', Georgia, serif;
+  --font-display: 'Playfair Display', georgia, serif;
   --font-sans: 'Inter', system-ui, sans-serif;
   --transition: 300ms ease;
   --space: 1rem;

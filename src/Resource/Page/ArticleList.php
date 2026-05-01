@@ -14,6 +14,7 @@ use MyVendor\Cms\Query\AuthorQueryInterface;
 use MyVendor\Cms\Query\CategoryQueryInterface;
 use MyVendor\Cms\Query\TagQueryInterface;
 
+use function array_slice;
 use function count;
 use function max;
 use function min;
@@ -60,9 +61,12 @@ class ArticleList extends ResourceObject
             tagId: $tagId,
             authorId: $authorId,
             status: $status,
-            limit: $perPage,
+            limit: $perPage + 1,
             offset: $offset,
         );
+
+        $hasNext = count($articles) > $perPage;
+        $articles = array_slice($articles, 0, $perPage);
 
         $this->body = [
             'articles' => $articles,
@@ -77,7 +81,7 @@ class ArticleList extends ResourceObject
             'author' => $authorId === null ? null : $this->author->item($authorId),
             'page' => $page,
             'perPage' => $perPage,
-            'hasNext' => count($articles) === $perPage,
+            'hasNext' => $hasNext,
         ];
 
         return $this;
