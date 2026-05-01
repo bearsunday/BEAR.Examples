@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace MyVendor\Cms\Resource\App;
 
+use BEAR\ApiDoc\Annotation\Alps;
 use BEAR\Cli\Attribute\Cli;
 use BEAR\Cli\Attribute\Option;
 use BEAR\Resource\Annotation\JsonSchema;
@@ -14,6 +15,7 @@ use MyVendor\Cms\Query\ArticleQueryInterface;
 use function array_map;
 use function count;
 
+#[Alps('ArticleList')]
 class Articles extends ResourceObject
 {
     public function __construct(
@@ -21,6 +23,7 @@ class Articles extends ResourceObject
     ) {
     }
 
+    #[Alps('goArticleList')]
     #[Link(rel: 'goArticle', href: 'app://self/article{?id}')]
     #[JsonSchema('articleList.json')]
     #[Cli(name: 'article-list', description: 'List articles (paginated, filterable)')]

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a7e0f077d6812dfc8e3edb193afb16d6",
+    "content-hash": "c693b766c6d4c8919a918faea55765cf",
     "packages": [
         {
             "name": "aura/cli",

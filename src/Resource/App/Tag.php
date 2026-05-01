@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace MyVendor\Cms\Resource\App;
 
+use BEAR\ApiDoc\Annotation\Alps;
 use BEAR\Resource\Annotation\JsonSchema;
 use BEAR\Resource\Annotation\Link;
 use BEAR\Resource\Code;
@@ -13,6 +14,7 @@ use MyVendor\Cms\Query\TagQueryInterface;
 
 use function assert;
 
+#[Alps('Tag')]
 class Tag extends ResourceObject
 {
     public function __construct(
@@ -21,6 +23,7 @@ class Tag extends ResourceObject
     ) {
     }
 
+    #[Alps('goTag')]
     #[Link(rel: 'goTagList', href: 'app://self/tags')]
     #[Link(rel: 'goArticleList', href: 'app://self/articles{?tagId}')]
     #[JsonSchema('tag.json')]
@@ -43,6 +46,7 @@ class Tag extends ResourceObject
         return $this;
     }
 
+    #[Alps('doCreateTag')]
     #[JsonSchema(schema: 'write_response.json', params: 'tag_create.json')]
     public function onPost(string $slug, string $name): static
     {
@@ -57,6 +61,7 @@ class Tag extends ResourceObject
         return $this;
     }
 
+    #[Alps('doDeleteTag')]
     public function onDelete(int $id): static
     {
         if ($this->tag->item($id) === null) {

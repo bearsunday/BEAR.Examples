@@ -2,7 +2,7 @@
 
 API Document
 
-## Routes (9)
+## Routes (12)
 
 | HTTP Route | Methods | Resource |
 |------------|---------|----------|
@@ -15,8 +15,11 @@ API Document
 | /media | GET, POST, DELETE | App/Media |
 | /tag | GET, POST, DELETE | App/Tag |
 | /tags | GET | App/Tags |
+| /variations/article-as-array | GET | App/Variations/ArticleAsArray |
+| /variations/article-raw-pdo | GET | App/Variations/ArticleRawPdo |
+| /variations/article-sql-query | GET | App/Variations/ArticleSqlQuery |
 
-## ResourceObjects (9)
+## ResourceObjects (12)
 
 ### App/Article
 `/article`
@@ -33,7 +36,7 @@ API Document
 
 | Method | Parameters | Links |
 |--------|------------|-------|
-| GET | page, perPage, categoryId, tagId, status | href(goArticle) |
+| GET | page, perPage, categoryId, tagId, authorId, status | href(goArticle) |
 
 ### App/Auth
 `/auth`
@@ -94,6 +97,27 @@ API Document
 |--------|------------|-------|
 | GET | articleId | href(goTag) |
 
+### App/Variations/ArticleAsArray
+`/variations/article-as-array`
+
+| Method | Parameters | Links |
+|--------|------------|-------|
+| GET | id* | - |
+
+### App/Variations/ArticleRawPdo
+`/variations/article-raw-pdo`
+
+| Method | Parameters | Links |
+|--------|------------|-------|
+| GET | id* | - |
+
+### App/Variations/ArticleSqlQuery
+`/variations/article-sql-query`
+
+| Method | Parameters | Links |
+|--------|------------|-------|
+| GET | id* | - |
+
 ## Responses (10)
 
 | Response | Schema | Properties |
@@ -114,10 +138,10 @@ API Document
 | Interface | Methods |
 |-----------|---------|
 | ArticleCommandInterface | add(slug, title, body, excerpt, status, publishedAt, authorId, categoryId):void, update(id, title, body, excerpt, status, publishedAt):void, delete(id):void |
-| ArticleQueryInterface | item(id):Article, bySlug(slug):Article, list(categoryId, tagId, status, limit, offset):array |
+| ArticleQueryInterface | item(id):Article, bySlug(slug):Article, list(categoryId, tagId, authorId, status, limit, offset):array |
 | ArticleTagCommandInterface | clear(articleId):void, link(articleId, tagId):void |
 | AuthorCommandInterface | add(name, email, bio):void, update(id, name, email, bio):void |
-| AuthorQueryInterface | item(id):Author, byEmail(email):Author |
+| AuthorQueryInterface | item(id):Author, byEmail(email):Author, list():array |
 | CategoryCommandInterface | add(slug, name, description, parentId):void, update(id, name, description, parentId):void, delete(id):void |
 | CategoryQueryInterface | item(id):Category, bySlug(slug):Category, list():array |
 | MediaCommandInterface | add(filename, mimeType, url, alt, width, height):void, delete(id):void |
@@ -125,11 +149,19 @@ API Document
 | TagCommandInterface | add(slug, name):void, delete(id):void |
 | TagQueryInterface | item(id):Tag, bySlug(slug):Tag, list():array, listByArticle(articleId):array |
 
-## SQL (28)
+## SQL (33)
 
 | File | Query |
 |------|-------|
 | article_add.sql | `INSERT INTO articles (slug, title, body, excerpt, status, published_at, autho...` |
+| article_as_array_item.sql | `SELECT
+    id,
+    slug,
+    title,
+    body,
+    excerpt,
+    status,
+    pu...` |
 | article_by_slug.sql | `SELECT
     id,
     slug,
@@ -154,6 +186,26 @@ API Document
     a.body,
     a.excerpt,
     a.st...` |
+| article_sqlquery_item.sql | `SELECT
+    id,
+    slug,
+    title,
+    body,
+    excerpt,
+    status,
+    pu...` |
+| article_sqlquery_next.sql | `SELECT
+    id,
+    slug,
+    title,
+    published_at AS publishedAt
+FROM arti...` |
+| article_sqlquery_previous.sql | `SELECT
+    id,
+    slug,
+    title,
+    published_at AS publishedAt
+FROM arti...` |
 | article_tag_clear.sql | `DELETE FROM article_tags WHERE article_id = :articleId` |
 | article_tag_link.sql | `INSERT INTO article_tags (article_id, tag_id) VALUES (:articleId, :tagId)` |
 | article_update.sql | `UPDATE articles
@@ -170,6 +222,13 @@ SET title = :title,
 FROM authors
 WHERE id = :id
 LIMIT 1` |
+| author_list.sql | `SELECT
+    id,
+    name,
+    email,
+    bio
+FROM authors
+ORDER BY name` |
 | author_update.sql | `UPDATE authors SET name = :name, email = :email, bio = :bio WHERE id = :id` |
 | category_add.sql | `INSERT INTO categories (slug, name, description, parent_id)
 VALUES (:slug, :n...` |

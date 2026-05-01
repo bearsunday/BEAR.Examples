@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace MyVendor\Cms\Resource\App;
 
+use BEAR\ApiDoc\Annotation\Alps;
 use BEAR\Resource\Annotation\JsonSchema;
 use BEAR\Resource\Code;
 use BEAR\Resource\ResourceObject;
@@ -12,6 +13,7 @@ use MyVendor\Cms\Query\MediaQueryInterface;
 
 use function assert;
 
+#[Alps('Media')]
 class Media extends ResourceObject
 {
     public function __construct(
@@ -20,6 +22,7 @@ class Media extends ResourceObject
     ) {
     }
 
+    #[Alps('goMedia')]
     #[JsonSchema('media.json')]
     public function onGet(int $id): static
     {
@@ -44,6 +47,7 @@ class Media extends ResourceObject
         return $this;
     }
 
+    #[Alps('doCreateMedia')]
     #[JsonSchema(schema: 'write_response.json', params: 'media_create.json')]
     public function onPost(
         string $filename,
@@ -71,6 +75,7 @@ class Media extends ResourceObject
         return $this;
     }
 
+    #[Alps('doDeleteMedia')]
     public function onDelete(int $id): static
     {
         if ($this->media->item($id) === null) {

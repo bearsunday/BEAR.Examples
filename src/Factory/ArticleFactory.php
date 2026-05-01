@@ -20,6 +20,7 @@ use function str_replace;
  */
 final readonly class ArticleFactory
 {
+    /** @SuppressWarnings("PHPMD.StaticAccess") enum value reconstruction */
     public function factory(
         int $id,
         string $slug,
