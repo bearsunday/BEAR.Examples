@@ -70,7 +70,7 @@ source <(malt env)
 cp .env.dist .env       # edit DB_DSN / DB_USER / DB_PASSWORD
 vendor/bin/doctrine-migrations migrate --no-interaction
 php bin/seed.php
-composer serve          # http://127.0.0.1:8080
+composer serve:api      # HAL JSON API at http://127.0.0.1:8080
 ```
 
 ### Real database via docker-compose (cross-platform)
@@ -90,8 +90,23 @@ DB_DSN='mysql:host=127.0.0.1;dbname=bear_cms;charset=utf8mb4' DB_USER=root DB_PA
 rm -f /tmp/bear_cms.db
 DB_DSN="sqlite:/tmp/bear_cms.db" vendor/bin/doctrine-migrations migrate --no-interaction
 DB_DSN="sqlite:/tmp/bear_cms.db" php bin/seed.php
-DB_DSN="sqlite:/tmp/bear_cms.db" composer serve
+DB_DSN="sqlite:/tmp/bear_cms.db" composer serve:api
 ```
+
+### Built-in servers
+
+Use the explicit server scripts so it is clear which surface you are
+running:
+
+```bash
+composer serve:api       # HAL JSON API at http://127.0.0.1:8080
+composer serve:html      # Qiq/Page HTML at http://127.0.0.1:8081
+```
+
+HTML pages are available at `http://127.0.0.1:8081/`,
+`http://127.0.0.1:8081/articlelist`, and the other Page routes.
+`composer serve` is kept as a legacy alias for `serve:api`;
+`composer serve:page` is kept as a legacy alias for `serve:html`.
 
 ## Contexts
 
@@ -138,7 +153,10 @@ composer schema     # regenerate var/json_schema/*.json from fake
 composer semantic   # fake then schema (the full semantic-ex pass)
 composer doc        # regenerate docs/index.html, docs/openapi.json, docs/llms.txt
 composer cli        # regenerate bin/cli/* from #[Cli] attributes
-composer serve      # PHP built-in server on :8080
+composer serve:api  # HAL JSON API server on :8080
+composer serve:html # Qiq/Page HTML server on :8081
+composer serve      # legacy alias for serve:api
+composer serve:page # legacy alias for serve:html
 ```
 
 ## Tests
