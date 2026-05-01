@@ -46,7 +46,10 @@ abstract class AbstractWorkflowTestCase extends AbstractAppTestCase
     protected function idFromLocation(string $location): int
     {
         parse_str(parse_url($location, PHP_URL_QUERY) ?? '', $query);
+        $this->assertArrayHasKey('id', $query, "Location header `{$location}` must include ?id=");
+        $id = (int) $query['id'];
+        $this->assertGreaterThan(0, $id, "Location id in `{$location}` must be a positive integer");
 
-        return (int) ($query['id'] ?? 0);
+        return $id;
     }
 }
