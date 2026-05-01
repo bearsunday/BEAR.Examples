@@ -19,10 +19,14 @@
 
 ## Runtime Contexts
 
-- `hal-api-app` and `cli-hal-api-app` use the real database.
-- `fake-hal-api-app` uses `tests/Fake/FakeSqlQuery.php` and requires no DB.
-- `test-hal-api-app` is used by PHPUnit and composes the fake module.
-- If module bindings change, clear DI cache with `rm -rf var/tmp/{fake-,test-,}hal-api-app`.
+- App contexts:
+  - `hal-api-app` and `cli-hal-api-app` use the real database.
+  - `fake-hal-api-app` uses `tests/Fake/FakeSqlQuery.php` and requires no DB.
+  - `test-hal-api-app` is used by PHPUnit and composes the fake module.
+- HTML (Page/Qiq) contexts:
+  - `html-hal-app` and `cli-html-hal-app` install `HtmlModule` over the real database.
+  - `html-test-hal-api-app` composes `TestModule` and `HtmlModule` so Page tests render against `FakeSqlQuery`.
+- If module bindings change, clear the DI cache for every context that was used: `rm -rf var/tmp/*-hal-app var/tmp/*-hal-api-app`.
 
 ## Development Commands
 
@@ -33,8 +37,8 @@
 - Run the full quality gate: `zsh -ic 'sphp85; composer tests'`
 - Regenerate deterministic fake data and schemas: `zsh -ic 'sphp85; composer semantic'`
 - Quick SQLite setup for real-DB trials: `zsh -ic 'sphp85; composer sqlite:up'`
+- Serve Qiq/Page HTML: `zsh -ic 'sphp85; composer serve'` (`http://127.0.0.1:8081`)
 - Serve the HAL JSON API: `zsh -ic 'sphp85; composer serve:api'` (`http://127.0.0.1:8080`)
-- Serve Qiq/Page HTML: `zsh -ic 'sphp85; composer serve:html'` (`http://127.0.0.1:8081`)
 
 ## Coding Rules
 

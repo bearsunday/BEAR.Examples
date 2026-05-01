@@ -30,8 +30,8 @@ composer test               # default PHPUnit suites; integration auto-skips
                             # when MySQL is unreachable
 composer demo               # 7-section walkthrough that exercises everything
                             # (auto-detects malt → docker → sqlite for the real-DB section)
+composer serve              # Qiq/Page HTML at http://127.0.0.1:8081
 composer serve:api          # HAL JSON API at http://127.0.0.1:8080
-composer serve:html         # Qiq/Page HTML at http://127.0.0.1:8081
 ```
 
 Real DB setup: `composer malt:up` (macOS), `composer docker:up`
