@@ -99,10 +99,14 @@ DB_DSN="sqlite:/tmp/bear_cms.db" composer serve         # Qiq/Page HTML on :8081
 
 ### Built-in servers
 
-Two explicit scripts, one per surface:
+Two explicit scripts, one per surface. Each is blocking, so run them in
+separate terminals:
 
 ```bash
+# terminal 1
 composer serve           # Qiq/Page HTML at http://127.0.0.1:8081
+
+# terminal 2
 composer serve:api       # HAL JSON API at http://127.0.0.1:8080
 ```
 

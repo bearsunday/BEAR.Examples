@@ -49,8 +49,8 @@ Switching contexts loads/removes modules by keyword prefix; see
   `Article::onPost`. Query method naming is codified in
   `docs/conventions.md` §3 (`item` for PK, `by<Key>` for natural key,
   `list` for collections).
-- When module bindings change, clear the DI cache:
-  `rm -rf var/tmp/{fake-,test-,}hal-api-app`.
+- When module bindings change, clear the DI cache for every context:
+  `rm -rf var/tmp/*-hal-app var/tmp/*-hal-api-app`.
 
 ## Regenerating fakes and schemas
 

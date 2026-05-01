@@ -212,7 +212,7 @@ ArticleTest は POST→GET→PUT→GET→DELETE→GET の完全ラウンドト�
    入れるのは Entity に依存注入が必要になったタイミング。
 5. **新ID 取得は `getBy{naturalKey}`** — driver依存の lastInsertId を回避。
 6. **ALPS → Fake → 実SQL のパイプラインを bin/semantic-ex/ に保存** — 再生成
-   可能、`random.seed(42)` で決定的。
+   可能、`mt_srand(42)` で決定的。
 
 ## ハマったポイント (次回のため)
 
