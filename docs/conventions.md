@@ -19,7 +19,7 @@ then the code/docs follow.
 4. [Resource patterns](#4-resource-patterns) — body construction, status codes, after-INSERT id, pagination, **input shape & validation**, exceptions, named arguments, method order
 5. [Read/Write SQL contract](#5-readwrite-sql-contract) — column order, fetch mode, write-id detection
 6. [File / data layout](#6-filedata-layout) — `var/` artefact placement
-7. [Tests](#7-tests) — context wiring, hermetic fakes, assertion style
+7. [Tests](#7-tests) — context wiring, hermetic fakes, hypermedia workflow tests
 8. [Process](#8-process) — adopting a convention, retiring a deprecated one
 
 ---
@@ -153,6 +153,9 @@ two distinct collections (`_links` and `_embedded`); align them:
 Do not mix: `#[Embed(rel: 'goAuthor', ...)]` is wrong because `go*` is a
 Choreography (client-followable transition), while embed is a
 server-included taxonomy instance. Keep the namespaces separate.
+
+This split is also enforced from the test side — see
+[§7.1 Hypermedia workflow tests](#71-hypermedia-workflow-tests).
 
 ## 4. Resource patterns
 
@@ -469,6 +472,105 @@ to skim past internal plumbing before reaching the entry point.
   when MySQL is unreachable.
 - No mocks. External services use Docker; internal dependencies use
   Fake classes from `tests/Fake/`.
+
+### 7.1 Hypermedia workflow tests
+
+A workflow test in `tests/Hypermedia/` is a **user story told by
+linking small steps with `#[Depends]`** — the `ResourceObject`
+returned by one step is the input the next step follows a rel from.
+**One file per story**: the class name is the story title, the
+method names are the steps, and PHPUnit's testdox output reads top
+to bottom as the user story:
+
+```text
+Reader Browses By Tag (MyVendor\Cms\Hypermedia\ReaderBrowsesByTag)
+ ✔ Opens tag list
+ ✔ Picks a tag
+ ✔ Views articles under that tag
+ ✔ Opens an article
+ ✔ Looks up the author
+
+Editor Manages Article (MyVendor\Cms\Hypermedia\EditorManagesArticle)
+ ✔ Creates an article
+ ✔ Reads back the new article
+ ✔ Revises the article
+ ✔ Retires the article
+```
+
+Each step is one line in the body
+(`return $this->follow($prev, $rel, $vars)`); the narrative is in
+the class name, the method names, and the `#[Depends]` chain — not
+in the body. Workflow tests are different in purpose from the
+per-resource smoke tests in `tests/Resource/`: those validate one
+endpoint at a time; workflow tests validate that the resources are
+*connected* the way ALPS says they are.
+
+Rules:
+
+1. **One file per story.** Each story is its own
+   `<Actor><Verb>Test` class extending
+   `Hypermedia\AbstractWorkflowTestCase`. The class name carries
+   the actor (`ReaderBrowsesByTag`, `EditorManagesArticle`), so
+   step methods drop it (`testOpensTagList`, not
+   `testReaderOpensTagList`). Contract pins (e.g. HAL envelope
+   shape) live in their own `*ContractTest` class, separate from
+   the stories.
+2. **Only one hard-coded URI per story — the entry point.** Every
+   subsequent transition goes through `ResourceInterface::href($rel,
+   $vars, $ro)`, which reads the `#[Link]` annotation off the source
+   resource and expands the URI Template. Renaming a rel — i.e.
+   renaming an ALPS Choreography transition — will break the chain
+   and surface here.
+3. **One step per `#[Depends]`-linked test method.** The first test
+   in a story performs the entry GET (or POST) and returns the
+   `ResourceObject`; each follow-up declares
+   `#[Depends('previousStep')]` and receives that object as its
+   first parameter. Method names are third-person narrative present
+   so the testdox report reads like the user story.
+4. **Pass the specific id, do not rely on body-merge expansion.**
+   `Anchor::href()` automatically merges the source body into the
+   URI Template's variables, so `follow($ro, 'goAuthor')` would
+   *appear* to work. It does not, because every resource exposes its
+   own primary key as `id` (a deliberate, project-wide convention),
+   and Link templates also use `{?id}`. Body-merge silently feeds
+   the source's `id` into a foreign-key slot — for example, an
+   article's id ends up requesting an author with the same numeric
+   value, which usually returns a 200 for the wrong author. Always
+   pass the specific id explicitly:
+   `follow($article, 'goAuthor', ['id' => $article->body['authorId']])`.
+   This keeps the cross-entity flow (article's `authorId` → author's
+   `id`) visible at the call site instead of buried in a template.
+5. **Per-step shape validation belongs to `#[JsonSchema]`, not
+   workflow tests.** Workflow tests assert status codes, rel
+   chains, and business invariants (e.g. an edit must be visible to
+   the next read). They do not duplicate field-level checks. The
+   `follow()` helper in `AbstractWorkflowTestCase` centralises the
+   "transition succeeded" check so step bodies stay one-liners.
+6. **Canonical lifecycle: create → read → edit → read → delete →
+   404.** This is the minimum coverage for any write-capable
+   resource and is the spine of `EditorManagesArticleTest`
+   (`testCreatesAnArticle` → … → `testRetiresTheArticle`).
+7. **`_embedded` vs `_links` are pinned in a contract test, not in
+   stories.** Taxonomy nouns (`author`, `category`, `tagList`)
+   appear under `_embedded`; Choreography verbs (`goAuthor`,
+   `doCreateArticle`) appear under `_links`. The HAL envelope
+   contract is asserted in `HalEnvelopeContractTest` so a slip on
+   either side fails one isolated test instead of polluting a
+   narrative (see
+   [§3 HAL rel naming](#hal-rel-naming--split-by-alps-layer)).
+8. **`Location` after `POST` is the navigation cue.** A hypermedia
+   client cannot guess the URL of a just-created resource, so
+   `onPost` returns `Location: /<noun>?id=<id>` and the workflow
+   test follows it the same way a browser would. PUT and DELETE are
+   unsafe transitions invoked directly by HTTP method — they are
+   not advertised as `_links` rels by design.
+
+A test that hard-codes `app://self/article` mid-chain, asserts
+JsonSchema-shaped fields, or compresses an entire story into one
+method body is a workflow test in name only. Move such checks to
+the appropriate `tests/Resource/` test, rely on the schema
+attribute, or split the narrative into `#[Depends]`-linked steps in
+its own `<Actor><Verb>Test` file.
 
 ## 8. Process
 
