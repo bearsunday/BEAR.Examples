@@ -8,11 +8,10 @@ the project up. It is intentionally short — pointers, not narrative.
 ## What BEAR.Cms is
 
 A reference implementation of a CMS built on **BEAR.Sunday + ALPS +
-semantic-ex + Ray.MediaQuery + BDR pattern**. The primary surface is a
-HAL+JSON App resource API, with a read-only Qiq/Page HTML projection for
-browser inspection. Authenticated/admin write UI is not built yet.
-Designed so that an AI (or human) reading the codebase can learn the
-canonical naming, structure, and flow.
+semantic-ex + Ray.MediaQuery + BDR pattern**. HAL+JSON App resources are
+paired with Qiq Page resources for public HTML and a minimal
+unauthenticated Article admin. Designed so that an AI (or human) reading
+the codebase can learn the canonical naming, structure, and flow.
 
 Five entities: Article, Category, Tag, Author, Media. Read + Write
 across each, plus an Auth resource (Google OAuth via league/oauth2-google,
@@ -26,7 +25,7 @@ swappable to FakeAuthProvider in tests).
 composer install
 composer fake               # regenerate var/fake/*.json (deterministic, mt_srand(42))
 composer schema             # regenerate var/json_schema/*.json from the fake
-composer test               # default PHPUnit suites; integration auto-skips
+composer test               # full PHPUnit suite; integration auto-skips
                             # when MySQL is unreachable
 composer demo               # 7-section walkthrough that exercises everything
                             # (auto-detects malt → docker → sqlite for the real-DB section)
@@ -78,13 +77,12 @@ defeats the reference value.
   canonical pattern.
 - App contexts:
   - `hal-api-app` — production HTTP
+  - `html-hal-app` — Qiq/Page HTML HTTP
   - `cli-hal-api-app` — `bin/app.php`, `composer app`
+  - `cli-html-hal-app` — `bin/page.php`, `composer page`
   - `fake-hal-api-app` — dev runtime against `tests/Fake/FakeSqlQuery.php`
   - `test-hal-api-app` — PHPUnit (unit suites)
-- HTML contexts:
-  - `html-hal-app` — production Page/Qiq HTTP
-  - `cli-html-hal-app` — `bin/page.php`, `composer page`
-  - `html-test-hal-api-app` — PHPUnit Page tests against FakeSqlQuery
+  - `html-test-hal-api-app` — PHPUnit Page/Qiq suites against FakeSqlQuery
 - `composer demo` is the entry point for verifying any change end-to-end.
 
 ---

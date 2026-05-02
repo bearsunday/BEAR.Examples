@@ -307,6 +307,28 @@ Examples in this codebase: `src/Input/ArticleCreateInput.php`,
 `ArticleUpdateInput.php`, `AuthExchangeInput.php`, consumed by
 `Article::onPost`, `Article::onPut`, `Auth::onPost`.
 
+#### Page resources stay scalar (provisional)
+
+Even when a Page resource crosses the 7-field threshold or has
+tri-state form input (e.g. `Page/Admin/Article::onPost`), keep the
+parameter list scalar for now. A DTO is technically the better fit
+for form receivers — it can host derived fields (`birthdate → age`)
+and acts as a typed `unsafe → safe` boundary that absorbs HTML form
+shape (`""` → `null`, mixed → `list<int>`, …). The blocker is
+documentation: ApiDoc does not yet consume the phpdoc input-param
+expansion (see `docs/001-input-param-expansion.md`), so a Page Input
+DTO would not surface in the documentation today.
+
+Treat ApiDoc gaining input-param support as the migration trigger.
+When that lands, Page resources move to `#[Input] <Dto>` form input,
+and the form-normalisation logic that currently lives in resource
+helpers (e.g. `Page/Admin/Article::normaliseValues`) moves into the
+DTO constructor.
+
+App-layer Input DTOs (`ArticleCreateInput`, etc.) are unaffected —
+those are already the validated/documented surface that Page
+resources POST into via `app://self/<resource>`.
+
 #### Why DTOs are not pushed through the Command interface
 
 Ray.MediaQuery natively supports Input DTOs in `#[DbQuery]` interfaces

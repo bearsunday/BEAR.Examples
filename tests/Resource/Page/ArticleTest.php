@@ -7,6 +7,7 @@ namespace MyVendor\Cms\Resource\Page;
 use MyVendor\Cms\AbstractPageTestCase;
 
 use function assert;
+use function uniqid;
 
 final class ArticleTest extends AbstractPageTestCase
 {
@@ -78,11 +79,43 @@ final class ArticleTest extends AbstractPageTestCase
         $this->assertStringContainsString('<div class="body"><p>Lorem ipsum', $html);
     }
 
+    public function testMarkdownBodyEscapesRawHtmlAndUnsafeLinks(): void
+    {
+        $created = $this->resource->post('app://self/article', [
+            'slug' => 'unsafe-markdown-' . uniqid(),
+            'title' => 'Unsafe markdown regression',
+            'body' => "<script>alert(1)</script>\n\n[bad](javascript:alert(1))\n\n**safe**",
+            'authorId' => 1,
+            'categoryId' => 1,
+            'status' => 'draft',
+        ]);
+        $this->assertSame(201, $created->code);
+
+        $ro = $this->resource->get('page://self/article', ['id' => $created->body['id']]);
+        $html = $ro->toString();
+
+        $this->assertStringNotContainsString('<script>alert(1)</script>', $html);
+        $this->assertStringNotContainsString('href="javascript:alert(1)"', $html);
+        $this->assertStringContainsString('&lt;script&gt;alert(1)&lt;/script&gt;', $html);
+        $this->assertStringContainsString('<a>bad</a>', $html);
+        $this->assertStringContainsString('<strong>safe</strong>', $html);
+    }
+
     public function testNotFoundReturns404(): void
     {
         $ro = $this->resource->get('page://self/article', ['id' => 99999]);
 
         $this->assertSame(404, $ro->code);
+    }
+
+    public function testNotFoundRendersErrorTemplate(): void
+    {
+        $ro = $this->resource->get('page://self/article', ['id' => 99999]);
+        $html = $ro->toString();
+
+        $this->assertStringContainsString('<h1>Error 404</h1>', $html);
+        $this->assertStringContainsString('An unexpected error occurred.', $html);
+        $this->assertStringNotContainsString('<article class="Article">', $html);
     }
 
     public function testCssLevelDefaultsToThreeAndIsOverridableByQuery(): void
