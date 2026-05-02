@@ -21,6 +21,15 @@ $authorId = isset($values['authorId']) ? (int) $values['authorId'] : null;
 $categoryId = isset($values['categoryId']) ? (int) $values['categoryId'] : null;
 $heading = $isEdit ? 'Edit Article' : 'Create Article';
 $submit = $isEdit ? 'Update article' : 'Create article';
+$nameFor = static function (array $entities, int $id): string {
+    foreach ($entities as $entity) {
+        if ($entity->id === $id) {
+            return $entity->name;
+        }
+    }
+
+    return '';
+};
 ?>
 {{ setLayout('layout/Default') }}
 {{ setBlock('title') ~}}{{h $heading }} - BEAR.Cms Reference CMS{{ endBlock() }}
@@ -47,8 +56,8 @@ $submit = $isEdit ? 'Update article' : 'Create article';
     <?php if ($isEdit && $article !== null): ?>
       <input type="hidden" name="id" value="{{a $article->id }}">
       <p class="slug">Slug: <code>{{h $article->slug }}</code></p>
-      <p class="Author">Author: <span class="name">{{h $article->authorId }}</span></p>
-      <p class="Category">Category: <span class="name">{{h $article->categoryId }}</span></p>
+      <p class="Author">Author: <span class="name">{{h $nameFor($authors, $article->authorId) }}</span></p>
+      <p class="Category">Category: <span class="name">{{h $nameFor($categories, $article->categoryId) }}</span></p>
     <?php else: ?>
       <label for="slug">Slug</label>
       <input id="slug" name="slug" type="text" value="{{a $slug }}" required>

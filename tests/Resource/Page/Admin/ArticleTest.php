@@ -108,4 +108,14 @@ final class ArticleTest extends AbstractPageTestCase
         $this->assertSame(404, $ro->code);
         $this->assertSame('Article not found', $ro->body['message']);
     }
+
+    public function testEditFormShowsAuthorAndCategoryNames(): void
+    {
+        $ro = $this->resource->get('page://self/admin/article', ['id' => 1]);
+
+        $this->assertSame(200, $ro->code);
+        $html = $ro->toString();
+        $this->assertStringContainsString('<p class="Author">Author: <span class="name">Evelyn Moore</span></p>', $html);
+        $this->assertStringContainsString('<p class="Category">Category: <span class="name">Technology</span></p>', $html);
+    }
 }
