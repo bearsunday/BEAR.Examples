@@ -32,17 +32,23 @@ ALPS (Choreography 動詞 / Taxonomy 名詞)
 AI の双方に明示している点が、他の BEAR.Sunday サンプルと一線を画す。
 JSON Schema は **規定** ではなく **観測** から生成されるため、実体と乖離しない。
 
-### 2. FakeSqlQuery による完全ハーメチックテスト
+### 2. FakeSqlQuery + 二層 smoke テストで stack 全体を覆う
 
-`tests/Fake/FakeSqlQuery.php` は `SqlQueryInterface` の **本物の実装**（モックでは
-ない）。`var/fake/*.json` の 50 件をメモリに載せ、Read/Write 全てを PHP で完結させる。
+テスト戦略は **「層別に責務を分ける」** こと自体が設計判断。詳細は Part 2 に
+譲るが、要点は次の通り：
 
-- DB / Docker / マイグレーション無しで `composer test` が即時実行される
-- 同じ Resource コードが本物 PDO とフェイクで **同一レスポンス** を返す
-- `execLog` を保持し、書き込み SQL の発行有無もテストで観測できる
+- **FakeSqlQuery** (`tests/Fake/FakeSqlQuery.php`) — `SqlQueryInterface` の
+  本物の実装（モックではない）。`var/fake/*.json` の 50 件を載せ Read/Write を
+  PHP で完結。Resource は本物 PDO とフェイクで **同一レスポンス** を返す。
+- **SqlSmokeTest** (`tests/Smoke/SqlSmokeTest.php`) — `var/db/sql/*.sql` を
+  実 SQLite に対し全件 `prepare` + `execute`。**SQL ファイル ↔ params の網羅性**
+  も同テストが assert する。
+- **MediaQuerySmokeTest** (`tests/Smoke/MediaQuerySmokeTest.php`) — `src/Query/`
+  を reflection で走査し、**Interface 全メソッドが DI 経由で callable** か検証。
 
 「単体テストを書きやすくするために本体のロジックを薄くする」のではなく、
-**ストレージ層を二系統用意する** という解法を取っている点が要。
+**ストレージ層を二系統 + smoke 二層** という解法。SQL / Query / Resource の
+**四角形の整合性** が、AI による局所変更でも壊れない。
 
 ### 3. 4 コンテキストの Module 合成
 
@@ -197,13 +203,64 @@ Psalm のテイント解析がオンになっている点は見落としやす�
 - Resource は throw せず **HTTP status を `$this->code` にセット** する流儀
 - 404 のときも `body` を返してハイパーメディア性を維持
 
-### テスト層の三段構成
+### テスト層の六段構成
 
-1. **Resource 単体テスト** — `tests/Resource/App/*Test.php`、FakeSqlQuery 上で動作
-2. **Hypermedia narrative テスト** — `tests/Hypermedia/*Test.php`、入口 URI のみ固定
-3. **Integration テスト** — 実 MySQL、利用不可なら自動 skip
+「テストを書くために本体を曲げない」という原則が、**層別に責務分離した**
+テスト構造で保証されている。下から上に行くほど抽象度が上がり、上で落ちたら
+下層を疑える。
 
-「テストを書くために本体を曲げない」という原則が、層構造で保証されている。
+| Layer | ディレクトリ | 検証対象 | 走り方 |
+| --- | --- | --- | --- |
+| 1. SQL smoke | `tests/Smoke/SqlSmokeTest.php` | `var/db/sql/*.sql` の **実行可能性** | seeded SQLite に対し全 SQL を `prepare`+`execute` |
+| 2. MediaQuery smoke | `tests/Smoke/MediaQuerySmokeTest.php` | `src/Query/*Interface` の全メソッドが **呼び出し可能** か | test DI 経由で FakeSqlQuery にディスパッチ |
+| 3. Entity 単体 | `tests/Entity/` | 純粋ドメイン（`ArticleProjectionTest` 等） | 依存なし |
+| 4. Resource 単体 | `tests/Resource/App/*Test.php` | Resource の振る舞い | FakeSqlQuery 上で動作 |
+| 5. Hypermedia narrative | `tests/Hypermedia/*Test.php` | 物語としての遷移 | 入口 URI のみ固定、以降 `_links` 追跡 |
+| 6. Integration | `tests/Integration/*MySQLTest.php` | 実 MySQL での通し | DSN `MYSQL_TEST_DSN`、未接続なら **自動 skip** |
+
+特筆すべきは Layer 1〜2 の **網羅性チェック** が test として書かれていることです。
+
+#### Layer 1: SqlSmokeTest が担う責務
+
+`tests/Smoke/SqlSmokeTest.php` は `var/db/sql/*.sql` を **静的解析ではなく実行で**
+検証する：
+
+- `setUpBeforeClass` で SQLite テンプレート DB をマイグレーション + シードして
+  作成、各テストはそれを **コピーしてからトランザクションで包んで rollback**。
+  書き込み SQL も副作用なしで走る。
+- `testEverySqlFileHasParams` … `var/db/sql/*.sql` と
+  `tests/params/sql_params.php` のキー集合が一致するか
+- `testEverySqlFileParamsMatchPlaceholders` … 各 SQL の placeholder 名と
+  params キー名が **完全一致** するか（未使用バインド・欠落バインド検出）
+- `testSqlExecutes` … 全 SQL が `prepare` + `execute` 成功するか
+
+**意図的に row 数や値を assert しない**（コメント L46-48）。値の正しさは
+Resource 層の JSON Schema、性能/EXPLAIN は Koriym.SqlQuality の責務、と
+**層を跨いだ責務の分離** が宣言されている。
+
+しかも `tests/params/sql_params.php` は Koriym.SqlQuality の
+`tests/params/sql_params.php` 形式と意図的互換に保たれており、
+**同じファイルが両ツールに食わせられる** 設計（コメント L7-13）。
+
+#### Layer 2: MediaQuerySmokeTest が担う責務
+
+`tests/Smoke/MediaQuerySmokeTest.php` は **`src/Query/` を反射的に走査** し、
+Interface ごと・メソッドごとに DI 経由の呼び出しを試す：
+
+- `tests/params/query_args.php` に各 query メソッドの引数が登録されているかを
+  網羅性 assert
+- 全メソッドを実際に呼び出し、例外なく callable かを検証
+- 値の正しさは見ない（コメント L33-37：それは Resource/Integration の責務）
+
+新しい Query メソッドを追加して args 登録を忘れると **CI が即落ちる**。
+これにより「query は宣言しただけで未配線」という事故が構造的に発生しない。
+
+#### 二層 smoke の設計上の意義
+
+SQL ファイル ↔ params ↔ Interface メソッド ↔ Resource という **四角形の整合性** が
+Layer 1 と Layer 2 の双方向 assert で固定される。AI がコードを生成しても、
+どこか一辺がズレれば即座に落ちる。**「再生成して検証」ループの最後の番人** が
+この二つ。
 
 ---
 
@@ -231,15 +288,19 @@ Psalm のテイント解析がオンになっている点は見落としやす�
 
 ### Single Source of Truth による drift 防止
 
-| 真実の源 | 派生先 | drift の起き場所 |
+| 真実の源 | 派生先 | drift の検出場所 |
 | --- | --- | --- |
-| `var/alps/profile.json` | rel 命名、ナビゲーション | 属性で参照する rel 名と一致 |
-| `#[DbQuery('article_item')]` | `var/db/sql/article_item.sql` | ファイル名が属性と一致 |
+| `var/alps/profile.json` | rel 命名、ナビゲーション | 属性で参照する rel 名と一致 / Hypermedia narrative test |
+| `#[DbQuery('article_item')]` | `var/db/sql/article_item.sql` | ファイル名が属性と一致 / Layer 2 smoke |
+| `var/db/sql/*.sql` の placeholder | `tests/params/sql_params.php` のキー | **Layer 1 smoke が完全一致を assert** |
+| `src/Query/*Interface` のメソッド | `tests/params/query_args.php` のキー | **Layer 2 smoke が完全一致を assert** |
 | Entity `__construct` 引数順 | SQL の SELECT 列順 | FETCH_FUNC で実行時検証 |
 | `#[Cli]` 属性 | `bin/cli/*` | `composer cli` で再生成 |
 
 **「同じ語彙が複数の場所で使われ、再生成すれば一致する」** ため、AI が局所的な
-変更を行っても全体の整合性が壊れにくい。
+変更を行っても全体の整合性が壊れにくい。さらに smoke テストの網羅性 assert が
+**「定義したのに繋いでいない」「繋いだのに使っていない」両方向の drift を
+構造的に検出** する。
 
 ### 「再生成して検証」ループ
 
@@ -367,9 +428,9 @@ $this->body += [          // ← 連想代入ではなく union
 このリファレンス実装の本質は、
 
 1. **意味論を最上位の真実とする一方向パイプライン**
-2. **DB なしで全層が走るハーメチックなテスト基盤**
+2. **層別責務分離した六段テスト**（SQL → MediaQuery → Entity → Resource → Hypermedia → Integration）
 3. **属性 + 命名規則による drift 不可能なディレクトリ規約**
-4. **生成物の決定性に支えられた「再生成して検証」ループ**
+4. **生成物の決定性 + smoke の網羅性 assert に支えられた「再生成して検証」ループ**
 
 の 4 点が **同時に成立している** ことです。それぞれは個別に他の BEAR プロジェクトでも
 見られますが、全部揃っているのは稀。結果として、約 800 行の業務コードに
