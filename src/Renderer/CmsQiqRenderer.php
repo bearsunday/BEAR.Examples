@@ -6,6 +6,7 @@ namespace MyVendor\Cms\Renderer;
 
 use BEAR\Resource\RenderInterface;
 use BEAR\Resource\ResourceObject;
+use ErrorException;
 use MyVendor\Cms\Renderer\Exception\InvalidResourcePathException;
 use Override;
 use Qiq\Template;
@@ -14,9 +15,12 @@ use ReflectionClass;
 use Throwable;
 
 use function array_key_exists;
+use function error_reporting;
 use function http_build_query;
 use function in_array;
 use function is_array;
+use function restore_error_handler;
+use function set_error_handler;
 use function str_replace;
 use function strpos;
 use function substr;
@@ -52,12 +56,7 @@ final readonly class CmsQiqRenderer implements RenderInterface
         }
 
         try {
-            $template = clone $this->template;
-            $template->setData($vars);
-            $template->setView($this->templateName($ro));
-            $ro->view = ($template)();
-
-            return $ro->view;
+            return $this->renderTemplate($ro, $vars);
         } catch (Throwable) {
             if ($ro->code >= 400) {
                 return $this->renderError($ro);
@@ -67,6 +66,32 @@ final readonly class CmsQiqRenderer implements RenderInterface
 
             return $this->renderError($ro);
         }
+    }
+
+    /** @param array<string, mixed> $vars */
+    private function renderTemplate(ResourceObject $ro, array $vars): string
+    {
+        set_error_handler($this->errorToException(...));
+
+        try {
+            $template = clone $this->template;
+            $template->setData($vars);
+            $template->setView($this->templateName($ro));
+            $ro->view = ($template)();
+
+            return $ro->view;
+        } finally {
+            restore_error_handler();
+        }
+    }
+
+    private function errorToException(int $severity, string $message, string $file, int $line): bool
+    {
+        if ((error_reporting() & $severity) === 0) {
+            return false;
+        }
+
+        throw new ErrorException($message, 0, $severity, $file, $line);
     }
 
     private function templateName(ResourceObject $ro): string
