@@ -90,6 +90,13 @@ class Article extends ResourceObject
         try {
             if ($articleId === null) {
                 $created = $this->resource->post('app://self/article', $values);
+                if ($created->code >= 400 || ! is_array($created->body) || ! isset($created->body['id'])) {
+                    $this->code = $created->code;
+                    $this->body = is_array($created->body) ? $created->body : ['message' => 'Article create failed'];
+
+                    return $this;
+                }
+
                 $createdId = (int) $created->body['id'];
                 $this->redirect('/admin/article?id=' . $createdId . '&saved=created');
 
@@ -101,6 +108,13 @@ class Article extends ResourceObject
             if ($updated->code === 404) {
                 $this->code = 404;
                 $this->body = ['message' => 'Article not found'];
+
+                return $this;
+            }
+
+            if ($updated->code >= 400) {
+                $this->code = $updated->code;
+                $this->body = is_array($updated->body) ? $updated->body : ['message' => 'Article update failed'];
 
                 return $this;
             }

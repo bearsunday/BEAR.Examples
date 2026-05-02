@@ -9,6 +9,8 @@ use BEAR\Resource\ResourceObject;
 use MyVendor\Cms\Entity\Article;
 use MyVendor\Cms\Query\ArticleQueryInterface;
 
+use function is_array;
+
 /** @property array{message: string}|array{article: Article}|array{} $body */
 class ArticleDelete extends ResourceObject
 {
@@ -39,6 +41,13 @@ class ArticleDelete extends ResourceObject
         if ($deleted->code === 404) {
             $this->code = 404;
             $this->body = ['message' => 'Article not found'];
+
+            return $this;
+        }
+
+        if ($deleted->code >= 400) {
+            $this->code = $deleted->code;
+            $this->body = is_array($deleted->body) ? $deleted->body : ['message' => 'Article delete failed'];
 
             return $this;
         }
