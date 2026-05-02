@@ -3,8 +3,13 @@
 ## Project shape
 
 Namespace `MyVendor\Cms\`. PSR-4 both under `src/` and `tests/`.
-Primary surface is the HAL+JSON App API; `src/Resource/Page/*` and
-`templates/Page/*` provide read-only Qiq HTML. No admin write UI or JS frontend yet.
+Primary surface is the HAL+JSON App API. `src/Resource/Page/*` +
+`templates/Page/*` provide Qiq HTML: public pages are read-only, and
+`src/Resource/Page/Admin/*` adds article create/update/delete forms
+that wrap the App resources. No JS frontend yet. Admin pages are
+currently unauthenticated — the typed `UserInterface` /
+`AdminUserInterface` boundary is designed in
+`docs/journal/auth-boundary-plan.md` and will land in a follow-up PR.
 
 ## Contexts
 

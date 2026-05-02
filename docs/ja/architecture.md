@@ -21,7 +21,7 @@ Doctrine Migrations + seed — real schema + same seed data
    ↓
 SQL files — production backend; Fake and real produce the same App body shape
    ↓
-Page resources + Qiq templates — 同じ query に対する read-only HTML projection
+Page resources + Qiq templates — HTML projection (公開ページは read-only、Page/Admin/* が App resource を wrap して write フォームを提供)
 ```
 
 各ステップは単独でテスト可能です。テストは Fake (高速・hermetic) でも
@@ -34,7 +34,7 @@ real (DB) でも実行でき、どちらも同じ Resource コードを動かし
 | Layer     | Directory            | Role                                               |
 |-----------|----------------------|----------------------------------------------------|
 | Bound     | `src/Resource/App/*` | HTTP method binding、Link/Embed、validation gates  |
-|           | `src/Resource/Page/*` | Read-only Qiq/Page HTML projection                 |
+|           | `src/Resource/Page/*` | Qiq/Page HTML — 公開は read-only、`Page/Admin/*` が App resource を wrap して write フォーム |
 | Domain    | `src/Entity/*`       | Final readonly classes: 不変データ                  |
 | Resource  | `src/Query/*`        | `#[DbQuery]` Read interfaces → entity              |
 |           | `src/Query/*`        | `#[DbQuery]` Write interfaces → `void`             |
@@ -76,8 +76,10 @@ BEAR.Sunday の `prod-hal-api-app` / `test-hal-api-app` 規約はそのまま使
 
 ## 意図的に *作らなかった* もの
 
-- 管理ルートの認証 / 認可。現在の Article 管理画面はローカル開発向けに
-  意図的に未認証です。
+- 管理ルートの認証 / 認可。`Page/Admin/*` は現在未認証です。型付きの
+  `UserInterface` / `AdminUserInterface` 境界は
+  [journal/auth-boundary-plan.md](journal/auth-boundary-plan.md) に設計済みで、
+  別 PR で実装予定です。
 - JavaScript で拡張した管理操作
 - キャッシュ無効化 (`#[Cacheable]`、`#[Purge]`) — フックポイントとして残しているが、
   リファレンスとしては不要
