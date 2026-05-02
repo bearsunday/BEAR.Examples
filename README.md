@@ -149,10 +149,10 @@ See [docs/resources.md](docs/resources.md) for the full URI + schema map.
 
 HTML Page resources are served by `composer serve` on
 `http://127.0.0.1:8081/`. Public pages include `/`, `/articlelist`, and
-`/article?id=1`. The current admin entry point is `/admin/articlelist`;
-create/edit/delete flows live under `/admin/article` and
-`/admin/articledelete`. This first admin version is intentionally
-unauthenticated for local development only.
+`/article?id=1`. The current admin entry point is `/admin/index`; article
+administration starts at `/admin/articlelist`, with create/edit/delete
+flows under `/admin/article` and `/admin/articledelete`. This first admin
+version is intentionally unauthenticated for local development only.
 
 ## CLI
 

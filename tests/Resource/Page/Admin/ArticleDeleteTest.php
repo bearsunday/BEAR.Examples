@@ -19,6 +19,7 @@ final class ArticleDeleteTest extends AbstractPageTestCase
         $html = $ro->toString();
         $this->assertStringContainsString('<h1 class="AdminArticleDelete">Delete Article</h1>', $html);
         $this->assertStringContainsString('<form class="DeleteForm" method="post" action="/admin/articledelete">', $html);
+        $this->assertStringContainsString('class="goAdminIndex"', $html);
         $this->assertStringContainsString('class="doDeleteArticle"', $html);
     }
 

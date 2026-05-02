@@ -15,6 +15,7 @@ final class ArticleListTest extends AbstractPageTestCase
         $this->assertSame(200, $ro->code);
         $html = $ro->toString();
         $this->assertStringContainsString('<h1 class="AdminArticleList">Article Administration</h1>', $html);
+        $this->assertStringContainsString('class="goAdminIndex"', $html);
         $this->assertStringContainsString('class="doCreateArticle" href="/admin/article"', $html);
         $this->assertStringContainsString('class="doUpdateArticle" href="/admin/article?id=', $html);
         $this->assertStringContainsString('class="doDeleteArticle" href="/admin/articledelete?id=', $html);

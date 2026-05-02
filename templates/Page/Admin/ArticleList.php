@@ -67,6 +67,7 @@ $qs = static function (array $params): string {
 <nav>
   <h2>Navigation</h2>
   <ul>
+    <li><a href="/admin/index" class="goAdminIndex">Admin home</a></li>
     <?php if ($page > 1): ?>
       <?php $prevUrl = '/admin/articlelist' . $qs(['status' => $filter['status'], 'page' => $page - 1, 'perPage' => $perPage]); ?>
       <li><a class="goPrev" {{a ['href' => $prevUrl] }}>Previous page</a></li>
