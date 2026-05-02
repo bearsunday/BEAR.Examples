@@ -104,7 +104,7 @@ header h1 {
   color: var(--brand-700);
 }
 
-.ArticleList, .CategoryList, .TagList {
+.ArticleList, .AuthorList, .CategoryList, .TagList {
   display: grid;
   gap: var(--space);
 }
@@ -113,6 +113,7 @@ header h1 {
   display: none;
 }
 
+.AuthorList .Author,
 .CategoryList .Category,
 .TagList .Tag,
 .ArticleList .Article {
@@ -138,15 +139,30 @@ header h1 {
   color: inherit;
 }
 
+.AuthorList .Author .name,
 .CategoryList .Category .name {
   font-family: var(--font-display);
   font-size: 1.25rem;
   margin: 0 0 0.25rem;
 }
 
+.AuthorList .Author .name a,
 .CategoryList .Category .name a {
   text-decoration: none;
   color: var(--brand-900);
+}
+
+.AuthorList .Author .email {
+  display: inline-block;
+  font-size: 0.875rem;
+  color: var(--gray-600);
+  margin-bottom: 0.5rem;
+}
+
+.AuthorList .Author .bio {
+  margin: 0;
+  font-size: 0.95rem;
+  color: var(--gray-900);
 }
 
 .CategoryList .Category .slug,

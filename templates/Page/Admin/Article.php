@@ -110,6 +110,7 @@ $nameFor = static function (array $entities, int $id): string {
 <nav>
   <h2>Navigation</h2>
   <ul>
+    <li><a href="/admin/index" class="goAdminIndex">Admin home</a></li>
     <li><a href="/admin/articlelist" class="goAdminArticleList">Back to article administration</a></li>
     <?php if ($isEdit && $article !== null): ?>
       <li><a href="/article?id={{a $article->id }}" class="goArticle">View public article</a></li>

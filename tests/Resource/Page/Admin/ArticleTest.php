@@ -19,6 +19,7 @@ final class ArticleTest extends AbstractPageTestCase
         $html = $ro->toString();
         $this->assertStringContainsString('<h1 class="AdminArticle">Create Article</h1>', $html);
         $this->assertStringContainsString('<form class="ArticleForm" method="post" action="/admin/article">', $html);
+        $this->assertStringContainsString('class="goAdminIndex"', $html);
         $this->assertStringContainsString('name="slug"', $html);
         $this->assertStringContainsString('name="authorId"', $html);
         $this->assertStringContainsString('name="categoryId"', $html);

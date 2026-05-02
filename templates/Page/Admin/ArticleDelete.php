@@ -23,6 +23,7 @@
 <nav>
   <h2>Navigation</h2>
   <ul>
+    <li><a href="/admin/index" class="goAdminIndex">Admin home</a></li>
     <li><a href="/admin/article?id={{a $article->id }}" class="doUpdateArticle">Back to edit</a></li>
     <li><a href="/admin/articlelist" class="goAdminArticleList">Back to article administration</a></li>
   </ul>
