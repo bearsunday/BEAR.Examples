@@ -3,7 +3,7 @@
 /* =====================================================================
  * level3.css — semantic redesign for BEAR.Cms reference CMS
  *
- *   Public side  : warm light surface, Fraunces editorial titles,
+ *   Public side  : warm light surface, Newsreader editorial titles,
  *                  hairline rules, generous reading rhythm.
  *   Admin side   : intentional dark canvas, Inter only, compact rows,
  *                  accent indigo. A tool, not a reading material.
@@ -326,6 +326,7 @@ body.public-index header {
   margin: -1px;
   overflow: hidden;
   clip: rect(0, 0, 0, 0);
+  clip-path: inset(50%);
   white-space: nowrap;
   border: 0;
 }
