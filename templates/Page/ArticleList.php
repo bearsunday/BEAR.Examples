@@ -62,10 +62,12 @@ $qs = static function (array $params): string {
 <nav class="Pagination">
   <ul>
     <?php if ($page > 1): ?>
-      <li><a class="goPrev" href="/articlelist{{= $qs(['categoryId' => $filter['categoryId'], 'tagId' => $filter['tagId'], 'authorId' => $filter['authorId'], 'status' => $filter['status'], 'page' => $page - 1, 'perPage' => $perPage]) }}">Previous page</a></li>
+      <?php $prevUrl = '/articlelist' . $qs(['categoryId' => $filter['categoryId'], 'tagId' => $filter['tagId'], 'authorId' => $filter['authorId'], 'status' => $filter['status'], 'page' => $page - 1, 'perPage' => $perPage]); ?>
+      <li><a class="goPrev" {{a ['href' => $prevUrl] }}>Previous page</a></li>
     <?php endif ?>
     <?php if ($hasNext): ?>
-      <li><a class="goNext" href="/articlelist{{= $qs(['categoryId' => $filter['categoryId'], 'tagId' => $filter['tagId'], 'authorId' => $filter['authorId'], 'status' => $filter['status'], 'page' => $page + 1, 'perPage' => $perPage]) }}">Next page</a></li>
+      <?php $nextUrl = '/articlelist' . $qs(['categoryId' => $filter['categoryId'], 'tagId' => $filter['tagId'], 'authorId' => $filter['authorId'], 'status' => $filter['status'], 'page' => $page + 1, 'perPage' => $perPage]); ?>
+      <li><a class="goNext" {{a ['href' => $nextUrl] }}>Next page</a></li>
     <?php endif ?>
   </ul>
 </nav>

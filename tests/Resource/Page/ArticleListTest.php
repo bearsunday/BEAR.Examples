@@ -37,6 +37,16 @@ final class ArticleListTest extends AbstractPageTestCase
         $html = $ro->toString();
 
         $this->assertStringContainsString('class="goNext"', $html);
+        $this->assertStringContainsString('href="/articlelist?page=2&amp;perPage=5"', $html);
+    }
+
+    public function testPreviousLinkEscapesQueryStringAttributes(): void
+    {
+        $ro = $this->resource->get('page://self/articlelist', ['page' => 2, 'perPage' => 5]);
+        $html = $ro->toString();
+
+        $this->assertStringContainsString('class="goPrev"', $html);
+        $this->assertStringContainsString('href="/articlelist?page=1&amp;perPage=5"', $html);
     }
 
     public function testListEscapesArticleTitles(): void

@@ -7,6 +7,7 @@ namespace MyVendor\Cms\Resource\Page;
 use MyVendor\Cms\AbstractPageTestCase;
 
 use function assert;
+use function uniqid;
 
 final class ArticleTest extends AbstractPageTestCase
 {
@@ -76,6 +77,28 @@ final class ArticleTest extends AbstractPageTestCase
         $html = $ro->toString();
 
         $this->assertStringContainsString('<div class="body"><p>Lorem ipsum', $html);
+    }
+
+    public function testMarkdownBodyEscapesRawHtmlAndUnsafeLinks(): void
+    {
+        $created = $this->resource->post('app://self/article', [
+            'slug' => 'unsafe-markdown-' . uniqid(),
+            'title' => 'Unsafe markdown regression',
+            'body' => "<script>alert(1)</script>\n\n[bad](javascript:alert(1))\n\n**safe**",
+            'authorId' => 1,
+            'categoryId' => 1,
+            'status' => 'draft',
+        ]);
+        $this->assertSame(201, $created->code);
+
+        $ro = $this->resource->get('page://self/article', ['id' => $created->body['id']]);
+        $html = $ro->toString();
+
+        $this->assertStringNotContainsString('<script>alert(1)</script>', $html);
+        $this->assertStringNotContainsString('href="javascript:alert(1)"', $html);
+        $this->assertStringContainsString('&lt;script&gt;alert(1)&lt;/script&gt;', $html);
+        $this->assertStringContainsString('<a>bad</a>', $html);
+        $this->assertStringContainsString('<strong>safe</strong>', $html);
     }
 
     public function testNotFoundReturns404(): void
