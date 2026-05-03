@@ -16,7 +16,7 @@
     <input type="hidden" class="id" value="{{h $article->id }}">
     <span class="slug">{{h $article->slug }}</span>
     <h2 class="title">{{h $article->title }}</h2>
-    <span class="status">{{h $article->status->value }}</span>
+    <span class="status" data-status="{{h $article->status->value }}">{{h $article->status->value }}</span>
     <?php $publishedAtLabel = $article->publishedAtLabel(); ?>
     <?php if ($publishedAtLabel !== null): ?>
       <time class="publishedAt" datetime="{{h $publishedAtLabel }}">{{h $publishedAtLabel }}</time>

@@ -18,7 +18,7 @@
           <a class="goArticle" href="/article?id={{h $article->id }}">{{h $article->title }}</a>
         </h2>
         <span class="slug">{{h $article->slug }}</span>
-        <span class="status">{{h $article->status->value }}</span>
+        <span class="status" data-status="{{h $article->status->value }}">{{h $article->status->value }}</span>
         <?php $publishedAtLabel = $article->publishedAtLabel(); ?>
         <?php if ($publishedAtLabel !== null): ?>
           <time class="publishedAt" datetime="{{h $publishedAtLabel }}">{{h $publishedAtLabel }}</time>
