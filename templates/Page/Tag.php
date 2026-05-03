@@ -1,11 +1,15 @@
 <?php
 /**
- * @var \MyVendor\Cms\Entity\Tag $tag
+ * @var \MyVendor\Cms\Entity\Tag|null $tag
  * @var list<\MyVendor\Cms\Entity\Article> $articles
  */
+if (! isset($tag) || $tag === null) {
+    throw new \MyVendor\Cms\Exception\TagNotFoundException();
+}
 ?>
 {{ setLayout('layout/Default') }}
-{{ setBlock('title') ~}}{{h $tag->name }} - BEAR.Cms Reference CMS{{ endBlock() }}
+{{ setBlock('bodyClass') ~}}public public-detail public-tag{{ endBlock() }}
+{{ setBlock('title') ~}}{{h $tag->name }} - MyVendor.Cms{{ endBlock() }}
 {{ setBlock('header') ~}}<h1 class="Tag">Tag Detail</h1>{{ endBlock() }}
 <main>
   <section class="Tag">
@@ -34,11 +38,8 @@
     <?php endforeach ?>
   </section>
 </main>
-<nav>
-  <h2>Links</h2>
+<nav class="Related">
   <ul>
-    <li><a href="/articlelist?tagId={{h $tag->id }}" class="goArticleList">All articles with this tag</a></li>
-    <li><a href="/taglist" class="goTagList">Browse tags</a></li>
-    <li><a href="/" class="goIndex">Home</a></li>
+    <li><a href="/articlelist?tagId={{h $tag->id }}" class="goArticleList">All articles tagged {{h $tag->name }}</a></li>
   </ul>
 </nav>

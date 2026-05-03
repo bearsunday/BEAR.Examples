@@ -10,17 +10,17 @@
  * @var list<int> $selectedTagIds
  * @var string|null $saved
  */
-$isEdit = $mode === 'edit';
+$isEdit = $mode === 'edit' && $article !== null;
 $title = (string) ($values['title'] ?? '');
 $slug = (string) ($values['slug'] ?? '');
 $body = (string) ($values['body'] ?? '');
 $status = (string) ($values['status'] ?? 'draft');
 $excerpt = (string) ($values['excerpt'] ?? '');
 $publishedAt = (string) ($values['publishedAt'] ?? '');
-$authorId = isset($values['authorId']) ? (int) $values['authorId'] : null;
 $categoryId = isset($values['categoryId']) ? (int) $values['categoryId'] : null;
 $heading = $isEdit ? 'Edit Article' : 'Create Article';
 $submit = $isEdit ? 'Update article' : 'Create article';
+$formAction = $isEdit ? '/admin/article?id=' . $article->id : '/admin/article';
 $nameFor = static function (array $entities, int $id): string {
     foreach ($entities as $entity) {
         if ($entity->id === $id) {
@@ -32,7 +32,8 @@ $nameFor = static function (array $entities, int $id): string {
 };
 ?>
 {{ setLayout('layout/Default') }}
-{{ setBlock('title') ~}}{{h $heading }} - BEAR.Cms Reference CMS{{ endBlock() }}
+{{ setBlock('bodyClass') ~}}admin admin-form admin-article{{ endBlock() }}
+{{ setBlock('title') ~}}{{h $heading }} - MyVendor.Cms{{ endBlock() }}
 {{ setBlock('header') ~}}<h1 class="AdminArticle">{{h $heading }}</h1>{{ endBlock() }}
 <main>
   <?php if ($saved === 'created'): ?>
@@ -52,23 +53,15 @@ $nameFor = static function (array $entities, int $id): string {
     </section>
   <?php endif ?>
 
-  <form class="ArticleForm" method="post" action="/admin/article">
-    <?php if ($isEdit && $article !== null): ?>
-      <input type="hidden" name="id" value="{{a $article->id }}">
+  <form class="ArticleForm" method="post" action="{{h $formAction }}">
+    <?php if ($isEdit): ?>
+      <input type="hidden" name="id" value="{{h $article->id }}">
       <p class="slug">Slug: <code>{{h $article->slug }}</code></p>
       <p class="Author">Author: <span class="name">{{h $nameFor($authors, $article->authorId) }}</span></p>
       <p class="Category">Category: <span class="name">{{h $nameFor($categories, $article->categoryId) }}</span></p>
     <?php else: ?>
       <label for="slug">Slug</label>
       <input id="slug" name="slug" type="text" value="{{a $slug }}" required>
-
-      <label for="authorId">Author</label>
-      <select id="authorId" name="authorId" required>
-        <option value="">Select author</option>
-        <?php foreach ($authors as $author): ?>
-          <option value="{{a $author->id }}" <?php if ($authorId === $author->id): ?>selected<?php endif ?>>{{h $author->name }}</option>
-        <?php endforeach ?>
-      </select>
 
       <label for="categoryId">Category</label>
       <select id="categoryId" name="categoryId" required>
@@ -112,9 +105,9 @@ $nameFor = static function (array $entities, int $id): string {
   <ul>
     <li><a href="/admin/index" class="goAdminIndex">Admin home</a></li>
     <li><a href="/admin/articlelist" class="goAdminArticleList">Back to article administration</a></li>
-    <?php if ($isEdit && $article !== null): ?>
-      <li><a href="/article?id={{a $article->id }}" class="goArticle">View public article</a></li>
-      <li><a href="/admin/articledelete?id={{a $article->id }}" class="doDeleteArticle">Delete article</a></li>
+    <?php if ($isEdit): ?>
+      <li><a href="/article?id={{h $article->id }}" class="goArticle">View public article</a></li>
+      <li><a href="/admin/articledelete?id={{h $article->id }}" class="doDeleteArticle">Delete article</a></li>
     <?php endif ?>
   </ul>
 </nav>

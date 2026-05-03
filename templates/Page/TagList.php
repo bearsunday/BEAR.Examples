@@ -4,7 +4,8 @@
  */
 ?>
 {{ setLayout('layout/Default') }}
-{{ setBlock('title') ~}}Tag List - BEAR.Cms Reference CMS{{ endBlock() }}
+{{ setBlock('bodyClass') ~}}public public-list public-taglist{{ endBlock() }}
+{{ setBlock('title') ~}}Tag List - MyVendor.Cms{{ endBlock() }}
 {{ setBlock('header') ~}}<h1 class="TagList">Tags</h1>{{ endBlock() }}
 <main>
   <section class="TagList">
@@ -24,12 +25,3 @@
     </ul>
   </section>
 </main>
-<nav>
-  <h2>Links</h2>
-  <ul>
-    <li><a href="/articlelist" class="goArticleList">Browse all articles</a></li>
-    <li><a href="/authorlist" class="goAuthorList">Browse authors</a></li>
-    <li><a href="/categorylist" class="goCategoryList">Browse categories</a></li>
-    <li><a href="/" class="goIndex">Home</a></li>
-  </ul>
-</nav>

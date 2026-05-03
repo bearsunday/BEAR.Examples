@@ -190,6 +190,35 @@ priority". When the entity's own fields can never collide with embed
 rels (which is enforced by §3 — embeds use taxonomy nouns, body fields
 are scalar), `+=` is the most semantically precise operator.
 
+### Page template not-found pattern
+
+Page resources that load a single primary entity by id return 404 with
+`body = ['message' => '<X> not found']`. The Qiq template still gets
+invoked on 4xx, so without a guard it warns when reading properties on
+the null entity. Throw a per-entity domain exception at the top of the
+template; the framework's `catch (Throwable)` path routes to
+`templates/Error.php`.
+
+```php
+<?php
+/**
+ * @var \MyVendor\Cms\Entity\Article|null $article
+ */
+if (! isset($article) || $article === null) {
+    throw new \MyVendor\Cms\Exception\ArticleNotFoundException();
+}
+?>
+```
+
+The exception is per-entity (`ArticleNotFoundException`,
+`AuthorNotFoundException`, …), not shared, mirroring the existing
+`MyVendor\Cms\Exception\*NotFoundException` family. Only the *primary*
+entity needs the guard; list-shaped vars are always lists (possibly
+empty), not null.
+
+Every Page test for such a resource includes
+`testNotFoundRendersErrorTemplate` so the warning regression is caught.
+
 ### Status codes
 | Method | Success | Not found | Validation fail |
 |--------|---------|-----------|-----------------|

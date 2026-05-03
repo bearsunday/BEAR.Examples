@@ -15,7 +15,8 @@ $qs = static function (array $params): string {
 };
 ?>
 {{ setLayout('layout/Default') }}
-{{ setBlock('title') ~}}Article List - BEAR.Cms Reference CMS{{ endBlock() }}
+{{ setBlock('bodyClass') ~}}public public-list public-articlelist{{ endBlock() }}
+{{ setBlock('title') ~}}Article List - MyVendor.Cms{{ endBlock() }}
 {{ setBlock('header') ~}}
 <h1 class="ArticleList">Article List</h1>
 <?php if ($category !== null): ?>
@@ -45,7 +46,7 @@ $qs = static function (array $params): string {
           <a class="goArticle" href="/article?id={{h $article->id }}">{{h $article->title }}</a>
         </h2>
         <span class="slug">{{h $article->slug }}</span>
-        <span class="status">{{h $article->status->value }}</span>
+        <span class="status" data-status="{{h $article->status->value }}">{{h $article->status->value }}</span>
         <?php $publishedAtLabel = $article->publishedAtLabel(); ?>
         <?php if ($publishedAtLabel !== null): ?>
           <time class="publishedAt" datetime="{{h $publishedAtLabel }}">{{h $publishedAtLabel }}</time>
@@ -58,8 +59,7 @@ $qs = static function (array $params): string {
     <?php endforeach ?>
   </section>
 </main>
-<nav>
-  <h2>Navigation</h2>
+<nav class="Pagination">
   <ul>
     <?php if ($page > 1): ?>
       <?php $prevUrl = '/articlelist' . $qs(['categoryId' => $filter['categoryId'], 'tagId' => $filter['tagId'], 'authorId' => $filter['authorId'], 'status' => $filter['status'], 'page' => $page - 1, 'perPage' => $perPage]); ?>
@@ -69,9 +69,5 @@ $qs = static function (array $params): string {
       <?php $nextUrl = '/articlelist' . $qs(['categoryId' => $filter['categoryId'], 'tagId' => $filter['tagId'], 'authorId' => $filter['authorId'], 'status' => $filter['status'], 'page' => $page + 1, 'perPage' => $perPage]); ?>
       <li><a class="goNext" {{a ['href' => $nextUrl] }}>Next page</a></li>
     <?php endif ?>
-    <li><a class="goAuthorList" href="/authorlist">Browse authors</a></li>
-    <li><a class="goCategoryList" href="/categorylist">Browse categories</a></li>
-    <li><a class="goTagList" href="/taglist">Browse tags</a></li>
-    <li><a href="/">Home</a></li>
   </ul>
 </nav>

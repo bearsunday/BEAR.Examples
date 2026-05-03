@@ -12,6 +12,7 @@ use MyVendor\Cms\Entity\Article as ArticleEntity;
 use MyVendor\Cms\Entity\Author;
 use MyVendor\Cms\Entity\Category;
 use MyVendor\Cms\Entity\Tag;
+use MyVendor\Cms\Exception\NoRegisteredAuthorException;
 use MyVendor\Cms\Query\ArticleQueryInterface;
 use MyVendor\Cms\Query\AuthorQueryInterface;
 use MyVendor\Cms\Query\CategoryQueryInterface;
@@ -75,6 +76,11 @@ class Article extends ResourceObject
         mixed $tagIds = [],
     ): static {
         $articleId = $this->intOrNull($id);
+        if ($articleId === null) {
+            // Stub until AdminUserInterface lands; see docs/journal/auth-boundary-plan.md.
+            $authorId = $this->defaultAuthorId();
+        }
+
         $values = $this->normaliseValues($articleId, [
             'slug' => $slug,
             'title' => $title,
@@ -201,7 +207,7 @@ class Article extends ResourceObject
             'authors' => $this->author->list(),
             'categories' => $this->category->list(),
             'tags' => $this->tag->list(),
-            'selectedTagIds' => $this->selectedTagIds($article, $values),
+            'selectedTagIds' => $this->normaliseTagIds($values['tagIds'] ?? []),
             'saved' => $saved,
         ];
     }
@@ -237,35 +243,22 @@ class Article extends ResourceObject
         ];
     }
 
-    /**
-     * @param array<string, mixed> $values
-     *
-     * @return list<int>
-     */
-    private function selectedTagIds(ArticleEntity|null $article, array $values): array
-    {
-        if (isset($values['tagIds']) && is_array($values['tagIds'])) {
-            /** @var list<int> $tagIds */
-            $tagIds = array_values(array_map(static fn ($id) => (int) $id, $values['tagIds']));
-
-            return $tagIds;
-        }
-
-        if ($article === null) {
-            return [];
-        }
-
-        /** @var list<int> $tagIds */
-        $tagIds = array_map(static fn ($tag) => $tag->id, $this->tag->listByArticle($article->id));
-
-        return $tagIds;
-    }
-
     private function nullableString(mixed $value): string|null
     {
         $string = trim((string) $value);
 
         return $string === '' ? null : $string;
+    }
+
+    /** @see docs/journal/auth-boundary-plan.md — removed once AdminUserInterface is injected. */
+    private function defaultAuthorId(): int
+    {
+        $authors = $this->author->list();
+        if ($authors === []) {
+            throw new NoRegisteredAuthorException('Cannot create an article without a registered author.');
+        }
+
+        return $authors[0]->id;
     }
 
     private function intOrNull(mixed $value): int|null

@@ -1,10 +1,14 @@
 <?php
 /**
- * @var \MyVendor\Cms\Entity\Author $author
+ * @var \MyVendor\Cms\Entity\Author|null $author
  */
+if (! isset($author) || $author === null) {
+    throw new \MyVendor\Cms\Exception\AuthorNotFoundException();
+}
 ?>
 {{ setLayout('layout/Default') }}
-{{ setBlock('title') ~}}{{h $author->name }} - BEAR.Cms Reference CMS{{ endBlock() }}
+{{ setBlock('bodyClass') ~}}public public-detail public-author{{ endBlock() }}
+{{ setBlock('title') ~}}{{h $author->name }} - MyVendor.Cms{{ endBlock() }}
 {{ setBlock('header') ~}}<h1 class="Author">Author Detail</h1>{{ endBlock() }}
 <main>
   <section class="Author">
@@ -14,12 +18,8 @@
     <p class="bio">{{h $author->bio }}</p>
   </section>
 </main>
-<nav>
-  <h2>Links</h2>
+<nav class="Related">
   <ul>
-    <li><a href="/articlelist?authorId={{h $author->id }}" class="goArticleList" title="Articles by this author.">Articles by this author</a></li>
-    <li><a href="/articlelist" class="goArticleList" title="Browse all articles.">Browse all articles</a></li>
-    <li><a href="/authorlist" class="goAuthorList">Browse authors</a></li>
-    <li><a href="/" class="goIndex">Home</a></li>
+    <li><a href="/articlelist?authorId={{h $author->id }}" class="goArticleList" title="Articles by this author.">Articles by {{h $author->name }}</a></li>
   </ul>
 </nav>

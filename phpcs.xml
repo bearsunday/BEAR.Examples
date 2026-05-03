@@ -65,4 +65,14 @@
         <include-pattern>src/Module/*</include-pattern>
         <include-pattern>tests/*</include-pattern>
     </rule>
+
+    <!--
+        BearSunday.Di.NoNewService forbids `new` in /Resource/, /Service/,
+        /Domain/. The path-based trigger also fires under tests/Resource/*,
+        but unit tests legitimately instantiate Page resources directly to
+        drive narrow exception paths (see ArticleTest::testCreateThrowsWhenNoAuthorRegistered).
+    -->
+    <rule ref="BearSunday.Di.NoNewService">
+        <exclude-pattern>tests/*</exclude-pattern>
+    </rule>
 </ruleset>

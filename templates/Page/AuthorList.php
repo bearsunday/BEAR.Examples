@@ -4,7 +4,8 @@
  */
 ?>
 {{ setLayout('layout/Default') }}
-{{ setBlock('title') ~}}Author List - BEAR.Cms Reference CMS{{ endBlock() }}
+{{ setBlock('bodyClass') ~}}public public-list public-authorlist{{ endBlock() }}
+{{ setBlock('title') ~}}Author List - MyVendor.Cms{{ endBlock() }}
 {{ setBlock('header') ~}}<h1 class="AuthorList">Authors</h1>{{ endBlock() }}
 <main>
   <section class="AuthorList">
@@ -25,12 +26,3 @@
     <?php endforeach ?>
   </section>
 </main>
-<nav>
-  <h2>Links</h2>
-  <ul>
-    <li><a href="/articlelist" class="goArticleList">Browse all articles</a></li>
-    <li><a href="/categorylist" class="goCategoryList">Categories</a></li>
-    <li><a href="/taglist" class="goTagList">Tags</a></li>
-    <li><a href="/" class="goIndex">Home</a></li>
-  </ul>
-</nav>

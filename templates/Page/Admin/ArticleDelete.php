@@ -4,14 +4,15 @@
  */
 ?>
 {{ setLayout('layout/Default') }}
-{{ setBlock('title') ~}}Delete Article - BEAR.Cms Reference CMS{{ endBlock() }}
+{{ setBlock('bodyClass') ~}}admin admin-confirm admin-articledelete{{ endBlock() }}
+{{ setBlock('title') ~}}Delete Article - MyVendor.Cms{{ endBlock() }}
 {{ setBlock('header') ~}}<h1 class="AdminArticleDelete">Delete Article</h1>{{ endBlock() }}
 <main>
   <section class="Article">
     <input type="hidden" class="id" value="{{a $article->id }}">
     <h2 class="title">{{h $article->title }}</h2>
     <span class="slug">{{h $article->slug }}</span>
-    <span class="status">{{h $article->status->value }}</span>
+    <span class="status" data-status="{{h $article->status->value }}">{{h $article->status->value }}</span>
   </section>
 
   <form class="DeleteForm" method="post" action="/admin/articledelete">

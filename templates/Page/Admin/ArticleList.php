@@ -14,7 +14,8 @@ $qs = static function (array $params): string {
 };
 ?>
 {{ setLayout('layout/Default') }}
-{{ setBlock('title') ~}}Article Administration - BEAR.Cms Reference CMS{{ endBlock() }}
+{{ setBlock('bodyClass') ~}}admin admin-list admin-articlelist{{ endBlock() }}
+{{ setBlock('title') ~}}Article Administration - MyVendor.Cms{{ endBlock() }}
 {{ setBlock('header') ~}}<h1 class="AdminArticleList">Article Administration</h1>{{ endBlock() }}
 <main>
   <?php if ($deleted): ?>
@@ -54,7 +55,7 @@ $qs = static function (array $params): string {
           <a class="goArticle" {{a ['href' => $viewUrl] }}>{{h $article->title }}</a>
         </h2>
         <span class="slug">{{h $article->slug }}</span>
-        <span class="status">{{h $article->status->value }}</span>
+        <span class="status" data-status="{{h $article->status->value }}">{{h $article->status->value }}</span>
         <nav class="AdminActions">
           <a class="doUpdateArticle" {{a ['href' => $editUrl] }}>Edit</a>
           <a class="doDeleteArticle" {{a ['href' => $deleteUrl] }}>Delete</a>

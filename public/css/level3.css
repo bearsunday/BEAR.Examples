@@ -1,281 +1,1057 @@
-/* level3.css — Production quality */
-@import 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@500;600&display=swap';
+@import url('https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=Inter:wght@400;500;600;700&display=swap');
 
+/* =====================================================================
+ * level3.css — semantic redesign for BEAR.Cms reference CMS
+ *
+ *   Public side  : warm light surface, Newsreader editorial titles,
+ *                  hairline rules, generous reading rhythm.
+ *   Admin side   : intentional dark canvas, Inter only, compact rows,
+ *                  accent indigo. A tool, not a reading material.
+ *
+ * Class names mirror ALPS profile ids (PascalCase) and BEAR semantic
+ * descriptors (lowerCamelCase). Body classes carry context: `public`
+ * vs `admin` and `*-list` / `*-detail` / `*-confirm` etc.
+ *
+ * Chapters
+ *   1.  Tokens
+ *   2.  Reset & root shell
+ *   3.  Public — typography
+ *   4.  Public — index
+ *   5.  Public — article list
+ *   6.  Public — article detail
+ *   7.  Public — taxonomy detail
+ *   8.  Public — taxonomy list
+ *   9.  Admin — shell
+ *  10.  Admin — toolbar
+ *  11.  Admin — index hub
+ *  12.  Admin — article list
+ *  13.  Admin — form
+ *  14.  Admin — confirm
+ *  15.  Status atom
+ *  16.  Footer
+ * =====================================================================*/
+
+/* 1. Tokens ---------------------------------------------------------- */
 :root {
-  --brand-50: #faf8f5;
-  --brand-100: #f0ece4;
-  --brand-200: #d9cfb9;
-  --brand-600: #8a7350;
-  --brand-700: #6b5839;
-  --brand-900: #2c2518;
-  --gray-100: #f6f6f4;
-  --gray-300: #d8d6d2;
-  --gray-600: #6c6a66;
-  --gray-900: #1f1d1a;
-  --font-display: 'Playfair Display', georgia, serif;
-  --font-sans: 'Inter', system-ui, sans-serif;
-  --transition: 300ms ease;
-  --space: 1rem;
+  /* Public palette — warm near-white, deep ink */
+  --surface:        oklch(0.995 0.003 90);
+  --surface-sunk:   oklch(0.975 0.005 90);
+  --ink:            oklch(0.20 0.012 270);
+  --ink-soft:       oklch(0.46 0.010 270);
+  --ink-muted:      oklch(0.62 0.008 270);
+  --rule:           oklch(0.91 0.005 270);
+  --rule-strong:    oklch(0.82 0.006 270);
+  --accent:         oklch(0.50 0.16 268);
+  --accent-soft:    oklch(0.95 0.04 268);
+  --accent-hover:   oklch(0.42 0.18 268);
+
+  /* Status — independent of theme */
+  --status-published: oklch(0.62 0.16 158);
+  --status-draft:     oklch(0.74 0.13 76);
+  --status-archived:  oklch(0.55 0.01 270);
+  --danger:           oklch(0.55 0.20 25);
+  --danger-soft:      oklch(0.96 0.03 25);
+
+  /* Typography */
+  --font-sans:    'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-serif:   'Newsreader', 'Iowan Old Style', 'Charter', 'Palatino Linotype', Georgia, serif;
+  --font-mono:    ui-monospace, 'SF Mono', 'JetBrains Mono', Menlo, Consolas, monospace;
+
+  /* Fluid type scale */
+  --step--1: clamp(0.78rem, 0.76rem + 0.10vw, 0.84rem);
+  --step-0:  clamp(0.95rem, 0.92rem + 0.15vw, 1.05rem);
+  --step-1:  clamp(1.10rem, 1.05rem + 0.25vw, 1.25rem);
+  --step-2:  clamp(1.35rem, 1.20rem + 0.75vw, 1.75rem);
+  --step-3:  clamp(1.75rem, 1.40rem + 1.75vw, 2.75rem);
+  --step-4:  clamp(2.25rem, 1.60rem + 3.25vw, 4.00rem);
+
+  /* Rhythm */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4.5rem;
+  --space-9: 6rem;
+
+  --radius-1: 4px;
+  --radius-2: 8px;
+  --radius-pill: 999px;
+
+  --measure: 64ch;
+  --gutter: clamp(1rem, 4vw, 2.5rem);
+
+  --duration-quick: 120ms;
+  --duration-base:  200ms;
+  --ease: cubic-bezier(0.2, 0, 0, 1);
 }
 
-* { box-sizing: border-box; }
+/* Public dark mode (system preference) */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --surface:      oklch(0.16 0.010 270);
+    --surface-sunk: oklch(0.20 0.012 270);
+    --ink:          oklch(0.95 0.005 270);
+    --ink-soft:     oklch(0.72 0.010 270);
+    --ink-muted:    oklch(0.55 0.010 270);
+    --rule:         oklch(0.28 0.012 270);
+    --rule-strong:  oklch(0.40 0.012 270);
+    --accent:       oklch(0.78 0.16 268);
+    --accent-soft:  oklch(0.28 0.06 268);
+    --accent-hover: oklch(0.88 0.14 268);
+    --danger-soft:  oklch(0.28 0.08 25);
+  }
+}
 
+/* Admin theme — always dark, regardless of system preference. */
+body.admin {
+  --surface:      oklch(0.155 0.012 270);
+  --surface-sunk: oklch(0.205 0.014 270);
+  --ink:          oklch(0.96 0.005 270);
+  --ink-soft:     oklch(0.72 0.010 270);
+  --ink-muted:    oklch(0.55 0.010 270);
+  --rule:         oklch(0.27 0.014 270);
+  --rule-strong:  oklch(0.42 0.014 270);
+  --accent:       oklch(0.78 0.16 268);
+  --accent-soft:  oklch(0.28 0.07 268);
+  --accent-hover: oklch(0.88 0.14 268);
+  --danger:       oklch(0.72 0.18 25);
+  --danger-soft:  oklch(0.32 0.10 25);
+}
+
+/* 2. Reset & root shell --------------------------------------------- */
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
 body {
-  font-family: var(--font-sans);
-  color: var(--gray-900);
-  background: var(--brand-50);
   margin: 0;
-  padding: 0;
-  line-height: 1.65;
+  background: var(--surface);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: var(--step-0);
+  line-height: 1.6;
+  font-feature-settings: 'cv11', 'ss01', 'ss03';
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
-header, main, nav, footer {
-  max-width: 48rem;
-  margin: 0 auto;
-  padding: calc(var(--space) * 1.5);
+a {
+  color: var(--accent);
+  text-decoration: none;
+  text-underline-offset: 0.18em;
+  text-decoration-thickness: 1px;
+  transition: color var(--duration-quick) var(--ease);
+}
+a:hover { color: var(--accent-hover); text-decoration: underline; }
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: var(--radius-1);
+}
+
+img, svg { display: block; max-width: 100%; }
+
+.shell, main, header > *, footer > * {
+  max-width: 72rem;
+  margin-inline: auto;
+  padding-inline: var(--gutter);
 }
 
 header {
-  border-bottom: 1px solid var(--brand-200);
-  padding-bottom: var(--space);
-  margin-bottom: var(--space);
+  border-bottom: 1px solid var(--rule);
+  padding-block: var(--space-5);
 }
 
-header h1 {
-  font-family: var(--font-display);
-  font-size: 1rem;
+header > h1 {
+  font-family: var(--font-serif);
   font-weight: 500;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--gray-600);
-  margin: 0;
+  font-variation-settings: 'opsz' 36;
+  font-size: var(--step-2);
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+  margin-block: 0;
+  color: var(--ink);
 }
 
-.Article .title {
-  font-family: var(--font-display);
-  font-size: 2.25rem;
+main { padding-block: var(--space-7); }
+
+main > nav,
+body > nav:not(.SiteNav) {
+  margin-top: var(--space-7);
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--rule);
+  max-width: 72rem;
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+main > nav h2,
+body > nav:not(.SiteNav) h2 {
+  font-size: var(--step--1);
   font-weight: 600;
-  line-height: 1.2;
-  color: var(--brand-900);
-  margin: 0 0 var(--space);
-}
-
-.Article .status {
-  display: inline-block;
-  font-size: 0.75rem;
-  font-weight: 500;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  padding: 0.125rem 0.5rem;
-  border-radius: 2px;
-  background: var(--brand-100);
-  color: var(--brand-700);
+  color: var(--ink-muted);
+  margin: 0 0 var(--space-3);
 }
 
-.Article .publishedAt {
-  display: block;
-  font-size: 0.875rem;
-  color: var(--gray-600);
-  margin: var(--space) 0;
-}
-
-.Article .excerpt {
-  font-size: 1.1rem;
-  font-style: italic;
-  color: var(--gray-600);
-  border-left: 3px solid var(--brand-200);
-  padding-left: var(--space);
-  margin: calc(var(--space) * 1.5) 0;
-}
-
-.Article .body {
-  font-size: 1rem;
-  line-height: 1.8;
-}
-
-.Author, .Category, .Tag {
-  display: inline-block;
-  font-size: 0.875rem;
-  margin-right: var(--space);
-}
-
-.Author .name, .Category .name, .Tag .name {
-  font-weight: 500;
-  color: var(--brand-700);
-}
-
-.ArticleList, .AuthorList, .CategoryList, .TagList {
-  display: grid;
-  gap: var(--space);
-}
-
-.ArticleList > .page, .ArticleList > .perPage {
-  display: none;
-}
-
-.AuthorList .Author,
-.CategoryList .Category,
-.TagList .Tag,
-.ArticleList .Article {
-  display: block;
-  margin: 0;
-  padding: var(--space);
-  background: white;
-  border: 1px solid var(--brand-200);
-  border-radius: 4px;
-  font-size: 1rem;
-}
-
-.TagList ul {
+main > nav ul,
+body > nav:not(.SiteNav) ul {
   list-style: none;
   padding: 0;
   margin: 0;
-  display: grid;
-  gap: var(--space);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4) var(--space-6);
 }
 
-.TagList .Tag a {
-  text-decoration: none;
-  color: inherit;
+main > nav a,
+body > nav:not(.SiteNav) a {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
 }
 
-.AuthorList .Author .name,
-.CategoryList .Category .name {
-  font-family: var(--font-display);
-  font-size: 1.25rem;
-  margin: 0 0 0.25rem;
-}
-
-.AuthorList .Author .name a,
-.CategoryList .Category .name a {
-  text-decoration: none;
-  color: var(--brand-900);
-}
-
-.AuthorList .Author .email {
-  display: inline-block;
+/* Site nav (top bar across all pages) ------------------------------- */
+.SiteNav {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-5);
+  max-width: 72rem;
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+  padding-block: var(--space-3);
+  border-bottom: 1px solid var(--rule);
+  font-family: var(--font-sans);
   font-size: 0.875rem;
-  color: var(--gray-600);
-  margin-bottom: 0.5rem;
 }
 
-.AuthorList .Author .bio {
+.SiteNav .brand {
+  font-family: var(--font-serif);
+  font-weight: 500;
+  font-variation-settings: 'opsz' 18;
+  font-size: var(--step-0);
+  letter-spacing: -0.010em;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.SiteNav .brand:hover { color: var(--accent); }
+
+.SiteNav .browse {
+  list-style: none;
+  padding: 0;
   margin: 0;
-  font-size: 0.95rem;
-  color: var(--gray-900);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-5);
 }
 
-.CategoryList .Category .slug,
-.TagList .Tag .slug {
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 0.75rem;
-  color: var(--gray-600);
-  margin-right: 0.5rem;
-}
-
-.CategoryList .Category .parentId {
-  font-size: 0.75rem;
-  color: var(--gray-600);
-}
-
-.CategoryList .Category .description {
-  margin: 0.5rem 0 0;
-  font-size: 0.95rem;
-  color: var(--gray-900);
-}
-
-.TagList .Tag .name {
-  font-family: var(--font-display);
-  font-size: 1.1rem;
-  margin-right: 0.5rem;
-}
-
-.ArticleList .Article .title {
-  font-size: 1.5rem;
-  margin: 0 0 0.5rem;
-}
-
-.ArticleList .Article .title a {
+.SiteNav .browse a {
+  color: var(--ink-muted);
   text-decoration: none;
-  color: var(--brand-900);
 }
 
-.ArticleList .Article .slug {
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 0.75rem;
-  color: var(--gray-600);
-  margin-right: 0.5rem;
-}
+.SiteNav .browse a:hover { color: var(--ink); }
 
-nav {
-  border-top: 1px solid var(--brand-200);
-  padding-top: var(--space);
-  margin-top: calc(var(--space) * 2);
-}
-
-nav h2 {
-  font-size: 0.75rem;
-  font-weight: 500;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: var(--gray-600);
-  margin: 0 0 var(--space);
-}
-
-nav ul { list-style: none; padding: 0; margin: 0; }
-nav li { margin: 0.5rem 0; }
-
-nav a {
-  color: var(--brand-700);
+.SiteNav .goSignIn {
+  margin-inline-start: auto;
+  color: var(--ink-muted);
   text-decoration: none;
-  border-bottom: 1px solid transparent;
-  transition: border-color var(--transition);
-}
-
-nav a:hover { border-bottom-color: var(--brand-700); }
-
-form {
-  background: var(--gray-100);
-  padding: var(--space);
-  margin: var(--space) 0;
-  border: 1px solid var(--gray-300);
-}
-
-form label { display: block; font-size: 0.875rem; margin-bottom: 0.25rem; color: var(--gray-600); }
-form input, form textarea, form select {
-  font-family: var(--font-sans);
-  font-size: 1rem;
-  padding: 0.5rem;
-  border: 1px solid var(--gray-300);
-  background: white;
-  width: 100%;
-  margin-bottom: var(--space);
-}
-
-button, [type="submit"] {
-  font-family: var(--font-sans);
-  font-size: 0.875rem;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
   font-weight: 500;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.10em;
   text-transform: uppercase;
-  padding: 0.75rem 1.5rem;
-  border: 1px solid var(--brand-900);
-  background: white;
-  color: var(--brand-900);
+  padding: 0.45em 0.85em;
+  border: 1px solid var(--rule-strong);
+  border-radius: var(--radius-pill);
+  white-space: nowrap;
+}
+
+.SiteNav .goSignIn:hover {
+  color: var(--ink);
+  border-color: var(--ink);
+}
+
+input[type="hidden"] { display: none; }
+.id, .page, .perPage { display: none; }
+
+/* 3. Public — typography -------------------------------------------- */
+body.public h2,
+body.public h3 {
+  font-family: var(--font-serif);
+  font-weight: 500;
+  font-variation-settings: 'opsz' 24;
+  letter-spacing: -0.010em;
+  color: var(--ink);
+  margin: 0;
+}
+
+body.public main p { color: var(--ink); max-width: var(--measure); }
+
+body.public .slug {
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  letter-spacing: 0.02em;
+  color: var(--ink-muted);
+  text-transform: lowercase;
+}
+
+body.public .role {
+  font-family: var(--font-sans);
+  text-transform: uppercase;
+  letter-spacing: 0.10em;
+  font-weight: 600;
+  font-size: 0.7rem;
+  color: var(--ink-muted);
+}
+
+/* 4. Public — index -------------------------------------------------- */
+/* The home page is just the article list. SiteNav above carries the
+ * brand, so the page-level <header> collapses entirely and the list
+ * starts immediately. The H1 stays in the DOM as sr-only for a11y. */
+body.public-index header {
+  padding: 0;
+  border: 0;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+body.public-index main { padding-block: var(--space-6) var(--space-7); }
+
+body.public-index main .ArticleList {
+  display: flex;
+  flex-direction: column;
+}
+
+/* 5. Public — article list ------------------------------------------ */
+body.public-list .ArticleList,
+body.public-index .ArticleList {
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid var(--rule);
+}
+
+body.public-list .ArticleList .Article,
+body.public-index .ArticleList .Article {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: var(--space-2) var(--space-5);
+  align-items: baseline;
+  padding-block: var(--space-5);
+  border-bottom: 1px solid var(--rule);
+}
+
+body.public-list .ArticleList .Article .title,
+body.public-index .ArticleList .Article .title {
+  grid-column: 1;
+  font-size: var(--step-2);
+  line-height: 1.2;
+  font-weight: 500;
+}
+
+body.public-list .ArticleList .Article .title a,
+body.public-index .ArticleList .Article .title a {
+  color: var(--ink);
+  background-image: linear-gradient(var(--ink), var(--ink));
+  background-size: 0 1px;
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  transition: background-size var(--duration-base) var(--ease);
+  text-decoration: none;
+}
+body.public-list .ArticleList .Article .title a:hover,
+body.public-index .ArticleList .Article .title a:hover {
+  background-size: 100% 1px;
+  color: var(--ink);
+}
+
+body.public-list .ArticleList .Article .publishedAt,
+body.public-index .ArticleList .Article .publishedAt {
+  grid-column: 2;
+  grid-row: 1;
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  color: var(--ink-muted);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+body.public-list .ArticleList .Article .slug,
+body.public-index .ArticleList .Article .slug { grid-column: 1; }
+
+body.public-list .ArticleList .Article .status,
+body.public-index .ArticleList .Article .status { grid-column: 1; }
+
+body.public-list .ArticleList .Article .excerpt,
+body.public-index .ArticleList .Article .excerpt {
+  grid-column: 1 / -1;
+  color: var(--ink-soft);
+  margin: var(--space-1) 0 0;
+  max-width: var(--measure);
+}
+
+body.public-list header p {
+  color: var(--ink-soft);
+  margin-block: var(--space-3) 0;
+  font-size: var(--step-0);
+}
+body.public-list header p .name { color: var(--ink); font-weight: 600; }
+
+/* 6. Public — article detail ---------------------------------------- */
+body.public-article main {
+  display: grid;
+  grid-template-columns: minmax(0, var(--measure)) minmax(0, 22rem);
+  gap: var(--space-8);
+  align-items: start;
+  max-width: 88rem;
+}
+
+body.public-article .Article > .slug { display: none; }
+
+body.public-article .Article .title {
+  font-family: var(--font-serif);
+  font-weight: 500;
+  font-variation-settings: 'opsz' 56;
+  font-size: var(--step-4);
+  line-height: 1.10;
+  letter-spacing: -0.025em;
+  margin: 0 0 var(--space-3);
+}
+
+body.public-article .Article .publishedAt {
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  color: var(--ink-muted);
+  font-variant-numeric: tabular-nums;
+  display: inline-block;
+  margin-right: var(--space-4);
+}
+
+body.public-article .Article .excerpt {
+  font-family: var(--font-serif);
+  font-variation-settings: 'opsz' 16;
+  font-style: italic;
+  font-size: var(--step-1);
+  line-height: 1.55;
+  color: var(--ink-soft);
+  border-left: 2px solid var(--rule-strong);
+  padding-left: var(--space-4);
+  margin: var(--space-5) 0;
+}
+
+body.public-article .Article .body {
+  margin-top: var(--space-6);
+  font-size: var(--step-1);
+  line-height: 1.75;
+}
+body.public-article .Article .body p { margin: 0 0 var(--space-5); }
+body.public-article .Article .body h2,
+body.public-article .Article .body h3 {
+  font-family: var(--font-serif);
+  font-weight: 500;
+  margin-block: var(--space-7) var(--space-3);
+}
+body.public-article .Article .body code {
+  font-family: var(--font-mono);
+  font-size: 0.95em;
+  background: var(--surface-sunk);
+  padding: 0.1em 0.35em;
+  border-radius: var(--radius-1);
+}
+
+body.public-article .ArticleMeta {
+  position: sticky;
+  top: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  font-size: var(--step--1);
+  padding: var(--space-5);
+  border-left: 1px solid var(--rule);
+}
+
+body.public-article .ArticleMeta section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+body.public-article .ArticleMeta .name {
+  font-family: var(--font-sans);
+  font-size: var(--step-0);
+  font-weight: 500;
+  color: var(--ink);
+}
+
+body.public-article .ArticleMeta .Tag {
+  display: inline-block;
+  margin-right: var(--space-2);
+}
+body.public-article .ArticleMeta .TagSet > .role {
+  display: block;
+  margin-bottom: var(--space-2);
+}
+body.public-article .ArticleMeta .Tag .name {
+  font-size: var(--step--1);
+  font-weight: 500;
+}
+body.public-article .ArticleMeta .Tag .slug { display: none; }
+body.public-article .ArticleMeta a { color: var(--ink); }
+body.public-article .ArticleMeta a:hover { color: var(--accent); }
+
+body.public-article .Article > .status { display: none; }
+
+@media (max-width: 60rem) {
+  body.public-article main { grid-template-columns: 1fr; gap: var(--space-6); }
+  body.public-article .ArticleMeta {
+    position: static;
+    border-left: 0;
+    border-top: 1px solid var(--rule);
+    padding: var(--space-5) 0 0;
+  }
+}
+
+/* 7. Public — taxonomy detail (Author / Category / Tag) ------------- */
+body.public-detail:not(.public-article) main {
+  max-width: 56rem;
+}
+
+body.public-detail .Author,
+body.public-detail .Category,
+body.public-detail .Tag {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: var(--space-2) var(--space-5);
+  padding-block: var(--space-5);
+  border-bottom: 1px solid var(--rule);
+}
+body.public-detail .Author > h2,
+body.public-detail .Category > h2,
+body.public-detail .Tag > h2 {
+  grid-column: 1 / -1;
+  font-size: var(--step-2);
+}
+body.public-detail .Author dt,
+body.public-detail .Category dt,
+body.public-detail .Tag dt { display: none; }
+
+/* 8. Public — taxonomy list ----------------------------------------- */
+body.public-list .AuthorList,
+body.public-list .CategoryList,
+body.public-list .TagList {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+  gap: var(--space-1) var(--space-6);
+  border-top: 1px solid var(--rule);
+}
+body.public-list .AuthorList .Author,
+body.public-list .CategoryList .Category,
+body.public-list .TagList .Tag {
+  padding-block: var(--space-4);
+  border-bottom: 1px solid var(--rule);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+body.public-list .AuthorList .name,
+body.public-list .CategoryList .name,
+body.public-list .TagList .name {
+  font-family: var(--font-serif);
+  font-weight: 500;
+  font-size: var(--step-1);
+  color: var(--ink);
+}
+
+/* 9. Admin — shell --------------------------------------------------- */
+body.admin {
+  font-family: var(--font-sans);
+  font-feature-settings: 'cv11', 'ss01', 'tnum';
+}
+
+body.admin header {
+  background: var(--surface);
+  border-bottom: 1px solid var(--rule);
+  padding-block: var(--space-4);
+}
+
+body.admin header > h1 {
+  font-family: var(--font-sans);
+  font-size: var(--step-1);
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+body.admin header > h1::before {
+  content: 'admin';
+  display: inline-flex;
+  align-items: center;
+  height: 1.4rem;
+  padding: 0 var(--space-2);
+  background: var(--accent-soft);
+  color: var(--accent);
+  border: 1px solid color-mix(in oklab, var(--accent) 35%, transparent);
+  border-radius: var(--radius-1);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-family: var(--font-mono);
+}
+
+body.admin main { padding-block: var(--space-6); }
+
+body.admin h2 {
+  font-family: var(--font-sans);
+  font-size: var(--step-1);
+  font-weight: 600;
+  margin: 0 0 var(--space-3);
+  color: var(--ink);
+}
+
+/* 10. Admin — toolbar / actions ------------------------------------- */
+body.admin .AdminActions {
+  display: flex;
+  gap: var(--space-2);
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+body.admin .AdminActions a,
+body.admin button[type="submit"] {
+  display: inline-flex;
+  align-items: center;
+  height: 2rem;
+  padding: 0 var(--space-3);
+  font-size: var(--step--1);
+  font-weight: 500;
+  font-family: inherit;
+  color: var(--ink);
+  background: transparent;
+  border: 1px solid var(--rule-strong);
+  border-radius: var(--radius-1);
   cursor: pointer;
-  transition: all var(--transition);
+  text-decoration: none;
+  transition: border-color var(--duration-quick) var(--ease),
+              background var(--duration-quick) var(--ease),
+              color var(--duration-quick) var(--ease);
+}
+body.admin .AdminActions a:hover,
+body.admin button[type="submit"]:hover {
+  border-color: var(--accent);
+  color: var(--accent);
 }
 
-button:hover, [type="submit"]:hover {
-  background: var(--brand-900);
-  color: var(--brand-50);
+/* Primary action — solid */
+body.admin .AdminActions .doCreateArticle,
+body.admin form.ArticleForm button[type="submit"] {
+  background: var(--accent);
+  color: oklch(0.99 0 0);
+  border-color: var(--accent);
+}
+body.admin .AdminActions .doCreateArticle:hover,
+body.admin form.ArticleForm button[type="submit"]:hover {
+  background: var(--accent-hover);
+  border-color: var(--accent-hover);
+  color: oklch(0.99 0 0);
 }
 
+/* Destructive action — outline only */
+body.admin .AdminActions .doDeleteArticle,
+body.admin form.DeleteForm button[type="submit"] {
+  border-color: color-mix(in oklab, var(--danger) 50%, transparent);
+  color: var(--danger);
+}
+body.admin .AdminActions .doDeleteArticle:hover,
+body.admin form.DeleteForm button[type="submit"]:hover {
+  background: var(--danger-soft);
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
+/* Filter form */
+body.admin .AdminFilter {
+  display: flex;
+  gap: var(--space-3);
+  align-items: center;
+  margin-block: var(--space-5);
+  padding: var(--space-3);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-2);
+  background: var(--surface-sunk);
+}
+body.admin .AdminFilter label {
+  font-size: var(--step--1);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink-muted);
+  font-weight: 600;
+}
+body.admin .AdminFilter select {
+  height: 2rem;
+  padding: 0 var(--space-2);
+  background: var(--surface);
+  color: var(--ink);
+  border: 1px solid var(--rule-strong);
+  border-radius: var(--radius-1);
+  font-family: inherit;
+  font-size: var(--step--1);
+}
+
+body.admin .notice {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  background: var(--accent-soft);
+  color: var(--accent);
+  border: 1px solid color-mix(in oklab, var(--accent) 35%, transparent);
+  border-radius: var(--radius-1);
+  font-size: var(--step--1);
+  margin-block: 0 var(--space-4);
+}
+body.admin .notice::before {
+  content: '✓';
+  font-weight: 700;
+}
+
+/* 11. Admin — index hub --------------------------------------------- */
+body.admin-index .AdminIndex { max-width: 36rem; }
+
+body.admin-index .AdminIndex h2 {
+  font-size: var(--step--1);
+  text-transform: uppercase;
+  letter-spacing: 0.10em;
+  color: var(--ink-muted);
+  margin-bottom: var(--space-3);
+}
+
+body.admin-index .AdminIndex ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid var(--rule);
+}
+
+body.admin-index .AdminIndex li { border-bottom: 1px solid var(--rule); }
+
+body.admin-index .AdminIndex a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-4) var(--space-2);
+  color: var(--ink);
+  font-size: var(--step-1);
+  font-weight: 500;
+  text-decoration: none;
+}
+
+body.admin-index .AdminIndex a::after {
+  content: '→';
+  color: var(--ink-muted);
+  font-family: var(--font-mono);
+  transition: transform var(--duration-base) var(--ease),
+              color var(--duration-quick) var(--ease);
+}
+
+body.admin-index .AdminIndex a:hover {
+  color: var(--accent);
+}
+body.admin-index .AdminIndex a:hover::after {
+  transform: translateX(0.4rem);
+  color: var(--accent);
+}
+
+/* 12. Admin — article list ------------------------------------------ */
+body.admin-list .ArticleList {
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid var(--rule);
+  margin-top: var(--space-5);
+}
+
+body.admin-list .ArticleList .Article {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  gap: var(--space-2) var(--space-5);
+  align-items: center;
+  padding-block: var(--space-3);
+  border-bottom: 1px solid var(--rule);
+}
+
+body.admin-list .ArticleList .Article .title {
+  grid-column: 1;
+  font-family: var(--font-sans);
+  font-size: var(--step-0);
+  font-weight: 500;
+  margin: 0;
+}
+body.admin-list .ArticleList .Article .title a { color: var(--ink); }
+body.admin-list .ArticleList .Article .title a:hover { color: var(--accent); }
+
+body.admin-list .ArticleList .Article .slug {
+  grid-row: 2;
+  grid-column: 1;
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  color: var(--ink-muted);
+}
+
+body.admin-list .ArticleList .Article .status {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+}
+
+body.admin-list .ArticleList .Article .AdminActions {
+  grid-column: 3;
+  grid-row: 1 / span 2;
+}
+
+/* 13. Admin — form -------------------------------------------------- */
+/* Form structure is flat: <label><input><label><select>...<button> as
+ * direct children of <form class="ArticleForm">. We use a single-column
+ * grid and rely on margin between siblings to create rhythm. */
+body.admin-form main { max-width: 48rem; }
+
+body.admin form.ArticleForm {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0;
+  margin-block: var(--space-5);
+}
+
+body.admin form.ArticleForm > * { width: 100%; min-width: 0; }
+
+body.admin form.ArticleForm > label {
+  display: block;
+  margin-top: var(--space-5);
+  margin-bottom: var(--space-2);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.10em;
+  color: var(--ink-muted);
+  text-transform: uppercase;
+}
+/* First label flush with top — but skip the hidden id input in edit mode */
+body.admin form.ArticleForm > label:first-of-type { margin-top: 0; }
+
+body.admin form.ArticleForm > input[type="text"],
+body.admin form.ArticleForm > input[type="number"],
+body.admin form.ArticleForm > input[type="email"],
+body.admin form.ArticleForm > input[type="url"],
+body.admin form.ArticleForm > input[type="datetime-local"],
+body.admin form.ArticleForm > select,
+body.admin form.ArticleForm > textarea {
+  display: block;
+  background: var(--surface-sunk);
+  color: var(--ink);
+  border: 1px solid var(--rule-strong);
+  border-radius: var(--radius-1);
+  font: inherit;
+  padding: var(--space-2) var(--space-3);
+  transition: border-color var(--duration-quick) var(--ease);
+}
+body.admin form.ArticleForm > textarea {
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  line-height: 1.6;
+  min-height: 8rem;
+  resize: vertical;
+}
+body.admin form.ArticleForm > textarea[name="body"] { min-height: 18rem; }
+
+body.admin form.ArticleForm > select[multiple] {
+  min-height: 9rem;
+  font-family: inherit;
+  font-size: var(--step--1);
+  padding: var(--space-2);
+}
+body.admin form.ArticleForm > select[multiple] option {
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-1);
+}
+
+body.admin form.ArticleForm > input:focus,
+body.admin form.ArticleForm > select:focus,
+body.admin form.ArticleForm > textarea:focus {
+  border-color: var(--accent);
+  outline: 2px solid color-mix(in oklab, var(--accent) 50%, transparent);
+  outline-offset: 0;
+}
+
+/* Read-only metadata rows shown in edit mode */
+body.admin form.ArticleForm > p.slug,
+body.admin form.ArticleForm > p.Author,
+body.admin form.ArticleForm > p.Category {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+  margin: 0 0 var(--space-3);
+  padding: var(--space-3) 0;
+  border-bottom: 1px solid var(--rule);
+  font-size: var(--step--1);
+  color: var(--ink-muted);
+}
+body.admin form.ArticleForm > p.slug code {
+  font-family: var(--font-mono);
+  color: var(--ink);
+  background: var(--surface-sunk);
+  border: 1px solid var(--rule);
+  padding: 0.1em 0.4em;
+  border-radius: var(--radius-1);
+}
+body.admin form.ArticleForm > p .name {
+  color: var(--ink);
+  font-weight: 500;
+}
+
+body.admin form.ArticleForm > button[type="submit"] {
+  margin-top: var(--space-7);
+  justify-self: start;
+  height: 2.4rem;
+  padding: 0 var(--space-5);
+  font-size: var(--step-0);
+}
+
+/* Error summary */
+body.admin .ErrorList {
+  margin-block: 0 var(--space-5);
+  padding: var(--space-4);
+  background: var(--danger-soft);
+  border: 1px solid color-mix(in oklab, var(--danger) 45%, transparent);
+  border-radius: var(--radius-2);
+  color: var(--danger);
+}
+body.admin .ErrorList h2 {
+  margin: 0 0 var(--space-2);
+  font-size: var(--step-0);
+  font-weight: 600;
+  color: var(--danger);
+}
+body.admin .ErrorList ul { margin: 0; padding-left: var(--space-5); }
+body.admin .ErrorList li { font-size: var(--step--1); }
+
+/* 14. Admin — confirm (delete) -------------------------------------- */
+body.admin-confirm main { max-width: 36rem; }
+
+body.admin-confirm .Article {
+  padding: var(--space-5) 0;
+  border-bottom: 1px solid var(--rule);
+}
+body.admin-confirm .Article .title {
+  font-family: var(--font-sans);
+  font-size: var(--step-2);
+  font-weight: 600;
+  margin: 0 0 var(--space-2);
+}
+body.admin-confirm .Article .slug {
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  color: var(--ink-muted);
+  margin-right: var(--space-3);
+}
+
+body.admin-confirm form.DeleteForm {
+  margin-top: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  align-items: flex-start;
+}
+body.admin-confirm form.DeleteForm p {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: var(--step-0);
+}
+
+/* 15. Status atom — colored dot + uppercase label ------------------- */
+.status[data-status] {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  font-family: var(--font-mono);
+  color: var(--ink-soft);
+  white-space: nowrap;
+  line-height: 1;
+}
+
+.status[data-status]::before {
+  content: '';
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: var(--radius-pill);
+  background: var(--status-archived);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--status-archived) 18%, transparent);
+}
+
+.status[data-status="published"]::before {
+  background: var(--status-published);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--status-published) 18%, transparent);
+}
+.status[data-status="published"] { color: var(--status-published); }
+
+.status[data-status="draft"]::before {
+  background: var(--status-draft);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--status-draft) 18%, transparent);
+}
+.status[data-status="draft"] { color: var(--status-draft); }
+
+.status[data-status="archived"]::before {
+  background: var(--status-archived);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--status-archived) 18%, transparent);
+}
+
+/* 16. Footer -------------------------------------------------------- */
 footer {
-  border-top: 1px solid var(--brand-200);
-  padding-top: var(--space);
-  margin-top: calc(var(--space) * 2);
-  font-size: 0.75rem;
-  color: var(--gray-600);
-  text-align: center;
+  margin-top: var(--space-9);
+  padding-block: var(--space-5);
+  border-top: 1px solid var(--rule);
+  color: var(--ink-muted);
+  font-size: var(--step--1);
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+}
+footer p { margin: 0; }
+
+footer form,
+footer .CssSwitcher {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+}
+footer select {
+  background: transparent;
+  color: var(--ink-muted);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-1);
+  padding: 2px 6px;
+  font: inherit;
 }

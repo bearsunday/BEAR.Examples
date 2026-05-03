@@ -20,7 +20,7 @@ class IndexTest extends AbstractPageTestCase
         $html = $ro->toString();
         $this->assertStringContainsString('<!DOCTYPE html>', $html);
         $this->assertStringContainsString('<a class="goArticle" href="/article?id=1">', $html);
-        $this->assertStringContainsString('<a href="/admin/index" class="goAdminIndex">Admin</a>', $html);
+        $this->assertStringContainsString('<a class="goSignIn" href="/admin/index">Sign in</a>', $html);
         $this->assertSame($html, $ro->view);
     }
 }

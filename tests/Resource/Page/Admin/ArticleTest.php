@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace MyVendor\Cms\Resource\Page\Admin;
 
 use MyVendor\Cms\AbstractPageTestCase;
+use MyVendor\Cms\Exception\NoRegisteredAuthorException;
+use MyVendor\Cms\Fake\FakeAdminArticleDeps;
 
 use function preg_match;
 use function uniqid;
@@ -21,7 +23,7 @@ final class ArticleTest extends AbstractPageTestCase
         $this->assertStringContainsString('<form class="ArticleForm" method="post" action="/admin/article">', $html);
         $this->assertStringContainsString('class="goAdminIndex"', $html);
         $this->assertStringContainsString('name="slug"', $html);
-        $this->assertStringContainsString('name="authorId"', $html);
+        $this->assertStringNotContainsString('name="authorId"', $html);
         $this->assertStringContainsString('name="categoryId"', $html);
         $this->assertStringContainsString('name="tagIds[]"', $html);
     }
@@ -33,7 +35,6 @@ final class ArticleTest extends AbstractPageTestCase
             'slug' => $slug,
             'title' => 'Admin Created Article',
             'body' => 'Created from the admin page resource.',
-            'authorId' => 1,
             'categoryId' => 1,
             'status' => 'draft',
             'excerpt' => '',
@@ -58,6 +59,7 @@ final class ArticleTest extends AbstractPageTestCase
         $editHtml = $edit->toString();
         $this->assertStringContainsString('<h1 class="AdminArticle">Edit Article</h1>', $editHtml);
         $this->assertStringContainsString('<p class="notice">Article created.</p>', $editHtml);
+        $this->assertStringContainsString('action="/admin/article?id=' . $id . '"', $editHtml);
         $this->assertStringContainsString('<input type="hidden" name="id" value="' . $id . '">', $editHtml);
         $this->assertStringContainsString('<p class="slug">Slug: <code>' . $slug . '</code></p>', $editHtml);
 
@@ -90,7 +92,6 @@ final class ArticleTest extends AbstractPageTestCase
             'slug' => 'Invalid Slug',
             'title' => '<script>alert(1)</script>',
             'body' => 'Body',
-            'authorId' => 1,
             'categoryId' => 1,
             'status' => 'draft',
         ]);
@@ -118,5 +119,33 @@ final class ArticleTest extends AbstractPageTestCase
         $html = $ro->toString();
         $this->assertStringContainsString('<p class="Author">Author: <span class="name">Evelyn Moore</span></p>', $html);
         $this->assertStringContainsString('<p class="Category">Category: <span class="name">Technology</span></p>', $html);
+    }
+
+    /**
+     * Pin the create-without-author contract: the stub falls back to the first
+     * registered author, so an empty author list must surface as a domain
+     * exception rather than a silent (int) 0 cast. Will be removed when
+     * AdminUserInterface lands and the stub disappears.
+     */
+    public function testCreateThrowsWhenNoAuthorRegistered(): void
+    {
+        $deps = new FakeAdminArticleDeps();
+        $page = new Article(
+            $deps->resource(),
+            $deps->articleQuery(),
+            $deps->emptyAuthorQuery(),
+            $deps->categoryQuery(),
+            $deps->tagQuery(),
+        );
+
+        $this->expectException(NoRegisteredAuthorException::class);
+        $page->onPost(
+            id: null,
+            slug: 'no-author',
+            title: 'No author registered',
+            body: 'body',
+            categoryId: 1,
+            status: 'draft',
+        );
     }
 }

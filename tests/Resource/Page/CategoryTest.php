@@ -31,4 +31,14 @@ final class CategoryTest extends AbstractPageTestCase
 
         $this->assertSame(404, $ro->code);
     }
+
+    public function testNotFoundRendersErrorTemplate(): void
+    {
+        $ro = $this->resource->get('page://self/category', ['id' => 99999]);
+        $html = $ro->toString();
+
+        $this->assertStringContainsString('<h1>Error 404</h1>', $html);
+        $this->assertStringContainsString('An unexpected error occurred.', $html);
+        $this->assertStringNotContainsString('<section class="Category">', $html);
+    }
 }
