@@ -34,7 +34,7 @@ return [
     ],
     'ArticleQueryInterface::bySlug' => ['getting-started-with-bear-sunday'],
     'ArticleQueryInterface::item' => [1],
-    'ArticleQueryInterface::list' => [null, null, null, 'published', 10, 0],
+    'ArticleQueryInterface::list' => [null, null, null, 'published', 10],
     'ArticleAsArrayQueryInterface::item' => [1],
     'ArticleTagCommandInterface::clear' => [999],
     'ArticleTagCommandInterface::link' => [999, 50],

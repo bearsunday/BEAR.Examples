@@ -138,7 +138,7 @@ API Document
 | Interface | Methods |
 |-----------|---------|
 | ArticleCommandInterface | add(slug, title, body, excerpt, status, publishedAt, authorId, categoryId):void, update(id, title, body, excerpt, status, publishedAt):void, delete(id):void |
-| ArticleQueryInterface | item(id):Article, bySlug(slug):Article, list(categoryId, tagId, authorId, status, limit, offset):array |
+| ArticleQueryInterface | item(id):Article, bySlug(slug):Article, list(categoryId, tagId, authorId, status, perPage):PagesInterface |
 | ArticleTagCommandInterface | clear(articleId):void, link(articleId, tagId):void |
 | AuthorCommandInterface | add(name, email, bio):void, update(id, name, email, bio):void |
 | AuthorQueryInterface | item(id):Author, byEmail(email):Author, list():array |

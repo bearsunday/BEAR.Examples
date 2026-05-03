@@ -83,9 +83,9 @@ BEAR.Sunday の `prod-hal-api-app` / `test-hal-api-app` 規約はそのまま使
 - JavaScript で拡張した管理操作
 - キャッシュ無効化 (`#[Cacheable]`、`#[Purge]`) — フックポイントとして残しているが、
   リファレンスとしては不要
-- `#[Pager]` / `PagesInterface` — Pagerfanta の PDO-backed Pages を fake する
-  煩雑さを避けるため deferred。フィルタリングと `page`/`perPage`/`count` は
-  Resource 層で扱います。
+- UI pager rendering の細かなカスタマイズ。Article collection はすでに
+  Ray.MediaQuery `#[Pager]` を使い、Page template 側では compact な previous /
+  next link を自前で描画します。
 
 ## See also
 

@@ -236,9 +236,12 @@ endpoint — は結果 body と一緒に `200` を返し、`Location` ヘッダ�
 します。`Command` 側は `void` を返します。
 
 ### ページネーション
-`#[Pager]` / `PagesInterface` は **使いません**。フィルタリングとカウントは
-Resource 層で行い、`{ items, page, perPage, count }` を返します。理由: Pagerfanta
-の PDO-backed `Pages` を fake するのは煩雑で、本リファレンスには不要だからです。
+Article collection read は Ray.MediaQuery の `#[Pager]` を使い、
+`PagesInterface` を返します。Resource code は `$pages[$page]` を読み、返された
+Page object の associative `data` rows を `ArticleFactory` に通し、`total`、
+`hasNext`、`maxPerPage` を使います。DB なし fake は Pagerfanta の
+`ArrayAdapter` で同じ contract を実装し、PDO-backed Pages がなくても同じ
+pagination shape をテストします。
 
 ### Input shape & validation
 

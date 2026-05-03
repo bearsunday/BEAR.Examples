@@ -244,10 +244,12 @@ supplied (slug / email / filename). Returns `void` from the `Command`
 side.
 
 ### Pagination
-`#[Pager]` / `PagesInterface` is **not used**. Filtering and counting
-happen at the Resource layer, returning
-`{ items, page, perPage, count }`. Reason: faking Pagerfanta's
-PDO-backed `Pages` is cumbersome and not needed for this reference.
+Article collection reads use Ray.MediaQuery's `#[Pager]` and return
+`PagesInterface`. Resource code reads `$pages[$page]`, maps the returned
+Page object's associative `data` rows through `ArticleFactory`, and uses
+`total`, `hasNext`, and `maxPerPage` fields. The DB-free fake implements
+the same contract with Pagerfanta's `ArrayAdapter`, so tests exercise the
+same pagination shape without requiring PDO-backed pages.
 
 ### Input shape & validation
 

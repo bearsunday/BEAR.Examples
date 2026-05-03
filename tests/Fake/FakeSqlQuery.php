@@ -17,13 +17,14 @@ use Ray\MediaQuery\SqlQueryInterface;
 
 use function array_filter;
 use function array_map;
-use function array_slice;
 use function array_values;
 use function count;
 use function dirname;
 use function file_get_contents;
 use function in_array;
 use function json_decode;
+use function strcmp;
+use function usort;
 
 use const JSON_THROW_ON_ERROR;
 
@@ -339,7 +340,16 @@ final class FakeSqlQuery implements SqlQueryInterface
     /** @param array<string, mixed> $values */
     public function getPages(string $sqlId, array $values, int $perPage, string $queryTemplate = '/{?page}', string|null $entity = null): PagesInterface
     {
-        throw new LogicException('FakeSqlQuery does not support Pager/PagesInterface; use list/count directly.');
+        unset($entity);
+
+        return match ($sqlId) {
+            'article_list' => new FakePages(
+                array_map(fn ($r) => $this->toArticleSqlRow($r), $this->filteredArticles($values)),
+                $perPage,
+                $queryTemplate,
+            ),
+            default => throw new LogicException("FakeSqlQuery: unknown pages sqlId '{$sqlId}'"),
+        };
     }
 
     // -- helpers -------------------------------------------------------------
@@ -583,7 +593,14 @@ final class FakeSqlQuery implements SqlQueryInterface
             $rows = array_filter($rows, static fn ($r) => in_array((int) $r['id'], $articleIds, true));
         }
 
-        return array_values($rows);
+        $rows = array_values($rows);
+        usort($rows, static function (array $a, array $b): int {
+            $published = strcmp((string) ($b['publishedAt'] ?? ''), (string) ($a['publishedAt'] ?? ''));
+
+            return $published !== 0 ? $published : (int) $b['id'] <=> (int) $a['id'];
+        });
+
+        return $rows;
     }
 
     /**
@@ -593,12 +610,7 @@ final class FakeSqlQuery implements SqlQueryInterface
      */
     private function listArticles(array $values): array
     {
-        $rows = $this->filteredArticles($values);
-        $offset = isset($values['offset']) ? (int) $values['offset'] : 0;
-        $limit = isset($values['limit']) ? (int) $values['limit'] : 20;
-        $rows = array_slice($rows, $offset, $limit);
-
-        return array_map(fn ($r) => $this->toArticle($r), $rows);
+        return array_map(fn ($r) => $this->toArticle($r), $this->filteredArticles($values));
     }
 
     /** @return list<Tag> */
@@ -616,6 +628,36 @@ final class FakeSqlQuery implements SqlQueryInterface
         $tags = array_filter($this->tables['tag'], static fn ($r) => in_array((int) $r['id'], $tagIds, true));
 
         return array_map(fn ($r) => $this->toTag($r), array_values($tags));
+    }
+
+    /**
+     * @param array<string, mixed> $r
+     *
+     * @return array{
+     *     id: int,
+     *     slug: string,
+     *     title: string,
+     *     body: string,
+     *     excerpt: string|null,
+     *     status: string,
+     *     published_at: mixed,
+     *     author_id: int,
+     *     category_id: int
+     * }
+     */
+    private function toArticleSqlRow(array $r): array
+    {
+        return [
+            'id' => (int) $r['id'],
+            'slug' => (string) $r['slug'],
+            'title' => (string) $r['title'],
+            'body' => (string) $r['body'],
+            'excerpt' => isset($r['excerpt']) ? (string) $r['excerpt'] : null,
+            'status' => (string) $r['status'],
+            'published_at' => $r['publishedAt'] ?? null,
+            'author_id' => (int) $r['authorId'],
+            'category_id' => (int) $r['categoryId'],
+        ];
     }
 
     /** @param array<string, mixed> $r */

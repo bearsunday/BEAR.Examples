@@ -39,8 +39,6 @@ return [
         'authorId' => null,
         'status' => 'published',
         'tagId' => null,
-        'limit' => 10,
-        'offset' => 0,
     ],
     'article_sqlquery_item.sql' => ['id' => 1],
     'article_sqlquery_next.sql' => ['publishedAt' => '2026-01-01 00:00:00', 'id' => 1],

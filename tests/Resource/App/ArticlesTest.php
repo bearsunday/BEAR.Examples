@@ -16,6 +16,7 @@ final class ArticlesTest extends AbstractAppTestCase
         $this->assertSame(1, $ro->body['page']);
         $this->assertSame(20, $ro->body['perPage']);
         $this->assertGreaterThan(0, $ro->body['count']);
+        $this->assertGreaterThanOrEqual($ro->body['count'], $ro->body['totalCount']);
         $this->assertIsArray($ro->body['items']);
     }
 
@@ -47,5 +48,16 @@ final class ArticlesTest extends AbstractAppTestCase
     {
         $ro = $this->resource->get('app://self/articles', ['perPage' => 9999]);
         $this->assertSame(100, $ro->body['perPage']);
+    }
+
+    public function testTotalCountComesFromPagedResult(): void
+    {
+        $first = $this->resource->get('app://self/articles', ['perPage' => 5]);
+        $second = $this->resource->get('app://self/articles', ['page' => 2, 'perPage' => 5]);
+
+        $this->assertSame(5, $first->body['count']);
+        $this->assertSame(5, $second->body['count']);
+        $this->assertSame($first->body['totalCount'], $second->body['totalCount']);
+        $this->assertGreaterThan($first->body['count'], $first->body['totalCount']);
     }
 }

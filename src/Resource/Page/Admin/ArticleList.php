@@ -6,10 +6,11 @@ namespace MyVendor\Cms\Resource\Page\Admin;
 
 use BEAR\Resource\ResourceObject;
 use MyVendor\Cms\Entity\Article;
+use MyVendor\Cms\Factory\ArticleFactory;
 use MyVendor\Cms\Query\ArticleQueryInterface;
+use Ray\AuraSqlModule\Pagerfanta\Page as PagerPage;
 
-use function array_slice;
-use function count;
+use function assert;
 use function max;
 use function min;
 
@@ -30,6 +31,7 @@ class ArticleList extends ResourceObject
 
     public function __construct(
         private readonly ArticleQueryInterface $article,
+        private readonly ArticleFactory $articleFactory,
     ) {
     }
 
@@ -41,23 +43,22 @@ class ArticleList extends ResourceObject
     ): static {
         $page = max(1, $page);
         $perPage = max(1, min(self::MAX_PER_PAGE, $perPage));
-        $offset = ($page - 1) * $perPage;
-
-        $articles = $this->article->list(
+        $pages = $this->article->list(
             status: $status,
-            limit: $perPage + 1,
-            offset: $offset,
+            perPage: $perPage,
         );
-
-        $hasNext = count($articles) > $perPage;
-        $articles = array_slice($articles, 0, $perPage);
+        $articlePage = $pages[$page];
+        assert($articlePage instanceof PagerPage);
+        /** @var list<array<string, mixed>> $rows */
+        $rows = $articlePage->data;
+        $articles = $this->articleFactory->fromRows($rows);
 
         $this->body = [
             'articles' => $articles,
             'filter' => ['status' => $status],
-            'page' => $page,
-            'perPage' => $perPage,
-            'hasNext' => $hasNext,
+            'page' => $articlePage->current,
+            'perPage' => $articlePage->maxPerPage,
+            'hasNext' => $articlePage->hasNext,
             'deleted' => $deleted === 1,
         ];
 
