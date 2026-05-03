@@ -1,12 +1,15 @@
 <?php
 /**
- * @var \MyVendor\Cms\Entity\Category $category
+ * @var \MyVendor\Cms\Entity\Category|null $category
  * @var list<\MyVendor\Cms\Entity\Article> $articles
  */
+if (! isset($category) || $category === null) {
+    throw new \MyVendor\Cms\Exception\CategoryNotFoundException();
+}
 ?>
 {{ setLayout('layout/Default') }}
 {{ setBlock('bodyClass') ~}}public public-detail public-category{{ endBlock() }}
-{{ setBlock('title') ~}}{{h $category->name }} - BEAR.Cms Reference CMS{{ endBlock() }}
+{{ setBlock('title') ~}}{{h $category->name }} - MyVendor.Cms{{ endBlock() }}
 {{ setBlock('header') ~}}<h1 class="Category">Category Detail</h1>{{ endBlock() }}
 <main>
   <section class="Category">
@@ -41,11 +44,8 @@
     <?php endforeach ?>
   </section>
 </main>
-<nav>
-  <h2>Links</h2>
+<nav class="Related">
   <ul>
-    <li><a href="/articlelist?categoryId={{h $category->id }}" class="goArticleList">All articles in this category</a></li>
-    <li><a href="/categorylist" class="goCategoryList">Browse categories</a></li>
-    <li><a href="/" class="goIndex">Home</a></li>
+    <li><a href="/articlelist?categoryId={{h $category->id }}" class="goArticleList">All articles in {{h $category->name }}</a></li>
   </ul>
 </nav>

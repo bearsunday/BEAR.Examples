@@ -15,7 +15,7 @@ $qs = static function (array $params): string {
 ?>
 {{ setLayout('layout/Default') }}
 {{ setBlock('bodyClass') ~}}admin admin-list admin-articlelist{{ endBlock() }}
-{{ setBlock('title') ~}}Article Administration - BEAR.Cms Reference CMS{{ endBlock() }}
+{{ setBlock('title') ~}}Article Administration - MyVendor.Cms{{ endBlock() }}
 {{ setBlock('header') ~}}<h1 class="AdminArticleList">Article Administration</h1>{{ endBlock() }}
 <main>
   <?php if ($deleted): ?>

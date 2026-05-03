@@ -5,7 +5,7 @@
 ?>
 {{ setLayout('layout/Default') }}
 {{ setBlock('bodyClass') ~}}public public-list public-categorylist{{ endBlock() }}
-{{ setBlock('title') ~}}Category List - BEAR.Cms Reference CMS{{ endBlock() }}
+{{ setBlock('title') ~}}Category List - MyVendor.Cms{{ endBlock() }}
 {{ setBlock('header') ~}}<h1 class="CategoryList">Categories</h1>{{ endBlock() }}
 <main>
   <section class="CategoryList">
@@ -29,12 +29,3 @@
     <?php endforeach ?>
   </section>
 </main>
-<nav>
-  <h2>Links</h2>
-  <ul>
-    <li><a href="/articlelist" class="goArticleList">Browse all articles</a></li>
-    <li><a href="/authorlist" class="goAuthorList">Browse authors</a></li>
-    <li><a href="/taglist" class="goTagList">Browse tags</a></li>
-    <li><a href="/" class="goIndex">Home</a></li>
-  </ul>
-</nav>

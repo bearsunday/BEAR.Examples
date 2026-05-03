@@ -5,7 +5,7 @@
 ?>
 {{ setLayout('layout/Default') }}
 {{ setBlock('bodyClass') ~}}public public-index{{ endBlock() }}
-{{ setBlock('header') ~}}<h1 class="ArticleList">BEAR.Cms Reference CMS</h1>{{ endBlock() }}
+{{ setBlock('header') ~}}<h1 class="ArticleList sr-only">Articles</h1>{{ endBlock() }}
 <main>
   <section class="ArticleList">
     <?php if ($articles === []): ?>
@@ -31,13 +31,3 @@
     <?php endforeach ?>
   </section>
 </main>
-<nav>
-  <h2>Browse</h2>
-  <ul>
-    <li><a href="/articlelist" class="goArticleList">All articles</a></li>
-    <li><a href="/authorlist" class="goAuthorList">Authors</a></li>
-    <li><a href="/categorylist" class="goCategoryList">Categories</a></li>
-    <li><a href="/taglist" class="goTagList">Tags</a></li>
-    <li><a href="/admin/index" class="goAdminIndex">Admin</a></li>
-  </ul>
-</nav>

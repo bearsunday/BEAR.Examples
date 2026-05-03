@@ -1,7 +1,7 @@
 {
   "$schema": "https://alps-io.github.io/schemas/alps.json",
   "alps": {
-    "title": "BEAR.Cms Reference CMS",
+    "title": "MyVendor.Cms",
     "doc": {
       "value": "ALPS profile for a BEAR.Sunday reference CMS. App-resource only (no admin/UI). Covers articles, categories, tags, authors and media with read and write transitions."
     },

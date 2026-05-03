@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=Inter:wght@400;500;600;700&display=swap');
 
 /* =====================================================================
  * level3.css — semantic redesign for BEAR.Cms reference CMS
@@ -54,7 +54,7 @@
 
   /* Typography */
   --font-sans:    'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --font-serif:   'Fraunces', 'Iowan Old Style', 'Palatino Linotype', Georgia, serif;
+  --font-serif:   'Newsreader', 'Iowan Old Style', 'Charter', 'Palatino Linotype', Georgia, serif;
   --font-mono:    ui-monospace, 'SF Mono', 'JetBrains Mono', Menlo, Consolas, monospace;
 
   /* Fluid type scale */
@@ -153,7 +153,7 @@ a:hover { color: var(--accent-hover); text-decoration: underline; }
 
 img, svg { display: block; max-width: 100%; }
 
-main, header > *, footer > * {
+.shell, main, header > *, footer > * {
   max-width: 72rem;
   margin-inline: auto;
   padding-inline: var(--gutter);
@@ -167,18 +167,18 @@ header {
 header > h1 {
   font-family: var(--font-serif);
   font-weight: 500;
-  font-variation-settings: 'opsz' 96;
+  font-variation-settings: 'opsz' 36;
   font-size: var(--step-2);
   line-height: 1.15;
-  letter-spacing: -0.02em;
-  margin: 0;
+  letter-spacing: -0.015em;
+  margin-block: 0;
   color: var(--ink);
 }
 
 main { padding-block: var(--space-7); }
 
 main > nav,
-body > nav {
+body > nav:not(.SiteNav) {
   margin-top: var(--space-7);
   padding-top: var(--space-5);
   border-top: 1px solid var(--rule);
@@ -188,7 +188,7 @@ body > nav {
 }
 
 main > nav h2,
-body > nav h2 {
+body > nav:not(.SiteNav) h2 {
   font-size: var(--step--1);
   font-weight: 600;
   letter-spacing: 0.08em;
@@ -198,7 +198,7 @@ body > nav h2 {
 }
 
 main > nav ul,
-body > nav ul {
+body > nav:not(.SiteNav) ul {
   list-style: none;
   padding: 0;
   margin: 0;
@@ -208,10 +208,72 @@ body > nav ul {
 }
 
 main > nav a,
-body > nav a {
+body > nav:not(.SiteNav) a {
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
+}
+
+/* Site nav (top bar across all pages) ------------------------------- */
+.SiteNav {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-5);
+  max-width: 72rem;
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+  padding-block: var(--space-3);
+  border-bottom: 1px solid var(--rule);
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+}
+
+.SiteNav .brand {
+  font-family: var(--font-serif);
+  font-weight: 500;
+  font-variation-settings: 'opsz' 18;
+  font-size: var(--step-0);
+  letter-spacing: -0.010em;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.SiteNav .brand:hover { color: var(--accent); }
+
+.SiteNav .browse {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-5);
+}
+
+.SiteNav .browse a {
+  color: var(--ink-muted);
+  text-decoration: none;
+}
+
+.SiteNav .browse a:hover { color: var(--ink); }
+
+.SiteNav .goSignIn {
+  margin-inline-start: auto;
+  color: var(--ink-muted);
+  text-decoration: none;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  padding: 0.45em 0.85em;
+  border: 1px solid var(--rule-strong);
+  border-radius: var(--radius-pill);
+  white-space: nowrap;
+}
+
+.SiteNav .goSignIn:hover {
+  color: var(--ink);
+  border-color: var(--ink);
 }
 
 input[type="hidden"] { display: none; }
@@ -222,8 +284,8 @@ body.public h2,
 body.public h3 {
   font-family: var(--font-serif);
   font-weight: 500;
-  font-variation-settings: 'opsz' 60;
-  letter-spacing: -0.015em;
+  font-variation-settings: 'opsz' 24;
+  letter-spacing: -0.010em;
   color: var(--ink);
   margin: 0;
 }
@@ -248,16 +310,27 @@ body.public .role {
 }
 
 /* 4. Public — index -------------------------------------------------- */
-body.public-index header > h1 {
-  font-size: var(--step-4);
-  letter-spacing: -0.035em;
-  font-weight: 500;
-  font-variation-settings: 'opsz' 144;
-  max-width: 18ch;
-  margin-block: var(--space-5) var(--space-3);
+/* The home page is just the article list. SiteNav above carries the
+ * brand, so the page-level <header> collapses entirely and the list
+ * starts immediately. The H1 stays in the DOM as sr-only for a11y. */
+body.public-index header {
+  padding: 0;
+  border: 0;
 }
 
-body.public-index header { padding-block: var(--space-9) var(--space-7); }
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+body.public-index main { padding-block: var(--space-6) var(--space-7); }
 
 body.public-index main .ArticleList {
   display: flex;
@@ -352,10 +425,10 @@ body.public-article .Article > .slug { display: none; }
 body.public-article .Article .title {
   font-family: var(--font-serif);
   font-weight: 500;
-  font-variation-settings: 'opsz' 144;
+  font-variation-settings: 'opsz' 56;
   font-size: var(--step-4);
-  line-height: 1.05;
-  letter-spacing: -0.035em;
+  line-height: 1.10;
+  letter-spacing: -0.025em;
   margin: 0 0 var(--space-3);
 }
 
@@ -370,10 +443,10 @@ body.public-article .Article .publishedAt {
 
 body.public-article .Article .excerpt {
   font-family: var(--font-serif);
-  font-variation-settings: 'opsz' 30;
+  font-variation-settings: 'opsz' 16;
   font-style: italic;
   font-size: var(--step-1);
-  line-height: 1.5;
+  line-height: 1.55;
   color: var(--ink-soft);
   border-left: 2px solid var(--rule-strong);
   padding-left: var(--space-4);
@@ -587,13 +660,13 @@ body.admin button[type="submit"]:hover {
 
 /* Primary action — solid */
 body.admin .AdminActions .doCreateArticle,
-body.admin form.AdminForm button[type="submit"] {
+body.admin form.ArticleForm button[type="submit"] {
   background: var(--accent);
   color: oklch(0.99 0 0);
   border-color: var(--accent);
 }
 body.admin .AdminActions .doCreateArticle:hover,
-body.admin form.AdminForm button[type="submit"]:hover {
+body.admin form.ArticleForm button[type="submit"]:hover {
   background: var(--accent-hover);
   border-color: var(--accent-hover);
   color: oklch(0.99 0 0);
@@ -753,38 +826,41 @@ body.admin-list .ArticleList .Article .AdminActions {
 }
 
 /* 13. Admin — form -------------------------------------------------- */
+/* Form structure is flat: <label><input><label><select>...<button> as
+ * direct children of <form class="ArticleForm">. We use a single-column
+ * grid and rely on margin between siblings to create rhythm. */
 body.admin-form main { max-width: 48rem; }
 
-body.admin form.AdminForm {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-5);
+body.admin form.ArticleForm {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0;
   margin-block: var(--space-5);
 }
 
-body.admin form.AdminForm > div,
-body.admin form.AdminForm > p {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-}
+body.admin form.ArticleForm > * { width: 100%; min-width: 0; }
 
-body.admin form.AdminForm label {
-  font-size: var(--step--1);
+body.admin form.ArticleForm > label {
+  display: block;
+  margin-top: var(--space-5);
+  margin-bottom: var(--space-2);
+  font-size: 0.72rem;
   font-weight: 600;
-  letter-spacing: 0.04em;
-  color: var(--ink-soft);
+  letter-spacing: 0.10em;
+  color: var(--ink-muted);
   text-transform: uppercase;
 }
+/* First label flush with top — but skip the hidden id input in edit mode */
+body.admin form.ArticleForm > label:first-of-type { margin-top: 0; }
 
-body.admin form.AdminForm input[type="text"],
-body.admin form.AdminForm input[type="number"],
-body.admin form.AdminForm input[type="email"],
-body.admin form.AdminForm input[type="url"],
-body.admin form.AdminForm input[type="datetime-local"],
-body.admin form.AdminForm select,
-body.admin form.AdminForm textarea {
-  width: 100%;
+body.admin form.ArticleForm > input[type="text"],
+body.admin form.ArticleForm > input[type="number"],
+body.admin form.ArticleForm > input[type="email"],
+body.admin form.ArticleForm > input[type="url"],
+body.admin form.ArticleForm > input[type="datetime-local"],
+body.admin form.ArticleForm > select,
+body.admin form.ArticleForm > textarea {
+  display: block;
   background: var(--surface-sunk);
   color: var(--ink);
   border: 1px solid var(--rule-strong);
@@ -793,44 +869,85 @@ body.admin form.AdminForm textarea {
   padding: var(--space-2) var(--space-3);
   transition: border-color var(--duration-quick) var(--ease);
 }
-body.admin form.AdminForm textarea {
+body.admin form.ArticleForm > textarea {
   font-family: var(--font-mono);
   font-size: var(--step--1);
   line-height: 1.6;
-  min-height: 14rem;
+  min-height: 8rem;
   resize: vertical;
 }
-body.admin form.AdminForm input:focus,
-body.admin form.AdminForm select:focus,
-body.admin form.AdminForm textarea:focus {
+body.admin form.ArticleForm > textarea[name="body"] { min-height: 18rem; }
+
+body.admin form.ArticleForm > select[multiple] {
+  min-height: 9rem;
+  font-family: inherit;
+  font-size: var(--step--1);
+  padding: var(--space-2);
+}
+body.admin form.ArticleForm > select[multiple] option {
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-1);
+}
+
+body.admin form.ArticleForm > input:focus,
+body.admin form.ArticleForm > select:focus,
+body.admin form.ArticleForm > textarea:focus {
   border-color: var(--accent);
   outline: 2px solid color-mix(in oklab, var(--accent) 50%, transparent);
   outline-offset: 0;
 }
 
-body.admin form.AdminForm .help,
-body.admin form.AdminForm small {
+/* Read-only metadata rows shown in edit mode */
+body.admin form.ArticleForm > p.slug,
+body.admin form.ArticleForm > p.Author,
+body.admin form.ArticleForm > p.Category {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+  margin: 0 0 var(--space-3);
+  padding: var(--space-3) 0;
+  border-bottom: 1px solid var(--rule);
   font-size: var(--step--1);
   color: var(--ink-muted);
 }
+body.admin form.ArticleForm > p.slug code {
+  font-family: var(--font-mono);
+  color: var(--ink);
+  background: var(--surface-sunk);
+  border: 1px solid var(--rule);
+  padding: 0.1em 0.4em;
+  border-radius: var(--radius-1);
+}
+body.admin form.ArticleForm > p .name {
+  color: var(--ink);
+  font-weight: 500;
+}
 
-body.admin form.AdminForm .errors,
-body.admin form.AdminForm .error {
+body.admin form.ArticleForm > button[type="submit"] {
+  margin-top: var(--space-7);
+  justify-self: start;
+  height: 2.4rem;
+  padding: 0 var(--space-5);
+  font-size: var(--step-0);
+}
+
+/* Error summary */
+body.admin .ErrorList {
+  margin-block: 0 var(--space-5);
+  padding: var(--space-4);
+  background: var(--danger-soft);
+  border: 1px solid color-mix(in oklab, var(--danger) 45%, transparent);
+  border-radius: var(--radius-2);
   color: var(--danger);
-  font-size: var(--step--1);
-  margin: 0;
-  padding: 0;
-  list-style: none;
 }
-
-body.admin form.AdminForm > .actions,
-body.admin form.AdminForm > p:last-of-type {
-  flex-direction: row;
-  align-items: center;
-  gap: var(--space-3);
-  padding-top: var(--space-4);
-  border-top: 1px solid var(--rule);
+body.admin .ErrorList h2 {
+  margin: 0 0 var(--space-2);
+  font-size: var(--step-0);
+  font-weight: 600;
+  color: var(--danger);
 }
+body.admin .ErrorList ul { margin: 0; padding-left: var(--space-5); }
+body.admin .ErrorList li { font-size: var(--step--1); }
 
 /* 14. Admin — confirm (delete) -------------------------------------- */
 body.admin-confirm main { max-width: 36rem; }

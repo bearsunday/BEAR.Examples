@@ -16,7 +16,7 @@ $qs = static function (array $params): string {
 ?>
 {{ setLayout('layout/Default') }}
 {{ setBlock('bodyClass') ~}}public public-list public-articlelist{{ endBlock() }}
-{{ setBlock('title') ~}}Article List - BEAR.Cms Reference CMS{{ endBlock() }}
+{{ setBlock('title') ~}}Article List - MyVendor.Cms{{ endBlock() }}
 {{ setBlock('header') ~}}
 <h1 class="ArticleList">Article List</h1>
 <?php if ($category !== null): ?>
@@ -59,8 +59,7 @@ $qs = static function (array $params): string {
     <?php endforeach ?>
   </section>
 </main>
-<nav>
-  <h2>Navigation</h2>
+<nav class="Pagination">
   <ul>
     <?php if ($page > 1): ?>
       <li><a class="goPrev" href="/articlelist{{= $qs(['categoryId' => $filter['categoryId'], 'tagId' => $filter['tagId'], 'authorId' => $filter['authorId'], 'status' => $filter['status'], 'page' => $page - 1, 'perPage' => $perPage]) }}">Previous page</a></li>
@@ -68,9 +67,5 @@ $qs = static function (array $params): string {
     <?php if ($hasNext): ?>
       <li><a class="goNext" href="/articlelist{{= $qs(['categoryId' => $filter['categoryId'], 'tagId' => $filter['tagId'], 'authorId' => $filter['authorId'], 'status' => $filter['status'], 'page' => $page + 1, 'perPage' => $perPage]) }}">Next page</a></li>
     <?php endif ?>
-    <li><a class="goAuthorList" href="/authorlist">Browse authors</a></li>
-    <li><a class="goCategoryList" href="/categorylist">Browse categories</a></li>
-    <li><a class="goTagList" href="/taglist">Browse tags</a></li>
-    <li><a href="/">Home</a></li>
   </ul>
 </nav>

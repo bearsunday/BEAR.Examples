@@ -185,6 +185,34 @@ taxonomy インスタンスだからです。名前空間を分けて保って�
 強制 — embed は taxonomy 名詞、body field は scalar)、`+=` は意味的に最も
 精密な演算子になります。
 
+### Page テンプレート not-found パターン
+
+id で単一の primary entity をロードする Page resource は、404 を返すとき
+`body = ['message' => '<X> not found']` をセットします。4xx でも Qiq
+template は呼び出されるため、ガードなしで null entity のプロパティを参照
+すると警告が出ます。テンプレート先頭で entity ごとのドメイン例外を投げる
+ことで、フレームワークの `catch (Throwable)` 経路が `templates/Error.php`
+にルーティングします。
+
+```php
+<?php
+/**
+ * @var \MyVendor\Cms\Entity\Article|null $article
+ */
+if (! isset($article) || $article === null) {
+    throw new \MyVendor\Cms\Exception\ArticleNotFoundException();
+}
+?>
+```
+
+例外は entity ごと (`ArticleNotFoundException`、`AuthorNotFoundException`
+など) で、既存の `MyVendor\Cms\Exception\*NotFoundException` 系列に揃えます。
+ガードが必要なのは *primary* entity のみ。list 形式の変数は常に list
+(空かもしれない) であり、null ではありません。
+
+該当する Page test には `testNotFoundRendersErrorTemplate` を必ず加え、
+警告のリグレッションを検出します。
+
 ### Status code
 | Method | 成功 | 見つからない | 検証失敗 |
 |--------|------|-------------|---------|

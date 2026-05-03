@@ -5,7 +5,7 @@
 ?>
 {{ setLayout('layout/Default') }}
 {{ setBlock('bodyClass') ~}}admin admin-confirm admin-articledelete{{ endBlock() }}
-{{ setBlock('title') ~}}Delete Article - BEAR.Cms Reference CMS{{ endBlock() }}
+{{ setBlock('title') ~}}Delete Article - MyVendor.Cms{{ endBlock() }}
 {{ setBlock('header') ~}}<h1 class="AdminArticleDelete">Delete Article</h1>{{ endBlock() }}
 <main>
   <section class="Article">
