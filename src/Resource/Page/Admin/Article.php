@@ -94,40 +94,9 @@ class Article extends ResourceObject
         ]);
 
         try {
-            if ($articleId === null) {
-                $created = $this->resource->post('app://self/article', $values);
-                if ($created->code >= 400 || ! is_array($created->body) || ! isset($created->body['id'])) {
-                    $this->code = $created->code;
-                    $this->body = is_array($created->body) ? $created->body : ['message' => 'Article create failed'];
-
-                    return $this;
-                }
-
-                $createdId = (int) $created->body['id'];
-                $this->redirect('/admin/article?id=' . $createdId . '&saved=created');
-
-                return $this;
-            }
-
-            $values['id'] = $articleId;
-            $updated = $this->resource->put('app://self/article', $values);
-            if ($updated->code === 404) {
-                $this->code = 404;
-                $this->body = ['message' => 'Article not found'];
-
-                return $this;
-            }
-
-            if ($updated->code >= 400) {
-                $this->code = $updated->code;
-                $this->body = is_array($updated->body) ? $updated->body : ['message' => 'Article update failed'];
-
-                return $this;
-            }
-
-            $this->redirect('/admin/article?id=' . $articleId . '&saved=updated');
-
-            return $this;
+            return $articleId === null
+                ? $this->createArticle($values)
+                : $this->updateArticle($articleId, $values);
         } catch (JsonSchemaException | ParameterException $e) {
             $article = $articleId === null ? null : $this->article->item($articleId);
             $this->code = 422;
@@ -135,6 +104,47 @@ class Article extends ResourceObject
 
             return $this;
         }
+    }
+
+    /** @param array<string, mixed> $values */
+    private function createArticle(array $values): static
+    {
+        $created = $this->resource->post('app://self/article', $values);
+        if ($created->code >= 400 || ! is_array($created->body) || ! isset($created->body['id'])) {
+            $this->code = $created->code;
+            $this->body = is_array($created->body) ? $created->body : ['message' => 'Article create failed'];
+
+            return $this;
+        }
+
+        $createdId = (int) $created->body['id'];
+        $this->redirect('/admin/article?id=' . $createdId . '&saved=created');
+
+        return $this;
+    }
+
+    /** @param array<string, mixed> $values */
+    private function updateArticle(int $articleId, array $values): static
+    {
+        $values['id'] = $articleId;
+        $updated = $this->resource->put('app://self/article', $values);
+        if ($updated->code === 404) {
+            $this->code = 404;
+            $this->body = ['message' => 'Article not found'];
+
+            return $this;
+        }
+
+        if ($updated->code >= 400) {
+            $this->code = $updated->code;
+            $this->body = is_array($updated->body) ? $updated->body : ['message' => 'Article update failed'];
+
+            return $this;
+        }
+
+        $this->redirect('/admin/article?id=' . $articleId . '&saved=updated');
+
+        return $this;
     }
 
     /**
@@ -195,7 +205,7 @@ class Article extends ResourceObject
             'authors' => $this->author->list(),
             'categories' => $this->category->list(),
             'tags' => $this->tag->list(),
-            'selectedTagIds' => $this->selectedTagIds($article, $values),
+            'selectedTagIds' => $this->normaliseTagIds($values['tagIds'] ?? []),
             'saved' => $saved,
         ];
     }
@@ -229,30 +239,6 @@ class Article extends ResourceObject
             'publishedAt' => $article->publishedAt,
             'tagIds' => array_map(static fn ($tag) => $tag->id, $this->tag->listByArticle($article->id)),
         ];
-    }
-
-    /**
-     * @param array<string, mixed> $values
-     *
-     * @return list<int>
-     */
-    private function selectedTagIds(ArticleEntity|null $article, array $values): array
-    {
-        if (isset($values['tagIds']) && is_array($values['tagIds'])) {
-            /** @var list<int> $tagIds */
-            $tagIds = array_values(array_map(static fn ($id) => (int) $id, $values['tagIds']));
-
-            return $tagIds;
-        }
-
-        if ($article === null) {
-            return [];
-        }
-
-        /** @var list<int> $tagIds */
-        $tagIds = array_map(static fn ($tag) => $tag->id, $this->tag->listByArticle($article->id));
-
-        return $tagIds;
     }
 
     private function nullableString(mixed $value): string|null

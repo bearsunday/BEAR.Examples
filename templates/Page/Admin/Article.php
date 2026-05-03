@@ -53,7 +53,7 @@ $nameFor = static function (array $entities, int $id): string {
     </section>
   <?php endif ?>
 
-  <form class="ArticleForm" method="post" action="/admin/article">
+  <form class="ArticleForm" method="post" action="/admin/article<?php if ($isEdit && $article !== null): ?>?id={{a $article->id }}<?php endif ?>">
     <?php if ($isEdit && $article !== null): ?>
       <input type="hidden" name="id" value="{{a $article->id }}">
       <p class="slug">Slug: <code>{{h $article->slug }}</code></p>

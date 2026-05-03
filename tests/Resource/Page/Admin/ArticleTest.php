@@ -57,6 +57,7 @@ final class ArticleTest extends AbstractPageTestCase
         $editHtml = $edit->toString();
         $this->assertStringContainsString('<h1 class="AdminArticle">Edit Article</h1>', $editHtml);
         $this->assertStringContainsString('<p class="notice">Article created.</p>', $editHtml);
+        $this->assertStringContainsString('action="/admin/article?id=' . $id . '"', $editHtml);
         $this->assertStringContainsString('<input type="hidden" name="id" value="' . $id . '">', $editHtml);
         $this->assertStringContainsString('<p class="slug">Slug: <code>' . $slug . '</code></p>', $editHtml);
 
