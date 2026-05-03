@@ -21,7 +21,7 @@ final class ArticleTest extends AbstractPageTestCase
         $this->assertStringContainsString('<form class="ArticleForm" method="post" action="/admin/article">', $html);
         $this->assertStringContainsString('class="goAdminIndex"', $html);
         $this->assertStringContainsString('name="slug"', $html);
-        $this->assertStringContainsString('name="authorId"', $html);
+        $this->assertStringNotContainsString('name="authorId"', $html);
         $this->assertStringContainsString('name="categoryId"', $html);
         $this->assertStringContainsString('name="tagIds[]"', $html);
     }
@@ -33,7 +33,6 @@ final class ArticleTest extends AbstractPageTestCase
             'slug' => $slug,
             'title' => 'Admin Created Article',
             'body' => 'Created from the admin page resource.',
-            'authorId' => 1,
             'categoryId' => 1,
             'status' => 'draft',
             'excerpt' => '',
@@ -90,7 +89,6 @@ final class ArticleTest extends AbstractPageTestCase
             'slug' => 'Invalid Slug',
             'title' => '<script>alert(1)</script>',
             'body' => 'Body',
-            'authorId' => 1,
             'categoryId' => 1,
             'status' => 'draft',
         ]);

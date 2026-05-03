@@ -63,14 +63,6 @@ $nameFor = static function (array $entities, int $id): string {
       <label for="slug">Slug</label>
       <input id="slug" name="slug" type="text" value="{{a $slug }}" required>
 
-      <label for="authorId">Author</label>
-      <select id="authorId" name="authorId" required>
-        <option value="">Select author</option>
-        <?php foreach ($authors as $author): ?>
-          <option value="{{a $author->id }}" <?php if ($authorId === $author->id): ?>selected<?php endif ?>>{{h $author->name }}</option>
-        <?php endforeach ?>
-      </select>
-
       <label for="categoryId">Category</label>
       <select id="categoryId" name="categoryId" required>
         <option value="">Select category</option>
