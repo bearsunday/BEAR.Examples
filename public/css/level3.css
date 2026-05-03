@@ -28,11 +28,12 @@
      7. Public — taxonomy lists
      8. Admin — shell
      9. Admin — toolbar (filter + actions)
-    10. Admin — article list (compact table)
-    11. Admin — form
-    12. Admin — confirm (danger zone)
-    13. Atoms — status badges, notice, error list
-    14. Footer & css switcher
+    10. Admin — index (landing hub)
+    11. Admin — article list (compact table)
+    12. Admin — form
+    13. Admin — confirm (danger zone)
+    14. Atoms — status badges, notice, error list
+    15. Footer & css switcher
    ============================================================================= */
 
 @import 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap';
@@ -749,7 +750,47 @@ body.admin-list .AdminFilter button:hover {
 }
 
 /* ---------------------------------------------------------------------------
-   10. Admin — article list (compact table)
+   10. Admin — index (landing hub)
+   --------------------------------------------------------------------------- */
+body.admin-index main > .AdminIndex {
+  background: var(--admin-surface);
+  border: 1px solid var(--admin-border);
+  border-radius: 4px;
+  padding: var(--space) var(--space-double);
+}
+
+body.admin-index .AdminIndex h2 {
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--admin-text-muted);
+  margin: 0 0 var(--space);
+}
+
+body.admin-index .AdminIndex ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: var(--space-half);
+}
+
+body.admin-index .AdminIndex ul a {
+  display: inline-block;
+  font-size: 0.95rem;
+  color: var(--admin-primary);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color var(--transition);
+}
+
+body.admin-index .AdminIndex ul a:hover {
+  border-bottom-color: var(--admin-primary);
+}
+
+/* ---------------------------------------------------------------------------
+   11. Admin — article list (compact table)
    --------------------------------------------------------------------------- */
 body.admin-list .ArticleList {
   background: var(--admin-surface);
@@ -828,7 +869,7 @@ body.admin-list .ArticleList .Article .AdminActions .doDeleteArticle {
 }
 
 /* ---------------------------------------------------------------------------
-   11. Admin — form
+   12. Admin — form
    --------------------------------------------------------------------------- */
 body.admin-form .ArticleForm {
   background: var(--admin-surface);
@@ -937,7 +978,7 @@ body.admin-form .ArticleForm button[type="submit"]:hover {
 }
 
 /* ---------------------------------------------------------------------------
-   12. Admin — confirm (danger zone)
+   13. Admin — confirm (danger zone)
    --------------------------------------------------------------------------- */
 body.admin-confirm main > .Article {
   background: var(--admin-surface);
@@ -994,7 +1035,7 @@ body.admin-confirm .DeleteForm button[type="submit"]:hover {
 }
 
 /* ---------------------------------------------------------------------------
-   13. Atoms — status badges, notice, error list
+   14. Atoms — status badges, notice, error list
    --------------------------------------------------------------------------- */
 body.admin .ArticleList .Article .status {
   display: inline-block;
@@ -1056,7 +1097,7 @@ body.admin .ErrorList ul {
 }
 
 /* ---------------------------------------------------------------------------
-   14. Footer & CSS switcher
+   15. Footer & CSS switcher
    --------------------------------------------------------------------------- */
 footer {
   border-top: 1px solid var(--paper-200);

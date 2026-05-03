@@ -1,4 +1,5 @@
 {{ setLayout('layout/Default') }}
+{{ setBlock('bodyClass') ~}}admin admin-index{{ endBlock() }}
 {{ setBlock('title') ~}}Admin - BEAR.Cms Reference CMS{{ endBlock() }}
 {{ setBlock('header') ~}}<h1 class="AdminIndex">Admin</h1>{{ endBlock() }}
 <main>
