@@ -32,7 +32,7 @@ final class ArticleTest extends AbstractPageTestCase
         $this->assertStringContainsString('<link rel="stylesheet" href="/css/level3.css">', $html);
         $this->assertStringContainsString('<header>', $html);
         $this->assertStringContainsString('<main>', $html);
-        $this->assertStringContainsString('<nav', $html);
+        $this->assertStringContainsString('<nav ', $html);
         $this->assertStringContainsString('<footer>', $html);
     }
 
