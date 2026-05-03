@@ -4,6 +4,7 @@
  */
 ?>
 {{ setLayout('layout/Default') }}
+{{ setBlock('bodyClass') ~}}public public-index{{ endBlock() }}
 {{ setBlock('header') ~}}<h1 class="ArticleList">BEAR.Cms Reference CMS</h1>{{ endBlock() }}
 <main>
   <section class="ArticleList">

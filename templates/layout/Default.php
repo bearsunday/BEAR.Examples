@@ -13,7 +13,7 @@
   <link rel="profile" href="/profile/alps.json">
   <link rel="stylesheet" href="/css/level{{h $cssLevel }}.css">
 </head>
-<body>
+<body class="{{ setBlock('bodyClass') ~}}public public-list{{= getBlock() ~}}">
   <header>
     {{ setBlock('header') ~}}{{= getBlock() ~}}
   </header>

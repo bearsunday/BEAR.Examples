@@ -5,6 +5,7 @@
  */
 ?>
 {{ setLayout('layout/Default') }}
+{{ setBlock('bodyClass') ~}}public public-detail public-tag{{ endBlock() }}
 {{ setBlock('title') ~}}{{h $tag->name }} - BEAR.Cms Reference CMS{{ endBlock() }}
 {{ setBlock('header') ~}}<h1 class="Tag">Tag Detail</h1>{{ endBlock() }}
 <main>

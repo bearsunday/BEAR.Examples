@@ -4,6 +4,7 @@
  */
 ?>
 {{ setLayout('layout/Default') }}
+{{ setBlock('bodyClass') ~}}public public-list public-taglist{{ endBlock() }}
 {{ setBlock('title') ~}}Tag List - BEAR.Cms Reference CMS{{ endBlock() }}
 {{ setBlock('header') ~}}<h1 class="TagList">Tags</h1>{{ endBlock() }}
 <main>

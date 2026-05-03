@@ -4,6 +4,7 @@
  */
 ?>
 {{ setLayout('layout/Default') }}
+{{ setBlock('bodyClass') ~}}public public-detail public-author{{ endBlock() }}
 {{ setBlock('title') ~}}{{h $author->name }} - BEAR.Cms Reference CMS{{ endBlock() }}
 {{ setBlock('header') ~}}<h1 class="Author">Author Detail</h1>{{ endBlock() }}
 <main>

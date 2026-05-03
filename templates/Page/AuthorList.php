@@ -4,6 +4,7 @@
  */
 ?>
 {{ setLayout('layout/Default') }}
+{{ setBlock('bodyClass') ~}}public public-list public-authorlist{{ endBlock() }}
 {{ setBlock('title') ~}}Author List - BEAR.Cms Reference CMS{{ endBlock() }}
 {{ setBlock('header') ~}}<h1 class="AuthorList">Authors</h1>{{ endBlock() }}
 <main>

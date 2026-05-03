@@ -32,6 +32,7 @@ $nameFor = static function (array $entities, int $id): string {
 };
 ?>
 {{ setLayout('layout/Default') }}
+{{ setBlock('bodyClass') ~}}admin admin-form admin-article{{ endBlock() }}
 {{ setBlock('title') ~}}{{h $heading }} - BEAR.Cms Reference CMS{{ endBlock() }}
 {{ setBlock('header') ~}}<h1 class="AdminArticle">{{h $heading }}</h1>{{ endBlock() }}
 <main>

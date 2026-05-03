@@ -15,6 +15,7 @@ $qs = static function (array $params): string {
 };
 ?>
 {{ setLayout('layout/Default') }}
+{{ setBlock('bodyClass') ~}}public public-list public-articlelist{{ endBlock() }}
 {{ setBlock('title') ~}}Article List - BEAR.Cms Reference CMS{{ endBlock() }}
 {{ setBlock('header') ~}}
 <h1 class="ArticleList">Article List</h1>

@@ -1,265 +1,1085 @@
-/* level3.css — Production quality */
-@import 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@500;600&display=swap';
+/* =============================================================================
+   level3.css — production quality
 
+   Information architecture
+   ------------------------
+   Public  (body.public)        — reading material. Strong typographic
+                                  hierarchy, comfortable line-height, low-key
+                                  link lists. Article body is the subject;
+                                  metadata lives in a sidebar strip below.
+   Admin   (body.admin)         — work UI. Dense, sans-serif, table-row list,
+                                  explicit action bar, color-coded status,
+                                  clearly distinguished danger action.
+
+   Class-name policy
+   -----------------
+   .Article, .Author, .Category, .Tag, .ArticleList, .goArticle,
+   .doCreateArticle, … are ALPS profile ids (semantic). They are not styled
+   directly — every rule is scoped under body.public-* / body.admin-*.
+
+   Chapters
+   --------
+     1. Tokens
+     2. Reset & shell
+     3. Public — base typography & navigation
+     4. Public — index / article list (reading lists)
+     5. Public — article detail
+     6. Public — taxonomy details (Author, Category, Tag)
+     7. Public — taxonomy lists
+     8. Admin — shell
+     9. Admin — toolbar (filter + actions)
+    10. Admin — article list (compact table)
+    11. Admin — form
+    12. Admin — confirm (danger zone)
+    13. Atoms — status badges, notice, error list
+    14. Footer & css switcher
+   ============================================================================= */
+
+@import 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap';
+
+/* ---------------------------------------------------------------------------
+   1. Tokens
+   --------------------------------------------------------------------------- */
 :root {
-  --brand-50: #faf8f5;
-  --brand-100: #f0ece4;
-  --brand-200: #d9cfb9;
-  --brand-600: #8a7350;
-  --brand-700: #6b5839;
-  --brand-900: #2c2518;
-  --gray-100: #f6f6f4;
-  --gray-300: #d8d6d2;
-  --gray-600: #6c6a66;
-  --gray-900: #1f1d1a;
+  /* Public palette — warm, paper-like */
+  --paper-50:   #faf8f5;
+  --paper-100:  #f1ede4;
+  --paper-200:  #d9cfb9;
+  --ink-900:    #1f1d1a;
+  --ink-700:    #3a362e;
+  --ink-500:    #6c6a66;
+  --accent-700: #6b5839;
+  --accent-600: #8a7350;
+
+  /* Admin palette — cool, office-like */
+  --admin-bg:        #f5f6f8;
+  --admin-surface:   #ffffff;
+  --admin-border:    #d8dce3;
+  --admin-border-strong: #b6bcc7;
+  --admin-text:      #1c1f26;
+  --admin-text-muted:#5b6370;
+  --admin-primary:   #1f4b8e;
+  --admin-primary-hover: #163a72;
+  --admin-danger:    #b3261e;
+  --admin-danger-bg: #fdecec;
+
+  /* Status colors */
+  --status-published-bg: #e6f3ec;
+  --status-published-fg: #1f6f44;
+  --status-draft-bg:     #f3eee0;
+  --status-draft-fg:     #7a5a13;
+
+  /* Type */
   --font-display: 'Playfair Display', georgia, serif;
-  --font-sans: 'Inter', system-ui, sans-serif;
-  --transition: 300ms ease;
-  --space: 1rem;
+  --font-sans:    'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono:    ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* Rhythm */
+  --space:        1rem;
+  --space-half:   0.5rem;
+  --space-tight:  0.25rem;
+  --space-double: 2rem;
+  --transition:   180ms ease;
 }
 
-* { box-sizing: border-box; }
+/* ---------------------------------------------------------------------------
+   2. Reset & shell
+   --------------------------------------------------------------------------- */
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
 
 body {
-  font-family: var(--font-sans);
-  color: var(--gray-900);
-  background: var(--brand-50);
   margin: 0;
   padding: 0;
-  line-height: 1.65;
+  font-family: var(--font-sans);
+  line-height: 1.6;
+  color: var(--ink-900);
+  background: var(--paper-50);
 }
 
+body.admin {
+  background: var(--admin-bg);
+  color: var(--admin-text);
+  line-height: 1.5;
+}
+
+/* hidden ALPS id markers */
+input[type="hidden"].id { display: none; }
+
+/* page shell — sized per body context (admin can be wider) */
 header, main, nav, footer {
   max-width: 48rem;
   margin: 0 auto;
   padding: calc(var(--space) * 1.5);
 }
 
-header {
-  border-bottom: 1px solid var(--brand-200);
-  padding-bottom: var(--space);
+body.admin header,
+body.admin main,
+body.admin nav,
+body.admin footer {
+  max-width: 60rem;
+}
+
+/* ---------------------------------------------------------------------------
+   3. Public — base typography & navigation
+   --------------------------------------------------------------------------- */
+body.public header {
+  border-bottom: 1px solid var(--paper-200);
   margin-bottom: var(--space);
 }
 
-header h1 {
-  font-family: var(--font-display);
-  font-size: 1rem;
+body.public header h1 {
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
   font-weight: 500;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--gray-600);
+  color: var(--ink-500);
   margin: 0;
 }
 
-.Article .title {
-  font-family: var(--font-display);
-  font-size: 2.25rem;
-  font-weight: 600;
-  line-height: 1.2;
-  color: var(--brand-900);
-  margin: 0 0 var(--space);
-}
-
-.Article .status {
-  display: inline-block;
-  font-size: 0.75rem;
-  font-weight: 500;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  padding: 0.125rem 0.5rem;
-  border-radius: 2px;
-  background: var(--brand-100);
-  color: var(--brand-700);
-}
-
-.Article .publishedAt {
-  display: block;
+body.public header p {
   font-size: 0.875rem;
-  color: var(--gray-600);
-  margin: var(--space) 0;
+  color: var(--ink-500);
+  margin: var(--space-tight) 0 0;
 }
 
-.Article .excerpt {
-  font-size: 1.1rem;
-  font-style: italic;
-  color: var(--gray-600);
-  border-left: 3px solid var(--brand-200);
-  padding-left: var(--space);
-  margin: calc(var(--space) * 1.5) 0;
-}
-
-.Article .body {
-  font-size: 1rem;
-  line-height: 1.8;
-}
-
-.Author, .Category, .Tag {
-  display: inline-block;
-  font-size: 0.875rem;
-  margin-right: var(--space);
-}
-
-.Author .name, .Category .name, .Tag .name {
+body.public header p .name,
+body.public header p .status {
+  color: var(--ink-700);
   font-weight: 500;
-  color: var(--brand-700);
 }
 
-.ArticleList, .CategoryList, .TagList {
-  display: grid;
-  gap: var(--space);
-}
-
-.ArticleList > .page, .ArticleList > .perPage {
-  display: none;
-}
-
-.CategoryList .Category,
-.TagList .Tag,
-.ArticleList .Article {
-  display: block;
-  margin: 0;
-  padding: var(--space);
-  background: white;
-  border: 1px solid var(--brand-200);
-  border-radius: 4px;
-  font-size: 1rem;
-}
-
-.TagList ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: grid;
-  gap: var(--space);
-}
-
-.TagList .Tag a {
-  text-decoration: none;
-  color: inherit;
-}
-
-.CategoryList .Category .name {
-  font-family: var(--font-display);
-  font-size: 1.25rem;
-  margin: 0 0 0.25rem;
-}
-
-.CategoryList .Category .name a {
-  text-decoration: none;
-  color: var(--brand-900);
-}
-
-.CategoryList .Category .slug,
-.TagList .Tag .slug {
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 0.75rem;
-  color: var(--gray-600);
-  margin-right: 0.5rem;
-}
-
-.CategoryList .Category .parentId {
-  font-size: 0.75rem;
-  color: var(--gray-600);
-}
-
-.CategoryList .Category .description {
-  margin: 0.5rem 0 0;
-  font-size: 0.95rem;
-  color: var(--gray-900);
-}
-
-.TagList .Tag .name {
-  font-family: var(--font-display);
-  font-size: 1.1rem;
-  margin-right: 0.5rem;
-}
-
-.ArticleList .Article .title {
-  font-size: 1.5rem;
-  margin: 0 0 0.5rem;
-}
-
-.ArticleList .Article .title a {
-  text-decoration: none;
-  color: var(--brand-900);
-}
-
-.ArticleList .Article .slug {
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 0.75rem;
-  color: var(--gray-600);
-  margin-right: 0.5rem;
-}
-
-nav {
-  border-top: 1px solid var(--brand-200);
-  padding-top: var(--space);
-  margin-top: calc(var(--space) * 2);
-}
-
-nav h2 {
-  font-size: 0.75rem;
-  font-weight: 500;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: var(--gray-600);
-  margin: 0 0 var(--space);
-}
-
-nav ul { list-style: none; padding: 0; margin: 0; }
-nav li { margin: 0.5rem 0; }
-
-nav a {
-  color: var(--brand-700);
+body.public a {
+  color: var(--accent-700);
   text-decoration: none;
   border-bottom: 1px solid transparent;
   transition: border-color var(--transition);
 }
 
-nav a:hover { border-bottom-color: var(--brand-700); }
+body.public a:hover { border-bottom-color: var(--accent-700); }
 
-form {
-  background: var(--gray-100);
-  padding: var(--space);
-  margin: var(--space) 0;
-  border: 1px solid var(--gray-300);
+/* Public nav: low-emphasis text/link list */
+body.public > nav,
+body.public main + nav {
+  border-top: 1px solid var(--paper-200);
+  padding-top: var(--space);
+  margin-top: var(--space-double);
+  font-size: 0.85rem;
 }
 
-form label { display: block; font-size: 0.875rem; margin-bottom: 0.25rem; color: var(--gray-600); }
-form input, form textarea, form select {
+body.public > nav h2,
+body.public main + nav h2 {
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-500);
+  margin: 0 0 var(--space-half);
+}
+
+body.public > nav ul,
+body.public main + nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+body.public > nav li,
+body.public main + nav li {
+  margin: 0.35rem 0;
+}
+
+body.public > nav a,
+body.public main + nav a {
+  color: var(--ink-500);
+}
+
+body.public > nav a:hover,
+body.public main + nav a:hover {
+  color: var(--accent-700);
+}
+
+/* ---------------------------------------------------------------------------
+   4. Public — index / article list (reading lists)
+   --------------------------------------------------------------------------- */
+body.public-index .ArticleList,
+body.public-articlelist .ArticleList {
+  display: flex;
+  flex-direction: column;
+}
+
+body.public-index .ArticleList > .page,
+body.public-index .ArticleList > .perPage,
+body.public-articlelist .ArticleList > .page,
+body.public-articlelist .ArticleList > .perPage {
+  display: none;
+}
+
+body.public-index .ArticleList .Article,
+body.public-articlelist .ArticleList .Article {
+  padding: var(--space) 0 calc(var(--space) * 1.25);
+  border-bottom: 1px solid var(--paper-200);
+}
+
+body.public-index .ArticleList .Article:last-child,
+body.public-articlelist .ArticleList .Article:last-child {
+  border-bottom: none;
+}
+
+body.public-index .ArticleList .Article .title,
+body.public-articlelist .ArticleList .Article .title {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 600;
+  line-height: 1.25;
+  margin: 0 0 var(--space-half);
+}
+
+body.public-index .ArticleList .Article .title a,
+body.public-articlelist .ArticleList .Article .title a {
+  color: var(--ink-900);
+  border-bottom: none;
+}
+
+body.public-index .ArticleList .Article .title a:hover,
+body.public-articlelist .ArticleList .Article .title a:hover {
+  color: var(--accent-700);
+}
+
+body.public-index .ArticleList .Article .slug,
+body.public-articlelist .ArticleList .Article .slug,
+body.public-index .ArticleList .Article .publishedAt,
+body.public-articlelist .ArticleList .Article .publishedAt {
+  display: inline-block;
+  margin-right: var(--space-half);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--ink-500);
+}
+
+body.public-index .ArticleList .Article .publishedAt,
+body.public-articlelist .ArticleList .Article .publishedAt {
   font-family: var(--font-sans);
+}
+
+body.public-index .ArticleList .Article .excerpt,
+body.public-articlelist .ArticleList .Article .excerpt {
+  margin: var(--space-half) 0 0;
   font-size: 1rem;
-  padding: 0.5rem;
-  border: 1px solid var(--gray-300);
-  background: white;
-  width: 100%;
+  color: var(--ink-700);
+}
+
+/* status pill is small and ambient on the public list */
+body.public-index .ArticleList .Article .status,
+body.public-articlelist .ArticleList .Article .status {
+  display: none;  /* public lists generally only show published items */
+}
+
+/* ---------------------------------------------------------------------------
+   5. Public — article detail
+   --------------------------------------------------------------------------- */
+body.public-article main {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-double);
+}
+
+body.public-article .Article {
+  background: transparent;
+}
+
+body.public-article .Article > .slug {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+  color: var(--ink-500);
+  margin-bottom: var(--space-half);
+}
+
+body.public-article .Article .title {
+  font-family: var(--font-display);
+  font-size: 2.5rem;
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.005em;
+  color: var(--ink-900);
+  margin: 0 0 var(--space-half);
+}
+
+body.public-article .Article .status {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 0.125rem 0.5rem;
+  border-radius: 999px;
+  background: var(--paper-100);
+  color: var(--accent-700);
+  vertical-align: middle;
+}
+
+body.public-article .Article .publishedAt {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--ink-500);
+  margin: var(--space) 0 calc(var(--space) * 1.25);
+}
+
+body.public-article .Article .excerpt {
+  font-size: 1.15rem;
+  line-height: 1.55;
+  font-style: italic;
+  color: var(--ink-700);
+  border-left: 3px solid var(--paper-200);
+  padding: 0 0 0 var(--space);
+  margin: 0 0 var(--space-double);
+}
+
+body.public-article .Article .body {
+  font-size: 1.05rem;
+  line-height: 1.8;
+  color: var(--ink-900);
+}
+
+body.public-article .Article .body p { margin: 0 0 var(--space); }
+body.public-article .Article .body h2,
+body.public-article .Article .body h3 {
+  font-family: var(--font-display);
+  margin: var(--space-double) 0 var(--space-half);
+}
+
+/* Article metadata strip — sidebar-ish, but laid out as a horizontal
+   ribbon below the body so it doesn't fight for attention while reading. */
+body.public-article .ArticleMeta {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space);
+  padding: var(--space) 0 0;
+  border-top: 1px solid var(--paper-200);
+  font-size: 0.9rem;
+}
+
+@media (min-width: 38rem) {
+  body.public-article .ArticleMeta {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-double);
+  }
+}
+
+body.public-article .ArticleMeta section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-tight);
+}
+
+body.public-article .ArticleMeta .role {
+  font-size: 0.65rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-500);
+}
+
+body.public-article .ArticleMeta .Author .name,
+body.public-article .ArticleMeta .Category .name {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--ink-900);
+  line-height: 1.3;
+}
+
+body.public-article .ArticleMeta .Author .email {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--ink-500);
+}
+
+body.public-article .ArticleMeta .Category a,
+body.public-article .ArticleMeta .Tag a {
+  border-bottom: none;
+  color: inherit;
+}
+
+body.public-article .ArticleMeta .Category .slug,
+body.public-article .ArticleMeta .Tag .slug {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--ink-500);
+  margin-top: 0.1rem;
+}
+
+body.public-article .ArticleMeta .TagSet {
+  flex-direction: column;
+}
+
+body.public-article .ArticleMeta .TagSet .Tag {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.4rem;
+  padding: 0.2rem 0.6rem;
+  background: var(--paper-100);
+  border-radius: 999px;
+  font-size: 0.85rem;
+  margin: 0.15rem 0.25rem 0.15rem 0;
+}
+
+body.public-article .ArticleMeta .TagSet .Tag a {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.4rem;
+}
+
+body.public-article .ArticleMeta .TagSet .Tag .name { color: var(--ink-900); }
+
+body.public-article .ArticleMeta .TagSet .Tag .slug { display: none; }
+
+body.public-article .ArticleMeta .TagSet > .role { margin-bottom: var(--space-tight); }
+
+/* ---------------------------------------------------------------------------
+   6. Public — taxonomy details (Author, Category, Tag)
+   --------------------------------------------------------------------------- */
+body.public-author .Author,
+body.public-category .Category,
+body.public-tag .Tag {
+  margin-bottom: var(--space-double);
+}
+
+body.public-author .Author .name,
+body.public-category .Category .name,
+body.public-tag .Tag .name {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 600;
+  margin: 0 0 var(--space-half);
+}
+
+body.public-author .Author .email,
+body.public-category .Category .slug,
+body.public-tag .Tag .slug {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--ink-500);
   margin-bottom: var(--space);
 }
 
-button, [type="submit"] {
+body.public-author .Author .bio,
+body.public-category .Category .description {
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: var(--ink-700);
+  margin: 0;
+}
+
+/* nested article list inside category/tag detail */
+body.public-category .ArticleList,
+body.public-tag .ArticleList {
+  border-top: 1px solid var(--paper-200);
+  padding-top: var(--space);
+}
+
+body.public-category .ArticleList > h2,
+body.public-tag .ArticleList > h2 {
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-500);
+  margin: 0 0 var(--space);
+}
+
+body.public-category .ArticleList .Article,
+body.public-tag .ArticleList .Article {
+  padding: var(--space-half) 0;
+  border-bottom: 1px solid var(--paper-200);
+}
+
+body.public-category .ArticleList .Article:last-child,
+body.public-tag .ArticleList .Article:last-child { border-bottom: none; }
+
+body.public-category .ArticleList .Article .title,
+body.public-tag .ArticleList .Article .title {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin: 0 0 var(--space-tight);
+}
+
+body.public-category .ArticleList .Article .title a,
+body.public-tag .ArticleList .Article .title a {
+  color: var(--ink-900);
+  border-bottom: none;
+}
+
+body.public-category .ArticleList .Article .slug,
+body.public-tag .ArticleList .Article .slug,
+body.public-category .ArticleList .Article .publishedAt,
+body.public-tag .ArticleList .Article .publishedAt {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--ink-500);
+  margin-right: var(--space-half);
+}
+
+/* ---------------------------------------------------------------------------
+   7. Public — taxonomy lists (AuthorList, CategoryList, TagList)
+   --------------------------------------------------------------------------- */
+body.public-authorlist .AuthorList,
+body.public-categorylist .CategoryList {
+  display: flex;
+  flex-direction: column;
+}
+
+body.public-authorlist .AuthorList .Author,
+body.public-categorylist .CategoryList .Category {
+  padding: var(--space) 0;
+  border-bottom: 1px solid var(--paper-200);
+}
+
+body.public-authorlist .AuthorList .Author:last-child,
+body.public-categorylist .CategoryList .Category:last-child { border-bottom: none; }
+
+body.public-authorlist .AuthorList .Author .name,
+body.public-categorylist .CategoryList .Category .name {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0 0 var(--space-tight);
+}
+
+body.public-authorlist .AuthorList .Author .name a,
+body.public-categorylist .CategoryList .Category .name a {
+  color: var(--ink-900);
+  border-bottom: none;
+}
+
+body.public-authorlist .AuthorList .Author .email,
+body.public-categorylist .CategoryList .Category .slug,
+body.public-categorylist .CategoryList .Category .parentId {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--ink-500);
+  margin-right: var(--space-half);
+}
+
+body.public-authorlist .AuthorList .Author .bio,
+body.public-categorylist .CategoryList .Category .description {
+  margin: var(--space-half) 0 0;
+  font-size: 0.95rem;
+  color: var(--ink-700);
+}
+
+/* TagList — wrap as inline pills */
+body.public-taglist .TagList ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 0.75rem;
+}
+
+body.public-taglist .TagList .Tag a {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  padding: 0.4rem 0.85rem;
+  background: white;
+  border: 1px solid var(--paper-200);
+  border-radius: 999px;
+  border-bottom-color: var(--paper-200);
+  color: var(--ink-700);
+}
+
+body.public-taglist .TagList .Tag a:hover {
+  border-color: var(--accent-700);
+}
+
+body.public-taglist .TagList .Tag .name {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  color: var(--ink-900);
+}
+
+body.public-taglist .TagList .Tag .slug {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--ink-500);
+}
+
+/* ---------------------------------------------------------------------------
+   8. Admin — shell
+   --------------------------------------------------------------------------- */
+body.admin header {
+  background: var(--admin-surface);
+  border-bottom: 1px solid var(--admin-border);
+  padding: var(--space) calc(var(--space) * 1.5);
+  margin-bottom: var(--space);
+}
+
+body.admin header h1 {
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--admin-text);
+  margin: 0;
+}
+
+body.admin a {
+  color: var(--admin-primary);
+  text-decoration: none;
+}
+
+body.admin a:hover { color: var(--admin-primary-hover); text-decoration: underline; }
+
+body.admin main { padding-top: var(--space); }
+
+/* Bottom nav as a horizontal action bar, not a labelled list */
+body.admin > nav,
+body.admin main + nav {
+  border-top: 1px solid var(--admin-border);
+  padding: var(--space) calc(var(--space) * 1.5);
+  margin-top: var(--space-double);
+  background: var(--admin-surface);
+}
+
+body.admin > nav h2,
+body.admin main + nav h2 {
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--admin-text-muted);
+  margin: 0 0 var(--space-half);
+}
+
+body.admin > nav ul,
+body.admin main + nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space) calc(var(--space) * 1.5);
+  font-size: 0.875rem;
+}
+
+/* ---------------------------------------------------------------------------
+   9. Admin — toolbar (filter + actions)
+   --------------------------------------------------------------------------- */
+body.admin-list .AdminActions {
+  display: flex;
+  gap: var(--space-half);
+  margin: 0 0 var(--space);
+}
+
+body.admin-list main > .AdminActions a.doCreateArticle {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.55rem 1rem;
+  background: var(--admin-primary);
+  color: white;
+  font-size: 0.85rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  border-radius: 4px;
+}
+
+body.admin-list main > .AdminActions a.doCreateArticle:hover {
+  background: var(--admin-primary-hover);
+  text-decoration: none;
+}
+
+body.admin-list .AdminFilter {
+  display: flex;
+  align-items: center;
+  gap: var(--space-half);
+  flex-wrap: wrap;
+  background: var(--admin-surface);
+  border: 1px solid var(--admin-border);
+  border-radius: 4px;
+  padding: var(--space-half) var(--space);
+  margin: 0 0 var(--space);
+}
+
+body.admin-list .AdminFilter label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: var(--admin-text-muted);
+  margin: 0;
+}
+
+body.admin-list .AdminFilter select {
   font-family: var(--font-sans);
   font-size: 0.875rem;
-  font-weight: 500;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  padding: 0.75rem 1.5rem;
-  border: 1px solid var(--brand-900);
+  padding: 0.35rem 0.5rem;
+  border: 1px solid var(--admin-border);
+  border-radius: 3px;
   background: white;
-  color: var(--brand-900);
-  cursor: pointer;
-  transition: all var(--transition);
+  margin: 0;
+  width: auto;
 }
 
-button:hover, [type="submit"]:hover {
-  background: var(--brand-900);
-  color: var(--brand-50);
-}
-
-footer {
-  border-top: 1px solid var(--brand-200);
-  padding-top: var(--space);
-  margin-top: calc(var(--space) * 2);
+body.admin-list .AdminFilter button {
+  font-family: var(--font-sans);
   font-size: 0.75rem;
-  color: var(--gray-600);
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 0.4rem 0.85rem;
+  background: white;
+  color: var(--admin-text);
+  border: 1px solid var(--admin-border-strong);
+  border-radius: 3px;
+  cursor: pointer;
+  transition: background var(--transition);
+}
+
+body.admin-list .AdminFilter button:hover {
+  background: var(--admin-bg);
+}
+
+/* ---------------------------------------------------------------------------
+   10. Admin — article list (compact table)
+   --------------------------------------------------------------------------- */
+body.admin-list .ArticleList {
+  background: var(--admin-surface);
+  border: 1px solid var(--admin-border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+body.admin-list .ArticleList > .page,
+body.admin-list .ArticleList > .perPage { display: none; }
+
+body.admin-list .ArticleList > p {
+  margin: 0;
+  padding: var(--space);
+  color: var(--admin-text-muted);
+  font-size: 0.9rem;
+}
+
+body.admin-list .ArticleList .Article {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto auto;
+  align-items: center;
+  gap: var(--space);
+  padding: 0.75rem var(--space);
+  border-top: 1px solid var(--admin-border);
+}
+
+body.admin-list .ArticleList .Article:first-of-type {
+  border-top: none;
+}
+
+body.admin-list .ArticleList .Article:hover {
+  background: rgba(31, 75, 142, 0.03);
+}
+
+body.admin-list .ArticleList .Article .title {
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  font-weight: 500;
+  margin: 0;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+body.admin-list .ArticleList .Article .title a {
+  color: var(--admin-text);
+  text-decoration: none;
+}
+
+body.admin-list .ArticleList .Article .title a:hover {
+  color: var(--admin-primary);
+  text-decoration: underline;
+}
+
+body.admin-list .ArticleList .Article .slug {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--admin-text-muted);
+  white-space: nowrap;
+}
+
+body.admin-list .ArticleList .Article .AdminActions {
+  margin: 0;
+  gap: var(--space-half);
+  font-size: 0.8rem;
+}
+
+body.admin-list .ArticleList .Article .AdminActions .doUpdateArticle {
+  color: var(--admin-primary);
+}
+
+body.admin-list .ArticleList .Article .AdminActions .doDeleteArticle {
+  color: var(--admin-danger);
+}
+
+/* ---------------------------------------------------------------------------
+   11. Admin — form
+   --------------------------------------------------------------------------- */
+body.admin-form .ArticleForm {
+  background: var(--admin-surface);
+  border: 1px solid var(--admin-border);
+  border-radius: 4px;
+  padding: calc(var(--space) * 1.25) var(--space-double);
+  max-width: 44rem;
+}
+
+body.admin-form .ArticleForm > p.slug,
+body.admin-form .ArticleForm > p.Author,
+body.admin-form .ArticleForm > p.Category {
+  margin: 0 0 var(--space-half);
+  font-size: 0.85rem;
+  color: var(--admin-text-muted);
+}
+
+body.admin-form .ArticleForm > p.slug code {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--admin-text);
+  background: var(--admin-bg);
+  padding: 0.1rem 0.35rem;
+  border-radius: 3px;
+}
+
+body.admin-form .ArticleForm > p.Author .name,
+body.admin-form .ArticleForm > p.Category .name {
+  color: var(--admin-text);
+  font-weight: 500;
+}
+
+body.admin-form .ArticleForm label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--admin-text-muted);
+  margin: var(--space) 0 var(--space-tight);
+}
+
+body.admin-form .ArticleForm input[type="text"],
+body.admin-form .ArticleForm select,
+body.admin-form .ArticleForm textarea {
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  padding: 0.55rem 0.7rem;
+  border: 1px solid var(--admin-border);
+  border-radius: 3px;
+  background: white;
+  width: 100%;
+  margin: 0;
+  transition: border-color var(--transition), box-shadow var(--transition);
+}
+
+body.admin-form .ArticleForm input[type="text"]:focus,
+body.admin-form .ArticleForm select:focus,
+body.admin-form .ArticleForm textarea:focus {
+  outline: none;
+  border-color: var(--admin-primary);
+  box-shadow: 0 0 0 3px rgba(31, 75, 142, 0.12);
+}
+
+body.admin-form .ArticleForm textarea {
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  line-height: 1.55;
+  resize: vertical;
+}
+
+body.admin-form .ArticleForm select[multiple] {
+  height: auto;
+  min-height: 9rem;
+  padding: 0.4rem;
+}
+
+body.admin-form .ArticleForm select[multiple] option {
+  padding: 0.25rem 0.5rem;
+  border-radius: 2px;
+}
+
+body.admin-form .ArticleForm select[multiple] option:checked {
+  background: linear-gradient(0deg, var(--admin-primary), var(--admin-primary));
+  color: white;
+}
+
+body.admin-form .ArticleForm button[type="submit"] {
+  display: inline-block;
+  margin: var(--space-double) 0 0;
+  padding: 0.65rem 1.5rem;
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  background: var(--admin-primary);
+  color: white;
+  border: 1px solid var(--admin-primary);
+  border-radius: 3px;
+  cursor: pointer;
+  transition: background var(--transition);
+}
+
+body.admin-form .ArticleForm button[type="submit"]:hover {
+  background: var(--admin-primary-hover);
+}
+
+/* ---------------------------------------------------------------------------
+   12. Admin — confirm (danger zone)
+   --------------------------------------------------------------------------- */
+body.admin-confirm main > .Article {
+  background: var(--admin-surface);
+  border: 1px solid var(--admin-border);
+  border-radius: 4px;
+  padding: var(--space) calc(var(--space) * 1.25);
+  margin-bottom: var(--space);
+}
+
+body.admin-confirm main > .Article .title {
+  font-family: var(--font-sans);
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin: 0 0 var(--space-half);
+}
+
+body.admin-confirm main > .Article .slug {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--admin-text-muted);
+  margin-right: var(--space-half);
+}
+
+body.admin-confirm .DeleteForm {
+  background: var(--admin-danger-bg);
+  border: 1px solid var(--admin-danger);
+  border-radius: 4px;
+  padding: var(--space) calc(var(--space) * 1.25);
+}
+
+body.admin-confirm .DeleteForm p {
+  margin: 0 0 var(--space);
+  font-size: 0.95rem;
+  color: var(--admin-text);
+}
+
+body.admin-confirm .DeleteForm button[type="submit"] {
+  display: inline-block;
+  padding: 0.65rem 1.5rem;
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  background: var(--admin-danger);
+  color: white;
+  border: 1px solid var(--admin-danger);
+  border-radius: 3px;
+  cursor: pointer;
+  transition: filter var(--transition);
+}
+
+body.admin-confirm .DeleteForm button[type="submit"]:hover {
+  filter: brightness(0.9);
+}
+
+/* ---------------------------------------------------------------------------
+   13. Atoms — status badges, notice, error list
+   --------------------------------------------------------------------------- */
+body.admin .ArticleList .Article .status {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+}
+
+body.admin .ArticleList .Article .status:not(:empty) {
+  background: var(--status-draft-bg);
+  color: var(--status-draft-fg);
+}
+
+/* Override draft styling when status text is "published" — we cannot use
+   :has on attribute content reliably; instead the .status element is short
+   enough that selecting via its text content via attr selector works for
+   common values used in the app. */
+body.admin .ArticleList .Article .status[class~="published"],
+body.admin .ArticleList .Article .status:where(.published) {
+  background: var(--status-published-bg);
+  color: var(--status-published-fg);
+}
+
+/* Public-side notice (success after PRG redirect on admin pages, but admin
+   form lives under .admin) */
+body.admin .notice {
+  background: var(--status-published-bg);
+  color: var(--status-published-fg);
+  border: 1px solid var(--status-published-fg);
+  border-radius: 3px;
+  padding: 0.55rem var(--space);
+  margin: 0 0 var(--space);
+  font-size: 0.9rem;
+}
+
+body.admin .ErrorList {
+  background: var(--admin-danger-bg);
+  border: 1px solid var(--admin-danger);
+  border-radius: 4px;
+  padding: var(--space-half) var(--space);
+  margin: 0 0 var(--space);
+}
+
+body.admin .ErrorList h2 {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--admin-danger);
+  margin: 0 0 var(--space-half);
+}
+
+body.admin .ErrorList ul {
+  margin: 0;
+  padding-left: var(--space);
+  font-size: 0.85rem;
+  color: var(--admin-text);
+}
+
+/* ---------------------------------------------------------------------------
+   14. Footer & CSS switcher
+   --------------------------------------------------------------------------- */
+footer {
+  border-top: 1px solid var(--paper-200);
+  padding-top: var(--space);
+  margin-top: var(--space-double);
+  font-size: 0.75rem;
+  color: var(--ink-500);
   text-align: center;
 }
+
+body.admin footer {
+  border-top-color: var(--admin-border);
+  color: var(--admin-text-muted);
+  background: var(--admin-surface);
+}
+
+footer p { margin: 0; }
+
+.cssSwitcher {
+  margin-top: var(--space-half);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+}
+
+.cssSwitcher a { margin: 0 0.25rem; }
+.cssSwitcher strong { margin: 0 0.25rem; color: inherit; }

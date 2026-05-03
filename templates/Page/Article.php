@@ -8,6 +8,7 @@
  */
 ?>
 {{ setLayout('layout/Default') }}
+{{ setBlock('bodyClass') ~}}public public-detail public-article{{ endBlock() }}
 {{ setBlock('title') ~}}{{h $article->title }} - BEAR.Cms Reference CMS{{ endBlock() }}
 {{ setBlock('header') ~}}<h1 class="Article">Article Detail</h1>{{ endBlock() }}
 <main>
@@ -25,10 +26,13 @@
       <p class="excerpt">{{h $summary }}</p>
     <?php endif ?>
     <div class="body">{{= $bodyHtml }}</div>
+  </article>
 
+  <aside class="ArticleMeta">
     <?php if ($author !== null): ?>
       <section class="Author">
         <input type="hidden" class="id" value="{{h $author->id }}">
+        <span class="role">Written by</span>
         <span class="name">{{h $author->name }}</span>
         <a class="email" href="mailto:{{h $author->email }}">{{h $author->email }}</a>
       </section>
@@ -37,19 +41,29 @@
     <?php if ($category !== null): ?>
       <section class="Category">
         <input type="hidden" class="id" value="{{h $category->id }}">
-        <span class="slug">{{h $category->slug }}</span>
-        <span class="name">{{h $category->name }}</span>
+        <span class="role">Category</span>
+        <a class="goCategory" href="/category?id={{h $category->id }}">
+          <span class="name">{{h $category->name }}</span>
+          <span class="slug">{{h $category->slug }}</span>
+        </a>
       </section>
     <?php endif ?>
 
-    <?php foreach ($tags as $tag): ?>
-      <section class="Tag">
-        <input type="hidden" class="id" value="{{h $tag['id'] }}">
-        <span class="slug">{{h $tag['slug'] }}</span>
-        <span class="name">{{h $tag['name'] }}</span>
+    <?php if ($tags !== []): ?>
+      <section class="TagSet">
+        <span class="role">Tags</span>
+        <?php foreach ($tags as $tag): ?>
+          <section class="Tag">
+            <input type="hidden" class="id" value="{{h $tag['id'] }}">
+            <a class="goTag" href="/tag?id={{h $tag['id'] }}">
+              <span class="name">{{h $tag['name'] }}</span>
+              <span class="slug">{{h $tag['slug'] }}</span>
+            </a>
+          </section>
+        <?php endforeach ?>
       </section>
-    <?php endforeach ?>
-  </article>
+    <?php endif ?>
+  </aside>
 </main>
 <nav>
   <h2>Links</h2>

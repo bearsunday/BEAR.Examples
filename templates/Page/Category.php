@@ -5,6 +5,7 @@
  */
 ?>
 {{ setLayout('layout/Default') }}
+{{ setBlock('bodyClass') ~}}public public-detail public-category{{ endBlock() }}
 {{ setBlock('title') ~}}{{h $category->name }} - BEAR.Cms Reference CMS{{ endBlock() }}
 {{ setBlock('header') ~}}<h1 class="Category">Category Detail</h1>{{ endBlock() }}
 <main>
