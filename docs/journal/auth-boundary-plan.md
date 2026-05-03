@@ -53,11 +53,17 @@ Future Google OAuth hook = swap the body of provider (1).
 ## Injection sites
 
 - `Page/Index` (public): `UserInterface $user` → template uses
-  `<?php if ($user instanceof AdminUserInterface): ?>` to show the
-  admin link.
-- `Page/Admin/*` (admin-only): `AdminUserInterface $admin` → no
-  branching in the resource. If the user is not admin, construction
-  throws and the request fails before `onGet` runs.
+  `<?php if ($user instanceof AdminUserInterface): ?>` to show a link
+  to `Page/Admin/Index` (`/admin`).
+- `Page/Admin/Index` (admin landing): `AdminUserInterface $admin` →
+  link hub for the admin pages (`ArticleList`, new-article form,
+  future Author/Category admin). This is the destination of the
+  conditional link from `Page/Index` and the canonical post-login
+  landing page.
+- `Page/Admin/Article` / `ArticleDelete` / `ArticleList` (admin-only):
+  `AdminUserInterface $admin` → no branching in the resource. If the
+  user is not admin, construction throws and the request fails before
+  `onGet` runs.
 
 ---
 
@@ -82,13 +88,20 @@ specific `UserInterface` instance.
 - `UserInterface`, `AdminUserInterface`
 - Two providers + module wiring across `AppModule` / `FakeModule` /
   `TestModule`
-- Constructor changes for every `Page/Admin/*` resource
-- `Page/Index` body + template change to show admin link conditionally
+- **New** `Page/Admin/Index` (`page://self/admin`) — admin landing
+  page injecting `AdminUserInterface`. Link hub to existing admin
+  pages; the canonical first example of "type-driven admin gate".
+- Constructor changes for every existing `Page/Admin/*` resource
+  (`Article`, `ArticleDelete`, `ArticleList`) to inject
+  `AdminUserInterface`
+- `Page/Index` body + template change to show admin link
+  (`/admin` → `Page/Admin/Index`) conditionally
 - Tests:
   - existing admin tests pass with Fake `AdminUser` injection
   - new test: visitor sees no admin link on `/`
   - new test: admin user sees admin link on `/`
-  - new test: visitor hitting `Page/Admin/*` results in
+  - new test: admin user can GET `/admin` (Index renders)
+  - new test: visitor hitting `Page/Admin/*` (any of them) results in
     `UnauthenticatedException` (or 401, depending on how we surface
     construction failure to the response)
 
