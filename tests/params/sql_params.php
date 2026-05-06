@@ -40,6 +40,7 @@ return [
         'status' => 'published',
         'tagId' => null,
     ],
+    'article_selection_list.sql' => ['status' => 'published'],
     'article_sqlquery_item.sql' => ['id' => 1],
     'article_sqlquery_next.sql' => ['publishedAt' => '2026-01-01 00:00:00', 'id' => 1],
     'article_sqlquery_previous.sql' => ['publishedAt' => '2030-01-01 00:00:00', 'id' => 999],

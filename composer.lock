@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c693b766c6d4c8919a918faea55765cf",
+    "content-hash": "cf32cf3e049a7bb49314d70c6b140f1b",
     "packages": [
         {
             "name": "aura/cli",
@@ -3387,16 +3387,16 @@
         },
         {
             "name": "ray/input-query",
-            "version": "v1.0.0",
+            "version": "1.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ray-di/Ray.InputQuery.git",
-                "reference": "9d2954407a861a74e412eb12a5fc44e706ec36a9"
+                "reference": "457d355ba46b3983a54a0c9cb6a8b3cdac770b42"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ray-di/Ray.InputQuery/zipball/9d2954407a861a74e412eb12a5fc44e706ec36a9",
-                "reference": "9d2954407a861a74e412eb12a5fc44e706ec36a9",
+                "url": "https://api.github.com/repos/ray-di/Ray.InputQuery/zipball/457d355ba46b3983a54a0c9cb6a8b3cdac770b42",
+                "reference": "457d355ba46b3983a54a0c9cb6a8b3cdac770b42",
                 "shasum": ""
             },
             "require": {
@@ -3437,22 +3437,22 @@
             "description": "Structured input objects from HTTP",
             "support": {
                 "issues": "https://github.com/ray-di/Ray.InputQuery/issues",
-                "source": "https://github.com/ray-di/Ray.InputQuery/tree/v1.0.0"
+                "source": "https://github.com/ray-di/Ray.InputQuery/tree/1.1.0"
             },
-            "time": "2025-07-16T15:19:01+00:00"
+            "time": "2026-05-02T05:39:06+00:00"
         },
         {
             "name": "ray/media-query",
-            "version": "1.0.4",
+            "version": "1.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ray-di/Ray.MediaQuery.git",
-                "reference": "a3a9a523e0022362a6fe7a4c7b516fa2ef45570a"
+                "reference": "507d1efffd99f883b1c1afbc9d0cf1a35f927129"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ray-di/Ray.MediaQuery/zipball/a3a9a523e0022362a6fe7a4c7b516fa2ef45570a",
-                "reference": "a3a9a523e0022362a6fe7a4c7b516fa2ef45570a",
+                "url": "https://api.github.com/repos/ray-di/Ray.MediaQuery/zipball/507d1efffd99f883b1c1afbc9d0cf1a35f927129",
+                "reference": "507d1efffd99f883b1c1afbc9d0cf1a35f927129",
                 "shasum": ""
             },
             "require": {
@@ -3473,7 +3473,7 @@
             },
             "require-dev": {
                 "bamarni/composer-bin-plugin": "^1.8",
-                "phpunit/phpunit": "^10.5.46"
+                "phpunit/phpunit": "^11.5"
             },
             "suggest": {
                 "koriym/csv-entities": "Provides one-to-many entity relation",
@@ -3505,9 +3505,9 @@
             "description": "PHP interface-based SQL framework",
             "support": {
                 "issues": "https://github.com/ray-di/Ray.MediaQuery/issues",
-                "source": "https://github.com/ray-di/Ray.MediaQuery/tree/1.0.4"
+                "source": "https://github.com/ray-di/Ray.MediaQuery/tree/1.1.0"
             },
-            "time": "2026-04-13T23:05:29+00:00"
+            "time": "2026-05-06T14:39:02+00:00"
         },
         {
             "name": "ray/object-visual-grapher",

@@ -47,6 +47,7 @@ sequence:
 | Where should I start reading the code? | [docs/en/reading-guide.md](docs/en/reading-guide.md) / [日本語](docs/ja/reading-guide.md) |
 | What do I name a class / method / SQL file / property? | [conventions.md §3 Naming](docs/conventions.md#3-naming) |
 | How do I shape a Resource (body, status, embed, link)? | [conventions.md §4 Resource patterns](docs/conventions.md#4-resource-patterns) |
+| Where are the MediaQuery pager / SELECT result / AffectedRows examples? | [docs/media-query-samples.md](docs/media-query-samples.md) |
 | Scalar params or Input DTO? | [conventions.md §4 "Input shape & validation"](docs/conventions.md#4-resource-patterns) |
 | How do Read and Write share an entity? | [conventions.md §5 Read/Write SQL contract](docs/conventions.md#5-readwrite-sql-contract) |
 | Why was this decision made? | [journal/decisions-to-consult.md](docs/journal/decisions-to-consult.md) (P0–P8 by topic) |

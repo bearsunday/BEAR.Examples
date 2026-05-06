@@ -125,6 +125,9 @@ Patterns the codebase deliberately demonstrates (each appears in at least one pl
 | `FetchInjectionFactory` (DI into hydrated entity) | `Page/Article` injects `MarkdownRendererInterface` |
 | Input DTO via `#[Input]` + `Ray\InputQuery` | `Article` (POST/PUT), `Auth` (POST) — contrasted against scalar `onPost` on Author/Category/Tag/Media |
 | Tri-state optional collection input | `tagIds` on `ArticleCreateInput` / `ArticleUpdateInput` |
+| Ray.MediaQuery pager | `ArticleQueryInterface::list()` / `PagesInterface` |
+| Ray.MediaQuery SELECT result class | `ArticleSelectionQueryInterface::list()` / `ArticleSelection` |
+| Ray.MediaQuery DML metadata result | `Samples\ArticleAffectedRowsCommandInterface` / `AffectedRows` |
 | Natural-key `by<Key>` post-INSERT lookup | `Article::onPost` → `bySlug`; same idea for `byEmail` / `byFilename` |
 | Manual `_embedded` build for ID-after-fetch | `Article::onGet` (`author`, `category`, `tagList`) |
 | Three Article GET implementation variations | `src/Resource/App/Variations/` (`composer demo:variations`) |

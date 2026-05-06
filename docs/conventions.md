@@ -240,8 +240,10 @@ applies.
 ### After-INSERT id
 Never `lastInsertId` (driver-dependent, awkward to fake). Always
 re-SELECT via `by<NaturalKey>` using the natural key the client
-supplied (slug / email / filename). Returns `void` from the `Command`
-side.
+supplied (slug / email / filename). The canonical Resource-facing
+`Command` side returns `void`. If a non-Resource caller needs DML
+metadata, keep that as an explicit sample/read-model command and return
+MediaQuery's `AffectedRows`; see [MediaQuery samples](media-query-samples.md).
 
 ### Pagination
 Article collection reads use Ray.MediaQuery's `#[Pager]` and return

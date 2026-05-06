@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace MyVendor\Cms\Fake;
 
+use Aura\Sql\ExtendedPdo;
 use MyVendor\Cms\Entity\Article;
 use MyVendor\Cms\Entity\ArticleStatus;
 use MyVendor\Cms\Entity\Author;
@@ -11,8 +12,13 @@ use MyVendor\Cms\Entity\Category;
 use MyVendor\Cms\Entity\Media;
 use MyVendor\Cms\Entity\Tag;
 use Ray\MediaQuery\Exception\LogicException;
+use Ray\MediaQuery\FetchAssoc;
 use Ray\MediaQuery\FetchInterface;
 use Ray\MediaQuery\PagesInterface;
+use Ray\MediaQuery\Result\AffectedRows;
+use Ray\MediaQuery\Result\InsertedRow;
+use Ray\MediaQuery\Result\PostQueryContext;
+use Ray\MediaQuery\Result\PostQueryInterface;
 use Ray\MediaQuery\SqlQueryInterface;
 
 use function array_filter;
@@ -186,8 +192,161 @@ final class FakeSqlQuery implements SqlQueryInterface
         $this->mutate($sqlId, $values);
     }
 
-    /** @param array<string, mixed> $values */
-    private function mutate(string $sqlId, array $values): void
+    /**
+     * @param array<string, mixed>             $values
+     * @param class-string<PostQueryInterface> $postQueryClass
+     */
+    public function execPostQuery(
+        string $sqlId,
+        array $values,
+        string $postQueryClass,
+        FetchInterface|null $fetch = null,
+    ): PostQueryInterface {
+        if (! in_array($sqlId, self::WRITE_SQL_IDS, true)) {
+            return $postQueryClass::fromContext($this->postQueryContext(
+                $values,
+                $this->selectRows($sqlId, $values, $fetch),
+            ));
+        }
+
+        $result = $this->mutate($sqlId, $values);
+
+        return match ($postQueryClass) {
+            InsertedRow::class => new InsertedRow(
+                $values,
+                isset($result['insertedId']) ? (string) $result['insertedId'] : null,
+            ),
+            AffectedRows::class => new AffectedRows($result['affectedRows']),
+            default => $postQueryClass::fromContext($this->postQueryContext($values, [])),
+        };
+    }
+
+    /**
+     * @param array<string, mixed> $values
+     * @param array<mixed>         $rows
+     */
+    private function postQueryContext(array $values, array $rows): PostQueryContext
+    {
+        $pdo = new ExtendedPdo('sqlite::memory:');
+        $statement = $pdo->perform('SELECT 1');
+
+        return new PostQueryContext($statement, $pdo, $values, $rows);
+    }
+
+    /**
+     * @param array<string, mixed> $values
+     *
+     * @return list<mixed>
+     */
+    private function selectRows(string $sqlId, array $values, FetchInterface|null $fetch): array
+    {
+        $assoc = $fetch === null || $fetch instanceof FetchAssoc;
+
+        return match ($sqlId) {
+            'article_list', 'article_selection_list' => $assoc
+                ? array_map(fn ($r) => $this->toArticleSqlRow($r), $this->filteredArticles($values))
+                : $this->listArticles($values),
+            'category_list' => $assoc
+                ? array_map(fn ($r) => $this->toCategorySqlRow($r), $this->tables['category'])
+                : array_map(fn ($r) => $this->toCategory($r), $this->tables['category']),
+            'tag_list' => $assoc
+                ? array_map(fn ($r) => $this->toTagSqlRow($r), $this->tables['tag'])
+                : array_map(fn ($r) => $this->toTag($r), $this->tables['tag']),
+            'tag_list_by_article' => $assoc
+                ? array_map(fn (Tag $tag) => $this->toTagSqlRow([
+                    'id' => $tag->id,
+                    'slug' => $tag->slug,
+                    'name' => $tag->name,
+                ]), $this->listTagsByArticle((int) $values['articleId']))
+                : $this->listTagsByArticle((int) $values['articleId']),
+            'author_list' => $assoc
+                ? array_map(fn ($r) => $this->toAuthorSqlRow($r), $this->tables['author'])
+                : array_map(fn ($r) => $this->toAuthor($r), $this->tables['author']),
+            default => $this->selectSingleRow($sqlId, $values, $assoc),
+        };
+    }
+
+    /**
+     * @param array<string, mixed> $values
+     *
+     * @return list<array<string, mixed>|object>
+     */
+    private function selectSingleRow(string $sqlId, array $values, bool $assoc): array
+    {
+        $row = $this->selectSingleValue($sqlId, $values, $assoc);
+
+        return $row === null ? [] : [$row];
+    }
+
+    /**
+     * @param array<string, mixed> $values
+     *
+     * @return array<string, mixed>|object|null
+     */
+    private function selectSingleValue(string $sqlId, array $values, bool $assoc): array|object|null
+    {
+        return match ($sqlId) {
+            'article_item' => $assoc
+                ? $this->mapRawRow('article', 'id', (int) $values['id'], $this->toArticleSqlRow(...))
+                : $this->findArticleById((int) $values['id']),
+            'article_by_slug' => $assoc
+                ? $this->mapRawRow('article', 'slug', (string) $values['slug'], $this->toArticleSqlRow(...))
+                : $this->findArticleBySlug((string) $values['slug']),
+            'article_as_array_item', 'article_sqlquery_item' => $this->findArticleRowById((int) $values['id']),
+            'article_sqlquery_previous' => $this->findPreviousArticleRow((string) $values['publishedAt'], (int) $values['id']),
+            'article_sqlquery_next' => $this->findNextArticleRow((string) $values['publishedAt'], (int) $values['id']),
+            'category_item' => $assoc
+                ? $this->mapRawRow('category', 'id', (int) $values['id'], $this->toCategorySqlRow(...))
+                : $this->findCategoryById((int) $values['id']),
+            'category_by_slug' => $assoc
+                ? $this->mapRawRow('category', 'slug', (string) $values['slug'], $this->toCategorySqlRow(...))
+                : $this->findCategoryBySlug((string) $values['slug']),
+            'tag_item' => $assoc
+                ? $this->mapRawRow('tag', 'id', (int) $values['id'], $this->toTagSqlRow(...))
+                : $this->findTagById((int) $values['id']),
+            'tag_by_slug' => $assoc
+                ? $this->mapRawRow('tag', 'slug', (string) $values['slug'], $this->toTagSqlRow(...))
+                : $this->findTagBySlug((string) $values['slug']),
+            'author_item' => $assoc
+                ? $this->mapRawRow('author', 'id', (int) $values['id'], $this->toAuthorSqlRow(...))
+                : $this->findAuthorById((int) $values['id']),
+            'author_by_email' => $assoc
+                ? $this->mapRawRow('author', 'email', (string) $values['email'], $this->toAuthorSqlRow(...))
+                : $this->findAuthorByEmail((string) $values['email']),
+            'media_item' => $assoc
+                ? $this->mapRawRow('media', 'id', (int) $values['id'], $this->toMediaSqlRow(...))
+                : $this->findMediaById((int) $values['id']),
+            'media_by_filename' => $assoc
+                ? $this->mapRawRow('media', 'filename', (string) $values['filename'], $this->toMediaSqlRow(...))
+                : $this->findMediaByFilename((string) $values['filename']),
+            default => throw new LogicException("FakeSqlQuery: unknown post query select sqlId '{$sqlId}'"),
+        };
+    }
+
+    /**
+     * @param callable(array<string, mixed>): array<string, mixed> $map
+     *
+     * @return array<string, mixed>|null
+     */
+    private function mapRawRow(string $table, string $field, int|string $value, callable $map): array|null
+    {
+        foreach ($this->tables[$table] as $row) {
+            if ((string) $row[$field] !== (string) $value) {
+                continue;
+            }
+
+            return $map($row);
+        }
+
+        return null;
+    }
+
+    /**
+     * @param array<string, mixed> $values
+     *
+     * @return array{affectedRows: int, insertedId?: int}
+     */
+    private function mutate(string $sqlId, array $values): array
     {
         $this->execLog[] = ['sqlId' => $sqlId, 'values' => $values];
         $logIdx = count($this->execLog) - 1;
@@ -208,23 +367,25 @@ final class FakeSqlQuery implements SqlQueryInterface
                 ];
                 $this->execLog[$logIdx]['insertedId'] = $id;
 
-                return;
+                return ['affectedRows' => 1, 'insertedId' => $id];
 
             case 'article_update':
-                $this->updateRow('article', (int) $values['id'], [
-                    'title' => $values['title'],
-                    'body' => $values['body'],
-                    'excerpt' => $values['excerpt'] ?? null,
-                    'status' => $values['status'],
-                    'publishedAt' => $values['publishedAt'] ?? null,
-                ]);
-
-                return;
+                return [
+                    'affectedRows' => $this->updateRow(
+                        'article',
+                        (int) $values['id'],
+                        [
+                            'title' => $values['title'],
+                            'body' => $values['body'],
+                            'excerpt' => $values['excerpt'] ?? null,
+                            'status' => $values['status'],
+                            'publishedAt' => $values['publishedAt'] ?? null,
+                        ],
+                    ),
+                ];
 
             case 'article_delete':
-                $this->deleteRow('article', (int) $values['id']);
-
-                return;
+                return ['affectedRows' => $this->deleteRow('article', (int) $values['id'])];
 
             case 'category_add':
                 $id = $this->nextId['category']++;
@@ -237,33 +398,33 @@ final class FakeSqlQuery implements SqlQueryInterface
                 ];
                 $this->execLog[$logIdx]['insertedId'] = $id;
 
-                return;
+                return ['affectedRows' => 1, 'insertedId' => $id];
 
             case 'category_update':
-                $this->updateRow('category', (int) $values['id'], [
-                    'name' => $values['name'],
-                    'description' => $values['description'] ?? null,
-                    'parentId' => $values['parentId'] ?? null,
-                ]);
-
-                return;
+                return [
+                    'affectedRows' => $this->updateRow(
+                        'category',
+                        (int) $values['id'],
+                        [
+                            'name' => $values['name'],
+                            'description' => $values['description'] ?? null,
+                            'parentId' => $values['parentId'] ?? null,
+                        ],
+                    ),
+                ];
 
             case 'category_delete':
-                $this->deleteRow('category', (int) $values['id']);
-
-                return;
+                return ['affectedRows' => $this->deleteRow('category', (int) $values['id'])];
 
             case 'tag_add':
                 $id = $this->nextId['tag']++;
                 $this->tables['tag'][] = ['id' => $id, 'slug' => $values['slug'], 'name' => $values['name']];
                 $this->execLog[$logIdx]['insertedId'] = $id;
 
-                return;
+                return ['affectedRows' => 1, 'insertedId' => $id];
 
             case 'tag_delete':
-                $this->deleteRow('tag', (int) $values['id']);
-
-                return;
+                return ['affectedRows' => $this->deleteRow('tag', (int) $values['id'])];
 
             case 'author_add':
                 $id = $this->nextId['author']++;
@@ -275,16 +436,20 @@ final class FakeSqlQuery implements SqlQueryInterface
                 ];
                 $this->execLog[$logIdx]['insertedId'] = $id;
 
-                return;
+                return ['affectedRows' => 1, 'insertedId' => $id];
 
             case 'author_update':
-                $this->updateRow('author', (int) $values['id'], [
-                    'name' => $values['name'],
-                    'email' => $values['email'],
-                    'bio' => $values['bio'] ?? '',
-                ]);
-
-                return;
+                return [
+                    'affectedRows' => $this->updateRow(
+                        'author',
+                        (int) $values['id'],
+                        [
+                            'name' => $values['name'],
+                            'email' => $values['email'],
+                            'bio' => $values['bio'] ?? '',
+                        ],
+                    ),
+                ];
 
             case 'media_add':
                 $id = $this->nextId['media']++;
@@ -299,21 +464,20 @@ final class FakeSqlQuery implements SqlQueryInterface
                 ];
                 $this->execLog[$logIdx]['insertedId'] = $id;
 
-                return;
+                return ['affectedRows' => 1, 'insertedId' => $id];
 
             case 'media_delete':
-                $this->deleteRow('media', (int) $values['id']);
-
-                return;
+                return ['affectedRows' => $this->deleteRow('media', (int) $values['id'])];
 
             case 'article_tag_clear':
                 $aid = (int) $values['articleId'];
+                $before = count($this->tables['articleTag']);
                 $this->tables['articleTag'] = array_values(array_filter(
                     $this->tables['articleTag'],
                     static fn ($r) => (int) $r['articleId'] !== $aid,
                 ));
 
-                return;
+                return ['affectedRows' => $before - count($this->tables['articleTag'])];
 
             case 'article_tag_link':
                 $this->tables['articleTag'][] = [
@@ -321,7 +485,7 @@ final class FakeSqlQuery implements SqlQueryInterface
                     'tagId' => (int) $values['tagId'],
                 ];
 
-                return;
+                return ['affectedRows' => 1];
 
             default:
                 throw new LogicException("FakeSqlQuery: unknown exec sqlId '{$sqlId}'");
@@ -355,7 +519,7 @@ final class FakeSqlQuery implements SqlQueryInterface
     // -- helpers -------------------------------------------------------------
 
     /** @param array<string, mixed> $patch */
-    private function updateRow(string $table, int $id, array $patch): void
+    private function updateRow(string $table, int $id, array $patch): int
     {
         foreach ($this->tables[$table] as $idx => $row) {
             if ((int) $row['id'] !== $id) {
@@ -366,16 +530,21 @@ final class FakeSqlQuery implements SqlQueryInterface
                 $this->tables[$table][$idx][$k] = $v;
             }
 
-            return;
+            return 1;
         }
+
+        return 0;
     }
 
-    private function deleteRow(string $table, int $id): void
+    private function deleteRow(string $table, int $id): int
     {
+        $before = count($this->tables[$table]);
         $this->tables[$table] = array_values(array_filter(
             $this->tables[$table],
             static fn ($r) => (int) $r['id'] !== $id,
         ));
+
+        return $before - count($this->tables[$table]);
     }
 
     private function findArticleById(int $id): Article|null
@@ -657,6 +826,69 @@ final class FakeSqlQuery implements SqlQueryInterface
             'published_at' => $r['publishedAt'] ?? null,
             'author_id' => (int) $r['authorId'],
             'category_id' => (int) $r['categoryId'],
+        ];
+    }
+
+    /**
+     * @param array<string, mixed> $r
+     *
+     * @return array{id: int, slug: string, name: string, description: string|null, parent_id: int|null}
+     */
+    private function toCategorySqlRow(array $r): array
+    {
+        return [
+            'id' => (int) $r['id'],
+            'slug' => (string) $r['slug'],
+            'name' => (string) $r['name'],
+            'description' => isset($r['description']) ? (string) $r['description'] : null,
+            'parent_id' => isset($r['parentId']) ? (int) $r['parentId'] : null,
+        ];
+    }
+
+    /**
+     * @param array<string, mixed> $r
+     *
+     * @return array{id: int, slug: string, name: string}
+     */
+    private function toTagSqlRow(array $r): array
+    {
+        return [
+            'id' => (int) $r['id'],
+            'slug' => (string) $r['slug'],
+            'name' => (string) $r['name'],
+        ];
+    }
+
+    /**
+     * @param array<string, mixed> $r
+     *
+     * @return array{id: int, name: string, email: string, bio: string}
+     */
+    private function toAuthorSqlRow(array $r): array
+    {
+        return [
+            'id' => (int) $r['id'],
+            'name' => (string) $r['name'],
+            'email' => (string) $r['email'],
+            'bio' => (string) ($r['bio'] ?? ''),
+        ];
+    }
+
+    /**
+     * @param array<string, mixed> $r
+     *
+     * @return array{id: int, filename: string, mime_type: string, url: string, alt: string|null, width: int, height: int}
+     */
+    private function toMediaSqlRow(array $r): array
+    {
+        return [
+            'id' => (int) $r['id'],
+            'filename' => (string) $r['filename'],
+            'mime_type' => (string) $r['mimeType'],
+            'url' => (string) $r['url'],
+            'alt' => isset($r['alt']) ? (string) $r['alt'] : null,
+            'width' => (int) $r['width'],
+            'height' => (int) $r['height'],
         ];
     }
 
