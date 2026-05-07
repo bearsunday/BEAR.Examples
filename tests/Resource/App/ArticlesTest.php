@@ -50,6 +50,26 @@ final class ArticlesTest extends AbstractAppTestCase
         $this->assertSame(100, $ro->body['perPage']);
     }
 
+    public function testOutOfRangePageIsClampedToLastPage(): void
+    {
+        $ro = $this->resource->get('app://self/articles', ['page' => 99999, 'perPage' => 5]);
+
+        $this->assertSame(200, $ro->code);
+        $this->assertGreaterThanOrEqual(1, $ro->body['page']);
+        $this->assertLessThan($ro->body['totalCount'], ($ro->body['page'] - 1) * $ro->body['perPage']);
+        $this->assertGreaterThan(0, $ro->body['count']);
+    }
+
+    public function testEmptyResultStillReturnsFirstPage(): void
+    {
+        $ro = $this->resource->get('app://self/articles', ['status' => 'no-such-status', 'page' => 5]);
+
+        $this->assertSame(200, $ro->code);
+        $this->assertSame(1, $ro->body['page']);
+        $this->assertSame(0, $ro->body['count']);
+        $this->assertSame(0, $ro->body['totalCount']);
+    }
+
     public function testTotalCountComesFromPagedResult(): void
     {
         $first = $this->resource->get('app://self/articles', ['perPage' => 5]);

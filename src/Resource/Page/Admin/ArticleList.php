@@ -11,6 +11,8 @@ use MyVendor\Cms\Query\ArticleQueryInterface;
 use Ray\AuraSqlModule\Pagerfanta\Page as PagerPage;
 
 use function assert;
+use function ceil;
+use function count;
 use function max;
 use function min;
 
@@ -47,6 +49,8 @@ class ArticleList extends ResourceObject
             status: $status,
             perPage: $perPage,
         );
+        $totalPages = max(1, (int) ceil(count($pages) / $perPage));
+        $page = min($page, $totalPages);
         $articlePage = $pages[$page];
         assert($articlePage instanceof PagerPage);
         /** @var list<array<string, mixed>> $rows */

@@ -16,7 +16,10 @@ use Ray\AuraSqlModule\Pagerfanta\Page;
 
 use function array_map;
 use function assert;
+use function ceil;
 use function count;
+use function max;
+use function min;
 
 #[Alps('ArticleList')]
 class Articles extends ResourceObject
@@ -54,6 +57,8 @@ class Articles extends ResourceObject
             status: $status,
             perPage: $perPage,
         );
+        $totalPages = max(1, (int) ceil(count($pages) / $perPage));
+        $page = min($page, $totalPages);
         $articlePage = $pages[$page];
         assert($articlePage instanceof Page);
         /** @var list<array<string, mixed>> $rows */
