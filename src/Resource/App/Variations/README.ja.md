@@ -1,4 +1,4 @@
-# Article GET Variations
+# Resource Variations
 
 [English](README.md)
 
@@ -9,6 +9,11 @@
 これらは競合する API 設計案ではありません。同じようなレスポンス shape を
 保ったまま、1つずつ軸を変えた読み物です。どの責務がどこへ移動するかを見る
 ためにあります。
+
+`MediaStream` は別枠の transfer-mode variation です。4つ目の Article 実装を
+増やすものではありません。正規の `src/Resource/App/Media.php` は JSON
+representation のままにして、`BEAR.Streamer` で同じ Media metadata を
+streamed body として転送する方法を見せます。
 
 デモは次のコマンドで実行できます。
 
@@ -32,9 +37,12 @@ composer demo:variations
 | `ArticleAsArray` | Entity と array | Entity を使わない最小版です。array shape、cast、datetime normalization が明示され、`Article` object が担っていた意味が Resource 側へ移ることを見ます。 |
 | `ArticleSqlQuery` | 宣言的 query と programmatic query | 1つの `#[DbQuery]` では収まらない場面です。reading time と previous/next によって、Resource が複数 query の結果を組み立てます。 |
 | `ArticleRawPdo` | MediaQuery と raw PDO | フレームワークの助けを外した DB access です。SQL がクラス内に見える代わりに、MediaQuery が普段隠している責務も見えるようになります。 |
+| `MediaStream` | renderer と stream transfer | `StreamTransferInject`、明示的な content headers、open file handle を `$this->body` に入れる形を見ます。success body は JSON ではなく stream なので、意図的に `#[JsonSchema]` は付けません。 |
 
 ## 読む順番
 
 1. `ArticleAsArray` で、最小の Article レスポンスを確認します。
 2. `ArticleSqlQuery` で、Resource が複数 query を調停する場面を見ます。
 3. `ArticleRawPdo` で、MediaQuery を外した場合の差分を確認します。
+4. `MediaStream` は別枠です。Article response modelling ではなく transfer
+   mechanics を確認したい時に読みます。

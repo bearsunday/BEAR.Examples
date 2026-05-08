@@ -3,9 +3,9 @@
 declare(strict_types=1);
 
 /**
- * `composer demo:variations` — contrast-only demo for the three Article GET
- * variations. Uses a fresh SQLite database so raw PDO and SqlQuery both run
- * through the real DB path without changing the main `composer demo` flow.
+ * `composer demo:variations` — contrast-only demo for Resource variations.
+ * Uses a fresh SQLite database so raw PDO and SqlQuery both run through the
+ * real DB path without changing the main `composer demo` flow.
  */
 
 use BEAR\Resource\ResourceInterface;
@@ -72,3 +72,10 @@ foreach ($targets as $label => $uri) {
     fwrite(STDOUT, '  previous: ' . ($body['previous']['title'] ?? '(none)') . "\n");
     fwrite(STDOUT, '  next: ' . ($body['next']['title'] ?? '(none)') . "\n");
 }
+
+section('Media stream variation');
+$media = $resource->get('app://self/variations/mediastream', ['id' => 5]);
+$bytes = stream_get_contents($media->body);
+fwrite(STDOUT, "stream: {$media->code} {$media->headers['Content-Type']}\n");
+fwrite(STDOUT, "  {$media->headers['Content-Disposition']}\n");
+fwrite(STDOUT, '  bytes: ' . strlen((string) $bytes) . "\n");
