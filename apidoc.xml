@@ -6,6 +6,7 @@
     <scheme>app</scheme>
     <docDir>docs</docDir>
     <format>html,openapi,llms</format>
+    <alps>var/alps/profile.json</alps>
     <title>MyVendor.Cms API</title>
     <description>API Document</description>
 </apidoc>

@@ -1,0 +1,71 @@
+<?php
+
+declare(strict_types=1);
+
+namespace MyVendor\Cms\Resource\Page\Admin;
+
+use BEAR\Resource\ResourceObject;
+use MyVendor\Cms\Entity\Article;
+use MyVendor\Cms\Factory\ArticleFactory;
+use MyVendor\Cms\Query\ArticleQueryInterface;
+use Ray\AuraSqlModule\Pagerfanta\Page as PagerPage;
+
+use function assert;
+use function ceil;
+use function count;
+use function max;
+use function min;
+
+/**
+ * @property array{
+ *     articles: list<Article>,
+ *     filter: array{status: string|null},
+ *     page: int,
+ *     perPage: int,
+ *     hasNext: bool,
+ *     deleted: bool,
+ * } $body
+ */
+class ArticleList extends ResourceObject
+{
+    private const int DEFAULT_PER_PAGE = 20;
+    private const int MAX_PER_PAGE = 100;
+
+    public function __construct(
+        private readonly ArticleQueryInterface $article,
+        private readonly ArticleFactory $articleFactory,
+    ) {
+    }
+
+    public function onGet(
+        string|null $status = null,
+        int $page = 1,
+        int $perPage = self::DEFAULT_PER_PAGE,
+        int $deleted = 0,
+    ): static {
+        $page = max(1, $page);
+        $perPage = max(1, min(self::MAX_PER_PAGE, $perPage));
+        $pages = $this->article->list(
+            status: $status,
+            perPage: $perPage,
+        );
+        $totalPages = max(1, (int) ceil(count($pages) / $perPage));
+        $page = min($page, $totalPages);
+        $articlePage = $pages[$page];
+        assert($articlePage instanceof PagerPage);
+        /** @var list<array<string, mixed>> $rows */
+        $rows = $articlePage->data;
+        $articles = $this->articleFactory->fromRows($rows);
+
+        $this->body = [
+            'articles' => $articles,
+            'filter' => ['status' => $status],
+            'page' => $articlePage->current,
+            'perPage' => $articlePage->maxPerPage,
+            'hasNext' => $articlePage->hasNext,
+            'deleted' => $deleted === 1,
+        ];
+
+        return $this;
+    }
+}

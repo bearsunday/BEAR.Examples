@@ -2,113 +2,247 @@
 
 ## Description
 
-`BEAR.Cms` is a BEAR.Sunday reference CMS built as a small HAL+JSON
-application over Ray.MediaQuery. It is intentionally app resource only:
-no admin UI, no frontend, and no controller layer.
+BEAR.Cms is a reference CMS built on
+[BEAR.Sunday](https://bearsunday.github.io/).
 
-The project exists as a conformance example for BEAR.Sunday-aligned
-resource applications. It shows the BDR layout, resource naming,
-Read/Write query split, ALPS-driven semantics, JSON Schema validation,
-fake data, generated API docs, CLI generation, and a real database path
-in one compact codebase.
+It demonstrates HAL+JSON App resources over Ray.MediaQuery, Qiq Page
+resources for reader-facing HTML, and a minimal Article admin. The domain
+has five entities: Article, Category, Tag, Author, and Media. Every App
+resource has read/write coverage where meaningful, plus an Auth resource
+for the Google OAuth flow.
 
-### Resource Surface
+## Background
 
-| Resource | Methods |
-|---|---|
-| `app://self/article{?id}` | GET, POST, PUT, DELETE |
-| `app://self/articles{?page,perPage,categoryId,tagId,status}` | GET |
-| `app://self/category{?id}` | GET, POST, PUT, DELETE |
-| `app://self/categories` | GET |
-| `app://self/tag{?id}` | GET, POST, DELETE |
-| `app://self/tags{?articleId}` | GET |
-| `app://self/author{?id}` | GET, POST, PUT |
-| `app://self/media{?id}` | GET, POST, DELETE |
-| `app://self/auth` | GET, POST |
+This repository is a working teaching artefact: BEAR.Sunday's canonical
+naming, structure, and flow rendered as a small CMS that humans and AI
+assistants can read as a template.
 
-### Construction Model
+Framework conventions are easiest to learn from a complete executable
+example. The code is intentionally small, but each naming, module,
+Resource, Query, SQL, validation, fake, and test choice is meant to be
+copied deliberately.
 
-This repo was built by increasing resolution from semantics to runtime:
+The implementation was built as a semantic-driven, resolution-increasing
+pipeline:
 
-1. **ALPS profile**: semantic model in [var/alps/profile.json](var/alps/profile.json).
-2. **Fake data**: 50 realistic records per entity in [var/fake/](var/fake), with referential integrity.
-3. **JSON Schema**: [var/json_schema/](var/json_schema) generated from observed fake data.
-4. **Read path**: readonly entities in [src/Entity/](src/Entity/), `#[DbQuery]` interfaces in [src/Query/](src/Query/), and `FakeSqlQuery` in [tests/Fake/](tests/Fake/).
-5. **Write path**: command interfaces in `src/Query/*CommandInterface.php`, called from resource `onPost`, `onPut`, and `onDelete` methods.
-6. **Real DB path**: Doctrine Migrations, seed script, and SQL files in [var/db/sql/](var/db/sql/).
-7. **Hypermedia**: `#[Embed]`, `addQuery()`, and `#[JsonSchema]` shape HAL bodies and validation.
+1. **ALPS profile** — semantic model in
+   [var/alps/profile.json](var/alps/profile.json).
+2. **Fake data (semantic-ex)** — 50 realistic records per entity in
+   [var/fake/](var/fake), with referential integrity.
+3. **JSON Schema from observed data** —
+   [var/json_schema/](var/json_schema) is derived from the fake, not
+   decided up front.
+4. **Read path** — readonly entities (`src/Entity/`), `#[DbQuery]`
+   interfaces (`src/Query/`), and `tests/Fake/FakeSqlQuery.php`.
+5. **Write path** — Command interfaces (`src/Query/*CommandInterface.php`)
+   fronted by Resource `onPost`, `onPut`, and `onDelete` methods.
+6. **Real DB** — Doctrine Migrations and the seed script load the same fake
+   data into a real backend, with matching SQL in `var/db/sql/`.
+7. **Hypermedia** — `#[Link]`, `#[Embed]`, and `addQuery()` materialise
+   HAL `_links` and `_embedded`; `#[JsonSchema]` validates request and
+   response bodies.
+8. **Qiq HTML** — Page resources render public pages and the Article admin
+   without JavaScript.
 
-For the architectural rationale, read [docs/architecture.md](docs/architecture.md).
+See [docs/architecture.md](docs/architecture.md) for the BDR layout and
+design rationale.
 
-## Setup
+## Scope
 
-### Fake Runtime
+This project demonstrates BEAR.Sunday application-resource and page-resource
+design. It is not intended to be a production-ready CMS.
 
-Use this path when you want to inspect the app without a database.
+In scope:
+
+- App resources with HAL links/embeds, JSON Schema validation, and
+  Ray.MediaQuery read/write contracts.
+- Page resources using Qiq for public HTML and a small local Article admin.
+- Fake/real DB parity, deterministic semantic data, and MySQL/SQLite setup.
+- Read/write naming conventions, SQL filename conventions, and Resource
+  body/status patterns.
+- Tests that pin status codes, body shapes, links, embeds, schema behavior,
+  fakes, and representative real-DB paths.
+
+Intentionally not the focus:
+
+- A full production admin UI.
+- JavaScript-enhanced editing flows.
+- Production authorization policy for the demo admin.
+- Exhaustive CRUD symmetry where it would only repeat an already-shown
+  pattern.
+
+For the detailed in/out list and deferred items, read
+[docs/scope.md](docs/scope.md).
+
+## Requirements
+
+- PHP 8.5
+- Composer
+- Optional: MySQL via Malt or docker-compose
+- Optional: SQLite for quick real-DB trials
+
+## Quick Start
+
+Use the fake context first. It needs no database.
 
 ```bash
 composer install
-php -r 'require "autoload.php"; $r = MyVendor\Cms\Injector::getInstance("fake-hal-api-app")->getInstance(BEAR\Resource\ResourceInterface::class); echo json_encode($r->get("app://self/article", ["id" => 1])->body, JSON_PRETTY_PRINT), PHP_EOL;'
+composer fake
+php -r 'require "autoload.php"; $r = MyVendor\Cms\Injector::getInstance("fake-hal-api-app")->getInstance(BEAR\Resource\ResourceInterface::class); echo json_encode($r->get("app://self/article", ["id" => 1])->body, JSON_PRETTY_PRINT);'
 ```
 
-### Malt Database
+Run the main test suite:
 
-Use this path on macOS when you want the real MySQL-backed app.
+```bash
+composer test
+```
+
+## Setup
+
+### Real database via Malt (macOS)
 
 ```bash
 brew tap koriym/malt && brew install malt
+malt install && malt create && malt start
+source <(malt env)
+
+cp .env.dist .env       # edit DB_DSN / DB_USER / DB_PASSWORD
+vendor/bin/doctrine-migrations migrate --no-interaction
+php bin/seed.php
+composer serve:api      # HAL JSON API at http://127.0.0.1:8080
+composer serve          # Qiq/Page HTML at http://127.0.0.1:8081
+```
+
+### Real database via docker-compose (cross-platform)
+
+```bash
+docker compose up -d
 cp .env.dist .env
-composer malt:up
-composer serve
+DB_DSN='mysql:host=127.0.0.1;dbname=bear_cms;charset=utf8mb4' DB_USER=root DB_PASSWORD=root \
+  vendor/bin/doctrine-migrations migrate --no-interaction
+DB_DSN='mysql:host=127.0.0.1;dbname=bear_cms;charset=utf8mb4' DB_USER=root DB_PASSWORD=root \
+  php bin/seed.php
 ```
 
-The server runs at `http://127.0.0.1:8080`.
-
-### Docker Database
-
-Use this path when Docker is the local database provider.
+### Real database via SQLite (CI / quick trials)
 
 ```bash
-cp .env.dist .env       # set DB_PASSWORD=root
-composer docker:up
-composer serve
+rm -f /tmp/bear_cms.db
+DB_DSN="sqlite:/tmp/bear_cms.db" vendor/bin/doctrine-migrations migrate --no-interaction
+DB_DSN="sqlite:/tmp/bear_cms.db" php bin/seed.php
+DB_DSN="sqlite:/tmp/bear_cms.db" composer serve         # Qiq/Page HTML on :8081
+# or to expose the HAL JSON API on :8080:
+# DB_DSN="sqlite:/tmp/bear_cms.db" composer serve:api
 ```
 
-### SQLite Trial
+### Built-in servers
 
-Use this path for a quick database-backed trial or CI-style local check.
+Each server is blocking, so run them in separate terminals:
 
 ```bash
-composer sqlite:up
-DB_DSN="sqlite:/tmp/bear_cms.db" composer serve
+# terminal 1
+composer serve           # Qiq/Page HTML at http://127.0.0.1:8081
+
+# terminal 2
+composer serve:api       # HAL JSON API at http://127.0.0.1:8080
 ```
 
-### Runtime Contexts
+## Reference Guide
 
-| Context | Purpose | DB required |
-|---|---|---|
-| `hal-api-app` | Production HTTP | yes |
-| `cli-hal-api-app` | `composer app`, [bin/app.php](bin/app.php), and generated `bin/cli/*` scripts | yes |
-| `fake-hal-api-app` | Dev runtime against `FakeSqlQuery` | no |
-| `test-hal-api-app` | PHPUnit | no |
+Read the repository in this order:
 
-`fake-` prepends [src/Module/FakeModule.php](src/Module/FakeModule.php).
+1. **[README.md](README.md)** — what the project is and how to run it.
+2. **[docs/readme-spec.md](docs/readme-spec.md)** — the shared README frame
+   for BEAR.Sunday-aligned reference projects.
+3. **[docs/en/reading-guide.md](docs/en/reading-guide.md)**
+   ([日本語](docs/ja/reading-guide.md)) — where to start reading the code
+   and what to notice by layer.
+4. **[docs/architecture.md](docs/architecture.md)** — BDR layout,
+   dispatch quirks, and design rationale.
+5. **[docs/conventions.md](docs/conventions.md)** — the canonical rulebook:
+   naming, Resource patterns, Read/Write SQL contract, and test policy.
+   New code patterns land here first.
+6. **[docs/scope.md](docs/scope.md)** — what the reference includes,
+   omits, and defers.
+7. **[docs/alps.md](docs/alps.md)** and
+   **[var/alps/profile.json](var/alps/profile.json)** — semantic source of
+   truth: Choreography names and Taxonomy nouns.
+8. **[docs/journal/build-log.md](docs/journal/build-log.md)** — phase-by-phase
+   construction history.
+9. **[docs/journal/decisions-to-consult.md](docs/journal/decisions-to-consult.md)**
+   — every decision with the discussion that shaped it.
+10. **[tests/Fake/FakeSqlQuery.php](tests/Fake/FakeSqlQuery.php)** — the fake
+   dispatch contract in executable form.
+
+Index by question:
+
+| If you're asking... | Start here |
+|---|---|
+| What should a BEAR.Sunday reference README look like? | [docs/readme-spec.md](docs/readme-spec.md) |
+| Where should I start reading the code? | [docs/en/reading-guide.md](docs/en/reading-guide.md) / [日本語](docs/ja/reading-guide.md) |
+| What do I name a class, method, SQL file, or property? | [conventions.md §3 Naming](docs/conventions.md#3-naming) |
+| How do I shape a Resource body, status, embed, or link? | [conventions.md §4 Resource patterns](docs/conventions.md#4-resource-patterns) |
+| Where are the MediaQuery pager / SELECT result / AffectedRows examples? | [docs/media-query-samples.md](docs/media-query-samples.md) |
+| Scalar params or Input DTO? | [conventions.md §4 Input shape & validation](docs/conventions.md#4-resource-patterns) |
+| How do Read and Write share an entity? | [conventions.md §5 Read/Write SQL contract](docs/conventions.md#5-readwrite-sql-contract) |
+| What is intentionally not built? | [docs/scope.md](docs/scope.md) |
+| Why was this decision made? | [journal/decisions-to-consult.md](docs/journal/decisions-to-consult.md) |
+| What changed phase-by-phase? | [journal/build-log.md](docs/journal/build-log.md) |
+| What is the next session expected to know? | [journal/handoff.md](docs/journal/handoff.md) |
+
+## API Documentation
+
+Generated API documentation lives under `docs/`:
+
+- [docs/index.html](docs/index.html) — generated URI / request / response /
+  `_links` / `_embedded` map.
+- [docs/openapi.json](docs/openapi.json) — OpenAPI contract.
+- [docs/llms.txt](docs/llms.txt) — LLM-oriented API summary.
+- [docs/resources.md](docs/resources.md) — hand-written resource overview.
+
+Regenerate it with:
+
+```bash
+composer doc
+```
+
+The HAL JSON API is served by `composer serve:api` on
+`http://127.0.0.1:8080`. Page resources are served by `composer serve` on
+`http://127.0.0.1:8081/`. Public pages include `/`, `/articlelist`, and
+`/article?id=1`; the local admin starts at `/admin/index`.
+
+## Runtime Contexts
+
+| Context                    | Purpose                               | DB required |
+|----------------------------|---------------------------------------|-------------|
+| `hal-api-app`              | Production HAL JSON HTTP              | yes         |
+| `html-hal-app`             | Production Qiq/Page HTML HTTP         | yes         |
+| `cli-hal-api-app`          | `composer app` / `bin/app.php`        | yes         |
+| `cli-html-hal-app`         | `composer page` / `bin/page.php`      | yes         |
+| `fake-hal-api-app`         | Dev runtime against FakeSqlQuery      | no          |
+| `test-hal-api-app`         | PHPUnit App resource tests            | no          |
+| `html-test-hal-api-app`    | PHPUnit Page/Qiq tests                | no          |
+
+`fake-` prepends [src/Module/FakeModule.php](src/Module/FakeModule.php);
 `test-` prepends [src/Module/TestModule.php](src/Module/TestModule.php).
 
-### Commands
+## Development
+
+Useful composer scripts:
 
 ```bash
-composer test       # PHPUnit against the fake test context
-composer tests      # coding standard, static analysis, PHPMD, PHPUnit
+composer test       # PHPUnit suite (integration auto-skips without MySQL)
+composer tests      # cs + static analysis + PHPMD + PHPUnit
 composer fake       # regenerate var/fake/*.json
-composer schema     # regenerate var/json_schema/*.json from fake data
-composer semantic   # fake then schema
-composer doc        # regenerate docs/index.html, openapi.json, llms.txt
+composer schema     # regenerate var/json_schema/*.json from fake
+composer semantic   # fake then schema (the full semantic-ex pass)
+composer doc        # regenerate docs/index.html, docs/openapi.json, docs/llms.txt
 composer cli        # regenerate bin/cli/* from #[Cli] attributes
-composer serve      # PHP built-in server on 127.0.0.1:8080
+composer serve      # Qiq/Page HTML server on :8081
+composer serve:api  # HAL JSON API server on :8080
 ```
 
-Generated CLI commands live under `bin/cli/`:
+CLI commands generated from `#[Cli]` attributes:
 
 ```bash
 composer cli
@@ -116,50 +250,23 @@ bin/cli/article-show -i 1
 bin/cli/article-list -s published -n 5
 ```
 
-The integration tests in [tests/Integration/](tests/Integration/) skip
-unless MySQL is reachable. Start MySQL with `composer malt:up` or
-`composer docker:up` when you want those tests included.
+Tests run Resource, Entity, Hypermedia, Smoke, and Integration suites. The
+Integration suite (`tests/Integration/`) skips automatically unless MySQL is
+reachable; bring it up with `docker compose up -d` or Malt to include it.
 
-## Reference
+## Project Journal
 
-This README follows [README spec v1](docs/readme-spec.md): Description,
-Setup, Reference, Links. Read the project in this order:
-
-1. [README.md](README.md) - project identity, setup paths, and reference map.
-2. [docs/readme-spec.md](docs/readme-spec.md) - the shared README frame for BEAR.Sunday-aligned projects.
-3. [docs/en/reading-guide.md](docs/en/reading-guide.md) ([Japanese](docs/ja/reading-guide.md)) - where to start reading the code and what to notice by layer.
-4. [docs/architecture.md](docs/architecture.md) - BDR layout, dispatch behavior, and design rationale.
-5. [docs/conventions.md](docs/conventions.md) - canonical rulebook for naming, resource patterns, Read/Write SQL contracts, and tests.
-6. [docs/resources.md](docs/resources.md) - URI map and body shapes.
-7. [docs/index.html](docs/index.html) - generated URI, request, response, `_links`, and `_embedded` map.
-8. [docs/alps.md](docs/alps.md) and [var/alps/profile.json](var/alps/profile.json) - semantic source of truth.
-9. [tests/Fake/FakeSqlQuery.php](tests/Fake/FakeSqlQuery.php) - executable dispatch contract for fake and test contexts.
-10. [docs/journal/build-log.md](docs/journal/build-log.md), [docs/journal/decisions-to-consult.md](docs/journal/decisions-to-consult.md), and [docs/journal/handoff.md](docs/journal/handoff.md) - background history, not runtime contract.
-
-### Index By Question
-
-| If you are asking... | Start here |
-|---|---|
-| What should a BEAR.Sunday reference README look like? | [readme-spec.md](docs/readme-spec.md) |
-| Where should I start reading the code? | [docs/en/reading-guide.md](docs/en/reading-guide.md) / [Japanese](docs/ja/reading-guide.md) |
-| What do I name a class, method, SQL file, or property? | [conventions.md Section 3](docs/conventions.md#3-naming) |
-| How do I shape a resource body, status, embed, or link? | [conventions.md Section 4](docs/conventions.md#4-resource-patterns) |
-| Should an endpoint use scalar params or an Input DTO? | [conventions.md Section 4](docs/conventions.md#input-shape--validation) |
-| How do Read and Write share an entity? | [conventions.md Section 5](docs/conventions.md#5-readwrite-sql-contract) |
-| What are the generated API shapes? | [docs/index.html](docs/index.html), [docs/resources.md](docs/resources.md), and [docs/openapi.json](docs/openapi.json) |
-| Where is the semantic model? | [docs/alps.md](docs/alps.md) and [var/alps/profile.json](var/alps/profile.json) |
-| Why was a design choice made? | [docs/journal/decisions-to-consult.md](docs/journal/decisions-to-consult.md) |
-| What changed phase by phase? | [docs/journal/build-log.md](docs/journal/build-log.md) |
+Reflection and decision logs live in [docs/journal/](docs/journal/):
+build log, framework critique, skill proposals, and the back-and-forth that
+shaped the design choices. They are not part of the API surface, but they
+are useful when reading this repository as a reference implementation.
 
 ## Links
 
 - [BEAR.Sunday manual](https://bearsunday.github.io/manuals/1.0/en/index.html)
-- [BEAR.Sunday repository](https://github.com/bearsunday/BEAR.Sunday)
 - [Ray.MediaQuery](https://github.com/ray-di/Ray.MediaQuery)
 - [BEAR.ApiDoc](https://github.com/bearsunday/BEAR.ApiDoc)
 - [BEAR.Cli](https://github.com/bearsunday/BEAR.Cli)
 - [Malt](https://koriym.github.io/homebrew-malt/)
 - [BEAR.Skills](https://github.com/bearsunday/BEAR.Skills)
 - [ALPS](https://alps.io/)
-- [Generated OpenAPI document](docs/openapi.json)
-- [Generated LLM reference](docs/llms.txt)

@@ -5,26 +5,22 @@ declare(strict_types=1);
 namespace MyVendor\Cms\Factory;
 
 use MyVendor\Cms\Entity\Article;
-use MyVendor\Cms\Service\MarkdownRendererInterface;
+use MyVendor\Cms\Entity\ArticleStatus;
 
+use function array_map;
 use function str_contains;
 use function str_replace;
 
 /**
- * Builds Article entities with the MarkdownRendererInterface injected.
+ * Builds Article entities from the database.
  *
- * Wired via #[DbQuery(factory: ArticleFactory::class)] on the Read-side
- * methods of ArticleQueryInterface. Ray.MediaQuery's FetchInjectionFactory
- * calls ::factory(...$columns) once per row using PDO::FETCH_FUNC, with
- * SELECT column order matching the parameter order below.
+ * Wired via #[DbQuery(factory: ArticleFactory::class)] on single-row
+ * ArticleQueryInterface methods. Paged list queries return associative rows
+ * from Ray.MediaQuery's Pager path and are mapped through fromRows().
  */
 final readonly class ArticleFactory
 {
-    public function __construct(
-        private MarkdownRendererInterface $renderer,
-    ) {
-    }
-
+    /** @SuppressWarnings("PHPMD.StaticAccess") enum value reconstruction */
     public function factory(
         int $id,
         string $slug,
@@ -42,11 +38,36 @@ final readonly class ArticleFactory
             $title,
             $body,
             $excerpt,
-            $status,
+            ArticleStatus::from($status),
             self::normaliseDateTime($publishedAt),
             $authorId,
             $categoryId,
-            $this->renderer,
+        );
+    }
+
+    /**
+     * @param list<array<string, mixed>> $rows
+     *
+     * @return list<Article>
+     */
+    public function fromRows(array $rows): array
+    {
+        return array_map(fn (array $row): Article => $this->fromRow($row), $rows);
+    }
+
+    /** @param array<string, mixed> $row */
+    public function fromRow(array $row): Article
+    {
+        return $this->factory(
+            (int) $row['id'],
+            (string) $row['slug'],
+            (string) $row['title'],
+            (string) $row['body'],
+            isset($row['excerpt']) ? (string) $row['excerpt'] : null,
+            (string) $row['status'],
+            $row['published_at'],
+            (int) $row['author_id'],
+            (int) $row['category_id'],
         );
     }
 
@@ -61,12 +82,10 @@ final readonly class ArticleFactory
             return null;
         }
 
-        // Already RFC3339 (Fake path).
         if (str_contains($value, 'T')) {
             return $value;
         }
 
-        // Native DB datetime → RFC3339 UTC.
         return str_replace(' ', 'T', $value) . 'Z';
     }
 }

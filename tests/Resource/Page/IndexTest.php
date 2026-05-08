@@ -4,27 +4,23 @@ declare(strict_types=1);
 
 namespace MyVendor\Cms\Resource\Page;
 
-use BEAR\Resource\ResourceInterface;
-use MyVendor\Cms\Injector;
-use PHPUnit\Framework\TestCase;
+use MyVendor\Cms\AbstractPageTestCase;
 
 use function assert;
 
-class IndexTest extends TestCase
+class IndexTest extends AbstractPageTestCase
 {
-    private ResourceInterface $resource;
-
-    protected function setUp(): void
+    public function testOnGetRendersArticleList(): void
     {
-        $injector = Injector::getInstance('app');
-        $this->resource = $injector->getInstance(ResourceInterface::class);
-    }
-
-    public function testOnGet(): void
-    {
-        $ro = $this->resource->get('page://self/index', ['name' => 'BEAR.Sunday']);
+        $ro = $this->resource->get('page://self/index');
         assert($ro instanceof Index);
+
         $this->assertSame(200, $ro->code);
-        $this->assertSame('Hello BEAR.Sunday', $ro->body['greeting']);
+
+        $html = $ro->toString();
+        $this->assertStringContainsString('<!DOCTYPE html>', $html);
+        $this->assertStringContainsString('<a class="goArticle" href="/article?id=', $html);
+        $this->assertStringContainsString('<a class="goSignIn" href="/admin/index">Sign in</a>', $html);
+        $this->assertSame($html, $ro->view);
     }
 }

@@ -1,5 +1,7 @@
 # Architecture
 
+[日本語](ja/architecture.md)
+
 ## Resolution-increasing build-up
 
 The code is built bottom-up, each phase adding resolution:
@@ -17,7 +19,9 @@ FakeSqlQuery (in-memory) — full Read+Write stack runs without a DB
    ↓
 Doctrine Migrations + seed — real schema + same seed data
    ↓
-SQL files — production backend; Fake and real produce the same body shape
+SQL files — production backend; Fake and real produce the same App body shape
+   ↓
+Page resources + Qiq templates — HTML projection (public read-only; Page/Admin/* wraps the App resources for write forms)
 ```
 
 Each step is testable in isolation. Tests can run on Fake (fast, hermetic)
@@ -30,9 +34,10 @@ See [BDR_PATTERN-ja.md](https://github.com/ray-di/Ray.MediaQuery/blob/1.x/BDR_PA
 | Layer     | Directory            | Role                                               |
 |-----------|----------------------|----------------------------------------------------|
 | Bound     | `src/Resource/App/*` | HTTP method binding, Link/Embed, validation gates  |
+|           | `src/Resource/Page/*` | Qiq/Page HTML — public read-only; `Page/Admin/*` wraps App resources for write forms |
 | Domain    | `src/Entity/*`       | Final readonly classes: invariant data             |
 | Resource  | `src/Query/*`        | `#[DbQuery]` Read interfaces → entity              |
-|           | `src/Command/*`      | `#[DbQuery]` Write interfaces → `void`             |
+|           | `src/Query/*`        | `#[DbQuery]` Write interfaces → `void`             |
 
 Factories are not used here: the simplest path is `FetchNewInstance` via
 PDO::FETCH_FUNC, which constructs the entity positionally from the SELECT
@@ -65,16 +70,23 @@ as-is. The additions:
 - `fake-hal-api-app` — runtime context that installs FakeModule. Lets the
   app run with no DB (e.g. for demos).
 - `test-hal-api-app` — TestModule composes FakeModule.
+- `html-hal-app` / `cli-html-hal-app` — real-DB Qiq/Page HTML contexts.
+- `html-test-hal-api-app` — PHPUnit Page context; composes TestModule and
+  HtmlModule so HTML tests render against FakeSqlQuery.
 
 ## What was intentionally *not* built
 
-- Admin UI / HTML / JS
-- Authentication / authorisation
+- Authentication / authorisation around the admin routes. `Page/Admin/*`
+  is currently unauthenticated; the typed `UserInterface` /
+  `AdminUserInterface` boundary is designed in
+  [journal/auth-boundary-plan.md](journal/auth-boundary-plan.md) and
+  will land in a follow-up PR.
+- JavaScript-enhanced admin interactions.
 - Cache invalidation (`#[Cacheable]`, `#[Purge]`) — left as a hook-in
   point; not needed for a reference
-- `#[Pager]` / `PagesInterface` — deferred to avoid faking Pagerfanta's
-  PDO-backed Pages. Filtering + `page`/`perPage`/`count` handled at the
-  Resource layer.
+- Full UI pager rendering customization. Article collections already use
+  Ray.MediaQuery `#[Pager]`; Page templates still render compact previous
+  and next links themselves.
 
 ## See also
 

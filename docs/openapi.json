@@ -8,6 +8,7 @@
     "paths": {
         "/article": {
             "get": {
+                "operationId": "goArticle",
                 "parameters": [
                     {
                         "name": "id",
@@ -32,6 +33,7 @@
                 }
             },
             "post": {
+                "operationId": "doCreateArticle",
                 "requestBody": {
                     "content": {
                         "application/json": {
@@ -63,7 +65,7 @@
                                         "type": "string"
                                     },
                                     "tagIds": {
-                                        "type": "array"
+                                        "type": "string"
                                     }
                                 },
                                 "required": [
@@ -95,6 +97,7 @@
                 }
             },
             "put": {
+                "operationId": "doUpdateArticle",
                 "requestBody": {
                     "content": {
                         "application/json": {
@@ -120,7 +123,7 @@
                                         "type": "string"
                                     },
                                     "tagIds": {
-                                        "type": "array"
+                                        "type": "string"
                                     }
                                 },
                                 "required": [
@@ -151,6 +154,7 @@
                 }
             },
             "delete": {
+                "operationId": "doDeleteArticle",
                 "parameters": [
                     {
                         "name": "id",
@@ -170,6 +174,7 @@
         },
         "/articles": {
             "get": {
+                "operationId": "goArticleList",
                 "parameters": [
                     {
                         "name": "page",
@@ -197,6 +202,14 @@
                     },
                     {
                         "name": "tagId",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "authorId",
                         "in": "query",
                         "required": false,
                         "schema": {
@@ -280,6 +293,7 @@
         },
         "/author": {
             "get": {
+                "operationId": "goAuthor",
                 "parameters": [
                     {
                         "name": "id",
@@ -304,6 +318,7 @@
                 }
             },
             "post": {
+                "operationId": "doCreateAuthor",
                 "requestBody": {
                     "content": {
                         "application/json": {
@@ -346,6 +361,7 @@
                 }
             },
             "put": {
+                "operationId": "doUpdateAuthor",
                 "requestBody": {
                     "content": {
                         "application/json": {
@@ -394,6 +410,7 @@
         },
         "/categories": {
             "get": {
+                "operationId": "goCategoryList",
                 "responses": {
                     "200": {
                         "description": "Successful response",
@@ -410,6 +427,7 @@
         },
         "/category": {
             "get": {
+                "operationId": "goCategory",
                 "parameters": [
                     {
                         "name": "id",
@@ -434,6 +452,7 @@
                 }
             },
             "post": {
+                "operationId": "doCreateCategory",
                 "requestBody": {
                     "content": {
                         "application/json": {
@@ -479,6 +498,7 @@
                 }
             },
             "put": {
+                "operationId": "doUpdateCategory",
                 "requestBody": {
                     "content": {
                         "application/json": {
@@ -524,6 +544,7 @@
                 }
             },
             "delete": {
+                "operationId": "doDeleteCategory",
                 "parameters": [
                     {
                         "name": "id",
@@ -543,6 +564,7 @@
         },
         "/media": {
             "get": {
+                "operationId": "goMedia",
                 "parameters": [
                     {
                         "name": "id",
@@ -567,6 +589,7 @@
                 }
             },
             "post": {
+                "operationId": "doCreateMedia",
                 "requestBody": {
                     "content": {
                         "application/json": {
@@ -619,6 +642,7 @@
                 }
             },
             "delete": {
+                "operationId": "doDeleteMedia",
                 "parameters": [
                     {
                         "name": "id",
@@ -638,6 +662,7 @@
         },
         "/tag": {
             "get": {
+                "operationId": "goTag",
                 "parameters": [
                     {
                         "name": "id",
@@ -662,6 +687,7 @@
                 }
             },
             "post": {
+                "operationId": "doCreateTag",
                 "requestBody": {
                     "content": {
                         "application/json": {
@@ -701,6 +727,7 @@
                 }
             },
             "delete": {
+                "operationId": "doDeleteTag",
                 "parameters": [
                     {
                         "name": "id",
@@ -720,6 +747,7 @@
         },
         "/tags": {
             "get": {
+                "operationId": "goTagList",
                 "parameters": [
                     {
                         "name": "articleId",
@@ -737,6 +765,90 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/TagList"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/variations/article-as-array": {
+            "get": {
+                "summary": "Comparison-only Article GET. Canonical equivalent: App\\Article::onGet().",
+                "description": "Mainline keeps the Article entity because predicates and injected rendering\nbehaviour belong in the domain object, not in arrays spread across resources.",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Article"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/variations/article-raw-pdo": {
+            "get": {
+                "summary": "Comparison-only Article GET. Canonical equivalent: App\\Article::onGet().",
+                "description": "Mainline keeps MediaQuery because it externalises SQL and centralises\nparameter conversion, fetch strategy, logging, and SQL-file discovery.",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Article"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/variations/article-sql-query": {
+            "get": {
+                "summary": "Comparison-only Article GET. Canonical equivalent: App\\Article::onGet().",
+                "description": "Mainline keeps declarative #[DbQuery] for simple reads; inject SqlQuery only\nwhen a resource needs PHP post-processing or multi-query orchestration.",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Article"
                                 }
                             }
                         }
@@ -828,10 +940,7 @@
                 "type": "object",
                 "properties": {
                     "id": {
-                        "type": [
-                            "integer",
-                            "null"
-                        ],
+                        "type": "integer",
                         "minimum": 1
                     },
                     "slug": {
@@ -856,7 +965,8 @@
                     "items",
                     "page",
                     "perPage",
-                    "count"
+                    "count",
+                    "totalCount"
                 ],
                 "properties": {
                     "items": {

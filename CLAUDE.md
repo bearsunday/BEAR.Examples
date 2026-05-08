@@ -2,8 +2,14 @@
 
 ## Project shape
 
-Single-context app. Namespace `MyVendor\Cms\`. PSR-4 both under `src/` and
-`tests/`. No admin UI, no HTML/JS.
+Namespace `MyVendor\Cms\`. PSR-4 both under `src/` and `tests/`.
+Primary surface is the HAL+JSON App API. `src/Resource/Page/*` +
+`templates/Page/*` provide Qiq HTML: public pages are read-only, and
+`src/Resource/Page/Admin/*` adds article create/update/delete forms
+that wrap the App resources. No JS frontend yet. Admin pages are
+currently unauthenticated — the typed `UserInterface` /
+`AdminUserInterface` boundary is designed in
+`docs/journal/auth-boundary-plan.md` and will land in a follow-up PR.
 
 ## Contexts
 
@@ -11,6 +17,8 @@ Single-context app. Namespace `MyVendor\Cms\`. PSR-4 both under `src/` and
 - `fake-hal-api-app` — same app, SqlQueryInterface overridden to FakeSqlQuery.
   Works with no DB.
 - `test-hal-api-app` — loaded by PHPUnit via `AbstractAppTestCase`.
+- `html-hal-app` / `cli-html-hal-app` — Qiq/Page HTML over the real DB.
+- `html-test-hal-api-app` — Page tests rendered with HtmlModule + FakeSqlQuery.
 
 Switching contexts loads/removes modules by keyword prefix; see
 `src/Module/{App,Fake,Test}Module.php`.
@@ -46,14 +54,14 @@ Switching contexts loads/removes modules by keyword prefix; see
   `Article::onPost`. Query method naming is codified in
   `docs/conventions.md` §3 (`item` for PK, `by<Key>` for natural key,
   `list` for collections).
-- When module bindings change, clear the DI cache:
-  `rm -rf var/tmp/{fake-,test-,}hal-api-app`.
+- When module bindings change, clear the DI cache for every context:
+  `rm -rf var/tmp/*-hal-app var/tmp/*-hal-api-app`.
 
 ## Regenerating fakes and schemas
 
 ```bash
-python3 bin/semantic-ex/gen-fake.py      # writes var/fake/*.json
-python3 bin/semantic-ex/gen-schemas.py   # writes var/schema/*.json
+php bin/semantic-ex/gen-fake.php         # writes var/fake/*.json
+php bin/semantic-ex/gen-schemas.php      # writes var/json_schema/*.json
 ```
 
-Both scripts are deterministic (`random.seed(42)`).
+Both scripts are deterministic (`mt_srand(42)`).

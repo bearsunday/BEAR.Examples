@@ -193,7 +193,7 @@ SELECT 列順とコンストラクタ引数順が揃っていないと "型は�
 
 **Pipeline:**
 1. `alps-skills:alps` で `var/alps/profile.json` 生成
-2. `be-framework-skills:semantic-ex` で `var/fake/*.json` + `var/schema/*.json` 生成
+2. `be-framework-skills:semantic-ex` で `var/fake/*.json` + `var/json_schema/*.json` 生成
 3. `bear-skills:scaffold-bdr` で entity / query interface / SQL skeleton 生成
 4. `bear-skills:scaffold-resource` で App resource skeleton 生成
 5. `bear-skills:scaffold-fake-sqlquery` で FakeSqlQuery 生成

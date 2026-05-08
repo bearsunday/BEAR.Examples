@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace MyVendor\Cms\Resource\App;
 
+use BEAR\ApiDoc\Annotation\Alps;
 use BEAR\Resource\Annotation\JsonSchema;
 use BEAR\Resource\Annotation\Link;
 use BEAR\Resource\ResourceObject;
@@ -12,6 +13,7 @@ use MyVendor\Cms\Query\TagQueryInterface;
 use function array_map;
 use function count;
 
+#[Alps('TagList')]
 class Tags extends ResourceObject
 {
     public function __construct(
@@ -19,6 +21,7 @@ class Tags extends ResourceObject
     ) {
     }
 
+    #[Alps('goTagList')]
     #[Link(rel: 'goTag', href: 'app://self/tag{?id}')]
     #[JsonSchema('tagList.json')]
     public function onGet(int|null $articleId = null): static

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace MyVendor\Cms\Resource\App;
 
+use BEAR\ApiDoc\Annotation\Alps;
 use BEAR\Resource\Annotation\JsonSchema;
 use BEAR\Resource\Annotation\Link;
 use BEAR\Resource\ResourceObject;
@@ -12,6 +13,7 @@ use MyVendor\Cms\Query\CategoryQueryInterface;
 use function array_map;
 use function count;
 
+#[Alps('CategoryList')]
 class Categories extends ResourceObject
 {
     public function __construct(
@@ -19,6 +21,7 @@ class Categories extends ResourceObject
     ) {
     }
 
+    #[Alps('goCategoryList')]
     #[Link(rel: 'goCategory', href: 'app://self/category{?id}')]
     #[JsonSchema('categoryList.json')]
     public function onGet(): static
