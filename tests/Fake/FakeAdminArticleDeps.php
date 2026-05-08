@@ -17,6 +17,7 @@ use MyVendor\Cms\Query\ArticleQueryInterface;
 use MyVendor\Cms\Query\AuthorQueryInterface;
 use MyVendor\Cms\Query\CategoryQueryInterface;
 use MyVendor\Cms\Query\TagQueryInterface;
+use Ray\MediaQuery\PagesInterface;
 
 /**
  * Hand-rolled fakes for unit-testing Page/Admin/Article without DI.
@@ -63,16 +64,16 @@ final class FakeAdminArticleDeps
                 return null;
             }
 
-            /** @return list<Article> */
             public function list(
                 int|null $categoryId = null,
                 int|null $tagId = null,
                 int|null $authorId = null,
                 string|null $status = null,
-                int $limit = 20,
-                int $offset = 0,
-            ): array {
-                return [];
+                int $perPage = 20,
+            ): PagesInterface {
+                unset($categoryId, $tagId, $authorId, $status);
+
+                return new FakePages([], $perPage);
             }
         };
     }

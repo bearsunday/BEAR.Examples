@@ -72,7 +72,7 @@ set with the given ids). `200` / `404`.
 GET. Query params: `page`, `perPage` (clamped 1..100, default 20),
 `categoryId`, `tagId`, `authorId`, `status`. Response:
 ```json
-{"items": [...article summaries...], "page": 1, "perPage": 20, "count": 20}
+{"items": [...article summaries...], "page": 1, "perPage": 20, "count": 20, "totalCount": 50}
 ```
 
 ## `app://self/category` / `categories`

@@ -7,6 +7,8 @@ namespace MyVendor\Cms\Query;
 use MyVendor\Cms\Entity\Article;
 use MyVendor\Cms\Factory\ArticleFactory;
 use Ray\MediaQuery\Annotation\DbQuery;
+use Ray\MediaQuery\Annotation\Pager;
+use Ray\MediaQuery\PagesInterface;
 
 interface ArticleQueryInterface
 {
@@ -16,14 +18,13 @@ interface ArticleQueryInterface
     #[DbQuery('article_by_slug', factory: ArticleFactory::class)]
     public function bySlug(string $slug): Article|null;
 
-    /** @return list<Article> */
-    #[DbQuery('article_list', factory: ArticleFactory::class)]
+    #[DbQuery('article_list')]
+    #[Pager(perPage: 'perPage')]
     public function list(
         int|null $categoryId = null,
         int|null $tagId = null,
         int|null $authorId = null,
         string|null $status = null,
-        int $limit = 20,
-        int $offset = 0,
-    ): array;
+        int $perPage = 20,
+    ): PagesInterface;
 }

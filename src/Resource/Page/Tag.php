@@ -7,8 +7,12 @@ namespace MyVendor\Cms\Resource\Page;
 use BEAR\Resource\ResourceObject;
 use MyVendor\Cms\Entity\Article;
 use MyVendor\Cms\Entity\Tag as TagEntity;
+use MyVendor\Cms\Factory\ArticleFactory;
 use MyVendor\Cms\Query\ArticleQueryInterface;
 use MyVendor\Cms\Query\TagQueryInterface;
+use Ray\AuraSqlModule\Pagerfanta\Page;
+
+use function assert;
 
 /** @property array{message: string}|array{tag: TagEntity, articles: list<Article>} $body */
 class Tag extends ResourceObject
@@ -18,6 +22,7 @@ class Tag extends ResourceObject
     public function __construct(
         private readonly TagQueryInterface $tag,
         private readonly ArticleQueryInterface $article,
+        private readonly ArticleFactory $articleFactory,
     ) {
     }
 
@@ -31,13 +36,20 @@ class Tag extends ResourceObject
             return $this;
         }
 
+        $pages = $this->article->list(
+            tagId: $tag->id,
+            status: 'published',
+            perPage: self::RECENT_LIMIT,
+        );
+        $articlePage = $pages[1];
+        assert($articlePage instanceof Page);
+        /** @var list<array<string, mixed>> $rows */
+        $rows = $articlePage->data;
+        $articles = $this->articleFactory->fromRows($rows);
+
         $this->body = [
             'tag' => $tag,
-            'articles' => $this->article->list(
-                tagId: $tag->id,
-                status: 'published',
-                limit: self::RECENT_LIMIT,
-            ),
+            'articles' => $articles,
         ];
 
         return $this;

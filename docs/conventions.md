@@ -240,14 +240,18 @@ applies.
 ### After-INSERT id
 Never `lastInsertId` (driver-dependent, awkward to fake). Always
 re-SELECT via `by<NaturalKey>` using the natural key the client
-supplied (slug / email / filename). Returns `void` from the `Command`
-side.
+supplied (slug / email / filename). The canonical Resource-facing
+`Command` side returns `void`. If a non-Resource caller needs DML
+metadata, keep that as an explicit sample/read-model command and return
+MediaQuery's `AffectedRows`; see [MediaQuery samples](media-query-samples.md).
 
 ### Pagination
-`#[Pager]` / `PagesInterface` is **not used**. Filtering and counting
-happen at the Resource layer, returning
-`{ items, page, perPage, count }`. Reason: faking Pagerfanta's
-PDO-backed `Pages` is cumbersome and not needed for this reference.
+Article collection reads use Ray.MediaQuery's `#[Pager]` and return
+`PagesInterface`. Resource code reads `$pages[$page]`, maps the returned
+Page object's associative `data` rows through `ArticleFactory`, and uses
+`total`, `hasNext`, and `maxPerPage` fields. The DB-free fake implements
+the same contract with Pagerfanta's `ArrayAdapter`, so tests exercise the
+same pagination shape without requiring PDO-backed pages.
 
 ### Input shape & validation
 

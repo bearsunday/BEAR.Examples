@@ -10,16 +10,23 @@ use BEAR\Cli\Attribute\Option;
 use BEAR\Resource\Annotation\JsonSchema;
 use BEAR\Resource\Annotation\Link;
 use BEAR\Resource\ResourceObject;
+use MyVendor\Cms\Factory\ArticleFactory;
 use MyVendor\Cms\Query\ArticleQueryInterface;
+use Ray\AuraSqlModule\Pagerfanta\Page;
 
 use function array_map;
+use function assert;
+use function ceil;
 use function count;
+use function max;
+use function min;
 
 #[Alps('ArticleList')]
 class Articles extends ResourceObject
 {
     public function __construct(
         private readonly ArticleQueryInterface $article,
+        private readonly ArticleFactory $articleFactory,
     ) {
     }
 
@@ -43,16 +50,20 @@ class Articles extends ResourceObject
     ): static {
         $page = $page < 1 ? 1 : $page;
         $perPage = $perPage < 1 ? 20 : ($perPage > 100 ? 100 : $perPage);
-        $offset = ($page - 1) * $perPage;
-
-        $items = $this->article->list(
+        $pages = $this->article->list(
             categoryId: $categoryId,
             tagId: $tagId,
             authorId: $authorId,
             status: $status,
-            limit: $perPage,
-            offset: $offset,
+            perPage: $perPage,
         );
+        $totalPages = max(1, (int) ceil(count($pages) / $perPage));
+        $page = min($page, $totalPages);
+        $articlePage = $pages[$page];
+        assert($articlePage instanceof Page);
+        /** @var list<array<string, mixed>> $rows */
+        $rows = $articlePage->data;
+        $items = $this->articleFactory->fromRows($rows);
 
         $this->body = [
             'items' => array_map(static fn ($a) => [
@@ -65,9 +76,10 @@ class Articles extends ResourceObject
                 'authorId' => $a->authorId,
                 'categoryId' => $a->categoryId,
             ], $items),
-            'page' => $page,
-            'perPage' => $perPage,
+            'page' => $articlePage->current,
+            'perPage' => $articlePage->maxPerPage,
             'count' => count($items),
+            'totalCount' => $articlePage->total,
         ];
 
         return $this;

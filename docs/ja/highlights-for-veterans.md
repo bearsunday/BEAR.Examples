@@ -55,9 +55,8 @@ interface ArticleQueryInterface
     #[DbQuery('article_item', factory: ArticleFactory::class)]
     public function item(int $id): Article|null;
 
-    /** @return list<Article> */
-    #[DbQuery('article_list', factory: ArticleFactory::class)]
-    public function list(int|null $categoryId = null, /* ... */): array;
+    #[DbQuery('article_list'), Pager(perPage: 'perPage')]
+    public function list(int|null $categoryId = null, /* ... */, int $perPage = 20): PagesInterface;
 }
 ```
 
@@ -285,10 +284,11 @@ DTO ベースの `requestBody` schema を出す。
 ## 11. 採用しなくなったもの (意図的に "やらない")
 
 ここは記憶のアップデートが必要なポイント。`docs/conventions.md` で
-**明示的に採用しないと宣言されているもの** を抜粋:
+**明示的に採用しない、または意図的に別解にしているもの** を抜粋:
 
-- **`Pagerfanta` / `#[Pager]` / `PagesInterface`** — Fake 化が
-  煩雑で、`{ items, page, perPage, count }` を resource 層で組む方針。
+- **Full pager UI rendering** — Article collection の DB access は
+  `#[Pager]` / `PagesInterface` を使うが、HTML template は previous / next link
+  を必要最小限に描画。
 - **`lastInsertId`** — driver 依存 + fake 化が面倒なので、INSERT 後は
   `by<NaturalKey>` で再 SELECT。Command 側は `void` を返す。
 - **Mock オブジェクト** — `tests/Fake/` の Fake class で代替。Mockery /

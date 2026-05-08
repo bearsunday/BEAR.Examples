@@ -125,6 +125,9 @@ Patterns the codebase deliberately demonstrates (each appears in at least one pl
 | `FetchInjectionFactory` (DI into hydrated entity) | `Page/Article` injects `MarkdownRendererInterface` |
 | Input DTO via `#[Input]` + `Ray\InputQuery` | `Article` (POST/PUT), `Auth` (POST) — contrasted against scalar `onPost` on Author/Category/Tag/Media |
 | Tri-state optional collection input | `tagIds` on `ArticleCreateInput` / `ArticleUpdateInput` |
+| Ray.MediaQuery pager | `ArticleQueryInterface::list()` / `PagesInterface` |
+| Ray.MediaQuery SELECT result class | `ArticleSelectionQueryInterface::list()` / `ArticleSelection` |
+| Ray.MediaQuery DML metadata result | `Samples\ArticleAffectedRowsCommandInterface` / `AffectedRows` |
 | Natural-key `by<Key>` post-INSERT lookup | `Article::onPost` → `bySlug`; same idea for `byEmail` / `byFilename` |
 | Manual `_embedded` build for ID-after-fetch | `Article::onGet` (`author`, `category`, `tagList`) |
 | Three Article GET implementation variations | `src/Resource/App/Variations/` (`composer demo:variations`) |
@@ -174,8 +177,8 @@ Drawn from `architecture.md` "What was intentionally not built", `journal/handof
 | D4 | Write-side CLI + read CLI for the other entities | `bear-cli-gen` so far only generated `article-show` / `article-list`; no write commands yet | Add `#[Cli]` to onPost/onPut/onDelete and to the missing read methods; `composer cli` regenerates |
 | D5 | Real Google OAuth integration test | Needs creds + callback URL | env-gated test that skips unless `GOOGLE_CLIENT_ID` is set |
 | D6 | MySQL integration coverage for `Media` | 4 of 5 entities covered (`tests/Integration/`) | Add `MediaMySQLTest` mirroring the existing pattern |
-| D7 | `Articles` collection `totalCount` | Schema declares it, query doesn't compute it | Add a count query alongside the list query |
-| D8 | `#[Pager]` / `PagesInterface` adoption decision | `Pages` Fake is non-trivial (Pagerfanta + ExtendedPdo coupling) | Either build an `ArrayAdapter`-based fake, or document why the manual `{items,page,perPage,count}` shape stays canonical |
+| D7 | `Articles` collection `totalCount` | Implemented via MediaQuery Page `total` | Keep schema/docs in sync when list shape changes |
+| D8 | `#[Pager]` / `PagesInterface` adoption decision | Adopted for Article collection reads; fake uses Pagerfanta `ArrayAdapter` | Extend the same pattern if other collections need paging |
 | D9 | phpstan baseline (2 entries) | Upstream `SqlQueryInterface` return-type narrows; OAuth provider arg-type widening | Wait for upstream relaxation, then drop entries |
 | D10 | Migration to `bearsunday/coding-standard` | Drafted as [coding-standard-roadmap/003](journal/coding-standard-roadmap/003-myvendor-cms-adopts-bearsunday-cs.md); blocked on the package's v0.1 + 001 (`@input-param` expansion) landing | After upstream lands, swap composer dependency and run the migration playbook in 003 |
 

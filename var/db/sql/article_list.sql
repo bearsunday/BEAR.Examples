@@ -17,4 +17,3 @@ WHERE (:categoryId IS NULL OR a.category_id = :categoryId)
     OR EXISTS (SELECT 1 FROM article_tags at WHERE at.article_id = a.id AND at.tag_id = :tagId)
   )
 ORDER BY a.published_at DESC, a.id DESC
-LIMIT :limit OFFSET :offset

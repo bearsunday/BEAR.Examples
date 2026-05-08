@@ -84,9 +84,9 @@ as-is. The additions:
 - JavaScript-enhanced admin interactions.
 - Cache invalidation (`#[Cacheable]`, `#[Purge]`) — left as a hook-in
   point; not needed for a reference
-- `#[Pager]` / `PagesInterface` — deferred to avoid faking Pagerfanta's
-  PDO-backed Pages. Filtering + `page`/`perPage`/`count` handled at the
-  Resource layer.
+- Full UI pager rendering customization. Article collections already use
+  Ray.MediaQuery `#[Pager]`; Page templates still render compact previous
+  and next links themselves.
 
 ## See also
 

@@ -965,7 +965,8 @@
                     "items",
                     "page",
                     "perPage",
-                    "count"
+                    "count",
+                    "totalCount"
                 ],
                 "properties": {
                     "items": {
