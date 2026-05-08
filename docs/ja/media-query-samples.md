@@ -42,4 +42,3 @@ canonical な Resource 用 Command interface は引き続き `void` を返しま
 では通常、UPDATE / DELETE の前に 404 を判定するからです。write metadata が必要な
 caller では、`#[DbQuery]` method の return type に `AffectedRows` を宣言し、
 `$result->count` または `$result->isAffected()` を使います。
-

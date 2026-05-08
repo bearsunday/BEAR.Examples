@@ -42,4 +42,3 @@ The canonical resource command interface still returns `void`; resources usually
 decide 404 before issuing UPDATE / DELETE. When a caller does need write
 metadata, declare `AffectedRows` as the return type of a `#[DbQuery]` method and
 use `$result->count` or `$result->isAffected()`.
-
