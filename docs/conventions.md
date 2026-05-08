@@ -519,6 +519,7 @@ to skim past internal plumbing before reaching the entry point.
 | Fake data | `var/fake/<entity>.json` (deterministic, `mt_srand(42)`) |
 | ALPS profile | `var/alps/profile.json` (single source of truth for semantics) |
 | Generated apidoc | `docs/index.html`, `docs/openapi.json`, `docs/llms.txt`, `docs/schemas/*` |
+| README spec | `docs/readme-spec.md` (shared top-level README shape) |
 
 ## 7. Tests
 
@@ -645,6 +646,8 @@ its own `<Actor><Verb>Test` file.
 - [architecture.md](architecture.md) — BDR pattern, contexts,
   intentionally-not-built list
 - [alps.md](alps.md) — ALPS profile flow into code
+- [readme-spec.md](readme-spec.md) — shared README shape for
+  BEAR.Sunday-aligned reference projects
 - [resources.md](resources.md) — HAL response shapes per resource
 - [journal/decisions-to-consult.md](journal/decisions-to-consult.md) —
   original discussion log; the "OK" outcomes there are codified above

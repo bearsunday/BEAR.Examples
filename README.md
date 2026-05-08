@@ -152,30 +152,33 @@ composer serve:api       # HAL JSON API at http://127.0.0.1:8080
 Read the repository in this order:
 
 1. **[README.md](README.md)** — what the project is and how to run it.
-2. **[docs/en/reading-guide.md](docs/en/reading-guide.md)**
+2. **[docs/readme-spec.md](docs/readme-spec.md)** — the shared README frame
+   for BEAR.Sunday-aligned reference projects.
+3. **[docs/en/reading-guide.md](docs/en/reading-guide.md)**
    ([日本語](docs/ja/reading-guide.md)) — where to start reading the code
    and what to notice by layer.
-3. **[docs/architecture.md](docs/architecture.md)** — BDR layout,
+4. **[docs/architecture.md](docs/architecture.md)** — BDR layout,
    dispatch quirks, and design rationale.
-4. **[docs/conventions.md](docs/conventions.md)** — the canonical rulebook:
+5. **[docs/conventions.md](docs/conventions.md)** — the canonical rulebook:
    naming, Resource patterns, Read/Write SQL contract, and test policy.
    New code patterns land here first.
-5. **[docs/scope.md](docs/scope.md)** — what the reference includes,
+6. **[docs/scope.md](docs/scope.md)** — what the reference includes,
    omits, and defers.
-6. **[docs/alps.md](docs/alps.md)** and
+7. **[docs/alps.md](docs/alps.md)** and
    **[var/alps/profile.json](var/alps/profile.json)** — semantic source of
    truth: Choreography names and Taxonomy nouns.
-7. **[docs/journal/build-log.md](docs/journal/build-log.md)** — phase-by-phase
+8. **[docs/journal/build-log.md](docs/journal/build-log.md)** — phase-by-phase
    construction history.
-8. **[docs/journal/decisions-to-consult.md](docs/journal/decisions-to-consult.md)**
+9. **[docs/journal/decisions-to-consult.md](docs/journal/decisions-to-consult.md)**
    — every decision with the discussion that shaped it.
-9. **[tests/Fake/FakeSqlQuery.php](tests/Fake/FakeSqlQuery.php)** — the fake
+10. **[tests/Fake/FakeSqlQuery.php](tests/Fake/FakeSqlQuery.php)** — the fake
    dispatch contract in executable form.
 
 Index by question:
 
 | If you're asking... | Start here |
 |---|---|
+| What should a BEAR.Sunday reference README look like? | [docs/readme-spec.md](docs/readme-spec.md) |
 | Where should I start reading the code? | [docs/en/reading-guide.md](docs/en/reading-guide.md) / [日本語](docs/ja/reading-guide.md) |
 | What do I name a class, method, SQL file, or property? | [conventions.md §3 Naming](docs/conventions.md#3-naming) |
 | How do I shape a Resource body, status, embed, or link? | [conventions.md §4 Resource patterns](docs/conventions.md#4-resource-patterns) |
