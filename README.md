@@ -1,8 +1,8 @@
-# BEAR.Cms
+# MyVendor.Cms
 
 ## Description
 
-BEAR.Cms is a reference CMS built on
+MyVendor.Cms is a reference CMS built on
 [BEAR.Sunday](https://bearsunday.github.io/).
 
 It demonstrates HAL+JSON App resources over Ray.MediaQuery, Qiq Page
