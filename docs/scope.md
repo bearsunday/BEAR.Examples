@@ -111,6 +111,9 @@ Note: Auth applies only to the OAuth flow itself. `Page/Admin/*` is **not** behi
 | `composer cli` | `bear-cli-gen` — generates `bin/cli/*` from `#[Cli]`-annotated resources |
 | `composer serve` / `serve:api` | HTML / API HTTP servers |
 | `composer demo` | End-to-end walkthrough |
+| `composer demo:async` | BEAR.Async Article embed timing demo; Docker recommended |
+| `composer docker:async-demo` | Same demo in PHP ZTS + `ext-parallel` Docker runtime |
+| `composer docker:async-test` | Async contract test in Docker |
 | `composer doc` | apidoc + ALPS HTML |
 | `composer compile` | bear.compile production graph |
 
@@ -126,6 +129,7 @@ Patterns the codebase deliberately demonstrates (each appears in at least one pl
 | Input DTO via `#[Input]` + `Ray\InputQuery` | `Article` (POST/PUT), `Auth` (POST) — contrasted against scalar `onPost` on Author/Category/Tag/Media |
 | Tri-state optional collection input | `tagIds` on `ArticleCreateInput` / `ArticleUpdateInput` |
 | Ray.MediaQuery pager | `ArticleQueryInterface::list()` / `PagesInterface` |
+| BEAR.Async module swap | `AsyncModule` adds parallel `#[Embed]` execution without changing `Article::onGet` |
 | Ray.MediaQuery SELECT result class | `ArticleSelectionQueryInterface::list()` / `ArticleSelection` |
 | Ray.MediaQuery DML metadata result | `Samples\ArticleAffectedRowsCommandInterface` / `AffectedRows` |
 | Natural-key `by<Key>` post-INSERT lookup | `Article::onPost` → `bySlug`; same idea for `byEmail` / `byFilename` |
@@ -173,7 +177,7 @@ Drawn from `architecture.md` "What was intentionally not built", `journal/handof
 |---|------|--------------|----------------------|
 | D1 | `#[CacheableResponse]` across reads + `#[RefreshCache]` on writes | Was blocked on Resource #355 — **now unblocked** (BEAR.Resource 1.31.1) | Add class-level `#[CacheableResponse]` on read resources; `#[RefreshCache]` on writes. Verify cache log (`RepositoryLogger`) shows `try-donut-view` / `put-donut` / `invalidate-etag` |
 | D2 | Auth boundary for `Page/Admin/*` | Designed in [auth-boundary-plan.md](journal/auth-boundary-plan.md); not yet implemented | Implement typed `UserInterface` / `AdminUserInterface` providers; fold in CSRF + exception-mapping notes from the Codex adversarial review |
-| D3 | Async `#[Embed]` parallelization | `bear/async ^0.1` requires `bear/resource ^1.31` — **now compatible** | `composer require bear/async -W`, fix any API drift, attach `#[Async]` to read embeds |
+| D3 | ~~Async `#[Embed]` parallelization~~ | Implemented as `async-` context prefix with Docker runtime | Use `composer docker:async-demo` / `docker:async-test`; local PHP without `ext-parallel` skips the async test |
 | D4 | Write-side CLI + read CLI for the other entities | `bear-cli-gen` so far only generated `article-show` / `article-list`; no write commands yet | Add `#[Cli]` to onPost/onPut/onDelete and to the missing read methods; `composer cli` regenerates |
 | D5 | Real Google OAuth integration test | Needs creds + callback URL | env-gated test that skips unless `GOOGLE_CLIENT_ID` is set |
 | D6 | MySQL integration coverage for `Media` | 4 of 5 entities covered (`tests/Integration/`) | Add `MediaMySQLTest` mirroring the existing pattern |

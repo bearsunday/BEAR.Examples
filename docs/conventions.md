@@ -63,8 +63,14 @@ for the short reading guide.
 | `cli-hal-api-app` | `bin/app.php`, `composer app`, `bin/cli/*` scripts |
 | `fake-hal-api-app` | Dev runtime against `FakeSqlQuery` (no DB) — e.g. `composer fake`, manual exploration |
 | `test-hal-api-app` | PHPUnit (composes `FakeModule`) |
+| `async-hal-api-app` | BEAR.Async `AsyncParallelModule` context; worker threads use `hal-api-app` |
+| `async-test-hal-api-app` | Async PHPUnit context; worker threads use `test-hal-api-app` |
+| `async-slow-fake-hal-api-app` | Docker-only timing demo for parallel embedded resources |
 
-`fake-` and `test-` are the canonical prefixes; do not invent variants.
+`fake-`, `test-`, and `async-` are canonical prefixes. `async-` is only a
+context-composition change; do not change Resource code to make it async.
+`AsyncModule` strips the leading `async-` prefix for worker threads to avoid
+recursive parallel runtime creation.
 
 ## 3. Naming
 

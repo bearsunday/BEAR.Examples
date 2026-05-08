@@ -222,9 +222,13 @@ The HAL JSON API is served by `composer serve:api` on
 | `fake-hal-api-app`         | Dev runtime against FakeSqlQuery      | no          |
 | `test-hal-api-app`         | PHPUnit App resource tests            | no          |
 | `html-test-hal-api-app`    | PHPUnit Page/Qiq tests                | no          |
+| `async-hal-api-app`        | BEAR.Async parallel `#[Embed]` context | yes        |
+| `async-test-hal-api-app`   | Async PHPUnit App resource tests      | no          |
 
 `fake-` prepends [src/Module/FakeModule.php](src/Module/FakeModule.php);
 `test-` prepends [src/Module/TestModule.php](src/Module/TestModule.php).
+`async-` prepends [src/Module/AsyncModule.php](src/Module/AsyncModule.php) and
+uses the same context without the `async-` prefix inside worker threads.
 
 ## Development
 
@@ -240,6 +244,7 @@ composer doc        # regenerate docs/index.html, docs/openapi.json, docs/llms.t
 composer cli        # regenerate bin/cli/* from #[Cli] attributes
 composer serve      # Qiq/Page HTML server on :8081
 composer serve:api  # HAL JSON API server on :8080
+composer demo:async # async demo; use docker:async-demo when ext-parallel is absent
 ```
 
 CLI commands generated from `#[Cli]` attributes:
@@ -253,6 +258,8 @@ bin/cli/article-list -s published -n 5
 Tests run Resource, Entity, Hypermedia, Smoke, and Integration suites. The
 Integration suite (`tests/Integration/`) skips automatically unless MySQL is
 reachable; bring it up with `docker compose up -d` or Malt to include it.
+The async demo and async contract test require PHP ZTS + `ext-parallel`; run
+them with `composer docker:async-demo` and `composer docker:async-test`.
 
 ## Project Journal
 

@@ -19,13 +19,24 @@ currently unauthenticated — the typed `UserInterface` /
 - `test-hal-api-app` — loaded by PHPUnit via `AbstractAppTestCase`.
 - `html-hal-app` / `cli-html-hal-app` — Qiq/Page HTML over the real DB.
 - `html-test-hal-api-app` — Page tests rendered with HtmlModule + FakeSqlQuery.
+- `async-hal-api-app` — installs BEAR.Async `AsyncParallelModule`; worker
+  threads use `hal-api-app`.
+- `async-test-hal-api-app` — async Resource test context; worker threads use
+  `test-hal-api-app`.
+- `async-slow-fake-hal-api-app` — Docker timing demo context; worker threads
+  use `slow-fake-hal-api-app`.
 
 Switching contexts loads/removes modules by keyword prefix; see
-`src/Module/{App,Fake,Test}Module.php`.
+`src/Module/{App,Fake,Test,Async,Slow}Module.php`.
 
 ## Running things quickly
 
 - Tests (no DB): `vendor/bin/phpunit`
+- Async demo/test (PHP ZTS + ext-parallel via Docker):
+  ```bash
+  composer docker:async-demo
+  composer docker:async-test
+  ```
 - Fake CLI demo:
   ```php
   $r = MyVendor\Cms\Injector::getInstance('fake-hal-api-app')

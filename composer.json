@@ -5,6 +5,7 @@
     "description": "Reference CMS for BEAR.Sunday: ALPS-driven, BDR pattern, App-resource only.",
     "require": {
         "php": "^8.5.0",
+        "bear/async": "^0.1",
         "bear/package": "^1.14",
         "bear/qiq-module": "^2.0",
         "bear/query-repository": "^1.15",
@@ -78,12 +79,16 @@
             "DB_DSN='mysql:host=127.0.0.1;port=3306;dbname=bear_cms;charset=utf8mb4' DB_USER=root DB_PASSWORD=root ./vendor/bin/doctrine-migrations migrate --no-interaction",
             "DB_DSN='mysql:host=127.0.0.1;port=3306;dbname=bear_cms;charset=utf8mb4' DB_USER=root DB_PASSWORD=root php bin/seed.php"
         ],
+        "docker:async-build": "docker compose build php-async",
+        "docker:async-demo": "docker compose run --rm php-async composer demo:async",
+        "docker:async-test": "docker compose run --rm php-async composer test:async",
         "sqlite:up": [
             "rm -f /tmp/bear_cms.db",
             "DB_DSN='sqlite:/tmp/bear_cms.db' ./vendor/bin/doctrine-migrations migrate --no-interaction",
             "DB_DSN='sqlite:/tmp/bear_cms.db' php bin/seed.php"
         ],
         "test": "./vendor/bin/phpunit",
+        "test:async": "./vendor/bin/phpunit tests/Resource/App/ArticleAsyncTest.php",
         "coverage": "php -dzend_extension=xdebug.so -dxdebug.mode=coverage ./vendor/bin/phpunit --coverage-text --coverage-html=build/coverage",
         "pcov": "php -dextension=pcov.so -d pcov.enabled=1 ./vendor/bin/phpunit --coverage-text --coverage-html=build/coverage  --coverage-clover=coverage.xml",
         "cs": "./vendor/bin/phpcs",
@@ -120,6 +125,7 @@
         "page": "php bin/page.php",
         "profile": "php -dzend_extension=xdebug.so -dxdebug.mode=profile -dxdebug.output_dir=./var/log -dxdebug.profiler_output_name=cachegrind.out.%t bin/page.php get /",
         "demo": "php bin/demo.php",
+        "demo:async": "php bin/demo-async.php",
         "demo:variations": "php bin/demo-variations.php"
     },
     "scripts-descriptions": {
@@ -137,11 +143,15 @@
         "security": "Run security scan",
         "metrics": "Build metrics report",
         "clean": "Clear cache files",
+        "docker:async-build": "Build the PHP ZTS + ext-parallel Docker runtime",
+        "docker:async-demo": "Run the BEAR.Async timing demo in Docker",
+        "docker:async-test": "Run the BEAR.Async contract test in Docker",
         "serve": "Start built-in server for Qiq/Page HTML at http://127.0.0.1:8081",
         "serve:api": "Start built-in server for HAL JSON API at http://127.0.0.1:8080",
         "app": "Request app resource",
         "page": "Request page resource",
         "profile": "Profile page request (customize endpoint as needed)",
+        "demo:async": "Run the BEAR.Async Article embed timing demo",
         "demo:variations": "Run the Article GET variations demo"
     },
     "config": {

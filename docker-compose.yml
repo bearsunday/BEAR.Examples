@@ -1,4 +1,15 @@
 services:
+  php-async:
+    build:
+      context: .
+      dockerfile: Dockerfile.async
+    volumes:
+      - .:/app
+      - composer_cache:/tmp/composer-cache
+    working_dir: /app
+    environment:
+      COMPOSER_CACHE_DIR: /tmp/composer-cache
+
   mysql:
     image: mysql:8.0
     container_name: bear_cms_mysql
@@ -17,3 +28,4 @@ services:
 
 volumes:
   bear_cms_mysql_data:
+  composer_cache:

@@ -73,6 +73,13 @@ as-is. The additions:
 - `html-hal-app` / `cli-html-hal-app` — real-DB Qiq/Page HTML contexts.
 - `html-test-hal-api-app` — PHPUnit Page context; composes TestModule and
   HtmlModule so HTML tests render against FakeSqlQuery.
+- `async-hal-api-app` — installs BEAR.Async over the normal HAL context.
+  `Article::onGet` stays unchanged; its `author`, `category`, and `tagList`
+  embeds are parallelised by the context module. Use Docker because
+  `AsyncParallelModule` needs PHP ZTS + `ext-parallel`.
+- `async-test-hal-api-app` and `async-slow-fake-hal-api-app` — test and demo
+  variants of the same async prefix. Worker threads use the matching context
+  with `async-` removed to avoid recursive thread pools.
 
 ## What was intentionally *not* built
 

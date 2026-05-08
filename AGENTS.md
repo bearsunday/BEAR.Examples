@@ -23,6 +23,8 @@
   - `hal-api-app` and `cli-hal-api-app` use the real database.
   - `fake-hal-api-app` uses `tests/Fake/FakeSqlQuery.php` and requires no DB.
   - `test-hal-api-app` is used by PHPUnit and composes the fake module.
+  - `async-hal-api-app` installs `src/Module/AsyncModule.php` and uses `hal-api-app` inside BEAR.Async worker threads.
+  - `async-test-hal-api-app` composes the async module over `test-hal-api-app`; use Docker because it needs PHP ZTS + `ext-parallel`.
 - HTML (Page/Qiq) contexts:
   - `html-hal-app` and `cli-html-hal-app` install `HtmlModule` over the real database.
   - `html-test-hal-api-app` composes `TestModule` and `HtmlModule` so Page tests render against `FakeSqlQuery`.
