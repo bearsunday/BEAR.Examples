@@ -201,6 +201,63 @@ priority". When the entity's own fields can never collide with embed
 rels (which is enforced by §3 — embeds use taxonomy nouns, body fields
 are scalar), `+=` is the most semantically precise operator.
 
+### Cache dependency showcase
+
+Use `src/Resource/App/Cache/*` for narrow QueryRepository cache examples. Keep
+the first cache lesson independent from the main Article resource so the
+dependency graph is easy to read and test.
+
+Canonical cache demos should make the dependency URI visible at the attribute
+or header site when possible. For HAL+JSON response caching, prefer explicit
+URI tags over donut interpolation of `#[Embed]` requests:
+
+```php
+#[CacheableResponse]
+class AuthorProfile extends ResourceObject
+{
+    public function onGet(int $authorId): static
+    {
+        $dependencyUri = 'app://self/cache/author?id=' . $authorId;
+        $author = $this->resource->get($dependencyUri);
+        $authorBody = $this->authorBody($author);
+
+        $this->headers[Header::SURROGATE_KEY] = $this->uriTag->fromAssoc(
+            'app://self/cache/author{?id}',
+            [['id' => $authorId]],
+        );
+        $this->body = [
+            'authorId' => $authorId,
+            'dependencyUri' => $dependencyUri,
+            '_embedded' => ['author' => $authorBody],
+        ];
+
+        return $this;
+    }
+}
+```
+
+That shape differs from `Article::onGet()`, where `authorId`, `categoryId`, and
+`tagList` are known only after the article row is loaded. The Article pattern is
+a valid dynamic embed dependency, but it is an advanced case. For teaching and
+AI retrieval, start with the explicit URI-tag case and assert the runtime
+contract:
+
+- `ETag` exists on the cacheable response.
+- `Surrogate-Key` includes the parent URI tag and every embedded dependency URI
+  tag.
+- A write to the embedded resource invalidates the parent ETag.
+- Embedded child bodies are normalized from the rendered child representation
+  so cache-miss and cache-hit paths produce the same parent view and ETag.
+- Tests compare rendered representations / headers, not `$ro->body` on a cache
+  hit, because QueryRepository's response cache restores view + headers for
+  transfer.
+
+Do not put `#[CacheableResponse]` directly on a HAL resource whose body still
+contains unevaluated `#[Embed]` requests unless the rendered representation has
+been tested. QueryRepository's donut response cache stores string templates;
+HAL embeds are better demonstrated either as normal uncached hypermedia
+(`Article::onGet`) or as explicit URI-tag dependencies in the cache showcase.
+
 ### Page template not-found pattern
 
 Page resources that load a single primary entity by id return 404 with

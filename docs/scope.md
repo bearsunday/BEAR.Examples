@@ -28,6 +28,8 @@ in the current `1.x` HEAD — if you find a discrepancy, that's a doc bug.
 | `app://self/tag` / `tags` | GET / POST / DELETE | |
 | `app://self/media` | GET / POST / DELETE | No `media` collection (asymmetric — see "By design") |
 | `app://self/auth` | GET / POST | OAuth flow: GET returns authorization URL, POST exchanges `{code, state}` |
+| `app://self/cache/authorprofile` | GET | QueryRepository cache showcase: `#[CacheableResponse]`, included author dependency, ETag, `Surrogate-Key`, and invalidation |
+| `app://self/cache/author` | GET / PUT | Embedded resource for the cache showcase; intentionally separate from the main `Author` API |
 
 There is no `app://self/` entry point at the App layer; `Page/Index`
 serves as the public HTML entry. (Discoverability via HAL `_links` is
@@ -115,6 +117,7 @@ Note: Auth applies only to the OAuth flow itself. `Page/Admin/*` is **not** behi
 | `composer cli` | `bear-cli-gen` — generates `bin/cli/*` from `#[Cli]`-annotated resources |
 | `composer serve` / `serve:api` | HTML / API HTTP servers |
 | `composer demo` | End-to-end walkthrough |
+| `composer demo:cache` | QueryRepository ETag + dependency invalidation demo |
 | `composer doc` | apidoc + ALPS HTML |
 | `composer compile` | bear.compile production graph |
 
@@ -130,6 +133,7 @@ Patterns the codebase deliberately demonstrates (each appears in at least one pl
 | Input DTO via `#[Input]` + `Ray\InputQuery` | `Article` (POST/PUT), `Auth` (POST) — contrasted against scalar `onPost` on Author/Category/Tag/Media |
 | Tri-state optional collection input | `tagIds` on `ArticleCreateInput` / `ArticleUpdateInput` |
 | Ray.MediaQuery pager | `ArticleQueryInterface::list()` / `PagesInterface` |
+| QueryRepository response cache | `Cache\AuthorProfile` + `Cache\Author` show `#[CacheableResponse]`, `ETag`, `Surrogate-Key`, 304 eligibility, and URI-tag dependency invalidation |
 | Ray.MediaQuery SELECT result class | `ArticleSelectionQueryInterface::list()` / `ArticleSelection` |
 | Ray.MediaQuery DML metadata result | `Samples\ArticleAffectedRowsCommandInterface` / `AffectedRows` |
 | Natural-key `by<Key>` post-INSERT lookup | `Article::onPost` → `bySlug`; same idea for `byEmail` / `byFilename` |
@@ -152,7 +156,7 @@ These were once blockers that prevented the canonical pattern from being shown; 
 |---|------|-----------|
 | R1 | DTO recognition by `JsonSchemaInterceptor` ([BEAR.Resource#356](https://github.com/bearsunday/BEAR.Resource/issues/356)) | BEAR.Resource 1.31.1 — `Article` / `Auth` re-attached `#[JsonSchema]` |
 | R2 | OpenAPI generator skipped DTO methods ([BEAR.ApiDoc#81](https://github.com/bearsunday/BEAR.ApiDoc/issues/81)) | BEAR.ApiDoc 1.9.1 |
-| R3 | `JsonSchema` body validation on cache hit ([BEAR.Resource#355](https://github.com/bearsunday/BEAR.Resource/issues/355)) | BEAR.Resource 1.31.1 — this is the **upstream prerequisite for D1** (`#[CacheableResponse]` rollout); the rollout itself is still pending |
+| R3 | `JsonSchema` body validation on cache hit ([BEAR.Resource#355](https://github.com/bearsunday/BEAR.Resource/issues/355)) | BEAR.Resource 1.31.1 — this unblocked the standalone `app://self/cache/*` showcase; main-resource rollout remains D1 |
 | R4 | Typed-array DTO field × validation order pitfall ([decisions P8 #46](journal/decisions-to-consult.md)) | Defensive `mixed` + `is_array` guard documented in `conventions.md` §4 |
 | R7 | Admin write/delete failure propagation (CodeRabbit feedback on PR #18) | Commit `0d7f98d` — `Page/Admin/Article` and `Page/Admin/ArticleDelete` propagate 4xx codes back instead of redirecting |
 
@@ -168,7 +172,7 @@ These aren't bugs or backlog — they're deliberate choices that keep the refere
 | No `authors` or `media` list resource | The two collections that exist (`articles`, `categories`, `tags`) are enough to demonstrate the list pattern, filtering, and pagination. Adding more would be repetition |
 | No `app://self/` entry point | `Page/Index` is the public HTML entry; HAL discoverability is shown via per-resource `_links` |
 | JS-enhanced admin (HTMX or similar) | Out of demonstration scope; the patterns to demonstrate are server-side. An optional add-on would not change App-layer code |
-| `#[Cacheable]` / cache invalidation hooks beyond what D1 covers | The `#[CacheableResponse]` + `#[RefreshCache]` rollout (D1) is the only canonical caching demo planned |
+| Main `Article` cache rollout | The canonical cache demo lives under `app://self/cache/*`. Applying the same strategy to Article is deferred because its embed dependency IDs are known only after the article row is fetched |
 
 ## Deferred / not built
 
@@ -176,7 +180,7 @@ Drawn from `architecture.md` "What was intentionally not built", `journal/handof
 
 | # | Item | Why deferred | Recovery / next step |
 |---|------|--------------|----------------------|
-| D1 | `#[CacheableResponse]` across reads + `#[RefreshCache]` on writes | Was blocked on Resource #355 — **now unblocked** (BEAR.Resource 1.31.1) | Add class-level `#[CacheableResponse]` on read resources; `#[RefreshCache]` on writes. Verify cache log (`RepositoryLogger`) shows `try-donut-view` / `put-donut` / `invalidate-etag` |
+| D1 | Main-resource cache rollout beyond the standalone showcase | The canonical cache demo is implemented under `app://self/cache/*`; Article remains the advanced dynamic-dependency case | First keep `Cache\AuthorProfile` as the simple reference. Then decide whether Article should add explicit dependency tests before applying `#[CacheableResponse]` directly |
 | D2 | Auth boundary for `Page/Admin/*` | Designed in [auth-boundary-plan.md](journal/auth-boundary-plan.md); not yet implemented | Implement typed `UserInterface` / `AdminUserInterface` providers; fold in CSRF + exception-mapping notes from the Codex adversarial review |
 | D3 | Async `#[Embed]` parallelization | `bear/async ^0.1` requires `bear/resource ^1.31` — **now compatible** | `composer require bear/async -W`, fix any API drift, attach `#[Async]` to read embeds |
 | D4 | Write-side CLI + read CLI for the other entities | `bear-cli-gen` so far only generated `article-show` / `article-list`; no write commands yet | Add `#[Cli]` to onPost/onPut/onDelete and to the missing read methods; `composer cli` regenerates |

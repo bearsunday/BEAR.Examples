@@ -43,6 +43,9 @@ pipeline:
    response bodies.
 8. **Qiq HTML** — Page resources render public pages and the Article admin
    without JavaScript.
+9. **QueryRepository cache** — a standalone cache showcase demonstrates
+   `#[CacheableResponse]`, `ETag`, `Surrogate-Key`, 304 eligibility, and
+   embedded dependency invalidation.
 
 See [docs/architecture.md](docs/architecture.md) for the BDR layout and
 design rationale.
@@ -95,6 +98,12 @@ Run the main test suite:
 
 ```bash
 composer test
+```
+
+Run the cache showcase:
+
+```bash
+composer demo:cache
 ```
 
 ## Setup

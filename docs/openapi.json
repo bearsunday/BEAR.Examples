@@ -772,6 +772,86 @@
                 }
             }
         },
+        "/cache/author": {
+            "get": {
+                "summary": "Cache showcase author resource.",
+                "description": "This intentionally mirrors the normal Author read shape, but stays under\napp://self/cache/* so the reference cache demo does not change the main API\nresource contract.",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                }
+            },
+            "put": {
+                "summary": "Cache showcase author resource.",
+                "description": "This intentionally mirrors the normal Author read shape, but stays under\napp://self/cache/* so the reference cache demo does not change the main API\nresource contract.",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "id": {
+                                        "type": "integer"
+                                    },
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "email": {
+                                        "type": "string"
+                                    },
+                                    "bio": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "id",
+                                    "name",
+                                    "email"
+                                ]
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                }
+            }
+        },
+        "/cache/author-profile": {
+            "get": {
+                "summary": "Canonical cache dependency showcase.",
+                "description": "The dependency URI is fully determined by onGet() input, so the source code\nand the runtime Surrogate-Key dependency describe the same relationship.",
+                "parameters": [
+                    {
+                        "name": "authorId",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                }
+            }
+        },
         "/variations/article-as-array": {
             "get": {
                 "summary": "Comparison-only Article GET. Canonical equivalent: App\\Article::onGet().",
@@ -858,6 +938,8 @@
         },
         "/variations/media-stream": {
             "get": {
+                "summary": "Comparison-only stream transfer.",
+                "description": "Canonical equivalent: App\\Media::onGet(), which keeps the response JSON-shaped.",
                 "parameters": [
                     {
                         "name": "id",

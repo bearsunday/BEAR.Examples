@@ -97,6 +97,28 @@ GET. Query params: `page`, `perPage` (clamped 1..100, default 20),
 - POST — `filename`, `mimeType`, `url`, optional `alt`, `width`, `height`.
 - DELETE `{id}`.
 
+## `app://self/cache/authorprofile`
+
+Cache showcase endpoint. GET `{authorId}` returns a small profile wrapper and
+manually includes `app://self/cache/author?id={authorId}` under `_embedded`.
+
+This resource is intentionally separate from the main `Article` resource. Its
+purpose is to make the cache dependency visible in the source code: the
+dependent URI is fully determined by the `onGet()` input and is registered with
+`UriTagInterface`, so the rendered response receives an `ETag` and a
+`Surrogate-Key` that includes both the parent profile URI and the embedded
+author URI.
+
+`PUT app://self/cache/author?id={id}` updates the fake/real author row through
+the same command interface as the normal Author resource. In the cache demo
+context, updating that embedded author invalidates the parent profile ETag.
+
+Run:
+
+```bash
+composer demo:cache
+```
+
 ## HAL links
 
 Each Resource declares `#[Link]` attributes with URI templates (RFC 6570).
