@@ -17,6 +17,11 @@ This repository is a working teaching artefact: BEAR.Sunday's canonical
 naming, structure, and flow rendered as a small CMS that humans and AI
 assistants can read as a template.
 
+Framework conventions are easiest to learn from a complete executable
+example. The code is intentionally small, but each naming, module,
+Resource, Query, SQL, validation, fake, and test choice is meant to be
+copied deliberately.
+
 The implementation was built as a semantic-driven, resolution-increasing
 pipeline:
 
@@ -68,6 +73,13 @@ Intentionally not the focus:
 
 For the detailed in/out list and deferred items, read
 [docs/scope.md](docs/scope.md).
+
+## Requirements
+
+- PHP 8.5
+- Composer
+- Optional: MySQL via Malt or docker-compose
+- Optional: SQLite for quick real-DB trials
 
 ## Quick Start
 
