@@ -18,6 +18,17 @@ uses the returned Page object's `data`, `total`, `hasNext`, and `maxPerPage`
 fields. The fake implementation uses Pagerfanta's `ArrayAdapter`, so DB-free
 tests exercise the same shape.
 
+`#[DbQuery(factory: ...)]` can also be combined with `#[Pager]` so Page data is
+already hydrated. This sample intentionally leaves `ArticleQueryInterface::list()`
+as raw rows and hydrates in the Resource with `ArticleFactory::fromRows()`, making
+the Pager `data` contract visible alongside the Resource boundary.
+
+The out-of-range page clamp computes `count($pages)` before reading
+`$pages[$page]`. In production that may issue one COUNT query for the clamp and
+another through Pagerfanta when the Page is read. The reference keeps this
+straight-line form because it is easier to read than catching
+`OutOfRangeCurrentPageException`; revisit it only if COUNT cost becomes visible.
+
 ## SELECT Result Class
 
 `ArticleSelectionQueryInterface::list()` demonstrates the MediaQuery 1.1 SELECT

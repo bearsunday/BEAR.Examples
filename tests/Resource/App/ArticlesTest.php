@@ -6,6 +6,8 @@ namespace MyVendor\Cms\Resource\App;
 
 use MyVendor\Cms\AbstractAppTestCase;
 
+use function ceil;
+
 final class ArticlesTest extends AbstractAppTestCase
 {
     public function testOnGetPaginatedWithDefaults(): void
@@ -55,8 +57,11 @@ final class ArticlesTest extends AbstractAppTestCase
         $ro = $this->resource->get('app://self/articles', ['page' => 99999, 'perPage' => 5]);
 
         $this->assertSame(200, $ro->code);
-        $this->assertGreaterThanOrEqual(1, $ro->body['page']);
-        $this->assertLessThan($ro->body['totalCount'], ($ro->body['page'] - 1) * $ro->body['perPage']);
+        $this->assertGreaterThan(0, $ro->body['totalCount']);
+        $this->assertSame(
+            (int) ceil($ro->body['totalCount'] / $ro->body['perPage']),
+            $ro->body['page'],
+        );
         $this->assertGreaterThan(0, $ro->body['count']);
     }
 
