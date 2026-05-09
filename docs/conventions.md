@@ -34,6 +34,7 @@ then the code/docs follow.
 | Module composition | `FakeModule` provides the binding; `TestModule` *installs* `FakeModule`. Two-stage so prod/cli/fake/test contexts can compose differently |
 | Resource placement | `src/Resource/App/<Class>.php` — every URI is a class. No `App/Index.php` unless a "/" entry-point is meaningful |
 | Read/Write split | Always two interfaces per entity: `<Entity>QueryInterface` (Read) and `<Entity>CommandInterface` (Write). Both live in `src/Query/` — the interface name suffix carries the Read/Write distinction so `MediaQuerySqlModule` can scan a single directory. Never mix Read and Write methods on the same interface |
+| MediaQuery result placement | `src/Result/*` contains typed Ray.MediaQuery result objects returned from `src/Query/*Interface` methods. These are not domain entities; they wrap query execution context or DML metadata. Keep the directory dedicated to query results so `src/Query` and `src/Result` stay a readable pair |
 
 ### Variation resources
 

@@ -38,6 +38,11 @@ straight-line form because it is easier to read than catching
 - [src/Result/ArticleSelection.php](../src/Result/ArticleSelection.php)
 - [var/db/sql/article_selection_list.sql](../var/db/sql/article_selection_list.sql)
 
+`src/Result/*` is reserved for typed Ray.MediaQuery results returned by
+`src/Query/*Interface` methods. These classes are not domain entities; they
+wrap query execution context or DML metadata while keeping `src/Query` and
+`src/Result` as an explicit pair.
+
 The `#[DbQuery]` method returns `ArticleSelection`, not an array. MediaQuery
 hydrates rows through `ArticleFactory`, puts the hydrated `Article` rows in
 `PostQueryContext::$rows`, and calls `ArticleSelection::fromContext()`.

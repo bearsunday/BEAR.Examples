@@ -39,6 +39,12 @@ production では clamp 用の COUNT と Pagerfanta が Page を読むときの 
 - [src/Result/ArticleSelection.php](../../src/Result/ArticleSelection.php)
 - [var/db/sql/article_selection_list.sql](../../var/db/sql/article_selection_list.sql)
 
+`src/Result/*` は `src/Query/*Interface` method から返される型付き
+Ray.MediaQuery result の置き場です。これらは domain entity ではなく、query
+execution context や DML metadata を包む object です。`src/Query` と
+`src/Result` が明示的な対として読めるよう、このディレクトリは query result
+専用に保ちます。
+
 `#[DbQuery]` method は array ではなく `ArticleSelection` を返します。MediaQuery は
 `ArticleFactory` で row を hydrate し、`PostQueryContext::$rows` に hydrated
 `Article` rows を入れ、`ArticleSelection::fromContext()` を呼びます。
