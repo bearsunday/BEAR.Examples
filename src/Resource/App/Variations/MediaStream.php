@@ -70,6 +70,7 @@ class MediaStream extends ResourceObject
     /** @return resource|null */
     private function openReadStream(string $path)
     {
+        // Map fopen warnings such as missing or unreadable fixtures to the 404 branch.
         set_error_handler(static function (): bool {
             return true;
         });

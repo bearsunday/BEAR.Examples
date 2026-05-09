@@ -54,6 +54,8 @@ final class MediaStreamTest extends AbstractAppTestCase
 
         $this->assertSame(404, $ro->code);
         $this->assertSame('application/json', $ro->headers['Content-Type']);
+        $this->assertArrayNotHasKey('Content-Length', $ro->headers);
+        $this->assertArrayNotHasKey('Content-Disposition', $ro->headers);
         $this->assertSame('Media not found', $ro->body['message']);
         $this->assertSame(9999, $ro->body['id']);
     }
@@ -64,6 +66,8 @@ final class MediaStreamTest extends AbstractAppTestCase
 
         $this->assertSame(404, $ro->code);
         $this->assertSame('application/json', $ro->headers['Content-Type']);
+        $this->assertArrayNotHasKey('Content-Length', $ro->headers);
+        $this->assertArrayNotHasKey('Content-Disposition', $ro->headers);
         $this->assertSame('Media file not found', $ro->body['message']);
         $this->assertSame(1, $ro->body['id']);
         $this->assertSame('media-001.jpg', $ro->body['filename']);
