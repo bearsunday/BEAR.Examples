@@ -45,6 +45,10 @@ execution context や DML metadata を包む object です。`src/Query` と
 `src/Result` が明示的な対として読めるよう、このディレクトリは query result
 専用に保ちます。
 
+read query では、これらの result object は query-local projection として読みます。
+つまり、特定の `#[DbQuery]` 結果から組み立てる型付き read-side view であり、
+domain entity method や controller / service helper ではありません。
+
 `#[DbQuery]` method は array ではなく `ArticleSelection` を返します。MediaQuery は
 `ArticleFactory` で row を hydrate し、`PostQueryContext::$rows` に hydrated
 `Article` rows を入れ、`ArticleSelection::fromContext()` を呼びます。

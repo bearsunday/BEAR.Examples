@@ -43,6 +43,10 @@ straight-line form because it is easier to read than catching
 wrap query execution context or DML metadata while keeping `src/Query` and
 `src/Result` as an explicit pair.
 
+For read queries, read these result objects as query-local projections: typed
+read-side views assembled from a specific `#[DbQuery]` result, without turning
+the behavior into domain entity methods or controller/service helpers.
+
 The `#[DbQuery]` method returns `ArticleSelection`, not an array. MediaQuery
 hydrates rows through `ArticleFactory`, puts the hydrated `Article` rows in
 `PostQueryContext::$rows`, and calls `ArticleSelection::fromContext()`.
