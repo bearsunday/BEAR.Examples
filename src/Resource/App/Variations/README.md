@@ -15,6 +15,10 @@ Article implementation; it keeps canonical `src/Resource/App/Media.php` as the
 JSON representation and shows how `BEAR.Streamer` transfers the same media
 metadata as a streamed body.
 
+The stream demo uses the deterministic fixture for media id `5`. Other fake
+media rows have metadata only, so they are useful for reading the file-missing
+branch.
+
 Run the demo with:
 
 ```bash

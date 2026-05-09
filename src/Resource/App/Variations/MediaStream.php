@@ -10,14 +10,21 @@ use BEAR\Resource\ResourceObject;
 use BEAR\Streamer\StreamTransferInject;
 use MyVendor\Cms\Query\MediaQueryInterface;
 
-use function assert;
 use function basename;
-use function filesize;
+use function fclose;
 use function fopen;
-use function is_file;
+use function fstat;
+use function is_int;
+use function restore_error_handler;
+use function set_error_handler;
 use function sprintf;
 use function strtr;
 
+/**
+ * Comparison-only stream transfer.
+ *
+ * Canonical equivalent: App\Media::onGet(), which keeps the response JSON-shaped.
+ */
 class MediaStream extends ResourceObject
 {
     use StreamTransferInject;
@@ -32,27 +39,22 @@ class MediaStream extends ResourceObject
     {
         $media = $this->media->item($id);
         if ($media === null) {
-            $this->code = Code::NOT_FOUND;
-            $this->headers['Content-Type'] = 'application/json';
-            $this->body = ['message' => 'Media not found', 'id' => $id];
-
-            return $this;
+            return $this->notFound($id, 'Media not found');
         }
 
         $filename = basename($media->filename);
         $path = $this->appMeta->appDir . '/var/media/' . $filename;
-        if (! is_file($path)) {
-            $this->code = Code::NOT_FOUND;
-            $this->headers['Content-Type'] = 'application/json';
-            $this->body = ['message' => 'Media file not found', 'filename' => $filename];
-
-            return $this;
+        $stream = $this->openReadStream($path);
+        if ($stream === null) {
+            return $this->notFound($id, 'Media file not found', $filename);
         }
 
-        $size = filesize($path);
-        assert($size !== false);
-        $stream = fopen($path, 'rb');
-        assert($stream !== false);
+        $size = $this->streamSize($stream);
+        if ($size === null) {
+            fclose($stream);
+
+            return $this->notFound($id, 'Media file not found', $filename);
+        }
 
         $this->headers['Content-Type'] = $media->mimeType;
         $this->headers['Content-Length'] = (string) $size;
@@ -61,6 +63,42 @@ class MediaStream extends ResourceObject
             strtr($filename, ['\\' => '\\\\', '"' => '\\"']),
         );
         $this->body = $stream;
+
+        return $this;
+    }
+
+    /** @return resource|null */
+    private function openReadStream(string $path)
+    {
+        set_error_handler(static function (): bool {
+            return true;
+        });
+
+        try {
+            $stream = fopen($path, 'rb');
+        } finally {
+            restore_error_handler();
+        }
+
+        return $stream === false ? null : $stream;
+    }
+
+    /** @param resource $stream */
+    private function streamSize($stream): int|null
+    {
+        $stat = fstat($stream);
+
+        return is_int($stat['size'] ?? null) ? $stat['size'] : null;
+    }
+
+    private function notFound(int $id, string $message, string|null $filename = null): static
+    {
+        $this->code = Code::NOT_FOUND;
+        $this->headers['Content-Type'] = 'application/json';
+        $this->body = ['message' => $message, 'id' => $id];
+        if ($filename !== null) {
+            $this->body['filename'] = $filename;
+        }
 
         return $this;
     }

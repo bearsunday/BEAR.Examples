@@ -15,6 +15,9 @@
 representation のままにして、`BEAR.Streamer` で同じ Media metadata を
 streamed body として転送する方法を見せます。
 
+stream demo は media id `5` の deterministic fixture を使います。他の fake
+media 行は metadata だけなので、file-missing branch を読むために使えます。
+
 デモは次のコマンドで実行できます。
 
 ```bash
