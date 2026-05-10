@@ -10,14 +10,13 @@
 保ったまま、1つずつ軸を変えた読み物です。どの責務がどこへ移動するかを見る
 ためにあります。
 
-`MediaStream` は、Article の比較実装とは別枠のストリーム転送例です。
-Article の別実装ではなく、Media リソースの転送方式に焦点を当てています。
-通常の `src/Resource/App/Media.php` は JSON を返すままにして、同じ Media の
-情報を `BEAR.Streamer` でストリームとして転送する方法を示します。
+`MediaStream` は別系統です。同じ media の **別 representation** を見せる例で、
+正規 `Media` が metadata を JSON で返すのに対し、本体バイナリを
+`BEAR.Streamer` で stream として返します。
 
-ストリームのデモでは、media id `5` に対応する固定フィクスチャを使います。
-それ以外の fake media はメタデータだけを持つため、ファイルが見つからない
-場合の分岐を確認するのに使えます。
+テストとデモでは media id `5` を success path の fixture として使います
+（実ファイル: `var/media/media-005.svg`）。他の fake 行は実ファイルを置いて
+いないので、file-missing 分岐の fixture になります。
 
 デモは次のコマンドで実行できます。
 

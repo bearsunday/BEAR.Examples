@@ -10,14 +10,14 @@ These classes are not competing API designs. They are a controlled reading
 guide: the response shape is intentionally similar, so the differences show
 where responsibility moves when you change one axis at a time.
 
-`MediaStream` is a separate transfer-mode variation. It does not add a fourth
-Article implementation; it keeps canonical `src/Resource/App/Media.php` as the
-JSON representation and shows how `BEAR.Streamer` transfers the same media
-metadata as a streamed body.
+`MediaStream` is the other kind: it shows a different representation of the
+same resource. Where canonical `Media` returns the metadata as JSON,
+`MediaStream` returns the binary file body of the same media item as a stream
+via `BEAR.Streamer`.
 
-The stream demo uses the deterministic fixture for media id `5`. Other fake
-media rows have metadata only, so they are useful for reading the file-missing
-branch.
+Tests and the demo use media id `5` as the success-path fixture (the real
+file lives at `var/media/media-005.svg`). The other fake rows have no backing
+file, so they serve as file-missing fixtures.
 
 Run the demo with:
 
