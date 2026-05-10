@@ -11,9 +11,9 @@
 ためにあります。
 
 `MediaStream` は、Article の比較実装とは別枠のストリーム転送例です。
-4つ目の Article 実装を増やすものではありません。通常の
-`src/Resource/App/Media.php` は JSON を返すままにして、同じ Media の情報を
-`BEAR.Streamer` でストリームとして転送する方法を示します。
+Article の別実装ではなく、Media リソースの転送方式に焦点を当てています。
+通常の `src/Resource/App/Media.php` は JSON を返すままにして、同じ Media の
+情報を `BEAR.Streamer` でストリームとして転送する方法を示します。
 
 ストリームのデモでは、media id `5` に対応する固定フィクスチャを使います。
 それ以外の fake media はメタデータだけを持つため、ファイルが見つからない
