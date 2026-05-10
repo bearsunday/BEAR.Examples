@@ -38,9 +38,10 @@ then the code/docs follow.
 
 ### Variation resources
 
-`src/Resource/App/Variations/` contains exactly three comparison-only
-Article GET implementations. They are not registered in the ALPS profile
-and must not change the canonical `src/Resource/App/Article.php` path.
+`src/Resource/App/Variations/` contains comparison-only resources. The Article
+set is fixed at exactly three GET implementations. They are not registered in
+the ALPS profile and must not change the canonical
+`src/Resource/App/Article.php` path.
 
 | Variation | Axis | Question it answers |
 |---|---|---|
@@ -48,9 +49,18 @@ and must not change the canonical `src/Resource/App/Article.php` path.
 | [`Variations\ArticleSqlQuery`](../src/Resource/App/Variations/ArticleSqlQuery.php) | abstraction level (declarative `#[DbQuery]` vs programmatic `SqlQuery` class) | "What if `#[DbQuery]` isn't enough?" |
 | [`Variations\ArticleRawPdo`](../src/Resource/App/Variations/ArticleRawPdo.php) | framework presence (MediaQuery vs raw `ExtendedPdoInterface`) | "What is MediaQuery actually doing for me?" |
 
-Do not add a fourth variation. Use `composer demo:variations` when the
-goal is to compare these alternatives; keep `composer demo` as the main
-golden path. See
+Do not add a fourth Article variation. A non-Article variation is allowed only
+when it demonstrates a different framework axis that cannot be shown by the
+three Article reads. The current example is
+[`Variations\MediaStream`](../src/Resource/App/Variations/MediaStream.php),
+which keeps canonical `Media::onGet()` JSON-shaped and demonstrates
+`BEAR.Streamer` by assigning an open file handle to `$this->body` with explicit
+`Content-Type`, `Content-Length`, and `Content-Disposition` headers. It has no
+`#[JsonSchema]` on the success path because the response body is a stream, not a
+JSON document.
+
+Use `composer demo:variations` when the goal is to compare these alternatives;
+keep `composer demo` as the main golden path. See
 [`src/Resource/App/Variations/README.md`](../src/Resource/App/Variations/README.md)
 or
 [`README.ja.md`](../src/Resource/App/Variations/README.ja.md)

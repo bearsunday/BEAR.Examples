@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 80" role="img" aria-labelledby="title desc">
+  <title id="title">BEAR.Sunday media fixture</title>
+  <desc id="desc">A small deterministic SVG fixture for streaming tests.</desc>
+  <rect width="120" height="80" fill="#f7f7f2"/>
+  <path d="M14 56h92v8H14z" fill="#222"/>
+  <circle cx="34" cy="34" r="15" fill="#78a6c8"/>
+  <rect x="58" y="19" width="34" height="30" rx="3" fill="#e0a458"/>
+  <path d="M22 59 44 40l15 14 13-12 26 17z" fill="#476f62"/>
+</svg>

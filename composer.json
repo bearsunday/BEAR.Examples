@@ -9,6 +9,7 @@
         "bear/qiq-module": "^2.0",
         "bear/query-repository": "^1.15",
         "bear/resource": "^1.17",
+        "bear/streamer": "^1.4",
         "bear/sunday": "^1.6",
         "koriym/env-json": "^1.0",
         "league/commonmark": "^2.8",

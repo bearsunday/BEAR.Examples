@@ -2,7 +2,7 @@
 
 API Document
 
-## Routes (12)
+## Routes (13)
 
 | HTTP Route | Methods | Resource |
 |------------|---------|----------|
@@ -18,8 +18,9 @@ API Document
 | /variations/article-as-array | GET | App/Variations/ArticleAsArray |
 | /variations/article-raw-pdo | GET | App/Variations/ArticleRawPdo |
 | /variations/article-sql-query | GET | App/Variations/ArticleSqlQuery |
+| /variations/media-stream | GET | App/Variations/MediaStream |
 
-## ResourceObjects (12)
+## ResourceObjects (13)
 
 ### App/Article
 `/article`
@@ -118,6 +119,13 @@ API Document
 |--------|------------|-------|
 | GET | id* | - |
 
+### App/Variations/MediaStream
+`/variations/media-stream`
+
+| Method | Parameters | Links |
+|--------|------------|-------|
+| GET | id* | - |
+
 ## Responses (10)
 
 | Response | Schema | Properties |
@@ -133,12 +141,13 @@ API Document
 | Tag | tag.json | id, slug, name |
 | TagList | tagList.json | items, totalCount |
 
-## Query Interfaces (11)
+## Query Interfaces (12)
 
 | Interface | Methods |
 |-----------|---------|
 | ArticleCommandInterface | add(slug, title, body, excerpt, status, publishedAt, authorId, categoryId):void, update(id, title, body, excerpt, status, publishedAt):void, delete(id):void |
 | ArticleQueryInterface | item(id):Article, bySlug(slug):Article, list(categoryId, tagId, authorId, status, perPage):PagesInterface |
+| ArticleSelectionQueryInterface | list(status):ArticleSelection |
 | ArticleTagCommandInterface | clear(articleId):void, link(articleId, tagId):void |
 | AuthorCommandInterface | add(name, email, bio):void, update(id, name, email, bio):void |
 | AuthorQueryInterface | item(id):Author, byEmail(email):Author, list():array |
@@ -149,7 +158,7 @@ API Document
 | TagCommandInterface | add(slug, name):void, delete(id):void |
 | TagQueryInterface | item(id):Tag, bySlug(slug):Tag, list():array, listByArticle(articleId):array |
 
-## SQL (33)
+## SQL (34)
 
 | File | Query |
 |------|-------|
@@ -180,6 +189,13 @@ API Document
     status,
     pu...` |
 | article_list.sql | `SELECT
+    a.id,
+    a.slug,
+    a.title,
+    a.body,
+    a.excerpt,
+    a.st...` |
+| article_selection_list.sql | `SELECT
     a.id,
     a.slug,
     a.title,
