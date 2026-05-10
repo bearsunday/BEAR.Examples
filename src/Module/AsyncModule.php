@@ -7,9 +7,9 @@ namespace MyVendor\Cms\Module;
 use BEAR\Async\Module\AsyncParallelModule;
 use BEAR\Package\AbstractAppModule;
 
-use function assert;
 use function basename;
-use function preg_replace;
+use function str_starts_with;
+use function substr;
 
 /**
  * Enables parallel execution of existing #[Embed] resources.
@@ -21,15 +21,19 @@ final class AsyncModule extends AbstractAppModule
 {
     protected function configure(): void
     {
-        $context = basename($this->appMeta->tmpDir);
-        $workerContext = preg_replace('/^async-/', '', $context);
-        assert($workerContext !== null && $workerContext !== '');
-
         $this->install(new AsyncParallelModule(
             namespace: $this->appMeta->name,
-            context: $workerContext,
+            context: self::workerContextFromTmpDir($this->appMeta->tmpDir),
             appDir: $this->appMeta->appDir,
             poolSize: 4,
         ));
+    }
+
+    public static function workerContextFromTmpDir(string $tmpDir): string
+    {
+        // Convention-dependent: BEAR.AppMeta\Meta writes tmpDir as var/tmp/{context}.
+        $context = basename($tmpDir);
+
+        return str_starts_with($context, 'async-') ? substr($context, 6) : $context;
     }
 }

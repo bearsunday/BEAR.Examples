@@ -34,6 +34,7 @@
 | Module 構成 | `FakeModule` が binding を提供し、`TestModule` が `FakeModule` を *install* します。prod / cli / fake / test の各 context が異なる構成を取れるよう二段階にしています |
 | Resource 配置 | `src/Resource/App/<Class>.php` — すべての URI が class です。"/" entry-point に意味がない限り `App/Index.php` は作りません |
 | Read/Write 分離 | entity ごとに必ず 2 つの interface を作ります: `<Entity>QueryInterface` (Read) と `<Entity>CommandInterface` (Write)。両方とも `src/Query/` に置き、interface 名の suffix で Read/Write の区別を担うことで、`MediaQuerySqlModule` が単一ディレクトリをスキャンできます。Read と Write を同じ interface に混在させてはいけません |
+| MediaQuery result 配置 | `src/Result/*` は `src/Query/*Interface` method から返される型付き Ray.MediaQuery result object の置き場です。これは domain entity ではなく、query execution context や DML metadata を包む object です。read query では query-local projection、つまり特定の `#[DbQuery]` 結果から組み立てる型付き read-side view として扱います。controller / service helper ではありません。このディレクトリは query result 専用に保ち、`src/Query` と `src/Result` が読みやすい対になるようにします |
 
 ### Variation resources
 

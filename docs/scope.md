@@ -44,9 +44,13 @@ demonstrated from each top-level resource.)
 
 Admin pages wrap the App resources via `$this->resource->post/put/delete(...)`. PRG: success → 303 redirect with `?saved=created|updated|deleted`.
 
-### Article GET variations (reading material, not API)
+### Resource variations (reading material, not API)
 
-`src/Resource/App/Variations/` — three alternative implementations of the Article GET to compare entity vs array, declarative vs programmatic query, and MediaQuery vs raw PDO. Run `composer demo:variations`.
+`src/Resource/App/Variations/` — three alternative implementations of the
+Article GET to compare entity vs array, declarative vs programmatic query, and
+MediaQuery vs raw PDO. It also contains `MediaStream`, a separate transfer-mode
+variation that demonstrates `BEAR.Streamer` without changing canonical
+`Media::onGet()`. Run `composer demo:variations`.
 
 ### Hypermedia
 
@@ -135,6 +139,7 @@ Patterns the codebase deliberately demonstrates (each appears in at least one pl
 | Natural-key `by<Key>` post-INSERT lookup | `Article::onPost` → `bySlug`; same idea for `byEmail` / `byFilename` |
 | Manual `_embedded` build for ID-after-fetch | `Article::onGet` (`author`, `category`, `tagList`) |
 | Three Article GET implementation variations | `src/Resource/App/Variations/` (`composer demo:variations`) |
+| Stream transfer response | `Variations\MediaStream` uses `BEAR.Streamer` and an open file handle body |
 | PRG redirect on admin write | `Page/Admin/Article` and `Page/Admin/ArticleDelete` redirect 303 with `?saved=…` |
 
 ### Documentation surface

@@ -25,6 +25,7 @@
   - `test-hal-api-app` is used by PHPUnit and composes the fake module.
   - `async-hal-api-app` installs `src/Module/AsyncModule.php` and uses `hal-api-app` inside BEAR.Async worker threads.
   - `async-test-hal-api-app` composes the async module over `test-hal-api-app`; use Docker because it needs PHP ZTS + `ext-parallel`.
+  - `async-slow-fake-hal-api-app` is the Docker timing demo context; worker threads use `slow-fake-hal-api-app`.
 - HTML (Page/Qiq) contexts:
   - `html-hal-app` and `cli-html-hal-app` install `HtmlModule` over the real database.
   - `html-test-hal-api-app` composes `TestModule` and `HtmlModule` so Page tests render against `FakeSqlQuery`.

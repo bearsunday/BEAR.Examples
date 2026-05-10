@@ -1,5 +1,6 @@
 FROM php:8.5-zts
 
+# Pin parallel below if a future PECL release stops building on php:8.5-zts.
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
         git \

@@ -224,6 +224,7 @@ The HAL JSON API is served by `composer serve:api` on
 | `html-test-hal-api-app`    | PHPUnit Page/Qiq tests                | no          |
 | `async-hal-api-app`        | BEAR.Async parallel `#[Embed]` context | yes        |
 | `async-test-hal-api-app`   | Async PHPUnit App resource tests      | no          |
+| `async-slow-fake-hal-api-app` | Async timing demo with fake data and demo latency | no |
 
 `fake-` prepends [src/Module/FakeModule.php](src/Module/FakeModule.php);
 `test-` prepends [src/Module/TestModule.php](src/Module/TestModule.php).
@@ -260,6 +261,8 @@ Integration suite (`tests/Integration/`) skips automatically unless MySQL is
 reachable; bring it up with `docker compose up -d` or Malt to include it.
 The async demo and async contract test require PHP ZTS + `ext-parallel`; run
 them with `composer docker:async-demo` and `composer docker:async-test`.
+If future PECL `parallel` releases stop building against the PHP ZTS base image,
+pin the `parallel` version in `Dockerfile.async`.
 
 ## Project Journal
 

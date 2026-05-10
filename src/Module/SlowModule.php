@@ -19,8 +19,6 @@ final class SlowModule extends AbstractModule
 {
     protected function configure(): void
     {
-        $this->bind()->annotatedWith('slow_embed_delay_us')->toInstance(150_000);
-
         $embeddedResources = $this->matcher->logicalOr(
             $this->matcher->subclassesOf(Author::class),
             $this->matcher->logicalOr(

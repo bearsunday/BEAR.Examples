@@ -34,12 +34,14 @@ then the code/docs follow.
 | Module composition | `FakeModule` provides the binding; `TestModule` *installs* `FakeModule`. Two-stage so prod/cli/fake/test contexts can compose differently |
 | Resource placement | `src/Resource/App/<Class>.php` — every URI is a class. No `App/Index.php` unless a "/" entry-point is meaningful |
 | Read/Write split | Always two interfaces per entity: `<Entity>QueryInterface` (Read) and `<Entity>CommandInterface` (Write). Both live in `src/Query/` — the interface name suffix carries the Read/Write distinction so `MediaQuerySqlModule` can scan a single directory. Never mix Read and Write methods on the same interface |
+| MediaQuery result placement | `src/Result/*` contains typed Ray.MediaQuery result objects returned from `src/Query/*Interface` methods. These are not domain entities; they wrap query execution context or DML metadata. For read queries, treat them as query-local projections: typed read-side views assembled from a specific `#[DbQuery]` result, not controller/service helpers. Keep the directory dedicated to query results so `src/Query` and `src/Result` stay a readable pair |
 
 ### Variation resources
 
-`src/Resource/App/Variations/` contains exactly three comparison-only
-Article GET implementations. They are not registered in the ALPS profile
-and must not change the canonical `src/Resource/App/Article.php` path.
+`src/Resource/App/Variations/` contains comparison-only resources. The Article
+set is fixed at exactly three GET implementations. They are not registered in
+the ALPS profile and must not change the canonical
+`src/Resource/App/Article.php` path.
 
 | Variation | Axis | Question it answers |
 |---|---|---|
@@ -47,9 +49,18 @@ and must not change the canonical `src/Resource/App/Article.php` path.
 | [`Variations\ArticleSqlQuery`](../src/Resource/App/Variations/ArticleSqlQuery.php) | abstraction level (declarative `#[DbQuery]` vs programmatic `SqlQuery` class) | "What if `#[DbQuery]` isn't enough?" |
 | [`Variations\ArticleRawPdo`](../src/Resource/App/Variations/ArticleRawPdo.php) | framework presence (MediaQuery vs raw `ExtendedPdoInterface`) | "What is MediaQuery actually doing for me?" |
 
-Do not add a fourth variation. Use `composer demo:variations` when the
-goal is to compare these alternatives; keep `composer demo` as the main
-golden path. See
+Do not add a fourth Article variation. A non-Article variation is allowed only
+when it demonstrates a different framework axis that cannot be shown by the
+three Article reads. The current example is
+[`Variations\MediaStream`](../src/Resource/App/Variations/MediaStream.php),
+which keeps canonical `Media::onGet()` JSON-shaped and demonstrates
+`BEAR.Streamer` by assigning an open file handle to `$this->body` with explicit
+`Content-Type`, `Content-Length`, and `Content-Disposition` headers. It has no
+`#[JsonSchema]` on the success path because the response body is a stream, not a
+JSON document.
+
+Use `composer demo:variations` when the goal is to compare these alternatives;
+keep `composer demo` as the main golden path. See
 [`src/Resource/App/Variations/README.md`](../src/Resource/App/Variations/README.md)
 or
 [`README.ja.md`](../src/Resource/App/Variations/README.ja.md)
@@ -65,10 +76,12 @@ for the short reading guide.
 | `test-hal-api-app` | PHPUnit (composes `FakeModule`) |
 | `async-hal-api-app` | BEAR.Async `AsyncParallelModule` context; worker threads use `hal-api-app` |
 | `async-test-hal-api-app` | Async PHPUnit context; worker threads use `test-hal-api-app` |
-| `async-slow-fake-hal-api-app` | Docker-only timing demo for parallel embedded resources |
+| `async-slow-fake-hal-api-app` | Demo-only timing context; worker threads use `slow-fake-hal-api-app` |
 
 `fake-`, `test-`, and `async-` are canonical prefixes. `async-` is only a
 context-composition change; do not change Resource code to make it async.
+`slow-` is a demo-only prefix used to add deterministic latency to embedded
+resources for timing comparison.
 `AsyncModule` strips the leading `async-` prefix for worker threads to avoid
 recursive parallel runtime creation.
 
