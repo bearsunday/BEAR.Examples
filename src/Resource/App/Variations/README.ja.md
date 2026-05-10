@@ -10,13 +10,14 @@
 保ったまま、1つずつ軸を変えた読み物です。どの責務がどこへ移動するかを見る
 ためにあります。
 
-`MediaStream` は別枠の transfer-mode variation です。4つ目の Article 実装を
-増やすものではありません。正規の `src/Resource/App/Media.php` は JSON
-representation のままにして、`BEAR.Streamer` で同じ Media metadata を
-streamed body として転送する方法を見せます。
+`MediaStream` は、Article の比較実装とは別枠のストリーム転送例です。
+4つ目の Article 実装を増やすものではありません。通常の
+`src/Resource/App/Media.php` は JSON を返すままにして、同じ Media の情報を
+`BEAR.Streamer` でストリームとして転送する方法を示します。
 
-stream demo は media id `5` の deterministic fixture を使います。他の fake
-media 行は metadata だけなので、file-missing branch を読むために使えます。
+ストリームのデモでは、media id `5` に対応する固定フィクスチャを使います。
+それ以外の fake media はメタデータだけを持つため、ファイルが見つからない
+場合の分岐を確認するのに使えます。
 
 デモは次のコマンドで実行できます。
 
