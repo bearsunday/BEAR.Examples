@@ -78,11 +78,12 @@ for the short reading guide.
 | `async-test-hal-api-app` | Async PHPUnit context; worker threads use `test-hal-api-app` |
 | `async-slow-fake-hal-api-app` | Demo-only timing context; worker threads use `slow-fake-hal-api-app` |
 
-`fake-`, `test-`, and `async-` are canonical prefixes. `async-` is only a
-context-composition change; do not change Resource code to make it async.
+`fake-`, `test-`, and `async-` are canonical prefixes. `async-` is handled by
+`Injector::getInstance()` as an async overlay on the same context without the
+leading prefix; do not change Resource code to make it async.
 `slow-` is a demo-only prefix used to add deterministic latency to embedded
 resources for timing comparison.
-`AsyncModule` strips the leading `async-` prefix for worker threads to avoid
+The resulting worker context is passed explicitly to `AsyncModule` to avoid
 recursive parallel runtime creation.
 
 ## 3. Naming

@@ -6,34 +6,34 @@ namespace MyVendor\Cms\Module;
 
 use BEAR\Async\Module\AsyncParallelModule;
 use BEAR\Package\AbstractAppModule;
-
-use function basename;
-use function str_starts_with;
-use function substr;
+use MyVendor\Cms\Exception\AsyncWorkerContextNotSetException;
 
 /**
  * Enables parallel execution of existing #[Embed] resources.
  *
- * Worker threads use the same context without the leading `async-` prefix so
- * they don't recursively create another parallel runtime.
+ * MyVendor\Cms\Injector supplies the worker context explicitly so worker
+ * threads don't recursively create another parallel runtime.
  */
 final class AsyncModule extends AbstractAppModule
 {
+    private string $workerContext = '';
+
+    public function setWorkerContext(string $workerContext): void
+    {
+        $this->workerContext = $workerContext;
+    }
+
     protected function configure(): void
     {
+        if ($this->workerContext === '') {
+            throw new AsyncWorkerContextNotSetException();
+        }
+
         $this->install(new AsyncParallelModule(
             namespace: $this->appMeta->name,
-            context: self::workerContextFromTmpDir($this->appMeta->tmpDir),
+            context: $this->workerContext,
             appDir: $this->appMeta->appDir,
             poolSize: 4,
         ));
-    }
-
-    public static function workerContextFromTmpDir(string $tmpDir): string
-    {
-        // Convention-dependent: BEAR.AppMeta\Meta writes tmpDir as var/tmp/{context}.
-        $context = basename($tmpDir);
-
-        return str_starts_with($context, 'async-') ? substr($context, 6) : $context;
     }
 }

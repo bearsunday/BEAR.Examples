@@ -228,8 +228,10 @@ The HAL JSON API is served by `composer serve:api` on
 
 `fake-` prepends [src/Module/FakeModule.php](src/Module/FakeModule.php);
 `test-` prepends [src/Module/TestModule.php](src/Module/TestModule.php).
-`async-` prepends [src/Module/AsyncModule.php](src/Module/AsyncModule.php) and
-uses the same context without the `async-` prefix inside worker threads.
+`async-` is handled by [src/Injector.php](src/Injector.php): it overlays
+[src/Module/AsyncModule.php](src/Module/AsyncModule.php) on the same context
+without the `async-` prefix, and worker threads use that explicit worker
+context.
 
 ## Development
 

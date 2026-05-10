@@ -26,8 +26,9 @@ currently unauthenticated — the typed `UserInterface` /
 - `async-slow-fake-hal-api-app` — Docker timing demo context; worker threads
   use `slow-fake-hal-api-app`.
 
-Switching contexts loads/removes modules by keyword prefix; see
-`src/Module/{App,Fake,Test,Async,Slow}Module.php`.
+Switching contexts loads/removes modules by keyword prefix. The `async-`
+prefix is handled by `src/Injector.php`, which overlays `AsyncModule` on the
+matching non-async worker context.
 
 ## Running things quickly
 

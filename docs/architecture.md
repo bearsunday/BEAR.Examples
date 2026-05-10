@@ -78,8 +78,8 @@ as-is. The additions:
   embeds are parallelised by the context module. Use Docker because
   `AsyncParallelModule` needs PHP ZTS + `ext-parallel`.
 - `async-test-hal-api-app` and `async-slow-fake-hal-api-app` — test and demo
-  variants of the same async prefix. Worker threads use the matching context
-  with `async-` removed to avoid recursive thread pools.
+  variants of the same async prefix. `Injector` passes the matching context
+  without `async-` to worker threads to avoid recursive thread pools.
 
 ## What was intentionally *not* built
 
