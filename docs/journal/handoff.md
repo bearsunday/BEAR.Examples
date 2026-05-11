@@ -91,14 +91,16 @@ defeats the reference value.
 
 Both filed during the build:
 
-| Issue | Repository | Topic |
-|-------|-----------|-------|
+| Issue / PR | Repository | Topic |
+|------------|-----------|-------|
 | [#76](https://github.com/bearsunday/BEAR.ApiDoc/issues/76) | BEAR.ApiDoc | Pull data from semantic-ex artifacts (ALPS, JSON Schema, fake data) into generated docs |
 | [#355](https://github.com/bearsunday/BEAR.Resource/issues/355) | BEAR.Resource | JsonSchemaInterceptor should skip body validation on cache hit (CacheableResponse interaction) |
+| [BEAR.Async#18](https://github.com/bearsunday/BEAR.Async/issues/18) + PRs [BEAR.Async#19](https://github.com/bearsunday/BEAR.Async/pull/19), [BEAR.Resource#360](https://github.com/bearsunday/BEAR.Resource/pull/360) | BEAR.Async + BEAR.Resource | `AsyncRequest` silently skipped by `HalRenderer` under HAL+JSON (`_embedded` empty, false 2x speedup). `composer.json` is currently pinned to the two `dev-*` branches to verify the fix end-to-end. |
 
-If either lands, BEAR.Cms can adopt the fix:
+If any lands, BEAR.Cms can adopt the fix:
 - ApiDoc#76 → richer `composer doc` output (no project-side change needed beyond bumping version)
 - Resource#355 → reattach `#[CacheableResponse]` across all read resources
+- BEAR.Async#19 + BEAR.Resource#360 → drop the `dev-*` pins from `composer.json` and bump to released versions; `composer docker:async-test` already passes against the pinned branches (`embedded resources: 3`, HAL parity green)
 
 ---
 
@@ -106,7 +108,7 @@ If either lands, BEAR.Cms can adopt the fix:
 
 | Item | Why deferred | Recovery |
 |------|------|---------|
-| **Step 5.5: Async `#[Embed]` parallelisation** | Landed via `bear/async ^0.2`: parallel execution is enabled by the `bin/async.php` entrypoint, not a context prefix. `AppModule` is unchanged. Demo / smoke test run under Docker (PHP ZTS + `ext-parallel`) via `composer docker:async-demo` and `composer docker:async-test`, or locally on macOS with `brew install shivammathur/php/php-zts` + `composer php-zts:install` + `composer demo:async-local` / `composer test:async-local` (driven by `bin/php-zts.sh`). | — |
+| **Step 5.5: Async `#[Embed]` parallelisation** | Landed via `bear/async ^0.2`: parallel execution is enabled by the `bin/async.php` entrypoint, not a context prefix. `AppModule` is unchanged. Demo / smoke test run under Docker (PHP ZTS + `ext-parallel`) via `composer docker:async-demo` and `composer docker:async-test`, or locally on macOS with `brew install shivammathur/php/php-zts` + `composer php-zts:install` + `composer demo:async-local` / `composer test:async-local` (driven by `bin/php-zts.sh`). HAL `_embedded` regression caught and fixed via [BEAR.Async#18](https://github.com/bearsunday/BEAR.Async/issues/18) + PRs [#19](https://github.com/bearsunday/BEAR.Async/pull/19) / [Resource#360](https://github.com/bearsunday/BEAR.Resource/pull/360); `composer.json` pins to `dev-*` until they merge. The demo's wall-clock speedup is still ~1x — the embed graph is currently being evaluated eagerly inside `Resource::get` (not on `(string) $ro`), so parallel workers do run but the serial main-process cost dominates. That eager-evaluation gap is a separate optimisation tracked outside this fix. | — |
 | **Step 6: `#[CacheableResponse]` on all reads** | Blocked on BEAR.Resource#355 (cache hit + JsonSchema interaction). Currently zero resources have the attribute | When #355 lands, restore class-level `#[CacheableResponse]` on read resources + `#[RefreshCache]` on writes |
 | **phpstan baseline (2 entries)** | One vendor-interface return-type mismatch in `tests/Fake/FakeSqlQuery.php` (`getRowList` returns `list<object>` but `SqlQueryInterface` declares `array<array<mixed>>`); one OAuth provider arg-type widening. Both intentionally suppressed — see comment in `phpstan-baseline.neon`. | Wait for upstream `SqlQueryInterface` to relax its return type; then drop the entry |
 | **Write-side CLI** | Only `article-show` / `article-list` are generated. `article-add` / `article-update` / `article-delete` would round out the demo | Add `#[Cli]` to onPost/onPut/onDelete; `composer cli` regenerates |

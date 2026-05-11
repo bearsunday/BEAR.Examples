@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a330495578812b0ea238d96fa23f6eb3",
+    "content-hash": "af643d480a73941b3ae4a3de5a5c24aa",
     "packages": [
         {
             "name": "aura/cli",
@@ -246,16 +246,16 @@
         },
         {
             "name": "bear/async",
-            "version": "0.2.0",
+            "version": "dev-fix-hal-renderer-skip",
             "source": {
                 "type": "git",
                 "url": "https://github.com/bearsunday/BEAR.Async.git",
-                "reference": "bd54c02902b6605d4f4632c5abeebc81d16e2b03"
+                "reference": "2bbe87ee75387498b3f5f231cb5aeaf22afd1d37"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/bearsunday/BEAR.Async/zipball/bd54c02902b6605d4f4632c5abeebc81d16e2b03",
-                "reference": "bd54c02902b6605d4f4632c5abeebc81d16e2b03",
+                "url": "https://api.github.com/repos/bearsunday/BEAR.Async/zipball/2bbe87ee75387498b3f5f231cb5aeaf22afd1d37",
+                "reference": "2bbe87ee75387498b3f5f231cb5aeaf22afd1d37",
                 "shasum": ""
             },
             "require": {
@@ -290,7 +290,36 @@
                     "BEAR\\Projection\\": "src-projection/"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
+            "autoload-dev": {
+                "psr-4": {
+                    "BEAR\\Async\\": "tests/",
+                    "BEAR\\Async\\Demo\\": "demo/src/",
+                    "BEAR\\Async\\Demo\\Resource\\": "demo/Resource/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "phpunit --no-coverage"
+                ],
+                "tests": [
+                    "@cs",
+                    "@test",
+                    "@sa"
+                ],
+                "cs": [
+                    "phpcs --standard=phpcs.xml src tests"
+                ],
+                "cs-fix": [
+                    "phpcbf src tests"
+                ],
+                "sa": [
+                    "psalm --no-progress",
+                    "phpstan analyse -c phpstan.neon --no-progress"
+                ],
+                "metrics": [
+                    "phpmetrics --report-html=build/metrics src"
+                ]
+            },
             "license": [
                 "MIT"
             ],
@@ -307,10 +336,10 @@
                 "swoole"
             ],
             "support": {
-                "issues": "https://github.com/bearsunday/BEAR.Async/issues",
-                "source": "https://github.com/bearsunday/BEAR.Async/tree/0.2.0"
+                "source": "https://github.com/bearsunday/BEAR.Async/tree/fix-hal-renderer-skip",
+                "issues": "https://github.com/bearsunday/BEAR.Async/issues"
             },
-            "time": "2026-05-11T14:01:09+00:00"
+            "time": "2026-05-11T23:35:29+00:00"
         },
         {
             "name": "bear/package",
@@ -525,16 +554,16 @@
         },
         {
             "name": "bear/resource",
-            "version": "1.31.1",
+            "version": "dev-hal-renderer-string-cast",
             "source": {
                 "type": "git",
                 "url": "https://github.com/bearsunday/BEAR.Resource.git",
-                "reference": "b2450059aa605cff9dde9a1619f033ffd4926cce"
+                "reference": "10a8f6c3700a067506446f0cb383564ff8942eb2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/bearsunday/BEAR.Resource/zipball/b2450059aa605cff9dde9a1619f033ffd4926cce",
-                "reference": "b2450059aa605cff9dde9a1619f033ffd4926cce",
+                "url": "https://api.github.com/repos/bearsunday/BEAR.Resource/zipball/10a8f6c3700a067506446f0cb383564ff8942eb2",
+                "reference": "10a8f6c3700a067506446f0cb383564ff8942eb2",
                 "shasum": ""
             },
             "require": {
@@ -550,7 +579,7 @@
                 "psr/log": "^1.1 || ^2.0 || ^3.0",
                 "ray/aop": "^2.18.0",
                 "ray/di": "^2.18.0",
-                "ray/input-query": "^1.0",
+                "ray/input-query": "^1.1",
                 "rize/uri-template": "^0.4"
             },
             "require-dev": {
@@ -568,9 +597,6 @@
                 }
             },
             "autoload": {
-                "files": [
-                    "src-files/uri_template.php"
-                ],
                 "psr-4": {
                     "BEAR\\Resource\\": [
                         "src/",
@@ -579,11 +605,75 @@
                     ],
                     "Ray\\WebContextParam\\": "src-web-context"
                 },
+                "files": [
+                    "src-files/uri_template.php"
+                ],
                 "exclude-from-classmap": [
                     "/src-deprecated/"
                 ]
             },
-            "notification-url": "https://packagist.org/downloads/",
+            "autoload-dev": {
+                "psr-4": {
+                    "BEAR\\Resource\\": [
+                        "tests/",
+                        "tests/Fake/",
+                        "tests-deprecated"
+                    ],
+                    "FakeVendor\\Sandbox\\": "tests/Fake/FakeVendor/Sandbox/",
+                    "FakeVendor\\Blog\\": "tests/Fake/FakeVendor/Blog/src",
+                    "FakeVendor\\News\\": "tests/Fake/FakeVendor/News/src"
+                },
+                "files": [
+                    "tests/Fake/AppInjector.php"
+                ]
+            },
+            "scripts": {
+                "test": [
+                    "phpunit"
+                ],
+                "tests": [
+                    "@cs",
+                    "@test",
+                    "@sa"
+                ],
+                "coverage": [
+                    "php -dzend_extension=xdebug.so -dxdebug.mode=coverage ./vendor/bin/phpunit --coverage-text --coverage-html=build/coverage"
+                ],
+                "pcov": [
+                    "php -dextension=pcov.so -d pcov.enabled=1 ./vendor/bin/phpunit --coverage-text --coverage-html=build/coverage  --coverage-clover=coverage.xml"
+                ],
+                "cs": [
+                    "phpcs --standard=phpcs.xml src tests"
+                ],
+                "cs-fix": [
+                    "phpcbf src tests"
+                ],
+                "clean": [
+                    "phpstan clear-result-cache",
+                    "psalm --clear-cache",
+                    "rm -rf tests/tmp/*.php"
+                ],
+                "sa": [
+                    "psalm --monochrome --show-info=true",
+                    "phpstan --memory-limit=-1 analyse -c phpstan.neon"
+                ],
+                "metrics": [
+                    "phpmetrics --report-html=build/metrics --exclude=Exception --log-junit=build/junit.xml --junit=build/junit.xml src"
+                ],
+                "phpmd": [
+                    "phpmd --exclude src/Annotation src text ./phpmd.xml"
+                ],
+                "build": [
+                    "@cs",
+                    "@sa",
+                    "@pcov",
+                    "@metrics"
+                ],
+                "baseline": [
+                    "phpstan analyse -c phpstan.neon --generate-baseline",
+                    "psalm --set-baseline=psalm-baseline.xml"
+                ]
+            },
             "license": [
                 "MIT"
             ],
@@ -595,15 +685,15 @@
             ],
             "description": "Hypermedia framework for object as a service",
             "keywords": [
+                "Hypermedia",
                 "Object as a service",
-                "hypermedia",
-                "rest"
+                "REST"
             ],
             "support": {
-                "issues": "https://github.com/bearsunday/BEAR.Resource/issues",
-                "source": "https://github.com/bearsunday/BEAR.Resource/tree/1.31.1"
+                "source": "https://github.com/bearsunday/BEAR.Resource/tree/hal-renderer-string-cast",
+                "issues": "https://github.com/bearsunday/BEAR.Resource/issues"
             },
-            "time": "2026-04-29T08:58:15+00:00"
+            "time": "2026-05-11T23:39:15+00:00"
         },
         {
             "name": "bear/streamer",
@@ -8672,9 +8762,24 @@
             "time": "2025-11-17T20:03:58+00:00"
         }
     ],
-    "aliases": [],
+    "aliases": [
+        {
+            "package": "bear/async",
+            "version": "dev-fix-hal-renderer-skip",
+            "alias": "0.2.99",
+            "alias_normalized": "0.2.99.0"
+        },
+        {
+            "package": "bear/resource",
+            "version": "dev-hal-renderer-string-cast",
+            "alias": "1.99.99",
+            "alias_normalized": "1.99.99.0"
+        }
+    ],
     "minimum-stability": "stable",
     "stability-flags": {
+        "bear/async": 20,
+        "bear/resource": 20,
         "roave/security-advisories": 20
     },
     "prefer-stable": false,
