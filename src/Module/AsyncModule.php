@@ -11,7 +11,7 @@ use MyVendor\Cms\Exception\AsyncWorkerContextNotSetException;
 /**
  * Enables parallel execution of existing #[Embed] resources.
  *
- * MyVendor\Cms\Injector supplies the worker context explicitly so worker
+ * The application injector supplies the worker context explicitly so worker
  * threads don't recursively create another parallel runtime.
  */
 final class AsyncModule extends AbstractAppModule
