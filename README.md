@@ -247,7 +247,7 @@ composer doc        # regenerate docs/index.html, docs/openapi.json, docs/llms.t
 composer cli        # regenerate bin/cli/* from #[Cli] attributes
 composer serve      # Qiq/Page HTML server on :8081
 composer serve:api  # HAL JSON API server on :8080
-composer demo:async # async demo; use docker:async-demo when ext-parallel is absent
+composer demo:async # async demo (requires PHP ZTS + ext-parallel; see below)
 ```
 
 CLI commands generated from `#[Cli]` attributes:
@@ -261,10 +261,26 @@ bin/cli/article-list -s published -n 5
 Tests run Resource, Entity, Hypermedia, Smoke, and Integration suites. The
 Integration suite (`tests/Integration/`) skips automatically unless MySQL is
 reachable; bring it up with `docker compose up -d` or Malt to include it.
-The async demo and async contract test require PHP ZTS + `ext-parallel`; run
-them with `composer docker:async-demo` and `composer docker:async-test`.
-If future PECL `parallel` releases stop building against the PHP ZTS base image,
-pin the `parallel` version in `Dockerfile.async`.
+The async demo and async contract test require PHP ZTS + `ext-parallel`.
+Two ways to run them:
+
+- **Docker (cross-platform):** `composer docker:async-demo` /
+  `composer docker:async-test`. If future PECL `parallel` releases stop
+  building against the PHP ZTS base image, pin the `parallel` version in
+  `Dockerfile.async`.
+- **Local (macOS, Homebrew):** install a side-by-side ZTS PHP and the
+  extension, then run the local variants:
+
+  ```bash
+  brew install shivammathur/php/php-zts
+  composer php-zts:install         # pecl install parallel into the ZTS PHP
+  composer demo:async-local        # timing demo via bin/php-zts.sh
+  composer test:async-local        # contract test via bin/php-zts.sh
+  ```
+
+  `bin/php-zts.sh` resolves the ZTS PHP from `$PHP_ZTS` (default
+  `/opt/homebrew/opt/php-zts/bin/php`) so it does not collide with the
+  system PHP that runs `composer test` and `composer serve`.
 
 ## Project Journal
 
