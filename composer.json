@@ -5,7 +5,7 @@
     "description": "Reference CMS for BEAR.Sunday: ALPS-driven, BDR pattern, App-resource only.",
     "require": {
         "php": "^8.5.0",
-        "bear/async": "^0.1",
+        "bear/async": "^0.2",
         "bear/package": "^1.14",
         "bear/qiq-module": "^2.0",
         "bear/query-repository": "^1.15",

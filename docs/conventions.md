@@ -74,17 +74,16 @@ for the short reading guide.
 | `cli-hal-api-app` | `bin/app.php`, `composer app`, `bin/cli/*` scripts |
 | `fake-hal-api-app` | Dev runtime against `FakeSqlQuery` (no DB) — e.g. `composer fake`, manual exploration |
 | `test-hal-api-app` | PHPUnit (composes `FakeModule`) |
-| `async-hal-api-app` | BEAR.Async `AsyncParallelModule` context; worker threads use `hal-api-app` |
-| `async-test-hal-api-app` | Async PHPUnit context; worker threads use `test-hal-api-app` |
-| `async-slow-fake-hal-api-app` | Demo-only timing context; worker threads use `slow-fake-hal-api-app` |
+| `slow-fake-hal-api-app` | Demo-only timing context; adds a 150ms delay to the three resources embedded by `Article::onGet` |
 
-`fake-`, `test-`, and `async-` are canonical prefixes. The application injector
-handles `async-` as an async overlay on the same context without the leading
-prefix; do not change Resource code to make it async.
-`slow-` is a demo-only prefix used to add deterministic latency to embedded
-resources for timing comparison.
-The resulting worker context is passed explicitly to `AsyncModule` to avoid
-recursive parallel runtime creation.
+`fake-` and `test-` are canonical prefixes; `slow-` is a demo-only prefix used
+to add deterministic latency to embedded resources for timing comparison. Do
+not invent other variants.
+
+Parallel `#[Embed]` execution is **not** a context prefix in BEAR.Async 0.2.
+It is enabled at the entrypoint (`bin/async.php` instead of `bin/app.php`),
+which hands off to `vendor/bear/async/bootstrap.php`. The same `AppModule`
+runs unchanged for sync and parallel.
 
 ## 3. Naming
 

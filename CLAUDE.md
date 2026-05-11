@@ -19,16 +19,15 @@ currently unauthenticated — the typed `UserInterface` /
 - `test-hal-api-app` — loaded by PHPUnit via `AbstractAppTestCase`.
 - `html-hal-app` / `cli-html-hal-app` — Qiq/Page HTML over the real DB.
 - `html-test-hal-api-app` — Page tests rendered with HtmlModule + FakeSqlQuery.
-- `async-hal-api-app` — installs BEAR.Async `AsyncParallelModule`; worker
-  threads use `hal-api-app`.
-- `async-test-hal-api-app` — async Resource test context; worker threads use
-  `test-hal-api-app`.
-- `async-slow-fake-hal-api-app` — Docker timing demo context; worker threads
-  use `slow-fake-hal-api-app`.
+- `slow-fake-hal-api-app` — demo-only overlay that adds a 150ms delay to the
+  three resources embedded by `Article::onGet`. Used by `bin/demo-async.php`.
 
-Switching contexts loads/removes modules by keyword prefix. The `async-`
-prefix is handled by `src/Injector.php`, which overlays `AsyncModule` on the
-matching non-async worker context.
+Switching contexts loads/removes modules by keyword prefix.
+
+Parallel `#[Embed]` execution is enabled at the **entrypoint**, not via a
+context prefix. `bin/async.php` hands off to `vendor/bear/async/bootstrap.php`,
+which overlays the ext-parallel runtime on top of the same `AppModule`. See
+`docs/architecture.md` for the rationale.
 
 ## Running things quickly
 

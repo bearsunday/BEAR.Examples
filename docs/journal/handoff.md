@@ -106,7 +106,7 @@ If either lands, BEAR.Cms can adopt the fix:
 
 | Item | Why deferred | Recovery |
 |------|------|---------|
-| **Step 5.5: Async `#[Embed]` parallelisation** | `bear/async ^0.1` requires `bear/resource ^1.31`; current is `^1.17`. Upgrade is a multi-package breaking change | Try `composer require bear/async -W` in a branch, fix any API drift, run full test suite |
+| **Step 5.5: Async `#[Embed]` parallelisation** | Landed via `bear/async ^0.2`: parallel execution is enabled by the `bin/async.php` entrypoint, not a context prefix. `AppModule` is unchanged. Demo / smoke test run under Docker (PHP ZTS + `ext-parallel`) via `composer docker:async-demo` and `composer docker:async-test`. | — |
 | **Step 6: `#[CacheableResponse]` on all reads** | Blocked on BEAR.Resource#355 (cache hit + JsonSchema interaction). Currently zero resources have the attribute | When #355 lands, restore class-level `#[CacheableResponse]` on read resources + `#[RefreshCache]` on writes |
 | **phpstan baseline (2 entries)** | One vendor-interface return-type mismatch in `tests/Fake/FakeSqlQuery.php` (`getRowList` returns `list<object>` but `SqlQueryInterface` declares `array<array<mixed>>`); one OAuth provider arg-type widening. Both intentionally suppressed — see comment in `phpstan-baseline.neon`. | Wait for upstream `SqlQueryInterface` to relax its return type; then drop the entry |
 | **Write-side CLI** | Only `article-show` / `article-list` are generated. `article-add` / `article-update` / `article-delete` would round out the demo | Add `#[Cli]` to onPost/onPut/onDelete; `composer cli` regenerates |

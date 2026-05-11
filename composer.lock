@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2f2a4e0e3e23f9e0a336cc4fe7c64f86",
+    "content-hash": "a330495578812b0ea238d96fa23f6eb3",
     "packages": [
         {
             "name": "aura/cli",
@@ -246,20 +246,22 @@
         },
         {
             "name": "bear/async",
-            "version": "0.1.0",
+            "version": "0.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/bearsunday/BEAR.Async.git",
-                "reference": "1296966b9bf9dd3c650df5a60099c379f7009013"
+                "reference": "bd54c02902b6605d4f4632c5abeebc81d16e2b03"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/bearsunday/BEAR.Async/zipball/1296966b9bf9dd3c650df5a60099c379f7009013",
-                "reference": "1296966b9bf9dd3c650df5a60099c379f7009013",
+                "url": "https://api.github.com/repos/bearsunday/BEAR.Async/zipball/bd54c02902b6605d4f4632c5abeebc81d16e2b03",
+                "reference": "bd54c02902b6605d4f4632c5abeebc81d16e2b03",
                 "shasum": ""
             },
             "require": {
                 "aura/sql": "^5.0 || ^6.0",
+                "bear/app-meta": "^1.6",
+                "bear/package": "^1.14",
                 "bear/resource": "^1.31",
                 "php": "^8.2",
                 "ray/di": "^2.18"
@@ -306,9 +308,9 @@
             ],
             "support": {
                 "issues": "https://github.com/bearsunday/BEAR.Async/issues",
-                "source": "https://github.com/bearsunday/BEAR.Async/tree/0.1.0"
+                "source": "https://github.com/bearsunday/BEAR.Async/tree/0.2.0"
             },
-            "time": "2026-02-02T18:18:52+00:00"
+            "time": "2026-05-11T14:01:09+00:00"
         },
         {
             "name": "bear/package",

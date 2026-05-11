@@ -222,16 +222,16 @@ The HAL JSON API is served by `composer serve:api` on
 | `fake-hal-api-app`         | Dev runtime against FakeSqlQuery      | no          |
 | `test-hal-api-app`         | PHPUnit App resource tests            | no          |
 | `html-test-hal-api-app`    | PHPUnit Page/Qiq tests                | no          |
-| `async-hal-api-app`        | BEAR.Async parallel `#[Embed]` context | yes        |
-| `async-test-hal-api-app`   | Async PHPUnit App resource tests      | no          |
-| `async-slow-fake-hal-api-app` | Async timing demo with fake data and demo latency | no |
+| `slow-fake-hal-api-app`    | Async timing demo with fake data and demo latency | no |
 
 `fake-` prepends [src/Module/FakeModule.php](src/Module/FakeModule.php);
-`test-` prepends [src/Module/TestModule.php](src/Module/TestModule.php).
-`async-` is handled by [src/Injector.php](src/Injector.php): it overlays
-[src/Module/AsyncModule.php](src/Module/AsyncModule.php) on the same context
-without the `async-` prefix, and worker threads use that explicit worker
-context.
+`test-` prepends [src/Module/TestModule.php](src/Module/TestModule.php);
+`slow-` prepends [src/Module/SlowModule.php](src/Module/SlowModule.php).
+
+Parallel `#[Embed]` execution is enabled via the [bin/async.php](bin/async.php)
+entrypoint (which loads `vendor/bear/async/bootstrap.php`), **not** via a
+context prefix. The same `AppModule` runs under both `bin/app.php` (sync) and
+`bin/async.php` (parallel) unchanged.
 
 ## Development
 

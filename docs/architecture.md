@@ -73,13 +73,16 @@ as-is. The additions:
 - `html-hal-app` / `cli-html-hal-app` — real-DB Qiq/Page HTML contexts.
 - `html-test-hal-api-app` — PHPUnit Page context; composes TestModule and
   HtmlModule so HTML tests render against FakeSqlQuery.
-- `async-hal-api-app` — installs BEAR.Async over the normal HAL context.
-  `Article::onGet` stays unchanged; its `author`, `category`, and `tagList`
-  embeds are parallelised by the context module. Use Docker because
-  `AsyncParallelModule` needs PHP ZTS + `ext-parallel`.
-- `async-test-hal-api-app` and `async-slow-fake-hal-api-app` — test and demo
-  variants of the same async prefix. `Injector` passes the matching context
-  without `async-` to worker threads to avoid recursive thread pools.
+- `slow-fake-hal-api-app` — demo-only overlay (`SlowModule`) that adds a
+  150ms delay to the three resources embedded by `Article::onGet`. Used by
+  `bin/demo-async.php` to make the sync-vs-parallel timing visible without
+  relying on a real database.
+
+Parallel `#[Embed]` execution is **not** a context prefix in BEAR.Async 0.2.
+The same `AppModule` runs unchanged under `bin/app.php` (sync) and
+`bin/async.php` (parallel); the parallel runtime overlay is installed by
+`vendor/bear/async/bootstrap.php` from the entrypoint, so AppModule stays
+ignorant of execution form. Needs PHP ZTS + `ext-parallel` (Docker).
 
 ## What was intentionally *not* built
 
