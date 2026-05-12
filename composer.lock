@@ -250,12 +250,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/bearsunday/BEAR.Async.git",
-                "reference": "2bbe87ee75387498b3f5f231cb5aeaf22afd1d37"
+                "reference": "5e84caadec484f5624fa90f40660ac594883b4a7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/bearsunday/BEAR.Async/zipball/2bbe87ee75387498b3f5f231cb5aeaf22afd1d37",
-                "reference": "2bbe87ee75387498b3f5f231cb5aeaf22afd1d37",
+                "url": "https://api.github.com/repos/bearsunday/BEAR.Async/zipball/5e84caadec484f5624fa90f40660ac594883b4a7",
+                "reference": "5e84caadec484f5624fa90f40660ac594883b4a7",
                 "shasum": ""
             },
             "require": {
@@ -339,7 +339,7 @@
                 "source": "https://github.com/bearsunday/BEAR.Async/tree/fix-hal-renderer-skip",
                 "issues": "https://github.com/bearsunday/BEAR.Async/issues"
             },
-            "time": "2026-05-11T23:35:29+00:00"
+            "time": "2026-05-12T00:47:53+00:00"
         },
         {
             "name": "bear/package",
