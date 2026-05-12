@@ -75,8 +75,9 @@ require dirname(__DIR__) . '/autoload.php';
     $section('Verification');
     ksort($syncData);
     ksort($asyncData);
+    $embeddedCount = is_array($asyncData['_embedded'] ?? null) ? count($asyncData['_embedded']) : 0;
     fwrite(STDOUT, 'same HAL representation: ' . ($syncData === $asyncData ? 'yes' : 'no') . "\n");
-    fwrite(STDOUT, 'embedded resources: ' . count($asyncData['_embedded'] ?? []) . "\n");
+    fwrite(STDOUT, 'embedded resources: ' . $embeddedCount . "\n");
 
-    exit($syncData === $asyncData ? 0 : 1);
+    exit($syncData === $asyncData && $embeddedCount === 3 ? 0 : 1);
 })();
