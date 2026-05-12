@@ -558,12 +558,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/bearsunday/BEAR.Resource.git",
-                "reference": "10a8f6c3700a067506446f0cb383564ff8942eb2"
+                "reference": "980dfe517d25bde9f801b5dfc94a16cbdd4f66c5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/bearsunday/BEAR.Resource/zipball/10a8f6c3700a067506446f0cb383564ff8942eb2",
-                "reference": "10a8f6c3700a067506446f0cb383564ff8942eb2",
+                "url": "https://api.github.com/repos/bearsunday/BEAR.Resource/zipball/980dfe517d25bde9f801b5dfc94a16cbdd4f66c5",
+                "reference": "980dfe517d25bde9f801b5dfc94a16cbdd4f66c5",
                 "shasum": ""
             },
             "require": {
@@ -693,7 +693,7 @@
                 "source": "https://github.com/bearsunday/BEAR.Resource/tree/hal-renderer-string-cast",
                 "issues": "https://github.com/bearsunday/BEAR.Resource/issues"
             },
-            "time": "2026-05-11T23:39:15+00:00"
+            "time": "2026-05-12T02:38:54+00:00"
         },
         {
             "name": "bear/streamer",
