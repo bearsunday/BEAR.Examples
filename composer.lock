@@ -250,12 +250,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/bearsunday/BEAR.Async.git",
-                "reference": "5e84caadec484f5624fa90f40660ac594883b4a7"
+                "reference": "faad26e01c1feaff3e07bd0545cd51b36ca324d7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/bearsunday/BEAR.Async/zipball/5e84caadec484f5624fa90f40660ac594883b4a7",
-                "reference": "5e84caadec484f5624fa90f40660ac594883b4a7",
+                "url": "https://api.github.com/repos/bearsunday/BEAR.Async/zipball/faad26e01c1feaff3e07bd0545cd51b36ca324d7",
+                "reference": "faad26e01c1feaff3e07bd0545cd51b36ca324d7",
                 "shasum": ""
             },
             "require": {
@@ -339,7 +339,7 @@
                 "source": "https://github.com/bearsunday/BEAR.Async/tree/fix-hal-renderer-skip",
                 "issues": "https://github.com/bearsunday/BEAR.Async/issues"
             },
-            "time": "2026-05-12T00:47:53+00:00"
+            "time": "2026-05-12T04:09:53+00:00"
         },
         {
             "name": "bear/package",
@@ -558,12 +558,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/bearsunday/BEAR.Resource.git",
-                "reference": "52cddb45b7d4205c2722b7915397899c50b92417"
+                "reference": "4ecc6a2248bec2fdf112c30712791d46e0ebd14f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/bearsunday/BEAR.Resource/zipball/52cddb45b7d4205c2722b7915397899c50b92417",
-                "reference": "52cddb45b7d4205c2722b7915397899c50b92417",
+                "url": "https://api.github.com/repos/bearsunday/BEAR.Resource/zipball/4ecc6a2248bec2fdf112c30712791d46e0ebd14f",
+                "reference": "4ecc6a2248bec2fdf112c30712791d46e0ebd14f",
                 "shasum": ""
             },
             "require": {
@@ -693,7 +693,7 @@
                 "source": "https://github.com/bearsunday/BEAR.Resource/tree/hal-renderer-string-cast",
                 "issues": "https://github.com/bearsunday/BEAR.Resource/issues"
             },
-            "time": "2026-05-12T03:15:08+00:00"
+            "time": "2026-05-12T04:05:34+00:00"
         },
         {
             "name": "bear/streamer",

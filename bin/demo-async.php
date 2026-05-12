@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use BEAR\Async\PendingRequests;
 use BEAR\Async\Module\ParallelRuntimeModule;
 use BEAR\Resource\ResourceInterface;
 use BEAR\Sunday\Extension\Application\AppInterface;
@@ -23,18 +24,18 @@ require dirname(__DIR__) . '/autoload.php';
         return $app->resource;
     };
 
-    // Demo only: install ParallelRuntimeModule as an override to measure the
-    // parallel #[Embed] execution in-process. Production HTTP traffic should
-    // use bin/async.php, which goes through vendor/bear/async/bootstrap.php.
-    $asyncResource = static function (string $context): ResourceInterface {
-        $app = Injector::getOverrideInstance($context, new ParallelRuntimeModule($context))
-            ->getInstance(AppInterface::class);
+    /** @return array{0: ResourceInterface, 1: PendingRequests} */
+    $asyncRuntime = static function (string $context): array {
+        $injector = Injector::getOverrideInstance($context, new ParallelRuntimeModule($context));
+        $app = $injector->getInstance(AppInterface::class);
         assert($app instanceof App);
 
-        return $app->resource;
+        return [$app->resource, $injector->getInstance(PendingRequests::class)];
     };
 
-    $measureArticle = static function (ResourceInterface $resource): array {
+    $measureArticle = static function (ResourceInterface $resource, PendingRequests|null $pendingRequests = null): array {
+        $pendingRequests?->reset();
+
         $start = hrtime(true);
         $ro = $resource->get('app://self/article', ['id' => 1]);
         $view = (string) $ro;
@@ -59,11 +60,11 @@ require dirname(__DIR__) . '/autoload.php';
 
     $context = 'slow-fake-hal-api-app';
     $sync = $syncResource($context);
-    $async = $asyncResource($context);
+    [$async, $pendingRequests] = $asyncRuntime($context);
 
     [$syncMs, $syncData] = $measureArticle($sync);
-    [$warmupMs] = $measureArticle($async);
-    [$asyncMs, $asyncData] = $measureArticle($async);
+    [$warmupMs] = $measureArticle($async, $pendingRequests);
+    [$asyncMs, $asyncData] = $measureArticle($async, $pendingRequests);
 
     $section('Timing');
     printf("sync:         %.2f ms\n", $syncMs);
