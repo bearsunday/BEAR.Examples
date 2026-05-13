@@ -172,6 +172,13 @@ fwrite(STDOUT, "  → goAuthor id={$artBody['authorId']} → {$auth->code}, name
 
 // ── 4.5) Async embed via ext-parallel ────────────────────────────
 section('4.5) Async embed — Article via bin/async.php (ext-parallel)');
+if (! extension_loaded('parallel')) {
+    fwrite(STDOUT, "ext-parallel is not loaded — skipping parallel run.\n");
+    fwrite(STDOUT, "To exercise this section locally:\n");
+    fwrite(STDOUT, "  composer parallel:up && composer parallel:demo\n");
+    fwrite(STDOUT, "Or install on the host: pecl install parallel (requires ZTS PHP).\n");
+}
+
 if (extension_loaded('parallel')) {
     $env = "DB_DSN='{$dsn}' DB_USER='{$user}' DB_PASSWORD='{$password}'";
     $uri = "'app://self/article?id=1'";
@@ -185,7 +192,9 @@ if (extension_loaded('parallel')) {
     if (! is_array($body)) {
         fwrite(STDOUT, "async command did not return a JSON body; raw output follows.\n");
         fwrite(STDOUT, $out . "\n");
-    } else {
+    }
+
+    if (is_array($body)) {
         $embedded = $body['_embedded'] ?? [];
 
         $report = static fn (string $rel): string => isset($embedded[$rel]) ? 'ok' : 'MISSING';
@@ -199,20 +208,17 @@ if (extension_loaded('parallel')) {
 
     fwrite(STDOUT, "(smoke only — fork-per-run overhead dominates wall clock, so no timing comparison is shown.\n");
     fwrite(STDOUT, " For real benchmarking, drive AsyncLinker in-process within a single PHP run.)\n");
-} else {
-    fwrite(STDOUT, "ext-parallel is not loaded — skipping parallel run.\n");
-    fwrite(STDOUT, "To exercise this section locally:\n");
-    fwrite(STDOUT, "  composer parallel:up && composer parallel:demo\n");
-    fwrite(STDOUT, "Or install on the host: pecl install parallel (requires ZTS PHP).\n");
 }
 
 // ── 5) ALPS validate ──────────────────────────────────────────────
 section('5) ALPS profile — validate');
 $asd = trim((string) shell_exec('which asd'));
+if ($asd === '') {
+    fwrite(STDOUT, "asd not installed (npm install -g app-state-diagram).\n");
+}
+
 if ($asd !== '') {
     run("asd --validate {$root}/var/alps/profile.json 2>&1 | tail -3");
-} else {
-    fwrite(STDOUT, "asd not installed (npm install -g app-state-diagram).\n");
 }
 
 // ── 6) apidoc ─────────────────────────────────────────────────────
