@@ -172,19 +172,27 @@ if (extension_loaded('parallel')) {
     $env = "DB_DSN='{$dsn}' DB_USER='{$user}' DB_PASSWORD='{$password}'";
     $uri = "'app://self/article?id=1'";
 
-    $cmd = "{$env} php {$root}/bin/async.php get {$uri} 2>/dev/null";
+    $cmd = "{$env} php {$root}/bin/async.php get {$uri}";
     fwrite(STDOUT, "$ {$cmd}\n");
-    $out = (string) shell_exec($cmd);
-    $body = json_decode($out, true);
-    $embedded = is_array($body) ? ($body['_embedded'] ?? []) : [];
+    $out = (string) shell_exec("{$cmd} 2>&1");
+    $parts = preg_split('/\R\R/', $out, 2);
+    $payload = $parts[1] ?? $out;
+    $body = json_decode($payload, true);
+    if (! is_array($body)) {
+        fwrite(STDOUT, "async command did not return a JSON body; raw output follows.\n");
+        fwrite(STDOUT, $out . "\n");
+    } else {
+        $embedded = $body['_embedded'] ?? [];
 
-    $report = static fn (string $rel): string => isset($embedded[$rel]) ? 'ok' : 'MISSING';
-    fwrite(STDOUT, sprintf(
-        "GET app://self/article?id=1 (parallel linker) → _embedded.author=%s, category=%s, tagList=%s\n",
-        $report('author'),
-        $report('category'),
-        $report('tagList'),
-    ));
+        $report = static fn (string $rel): string => isset($embedded[$rel]) ? 'ok' : 'MISSING';
+        fwrite(STDOUT, sprintf(
+            "GET app://self/article?id=1 (parallel linker) → _embedded.author=%s, category=%s, tagList=%s\n",
+            $report('author'),
+            $report('category'),
+            $report('tagList'),
+        ));
+    }
+
     fwrite(STDOUT, "(smoke only — fork-per-run overhead dominates wall clock, so no timing comparison is shown.\n");
     fwrite(STDOUT, " For real benchmarking, drive AsyncLinker in-process within a single PHP run.)\n");
 } else {
