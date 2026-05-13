@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/bear-cms/authorProfile",
+  "title": "AuthorProfile",
+  "description": "Cache showcase profile with an explicitly declared Author URI dependency.",
+  "type": "object",
+  "required": [
+    "authorId",
+    "dependencyUri",
+    "cachePattern",
+    "_embedded"
+  ],
+  "properties": {
+    "authorId": {
+      "type": "integer",
+      "description": "Foreign key to Author; must equal _embedded.author.id",
+      "minimum": 1
+    },
+    "dependencyUri": {
+      "type": "string",
+      "description": "Embedded Author resource URI used as the cache dependency",
+      "pattern": "^app://self/cache/author\\?id=[1-9][0-9]*$"
+    },
+    "cachePattern": {
+      "type": "string",
+      "description": "Human-readable name of the demonstrated cache pattern"
+    },
+    "_embedded": {
+      "type": "object",
+      "required": [
+        "author"
+      ],
+      "properties": {
+        "author": {
+          "type": "object",
+          "required": [
+            "id",
+            "name",
+            "email"
+          ],
+          "properties": {
+            "id": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "name": {
+              "type": "string"
+            },
+            "email": {
+              "type": "string",
+              "format": "email"
+            },
+            "bio": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          }
+        }
+      }
+    }
+  }
+}

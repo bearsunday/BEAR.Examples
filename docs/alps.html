@@ -281,14 +281,14 @@ const setupModeSwitch = (switchId, graphId, otherGraphId) => {
     document.addEventListener('DOMContentLoaded', async function() {
         try {
             await Promise.all([
-                    renderGraph("#asd-graph-id", 'digraph application_state_diagram {  graph [    labelloc="t";    fontname="Helvetica"    label="BEAR.Cms Reference CMS";    URL="index.html" target="_parent"  ];  node [shape = box, style = "bold,filled" fillcolor="lightgray"];    Article [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>Article<br />(id)<br />(slug)<br />(title)<br />(body)<br />(excerpt)<br />(status)<br />(publishedAt)<br />(authorId)<br />(categoryId)<br />(Author)<br />(Category)<br />(Tag)<br /></td></tr></table>>,shape=box URL="#Article" target="_parent"]    ArticleList [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>ArticleList<br />(id)<br />(slug)<br />(title)<br />(excerpt)<br />(status)<br />(publishedAt)<br />(page)<br />(perPage)<br />(totalCount)<br /></td></tr></table>>,shape=box URL="#ArticleList" target="_parent"]    Author [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>Author<br />(id)<br />(name)<br />(email)<br />(bio)<br /></td></tr></table>>,shape=box URL="#Author" target="_parent"]    Category [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>Category<br />(id)<br />(slug)<br />(name)<br />(description)<br />(parentId)<br /></td></tr></table>>,shape=box URL="#Category" target="_parent"]    CategoryList [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>CategoryList<br />(id)<br />(slug)<br />(name)<br />(parentId)<br /></td></tr></table>>,shape=box URL="#CategoryList" target="_parent"]    Media [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>Media<br />(id)<br />(filename)<br />(mimeType)<br />(url)<br />(alt)<br />(width)<br />(height)<br /></td></tr></table>>,shape=box URL="#Media" target="_parent"]    Tag [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>Tag<br />(id)<br />(slug)<br />(name)<br /></td></tr></table>>,shape=box URL="#Tag" target="_parent"]    TagList [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>TagList<br />(id)<br />(slug)<br />(name)<br /></td></tr></table>>,shape=box URL="#TagList" target="_parent"]    Article -> Article [label = <doUpdateArticle (idempotent)> URL="#doUpdateArticle" target="_parent" fontsize=13 class="doUpdateArticle" penwidth=1.5];    Article -> ArticleList [label=<<table border="0"><tr><td align="left" href="#doDeleteArticle" tooltip="doDeleteArticle (idempotent)" >doDeleteArticle (idempotent)</td></tr><tr><td align="left" href="#goArticleList" tooltip="goArticleList (safe)" >goArticleList (safe)</td></tr></table>> fontsize=13];    Article -> Author [label = <goAuthor (safe)> URL="#goAuthor" target="_parent" fontsize=13 class="goAuthor" penwidth=1.5];    Article -> Category [label = <goCategory (safe)> URL="#goCategory" target="_parent" fontsize=13 class="goCategory" penwidth=1.5];    ArticleList -> Article [label=<<table border="0"><tr><td align="left" href="#doCreateArticle" tooltip="doCreateArticle (unsafe)" >doCreateArticle (unsafe)</td></tr><tr><td align="left" href="#goArticle" tooltip="goArticle (safe)" >goArticle (safe)</td></tr></table>> fontsize=13];    Author -> ArticleList [label = <goArticleList (safe)> URL="#goArticleList" target="_parent" fontsize=13 class="goArticleList" penwidth=1.5];    Author -> Author [label = <doUpdateAuthor (idempotent)> URL="#doUpdateAuthor" target="_parent" fontsize=13 class="doUpdateAuthor" penwidth=1.5];    Category -> ArticleList [label = <goArticleList (safe)> URL="#goArticleList" target="_parent" fontsize=13 class="goArticleList" penwidth=1.5];    Category -> Category [label = <doUpdateCategory (idempotent)> URL="#doUpdateCategory" target="_parent" fontsize=13 class="doUpdateCategory" penwidth=1.5];    Category -> CategoryList [label=<<table border="0"><tr><td align="left" href="#doDeleteCategory" tooltip="doDeleteCategory (idempotent)" >doDeleteCategory (idempotent)</td></tr><tr><td align="left" href="#goCategoryList" tooltip="goCategoryList (safe)" >goCategoryList (safe)</td></tr></table>> fontsize=13];    CategoryList -> Category [label=<<table border="0"><tr><td align="left" href="#doCreateCategory" tooltip="doCreateCategory (unsafe)" >doCreateCategory (unsafe)</td></tr><tr><td align="left" href="#goCategory" tooltip="goCategory (safe)" >goCategory (safe)</td></tr></table>> fontsize=13];    Media -> Media [label = <doDeleteMedia (idempotent)> URL="#doDeleteMedia" target="_parent" fontsize=13 class="doDeleteMedia" penwidth=1.5];    Tag -> ArticleList [label = <goArticleList (safe)> URL="#goArticleList" target="_parent" fontsize=13 class="goArticleList" penwidth=1.5];    Tag -> TagList [label=<<table border="0"><tr><td align="left" href="#doDeleteTag" tooltip="doDeleteTag (idempotent)" >doDeleteTag (idempotent)</td></tr><tr><td align="left" href="#goTagList" tooltip="goTagList (safe)" >goTagList (safe)</td></tr></table>> fontsize=13];    TagList -> Tag [label=<<table border="0"><tr><td align="left" href="#doCreateTag" tooltip="doCreateTag (unsafe)" >doCreateTag (unsafe)</td></tr><tr><td align="left" href="#goTag" tooltip="goTag (safe)" >goTag (safe)</td></tr></table>> fontsize=13];    Article [label = <Article> URL="#Article" target="_parent"]    ArticleList [label = <ArticleList> URL="#ArticleList" target="_parent"]    Author [label = <Author> URL="#Author" target="_parent"]    Category [label = <Category> URL="#Category" target="_parent"]    CategoryList [label = <CategoryList> URL="#CategoryList" target="_parent"]    Media [label = <Media> URL="#Media" target="_parent"]    Tag [label = <Tag> URL="#Tag" target="_parent"]    TagList [label = <TagList> URL="#TagList" target="_parent"]}'),
-                    renderGraph("#asd-graph-name", 'digraph application_state_diagram {  graph [    labelloc="t";    fontname="Helvetica"    label="BEAR.Cms Reference CMS";    URL="index.html" target="_parent"  ];  node [shape = box, style = "bold,filled" fillcolor="lightgray"];    Article [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>Article Detail<br />(Identifier)<br />(URL-safe Slug)<br />(Title)<br />(Article Body)<br />(Excerpt)<br />(Lifecycle Status)<br />(Published At)<br />(Author ID (FK))<br />(Category ID (FK))<br />(Author Detail)<br />(Category Detail)<br />(Tag Detail)<br /></td></tr></table>>,shape=box URL="#Article" target="_parent"]    ArticleList [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>Article List<br />(Identifier)<br />(URL-safe Slug)<br />(Title)<br />(Excerpt)<br />(Lifecycle Status)<br />(Published At)<br />(Page Number)<br />(Per-Page Count)<br />(Total Count)<br /></td></tr></table>>,shape=box URL="#ArticleList" target="_parent"]    Author [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>Author Detail<br />(Identifier)<br />(Name)<br />(Email)<br />(Biography)<br /></td></tr></table>>,shape=box URL="#Author" target="_parent"]    Category [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>Category Detail<br />(Identifier)<br />(URL-safe Slug)<br />(Name)<br />(Description)<br />(Parent Category ID (self-FK))<br /></td></tr></table>>,shape=box URL="#Category" target="_parent"]    CategoryList [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>Category List<br />(Identifier)<br />(URL-safe Slug)<br />(Name)<br />(Parent Category ID (self-FK))<br /></td></tr></table>>,shape=box URL="#CategoryList" target="_parent"]    Media [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>Media Detail<br />(Identifier)<br />(Filename)<br />(MIME Type)<br />(URL)<br />(Alt Text)<br />(Width)<br />(Height)<br /></td></tr></table>>,shape=box URL="#Media" target="_parent"]    Tag [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>Tag Detail<br />(Identifier)<br />(URL-safe Slug)<br />(Name)<br /></td></tr></table>>,shape=box URL="#Tag" target="_parent"]    TagList [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>Tag List<br />(Identifier)<br />(URL-safe Slug)<br />(Name)<br /></td></tr></table>>,shape=box URL="#TagList" target="_parent"]    Article -> Article [label = <<u>Update Article</u>> URL="#doUpdateArticle" target="_parent" fontsize=13 class="doUpdateArticle" penwidth=1.5];    Article -> ArticleList [label=<<table border="0"><tr><td align="left" href="#doDeleteArticle" tooltip="doDeleteArticle (idempotent)" ><u>Delete Article</u></td></tr><tr><td align="left" href="#goArticleList" tooltip="goArticleList (safe)" >View Article List</td></tr></table>> fontsize=13];    Article -> Author [label = <View Author> URL="#goAuthor" target="_parent" fontsize=13 class="goAuthor" penwidth=1.5];    Article -> Category [label = <View Category> URL="#goCategory" target="_parent" fontsize=13 class="goCategory" penwidth=1.5];    ArticleList -> Article [label=<<table border="0"><tr><td align="left" href="#doCreateArticle" tooltip="doCreateArticle (unsafe)" ><b><u>Create Article</u></b></td></tr><tr><td align="left" href="#goArticle" tooltip="goArticle (safe)" >View Article</td></tr></table>> fontsize=13];    Author -> ArticleList [label = <View Article List> URL="#goArticleList" target="_parent" fontsize=13 class="goArticleList" penwidth=1.5];    Author -> Author [label = <<u>Update Author</u>> URL="#doUpdateAuthor" target="_parent" fontsize=13 class="doUpdateAuthor" penwidth=1.5];    Category -> ArticleList [label = <View Article List> URL="#goArticleList" target="_parent" fontsize=13 class="goArticleList" penwidth=1.5];    Category -> Category [label = <<u>Update Category</u>> URL="#doUpdateCategory" target="_parent" fontsize=13 class="doUpdateCategory" penwidth=1.5];    Category -> CategoryList [label=<<table border="0"><tr><td align="left" href="#doDeleteCategory" tooltip="doDeleteCategory (idempotent)" ><u>Delete Category</u></td></tr><tr><td align="left" href="#goCategoryList" tooltip="goCategoryList (safe)" >View Category List</td></tr></table>> fontsize=13];    CategoryList -> Category [label=<<table border="0"><tr><td align="left" href="#doCreateCategory" tooltip="doCreateCategory (unsafe)" ><b><u>Create Category</u></b></td></tr><tr><td align="left" href="#goCategory" tooltip="goCategory (safe)" >View Category</td></tr></table>> fontsize=13];    Media -> Media [label = <<u>Delete Media</u>> URL="#doDeleteMedia" target="_parent" fontsize=13 class="doDeleteMedia" penwidth=1.5];    Tag -> ArticleList [label = <View Article List> URL="#goArticleList" target="_parent" fontsize=13 class="goArticleList" penwidth=1.5];    Tag -> TagList [label=<<table border="0"><tr><td align="left" href="#doDeleteTag" tooltip="doDeleteTag (idempotent)" ><u>Delete Tag</u></td></tr><tr><td align="left" href="#goTagList" tooltip="goTagList (safe)" >View Tag List</td></tr></table>> fontsize=13];    TagList -> Tag [label=<<table border="0"><tr><td align="left" href="#doCreateTag" tooltip="doCreateTag (unsafe)" ><b><u>Create Tag</u></b></td></tr><tr><td align="left" href="#goTag" tooltip="goTag (safe)" >View Tag</td></tr></table>> fontsize=13];    Article [label = <Article Detail> URL="#Article" target="_parent"]    ArticleList [label = <Article List> URL="#ArticleList" target="_parent"]    Author [label = <Author Detail> URL="#Author" target="_parent"]    Category [label = <Category Detail> URL="#Category" target="_parent"]    CategoryList [label = <Category List> URL="#CategoryList" target="_parent"]    Media [label = <Media Detail> URL="#Media" target="_parent"]    Tag [label = <Tag Detail> URL="#Tag" target="_parent"]    TagList [label = <Tag List> URL="#TagList" target="_parent"]}')
+                    renderGraph("#asd-graph-id", 'digraph application_state_diagram {  graph [    labelloc="t";    fontname="Helvetica"    label="BEAR.Cms Reference CMS";    URL="index.html" target="_parent"  ];  node [shape = box, style = "bold,filled" fillcolor="lightgray"];    Article [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>Article<br />(id)<br />(slug)<br />(title)<br />(body)<br />(excerpt)<br />(status)<br />(publishedAt)<br />(authorId)<br />(categoryId)<br />(Author)<br />(Category)<br />(Tag)<br /></td></tr></table>>,shape=box URL="#Article" target="_parent"]    ArticleList [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>ArticleList<br />(id)<br />(slug)<br />(title)<br />(excerpt)<br />(status)<br />(publishedAt)<br />(page)<br />(perPage)<br />(totalCount)<br /></td></tr></table>>,shape=box URL="#ArticleList" target="_parent"]    Author [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>Author<br />(id)<br />(name)<br />(email)<br />(bio)<br /></td></tr></table>>,shape=box URL="#Author" target="_parent"]    AuthorProfile [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>AuthorProfile<br />(authorId)<br />(dependencyUri)<br />(cachePattern)<br />(Author)<br /></td></tr></table>>,shape=box URL="#AuthorProfile" target="_parent"]    Category [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>Category<br />(id)<br />(slug)<br />(name)<br />(description)<br />(parentId)<br /></td></tr></table>>,shape=box URL="#Category" target="_parent"]    CategoryList [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>CategoryList<br />(id)<br />(slug)<br />(name)<br />(parentId)<br /></td></tr></table>>,shape=box URL="#CategoryList" target="_parent"]    Media [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>Media<br />(id)<br />(filename)<br />(mimeType)<br />(url)<br />(alt)<br />(width)<br />(height)<br /></td></tr></table>>,shape=box URL="#Media" target="_parent"]    Tag [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>Tag<br />(id)<br />(slug)<br />(name)<br /></td></tr></table>>,shape=box URL="#Tag" target="_parent"]    TagList [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>TagList<br />(id)<br />(slug)<br />(name)<br /></td></tr></table>>,shape=box URL="#TagList" target="_parent"]    Article -> Article [label = <doUpdateArticle (idempotent)> URL="#doUpdateArticle" target="_parent" fontsize=13 class="doUpdateArticle" penwidth=1.5];    Article -> ArticleList [label=<<table border="0"><tr><td align="left" href="#doDeleteArticle" tooltip="doDeleteArticle (idempotent)" >doDeleteArticle (idempotent)</td></tr><tr><td align="left" href="#goArticleList" tooltip="goArticleList (safe)" >goArticleList (safe)</td></tr></table>> fontsize=13];    Article -> Author [label = <goAuthor (safe)> URL="#goAuthor" target="_parent" fontsize=13 class="goAuthor" penwidth=1.5];    Article -> Category [label = <goCategory (safe)> URL="#goCategory" target="_parent" fontsize=13 class="goCategory" penwidth=1.5];    ArticleList -> Article [label=<<table border="0"><tr><td align="left" href="#doCreateArticle" tooltip="doCreateArticle (unsafe)" >doCreateArticle (unsafe)</td></tr><tr><td align="left" href="#goArticle" tooltip="goArticle (safe)" >goArticle (safe)</td></tr></table>> fontsize=13];    Author -> ArticleList [label = <goArticleList (safe)> URL="#goArticleList" target="_parent" fontsize=13 class="goArticleList" penwidth=1.5];    Author -> Author [label = <doUpdateAuthor (idempotent)> URL="#doUpdateAuthor" target="_parent" fontsize=13 class="doUpdateAuthor" penwidth=1.5];    AuthorProfile -> AuthorProfile [label = <goAuthorProfile (safe)> URL="#goAuthorProfile" target="_parent" fontsize=13 class="goAuthorProfile" penwidth=1.5];    Category -> ArticleList [label = <goArticleList (safe)> URL="#goArticleList" target="_parent" fontsize=13 class="goArticleList" penwidth=1.5];    Category -> Category [label = <doUpdateCategory (idempotent)> URL="#doUpdateCategory" target="_parent" fontsize=13 class="doUpdateCategory" penwidth=1.5];    Category -> CategoryList [label=<<table border="0"><tr><td align="left" href="#doDeleteCategory" tooltip="doDeleteCategory (idempotent)" >doDeleteCategory (idempotent)</td></tr><tr><td align="left" href="#goCategoryList" tooltip="goCategoryList (safe)" >goCategoryList (safe)</td></tr></table>> fontsize=13];    CategoryList -> Category [label=<<table border="0"><tr><td align="left" href="#doCreateCategory" tooltip="doCreateCategory (unsafe)" >doCreateCategory (unsafe)</td></tr><tr><td align="left" href="#goCategory" tooltip="goCategory (safe)" >goCategory (safe)</td></tr></table>> fontsize=13];    Media -> Media [label = <doDeleteMedia (idempotent)> URL="#doDeleteMedia" target="_parent" fontsize=13 class="doDeleteMedia" penwidth=1.5];    Tag -> ArticleList [label = <goArticleList (safe)> URL="#goArticleList" target="_parent" fontsize=13 class="goArticleList" penwidth=1.5];    Tag -> TagList [label=<<table border="0"><tr><td align="left" href="#doDeleteTag" tooltip="doDeleteTag (idempotent)" >doDeleteTag (idempotent)</td></tr><tr><td align="left" href="#goTagList" tooltip="goTagList (safe)" >goTagList (safe)</td></tr></table>> fontsize=13];    TagList -> Tag [label=<<table border="0"><tr><td align="left" href="#doCreateTag" tooltip="doCreateTag (unsafe)" >doCreateTag (unsafe)</td></tr><tr><td align="left" href="#goTag" tooltip="goTag (safe)" >goTag (safe)</td></tr></table>> fontsize=13];    Article [label = <Article> URL="#Article" target="_parent"]    ArticleList [label = <ArticleList> URL="#ArticleList" target="_parent"]    Author [label = <Author> URL="#Author" target="_parent"]    Category [label = <Category> URL="#Category" target="_parent"]    AuthorProfile [label = <AuthorProfile> URL="#AuthorProfile" target="_parent"]    CategoryList [label = <CategoryList> URL="#CategoryList" target="_parent"]    Media [label = <Media> URL="#Media" target="_parent"]    Tag [label = <Tag> URL="#Tag" target="_parent"]    TagList [label = <TagList> URL="#TagList" target="_parent"]}'),
+                    renderGraph("#asd-graph-name", 'digraph application_state_diagram {  graph [    labelloc="t";    fontname="Helvetica"    label="BEAR.Cms Reference CMS";    URL="index.html" target="_parent"  ];  node [shape = box, style = "bold,filled" fillcolor="lightgray"];    Article [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>Article Detail<br />(Identifier)<br />(URL-safe Slug)<br />(Title)<br />(Article Body)<br />(Excerpt)<br />(Lifecycle Status)<br />(Published At)<br />(Author ID (FK))<br />(Category ID (FK))<br />(Author Detail)<br />(Category Detail)<br />(Tag Detail)<br /></td></tr></table>>,shape=box URL="#Article" target="_parent"]    ArticleList [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>Article List<br />(Identifier)<br />(URL-safe Slug)<br />(Title)<br />(Excerpt)<br />(Lifecycle Status)<br />(Published At)<br />(Page Number)<br />(Per-Page Count)<br />(Total Count)<br /></td></tr></table>>,shape=box URL="#ArticleList" target="_parent"]    Author [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>Author Detail<br />(Identifier)<br />(Name)<br />(Email)<br />(Biography)<br /></td></tr></table>>,shape=box URL="#Author" target="_parent"]    AuthorProfile [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>Author Profile Cache View<br />(Author ID (FK))<br />(Cache Dependency URI)<br />(Cache Pattern)<br />(Author Detail)<br /></td></tr></table>>,shape=box URL="#AuthorProfile" target="_parent"]    Category [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>Category Detail<br />(Identifier)<br />(URL-safe Slug)<br />(Name)<br />(Description)<br />(Parent Category ID (self-FK))<br /></td></tr></table>>,shape=box URL="#Category" target="_parent"]    CategoryList [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>Category List<br />(Identifier)<br />(URL-safe Slug)<br />(Name)<br />(Parent Category ID (self-FK))<br /></td></tr></table>>,shape=box URL="#CategoryList" target="_parent"]    Media [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>Media Detail<br />(Identifier)<br />(Filename)<br />(MIME Type)<br />(URL)<br />(Alt Text)<br />(Width)<br />(Height)<br /></td></tr></table>>,shape=box URL="#Media" target="_parent"]    Tag [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>Tag Detail<br />(Identifier)<br />(URL-safe Slug)<br />(Name)<br /></td></tr></table>>,shape=box URL="#Tag" target="_parent"]    TagList [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>Tag List<br />(Identifier)<br />(URL-safe Slug)<br />(Name)<br /></td></tr></table>>,shape=box URL="#TagList" target="_parent"]    Article -> Article [label = <<u>Update Article</u>> URL="#doUpdateArticle" target="_parent" fontsize=13 class="doUpdateArticle" penwidth=1.5];    Article -> ArticleList [label=<<table border="0"><tr><td align="left" href="#doDeleteArticle" tooltip="doDeleteArticle (idempotent)" ><u>Delete Article</u></td></tr><tr><td align="left" href="#goArticleList" tooltip="goArticleList (safe)" >View Article List</td></tr></table>> fontsize=13];    Article -> Author [label = <View Author> URL="#goAuthor" target="_parent" fontsize=13 class="goAuthor" penwidth=1.5];    Article -> Category [label = <View Category> URL="#goCategory" target="_parent" fontsize=13 class="goCategory" penwidth=1.5];    ArticleList -> Article [label=<<table border="0"><tr><td align="left" href="#doCreateArticle" tooltip="doCreateArticle (unsafe)" ><b><u>Create Article</u></b></td></tr><tr><td align="left" href="#goArticle" tooltip="goArticle (safe)" >View Article</td></tr></table>> fontsize=13];    Author -> ArticleList [label = <View Article List> URL="#goArticleList" target="_parent" fontsize=13 class="goArticleList" penwidth=1.5];    Author -> Author [label = <<u>Update Author</u>> URL="#doUpdateAuthor" target="_parent" fontsize=13 class="doUpdateAuthor" penwidth=1.5];    AuthorProfile -> AuthorProfile [label = <View Author Cache Profile> URL="#goAuthorProfile" target="_parent" fontsize=13 class="goAuthorProfile" penwidth=1.5];    Category -> ArticleList [label = <View Article List> URL="#goArticleList" target="_parent" fontsize=13 class="goArticleList" penwidth=1.5];    Category -> Category [label = <<u>Update Category</u>> URL="#doUpdateCategory" target="_parent" fontsize=13 class="doUpdateCategory" penwidth=1.5];    Category -> CategoryList [label=<<table border="0"><tr><td align="left" href="#doDeleteCategory" tooltip="doDeleteCategory (idempotent)" ><u>Delete Category</u></td></tr><tr><td align="left" href="#goCategoryList" tooltip="goCategoryList (safe)" >View Category List</td></tr></table>> fontsize=13];    CategoryList -> Category [label=<<table border="0"><tr><td align="left" href="#doCreateCategory" tooltip="doCreateCategory (unsafe)" ><b><u>Create Category</u></b></td></tr><tr><td align="left" href="#goCategory" tooltip="goCategory (safe)" >View Category</td></tr></table>> fontsize=13];    Media -> Media [label = <<u>Delete Media</u>> URL="#doDeleteMedia" target="_parent" fontsize=13 class="doDeleteMedia" penwidth=1.5];    Tag -> ArticleList [label = <View Article List> URL="#goArticleList" target="_parent" fontsize=13 class="goArticleList" penwidth=1.5];    Tag -> TagList [label=<<table border="0"><tr><td align="left" href="#doDeleteTag" tooltip="doDeleteTag (idempotent)" ><u>Delete Tag</u></td></tr><tr><td align="left" href="#goTagList" tooltip="goTagList (safe)" >View Tag List</td></tr></table>> fontsize=13];    TagList -> Tag [label=<<table border="0"><tr><td align="left" href="#doCreateTag" tooltip="doCreateTag (unsafe)" ><b><u>Create Tag</u></b></td></tr><tr><td align="left" href="#goTag" tooltip="goTag (safe)" >View Tag</td></tr></table>> fontsize=13];    Article [label = <Article Detail> URL="#Article" target="_parent"]    ArticleList [label = <Article List> URL="#ArticleList" target="_parent"]    Author [label = <Author Detail> URL="#Author" target="_parent"]    Category [label = <Category Detail> URL="#Category" target="_parent"]    AuthorProfile [label = <Author Profile Cache View> URL="#AuthorProfile" target="_parent"]    CategoryList [label = <Category List> URL="#CategoryList" target="_parent"]    Media [label = <Media Detail> URL="#Media" target="_parent"]    Tag [label = <Tag Detail> URL="#Tag" target="_parent"]    TagList [label = <Tag List> URL="#TagList" target="_parent"]}')
             ]);
             setupTagTrigger();
             setupModeSwitch('asd-show-id', 'asd-graph-id', 'asd-graph-name');
             setupModeSwitch('asd-show-name', 'asd-graph-name', 'asd-graph-id');
             applySmoothScrollToLinks(document.querySelectorAll('a[href^="#"]'));
-            setupTagEventListener('article', ['Article', 'ArticleList', 'doCreateArticle', 'doDeleteArticle', 'doUpdateArticle', 'goArticle', 'goArticleList'], 'LightGreen'); setupTagEventListener('author', ['Author', 'doCreateAuthor', 'doUpdateAuthor', 'goAuthor'], 'SkyBlue'); setupTagEventListener('category', ['Category', 'CategoryList', 'doCreateCategory', 'doDeleteCategory', 'doUpdateCategory', 'goCategory', 'goCategoryList'], 'LightCoral'); setupTagEventListener('flow-browse', ['ArticleList', 'CategoryList', 'TagList', 'goArticleList', 'goCategoryList', 'goTagList'], 'LightSalmon'); setupTagEventListener('flow-publish', ['doCreateArticle', 'doDeleteArticle', 'doUpdateArticle'], 'Khaki'); setupTagEventListener('media', ['Media', 'doCreateMedia', 'doDeleteMedia', 'goMedia'], 'Plum'); setupTagEventListener('tag', ['Tag', 'TagList', 'doCreateTag', 'doDeleteTag', 'goTag', 'goTagList'], 'Wheat');
+            setupTagEventListener('article', ['Article', 'ArticleList', 'doCreateArticle', 'doDeleteArticle', 'doUpdateArticle', 'goArticle', 'goArticleList'], 'LightGreen'); setupTagEventListener('author', ['Author', 'AuthorProfile', 'doCreateAuthor', 'doUpdateAuthor', 'doUpdateCacheAuthor', 'goAuthor', 'goAuthorProfile', 'goCacheAuthor'], 'SkyBlue'); setupTagEventListener('cache', ['AuthorProfile', 'doUpdateCacheAuthor', 'goAuthorProfile', 'goCacheAuthor'], 'LightCoral'); setupTagEventListener('category', ['Category', 'CategoryList', 'doCreateCategory', 'doDeleteCategory', 'doUpdateCategory', 'goCategory', 'goCategoryList'], 'LightSalmon'); setupTagEventListener('flow-browse', ['ArticleList', 'CategoryList', 'TagList', 'goArticleList', 'goCategoryList', 'goTagList'], 'Khaki'); setupTagEventListener('flow-publish', ['doCreateArticle', 'doDeleteArticle', 'doUpdateArticle'], 'Plum'); setupTagEventListener('media', ['Media', 'doCreateMedia', 'doDeleteMedia', 'goMedia'], 'Wheat'); setupTagEventListener('tag', ['Tag', 'TagList', 'doCreateTag', 'doDeleteTag', 'goTag', 'goTagList'], 'LightGreen');
         } catch (error) {
                console.error("Error in main process:", error);
         }});
@@ -305,6 +305,7 @@ const setupModeSwitch = (switchId, graphId, otherGraphId) => {
 <div class="selector-container"><span class="selector-label">Tags:</span>
 <span class="selector-option"><input type="checkbox" id="tag-article" class="tag-trigger-checkbox" data-tag="article" name="tag-article"><label for="tag-article"> article</label></span>
 <span class="selector-option"><input type="checkbox" id="tag-author" class="tag-trigger-checkbox" data-tag="author" name="tag-author"><label for="tag-author"> author</label></span>
+<span class="selector-option"><input type="checkbox" id="tag-cache" class="tag-trigger-checkbox" data-tag="cache" name="tag-cache"><label for="tag-cache"> cache</label></span>
 <span class="selector-option"><input type="checkbox" id="tag-category" class="tag-trigger-checkbox" data-tag="category" name="tag-category"><label for="tag-category"> category</label></span>
 <span class="selector-option"><input type="checkbox" id="tag-flow-browse" class="tag-trigger-checkbox" data-tag="flow-browse" name="tag-flow-browse"><label for="tag-flow-browse"> flow-browse</label></span>
 <span class="selector-option"><input type="checkbox" id="tag-flow-publish" class="tag-trigger-checkbox" data-tag="flow-publish" name="tag-flow-publish"><label for="tag-flow-publish"> flow-publish</label></span>
@@ -322,11 +323,14 @@ const setupModeSwitch = (switchId, graphId, otherGraphId) => {
 <li><span class="indicator semantic" data-tooltip="semantic"> </span> <a href="#ArticleList">ArticleList</a></li>
 <li><span class="indicator semantic" data-tooltip="semantic"> </span> <a href="#Author">Author</a></li>
 <li><span class="indicator semantic" data-tooltip="semantic"> </span> <a href="#authorId">authorId</a></li>
+<li><span class="indicator semantic" data-tooltip="semantic"> </span> <a href="#AuthorProfile">AuthorProfile</a></li>
 <li><span class="indicator semantic" data-tooltip="semantic"> </span> <a href="#bio">bio</a></li>
 <li><span class="indicator semantic" data-tooltip="semantic"> </span> <a href="#body">body</a></li>
+<li><span class="indicator semantic" data-tooltip="semantic"> </span> <a href="#cachePattern">cachePattern</a></li>
 <li><span class="indicator semantic" data-tooltip="semantic"> </span> <a href="#Category">Category</a></li>
 <li><span class="indicator semantic" data-tooltip="semantic"> </span> <a href="#categoryId">categoryId</a></li>
 <li><span class="indicator semantic" data-tooltip="semantic"> </span> <a href="#CategoryList">CategoryList</a></li>
+<li><span class="indicator semantic" data-tooltip="semantic"> </span> <a href="#dependencyUri">dependencyUri</a></li>
 <li><span class="indicator semantic" data-tooltip="semantic"> </span> <a href="#description">description</a></li>
 <li><span class="indicator unsafe" data-tooltip="unsafe"> </span> <a href="#doCreateArticle">doCreateArticle</a></li>
 <li><span class="indicator unsafe" data-tooltip="unsafe"> </span> <a href="#doCreateAuthor">doCreateAuthor</a></li>
@@ -339,6 +343,7 @@ const setupModeSwitch = (switchId, graphId, otherGraphId) => {
 <li><span class="indicator idempotent" data-tooltip="idempotent"> </span> <a href="#doDeleteTag">doDeleteTag</a></li>
 <li><span class="indicator idempotent" data-tooltip="idempotent"> </span> <a href="#doUpdateArticle">doUpdateArticle</a></li>
 <li><span class="indicator idempotent" data-tooltip="idempotent"> </span> <a href="#doUpdateAuthor">doUpdateAuthor</a></li>
+<li><span class="indicator idempotent" data-tooltip="idempotent"> </span> <a href="#doUpdateCacheAuthor">doUpdateCacheAuthor</a></li>
 <li><span class="indicator idempotent" data-tooltip="idempotent"> </span> <a href="#doUpdateCategory">doUpdateCategory</a></li>
 <li><span class="indicator semantic" data-tooltip="semantic"> </span> <a href="#email">email</a></li>
 <li><span class="indicator semantic" data-tooltip="semantic"> </span> <a href="#excerpt">excerpt</a></li>
@@ -346,6 +351,8 @@ const setupModeSwitch = (switchId, graphId, otherGraphId) => {
 <li><span class="indicator safe" data-tooltip="safe"> </span> <a href="#goArticle">goArticle</a></li>
 <li><span class="indicator safe" data-tooltip="safe"> </span> <a href="#goArticleList">goArticleList</a></li>
 <li><span class="indicator safe" data-tooltip="safe"> </span> <a href="#goAuthor">goAuthor</a></li>
+<li><span class="indicator safe" data-tooltip="safe"> </span> <a href="#goAuthorProfile">goAuthorProfile</a></li>
+<li><span class="indicator safe" data-tooltip="safe"> </span> <a href="#goCacheAuthor">goCacheAuthor</a></li>
 <li><span class="indicator safe" data-tooltip="safe"> </span> <a href="#goCategory">goCategory</a></li>
 <li><span class="indicator safe" data-tooltip="safe"> </span> <a href="#goCategoryList">goCategoryList</a></li>
 <li><span class="indicator safe" data-tooltip="safe"> </span> <a href="#goMedia">goMedia</a></li>
@@ -649,6 +656,53 @@ const setupModeSwitch = (switchId, graphId, otherGraphId) => {
 <li>title: Author ID (FK)</li>
 </ul>
 
+<h3><a id="AuthorProfile">AuthorProfile</a></h3>
+
+<ul>
+<li>type: semantic</li>
+<li>title: Author Profile Cache View</li>
+<li>doc: Cache showcase profile with an explicitly declared Author URI dependency.</li>
+<li>tag: <a href="#tag-author">author</a>, <a href="#tag-cache">cache</a></li>
+<li>descriptor</li>
+</ul>
+
+<table>
+<thead>
+<tr>
+  <th>id</th>
+  <th>type</th>
+  <th>title</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><a href="#authorId">authorId</a></td>
+  <td>semantic</td>
+  <td>Author ID (FK)</td>
+</tr>
+<tr>
+  <td><a href="#dependencyUri">dependencyUri</a></td>
+  <td>semantic</td>
+  <td>Cache Dependency URI</td>
+</tr>
+<tr>
+  <td><a href="#cachePattern">cachePattern</a></td>
+  <td>semantic</td>
+  <td>Cache Pattern</td>
+</tr>
+<tr>
+  <td><a href="#Author">Author</a></td>
+  <td>semantic</td>
+  <td>Author Detail</td>
+</tr>
+<tr>
+  <td><a href="#goAuthorProfile">goAuthorProfile</a></td>
+  <td>safe</td>
+  <td>View Author Cache Profile</td>
+</tr>
+</tbody>
+</table>
+
 <h3><a id="bio">bio</a></h3>
 
 <ul>
@@ -663,6 +717,14 @@ const setupModeSwitch = (switchId, graphId, otherGraphId) => {
 <li>type: semantic</li>
 <li>title: Article Body</li>
 <li>def: <a href="https://schema.org/articleBody">https://schema.org/articleBody</a></li>
+</ul>
+
+<h3><a id="cachePattern">cachePattern</a></h3>
+
+<ul>
+<li>type: semantic</li>
+<li>title: Cache Pattern</li>
+<li>doc: Human-readable label for the demonstrated cache strategy.</li>
 </ul>
 
 <h3><a id="Category">Category</a></h3>
@@ -788,6 +850,14 @@ const setupModeSwitch = (switchId, graphId, otherGraphId) => {
 </tr>
 </tbody>
 </table>
+
+<h3><a id="dependencyUri">dependencyUri</a></h3>
+
+<ul>
+<li>type: semantic</li>
+<li>title: Cache Dependency URI</li>
+<li>doc: Resource URI whose Surrogate-Key tag is declared as a cache dependency.</li>
+</ul>
 
 <h3><a id="description">description</a></h3>
 
@@ -1215,6 +1285,49 @@ const setupModeSwitch = (switchId, graphId, otherGraphId) => {
 </tbody>
 </table>
 
+<h3><a id="doUpdateCacheAuthor">doUpdateCacheAuthor</a></h3>
+
+<ul>
+<li>type: idempotent</li>
+<li>title: Update Cache Author</li>
+<li>doc: Update the Author through the cache showcase endpoint and invalidate dependent profile responses.</li>
+<li>tag: <a href="#tag-author">author</a>, <a href="#tag-cache">cache</a></li>
+<li>rt: <a href="#Author">Author</a></li>
+<li>descriptor</li>
+</ul>
+
+<table>
+<thead>
+<tr>
+  <th>id</th>
+  <th>type</th>
+  <th>title</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><a href="#id">id</a></td>
+  <td>semantic</td>
+  <td>Identifier</td>
+</tr>
+<tr>
+  <td><a href="#name">name</a></td>
+  <td>semantic</td>
+  <td>Name</td>
+</tr>
+<tr>
+  <td><a href="#email">email</a></td>
+  <td>semantic</td>
+  <td>Email</td>
+</tr>
+<tr>
+  <td><a href="#bio">bio</a></td>
+  <td>semantic</td>
+  <td>Biography</td>
+</tr>
+</tbody>
+</table>
+
 <h3><a id="doUpdateCategory">doUpdateCategory</a></h3>
 
 <ul>
@@ -1362,6 +1475,62 @@ const setupModeSwitch = (switchId, graphId, otherGraphId) => {
 <li>type: safe</li>
 <li>title: View Author</li>
 <li>tag: <a href="#tag-author">author</a></li>
+<li>rt: <a href="#Author">Author</a></li>
+<li>descriptor</li>
+</ul>
+
+<table>
+<thead>
+<tr>
+  <th>id</th>
+  <th>type</th>
+  <th>title</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><a href="#id">id</a></td>
+  <td>semantic</td>
+  <td>Identifier</td>
+</tr>
+</tbody>
+</table>
+
+<h3><a id="goAuthorProfile">goAuthorProfile</a></h3>
+
+<ul>
+<li>type: safe</li>
+<li>title: View Author Cache Profile</li>
+<li>doc: Retrieve the cache showcase profile for an author and its explicit dependency URI.</li>
+<li>tag: <a href="#tag-author">author</a>, <a href="#tag-cache">cache</a></li>
+<li>rt: <a href="#AuthorProfile">AuthorProfile</a></li>
+<li>descriptor</li>
+</ul>
+
+<table>
+<thead>
+<tr>
+  <th>id</th>
+  <th>type</th>
+  <th>title</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><a href="#authorId">authorId</a></td>
+  <td>semantic</td>
+  <td>Author ID (FK)</td>
+</tr>
+</tbody>
+</table>
+
+<h3><a id="goCacheAuthor">goCacheAuthor</a></h3>
+
+<ul>
+<li>type: safe</li>
+<li>title: View Cache Author</li>
+<li>doc: Read the Author shape through the cache showcase endpoint.</li>
+<li>tag: <a href="#tag-author">author</a>, <a href="#tag-cache">cache</a></li>
 <li>rt: <a href="#Author">Author</a></li>
 <li>descriptor</li>
 </ul>
@@ -1792,6 +1961,8 @@ const setupModeSwitch = (switchId, graphId, otherGraphId) => {
       {&quot;id&quot;: &quot;parentId&quot;, &quot;title&quot;: &quot;Parent Category ID (self-FK)&quot;, &quot;doc&quot;: {&quot;value&quot;: &quot;Nullable reference for hierarchical categories.&quot;}},
       {&quot;id&quot;: &quot;tagId&quot;, &quot;title&quot;: &quot;Tag ID (filter)&quot;},
       {&quot;id&quot;: &quot;articleId&quot;, &quot;title&quot;: &quot;Article ID (filter)&quot;},
+      {&quot;id&quot;: &quot;dependencyUri&quot;, &quot;title&quot;: &quot;Cache Dependency URI&quot;, &quot;doc&quot;: {&quot;value&quot;: &quot;Resource URI whose Surrogate-Key tag is declared as a cache dependency.&quot;}},
+      {&quot;id&quot;: &quot;cachePattern&quot;, &quot;title&quot;: &quot;Cache Pattern&quot;, &quot;doc&quot;: {&quot;value&quot;: &quot;Human-readable label for the demonstrated cache strategy.&quot;}},
 
       {&quot;id&quot;: &quot;page&quot;, &quot;title&quot;: &quot;Page Number&quot;, &quot;doc&quot;: {&quot;value&quot;: &quot;1-indexed pagination page.&quot;}},
       {&quot;id&quot;: &quot;perPage&quot;, &quot;title&quot;: &quot;Per-Page Count&quot;},
@@ -1878,6 +2049,14 @@ const setupModeSwitch = (switchId, graphId, otherGraphId) => {
         {&quot;href&quot;: &quot;#doUpdateAuthor&quot;}
       ], &quot;tag&quot;: &quot;author&quot;},
 
+      {&quot;id&quot;: &quot;AuthorProfile&quot;, &quot;title&quot;: &quot;Author Profile Cache View&quot;, &quot;doc&quot;: {&quot;value&quot;: &quot;Cache showcase profile with an explicitly declared Author URI dependency.&quot;}, &quot;descriptor&quot;: [
+        {&quot;href&quot;: &quot;#authorId&quot;},
+        {&quot;href&quot;: &quot;#dependencyUri&quot;},
+        {&quot;href&quot;: &quot;#cachePattern&quot;},
+        {&quot;href&quot;: &quot;#Author&quot;},
+        {&quot;href&quot;: &quot;#goAuthorProfile&quot;}
+      ], &quot;tag&quot;: &quot;author cache&quot;},
+
       {&quot;id&quot;: &quot;Media&quot;, &quot;title&quot;: &quot;Media Detail&quot;, &quot;descriptor&quot;: [
         {&quot;href&quot;: &quot;#id&quot;},
         {&quot;href&quot;: &quot;#filename&quot;},
@@ -1909,6 +2088,12 @@ const setupModeSwitch = (switchId, graphId, otherGraphId) => {
       ]},
       {&quot;id&quot;: &quot;goAuthor&quot;, &quot;type&quot;: &quot;safe&quot;, &quot;rt&quot;: &quot;#Author&quot;, &quot;title&quot;: &quot;View Author&quot;, &quot;tag&quot;: &quot;author&quot;, &quot;descriptor&quot;: [
         {&quot;href&quot;: &quot;#id&quot;}
+      ]},
+      {&quot;id&quot;: &quot;goCacheAuthor&quot;, &quot;type&quot;: &quot;safe&quot;, &quot;rt&quot;: &quot;#Author&quot;, &quot;title&quot;: &quot;View Cache Author&quot;, &quot;doc&quot;: {&quot;value&quot;: &quot;Read the Author shape through the cache showcase endpoint.&quot;}, &quot;tag&quot;: &quot;author cache&quot;, &quot;descriptor&quot;: [
+        {&quot;href&quot;: &quot;#id&quot;}
+      ]},
+      {&quot;id&quot;: &quot;goAuthorProfile&quot;, &quot;type&quot;: &quot;safe&quot;, &quot;rt&quot;: &quot;#AuthorProfile&quot;, &quot;title&quot;: &quot;View Author Cache Profile&quot;, &quot;doc&quot;: {&quot;value&quot;: &quot;Retrieve the cache showcase profile for an author and its explicit dependency URI.&quot;}, &quot;tag&quot;: &quot;author cache&quot;, &quot;descriptor&quot;: [
+        {&quot;href&quot;: &quot;#authorId&quot;}
       ]},
       {&quot;id&quot;: &quot;goMedia&quot;, &quot;type&quot;: &quot;safe&quot;, &quot;rt&quot;: &quot;#Media&quot;, &quot;title&quot;: &quot;View Media&quot;, &quot;tag&quot;: &quot;media&quot;, &quot;descriptor&quot;: [
         {&quot;href&quot;: &quot;#id&quot;}
@@ -1964,6 +2149,12 @@ const setupModeSwitch = (switchId, graphId, otherGraphId) => {
         {&quot;href&quot;: &quot;#bio&quot;}
       ]},
       {&quot;id&quot;: &quot;doUpdateAuthor&quot;, &quot;type&quot;: &quot;idempotent&quot;, &quot;rt&quot;: &quot;#Author&quot;, &quot;title&quot;: &quot;Update Author&quot;, &quot;tag&quot;: &quot;author&quot;, &quot;descriptor&quot;: [
+        {&quot;href&quot;: &quot;#id&quot;},
+        {&quot;href&quot;: &quot;#name&quot;},
+        {&quot;href&quot;: &quot;#email&quot;},
+        {&quot;href&quot;: &quot;#bio&quot;}
+      ]},
+      {&quot;id&quot;: &quot;doUpdateCacheAuthor&quot;, &quot;type&quot;: &quot;idempotent&quot;, &quot;rt&quot;: &quot;#Author&quot;, &quot;title&quot;: &quot;Update Cache Author&quot;, &quot;doc&quot;: {&quot;value&quot;: &quot;Update the Author through the cache showcase endpoint and invalidate dependent profile responses.&quot;}, &quot;tag&quot;: &quot;author cache&quot;, &quot;descriptor&quot;: [
         {&quot;href&quot;: &quot;#id&quot;},
         {&quot;href&quot;: &quot;#name&quot;},
         {&quot;href&quot;: &quot;#email&quot;},

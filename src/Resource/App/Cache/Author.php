@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace MyVendor\Cms\Resource\App\Cache;
 
+use BEAR\ApiDoc\Annotation\Alps;
 use BEAR\QueryRepository\DonutRepositoryInterface;
 use BEAR\QueryRepository\Header;
 use BEAR\QueryRepository\UriTagInterface;
 use BEAR\RepositoryModule\Annotation\CacheableResponse;
+use BEAR\Resource\Annotation\JsonSchema;
 use BEAR\Resource\Code;
 use BEAR\Resource\ResourceObject;
 use MyVendor\Cms\Query\AuthorCommandInterface;
@@ -20,6 +22,7 @@ use MyVendor\Cms\Query\AuthorQueryInterface;
  * app://self/cache/* so the reference cache demo does not change the main API
  * resource contract.
  */
+#[Alps('Author')]
 #[CacheableResponse]
 class Author extends ResourceObject
 {
@@ -31,6 +34,8 @@ class Author extends ResourceObject
     ) {
     }
 
+    #[Alps('goCacheAuthor')]
+    #[JsonSchema('author.json')]
     public function onGet(int $id): static
     {
         $this->headers[Header::SURROGATE_KEY] = $this->authorTag($id);
@@ -52,6 +57,8 @@ class Author extends ResourceObject
         return $this;
     }
 
+    #[Alps('doUpdateCacheAuthor')]
+    #[JsonSchema(schema: 'write_response.json', params: 'author_update.json')]
     public function onPut(int $id, string $name, string $email, string $bio = ''): static
     {
         if ($this->author->item($id) === null) {

@@ -691,25 +691,25 @@
 </tr>
 <tr>
   <td rowspan="5" class="path-cell" id="path-cache/author">/cache/author</td>
-  <td rowspan="1" class="method-cell"><span class="ti safe"></span>GET</td>
+  <td rowspan="1" class="method-cell"><span class="ti safe"></span>GET<div class="method-alps"><a href="alps.html#goCacheAuthor" class="alps-link">goCacheAuthor</a></div></td>
   <td><a href="alps.html#id" class="param alps-param" title="Identifier">id</a><span class="req">*</span></td>
   <td><span class="badge type-int">int</span></td>
   <td class="param-desc">Identifier</td>
   <td><div class="extra-info">
 
     </div></td>
-  <td rowspan="1"></td>
+  <td rowspan="1"><a href="#Author" class="schema-link">Author</a></td>
 </tr>
 <tr>
 
-  <td rowspan="4" class="method-cell"><span class="ti idempotent"></span>PUT</td>
+  <td rowspan="4" class="method-cell"><span class="ti idempotent"></span>PUT<div class="method-alps"><a href="alps.html#doUpdateCacheAuthor" class="alps-link">doUpdateCacheAuthor</a></div></td>
   <td><a href="alps.html#id" class="param alps-param" title="Identifier">id</a><span class="req">*</span></td>
   <td><span class="badge type-int">int</span></td>
   <td class="param-desc">Identifier</td>
   <td><div class="extra-info">
-
+      <span class="badge constraint">minimum: 1</span>
     </div></td>
-  <td rowspan="4"></td>
+  <td rowspan="4"><a href="#WriteResponse" class="schema-link">WriteResponse</a></td>
 </tr>
 <tr>
 
@@ -718,7 +718,8 @@
   <td><span class="badge type-string">string</span></td>
   <td class="param-desc">Name</td>
   <td><div class="extra-info">
-
+      <span class="badge constraint">minLength: 1</span>
+      <span class="badge constraint">maxLength: 100</span>
     </div></td>
 
 </tr>
@@ -729,7 +730,8 @@
   <td><span class="badge type-string">string</span></td>
   <td class="param-desc">Email</td>
   <td><div class="extra-info">
-
+      <span class="badge format">format: email</span>
+      <span class="badge constraint">maxLength: 191</span>
     </div></td>
 
 </tr>
@@ -746,14 +748,14 @@
 </tr>
 <tr>
   <td rowspan="1" class="path-cell" id="path-cache/author-profile">/cache/author-profile</td>
-  <td rowspan="1" class="method-cell"><span class="ti safe"></span>GET</td>
+  <td rowspan="1" class="method-cell"><span class="ti safe"></span>GET<div class="method-alps"><a href="alps.html#goAuthorProfile" class="alps-link">goAuthorProfile</a></div></td>
   <td><a href="alps.html#authorId" class="param alps-param" title="Author ID (FK)">authorId</a><span class="req">*</span></td>
   <td><span class="badge type-int">int</span></td>
   <td class="param-desc">Author ID (FK)</td>
   <td><div class="extra-info">
 
     </div></td>
-  <td rowspan="1"></td>
+  <td rowspan="1"><a href="#AuthorProfile" class="schema-link">AuthorProfile</a></td>
 </tr>
 <tr>
   <td rowspan="1" class="path-cell" id="path-variations/article-as-array">/variations/article-as-array</td>
@@ -1447,6 +1449,41 @@
       <span class="badge href">href: app://self/tag{?id}</span>
     </div>
   </td>
+</tr>
+
+</tbody>
+</table>
+</div>
+<div class="object-section" id="AuthorProfile">
+<h3 class="object-name"><a href="schemas/author_profile.json" class="schema-file-link" title="JSON Schema">📄</a>AuthorProfile</h3>
+<table>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Description</th><th>Meta</th></tr>
+</thead>
+<tbody>
+<tr>
+  <td><span class="prop-name">authorId</span></td>
+  <td><span class="badge type-int">int</span></td>
+  <td class="param-desc">Foreign key to Author; must equal _embedded.author.id</td>
+  <td><div class="extra-info">
+      <span class="badge constraint">minimum: 1</span>
+    </div></td>
+</tr>
+<tr>
+  <td><span class="prop-name">dependencyUri</span></td>
+  <td><span class="badge type-string">string</span></td>
+  <td class="param-desc">Embedded Author resource URI used as the cache dependency</td>
+  <td><div class="extra-info">
+      <span class="badge constraint">pattern: ^app://self/cache/author\?id=[1-9][0-9]*$</span>
+    </div></td>
+</tr>
+<tr>
+  <td><span class="prop-name">cachePattern</span></td>
+  <td><span class="badge type-string">string</span></td>
+  <td class="param-desc">Human-readable name of the demonstrated cache pattern</td>
+  <td><div class="extra-info">
+
+    </div></td>
 </tr>
 
 </tbody>

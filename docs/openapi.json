@@ -774,6 +774,7 @@
         },
         "/cache/author": {
             "get": {
+                "operationId": "goCacheAuthor",
                 "summary": "Cache showcase author resource.",
                 "description": "This intentionally mirrors the normal Author read shape, but stays under\napp://self/cache/* so the reference cache demo does not change the main API\nresource contract.",
                 "parameters": [
@@ -788,11 +789,19 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Successful response"
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Author"
+                                }
+                            }
+                        }
                     }
                 }
             },
             "put": {
+                "operationId": "doUpdateCacheAuthor",
                 "summary": "Cache showcase author resource.",
                 "description": "This intentionally mirrors the normal Author read shape, but stays under\napp://self/cache/* so the reference cache demo does not change the main API\nresource contract.",
                 "requestBody": {
@@ -826,13 +835,24 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Successful response"
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/WriteResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
                     }
                 }
             }
         },
         "/cache/author-profile": {
             "get": {
+                "operationId": "goAuthorProfile",
                 "summary": "Canonical cache dependency showcase.",
                 "description": "The dependency URI is fully determined by onGet() input, so the source code\nand the runtime Surrogate-Key dependency describe the same relationship.",
                 "parameters": [
@@ -847,7 +867,14 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Successful response"
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AuthorProfile"
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -1367,6 +1394,68 @@
                     "totalCount": {
                         "type": "integer",
                         "minimum": 0
+                    }
+                }
+            },
+            "AuthorProfile": {
+                "title": "AuthorProfile",
+                "description": "Cache showcase profile with an explicitly declared Author URI dependency.",
+                "type": "object",
+                "required": [
+                    "authorId",
+                    "dependencyUri",
+                    "cachePattern",
+                    "_embedded"
+                ],
+                "properties": {
+                    "authorId": {
+                        "type": "integer",
+                        "description": "Foreign key to Author; must equal _embedded.author.id",
+                        "minimum": 1
+                    },
+                    "dependencyUri": {
+                        "type": "string",
+                        "description": "Embedded Author resource URI used as the cache dependency",
+                        "pattern": "^app://self/cache/author\\?id=[1-9][0-9]*$"
+                    },
+                    "cachePattern": {
+                        "type": "string",
+                        "description": "Human-readable name of the demonstrated cache pattern"
+                    },
+                    "_embedded": {
+                        "type": "object",
+                        "required": [
+                            "author"
+                        ],
+                        "properties": {
+                            "author": {
+                                "type": "object",
+                                "required": [
+                                    "id",
+                                    "name",
+                                    "email"
+                                ],
+                                "properties": {
+                                    "id": {
+                                        "type": "integer",
+                                        "minimum": 1
+                                    },
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email"
+                                    },
+                                    "bio": {
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ]
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }

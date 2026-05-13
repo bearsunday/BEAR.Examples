@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace MyVendor\Cms\Resource\App\Cache;
 
+use BEAR\ApiDoc\Annotation\Alps;
 use BEAR\QueryRepository\Header;
 use BEAR\QueryRepository\UriTagInterface;
 use BEAR\RepositoryModule\Annotation\CacheableResponse;
+use BEAR\Resource\Annotation\JsonSchema;
 use BEAR\Resource\Code;
 use BEAR\Resource\ResourceInterface;
 use BEAR\Resource\ResourceObject;
@@ -23,6 +25,7 @@ use const JSON_THROW_ON_ERROR;
  * The dependency URI is fully determined by onGet() input, so the source code
  * and the runtime Surrogate-Key dependency describe the same relationship.
  */
+#[Alps('AuthorProfile')]
 #[CacheableResponse]
 class AuthorProfile extends ResourceObject
 {
@@ -32,6 +35,8 @@ class AuthorProfile extends ResourceObject
     ) {
     }
 
+    #[Alps('goAuthorProfile')]
+    #[JsonSchema('author_profile.json')]
     public function onGet(int $authorId): static
     {
         $dependencyUri = 'app://self/cache/author?id=' . $authorId;
@@ -40,6 +45,13 @@ class AuthorProfile extends ResourceObject
         if ($author->code >= Code::BAD_REQUEST || $authorBody === null) {
             $this->code = $author->code;
             $this->body = ['message' => 'Author not found', 'id' => $authorId];
+
+            return $this;
+        }
+
+        if (($authorBody['id'] ?? null) !== $authorId) {
+            $this->code = Code::ERROR;
+            $this->body = ['message' => 'Author dependency id mismatch', 'id' => $authorId];
 
             return $this;
         }

@@ -29,6 +29,8 @@
       {"id": "parentId", "title": "Parent Category ID (self-FK)", "doc": {"value": "Nullable reference for hierarchical categories."}},
       {"id": "tagId", "title": "Tag ID (filter)"},
       {"id": "articleId", "title": "Article ID (filter)"},
+      {"id": "dependencyUri", "title": "Cache Dependency URI", "doc": {"value": "Resource URI whose Surrogate-Key tag is declared as a cache dependency."}},
+      {"id": "cachePattern", "title": "Cache Pattern", "doc": {"value": "Human-readable label for the demonstrated cache strategy."}},
 
       {"id": "page", "title": "Page Number", "doc": {"value": "1-indexed pagination page."}},
       {"id": "perPage", "title": "Per-Page Count"},
@@ -115,6 +117,14 @@
         {"href": "#doUpdateAuthor"}
       ], "tag": "author"},
 
+      {"id": "AuthorProfile", "title": "Author Profile Cache View", "doc": {"value": "Cache showcase profile with an explicitly declared Author URI dependency."}, "descriptor": [
+        {"href": "#authorId"},
+        {"href": "#dependencyUri"},
+        {"href": "#cachePattern"},
+        {"href": "#Author"},
+        {"href": "#goAuthorProfile"}
+      ], "tag": "author cache"},
+
       {"id": "Media", "title": "Media Detail", "descriptor": [
         {"href": "#id"},
         {"href": "#filename"},
@@ -146,6 +156,12 @@
       ]},
       {"id": "goAuthor", "type": "safe", "rt": "#Author", "title": "View Author", "tag": "author", "descriptor": [
         {"href": "#id"}
+      ]},
+      {"id": "goCacheAuthor", "type": "safe", "rt": "#Author", "title": "View Cache Author", "doc": {"value": "Read the Author shape through the cache showcase endpoint."}, "tag": "author cache", "descriptor": [
+        {"href": "#id"}
+      ]},
+      {"id": "goAuthorProfile", "type": "safe", "rt": "#AuthorProfile", "title": "View Author Cache Profile", "doc": {"value": "Retrieve the cache showcase profile for an author and its explicit dependency URI."}, "tag": "author cache", "descriptor": [
+        {"href": "#authorId"}
       ]},
       {"id": "goMedia", "type": "safe", "rt": "#Media", "title": "View Media", "tag": "media", "descriptor": [
         {"href": "#id"}
@@ -201,6 +217,12 @@
         {"href": "#bio"}
       ]},
       {"id": "doUpdateAuthor", "type": "idempotent", "rt": "#Author", "title": "Update Author", "tag": "author", "descriptor": [
+        {"href": "#id"},
+        {"href": "#name"},
+        {"href": "#email"},
+        {"href": "#bio"}
+      ]},
+      {"id": "doUpdateCacheAuthor", "type": "idempotent", "rt": "#Author", "title": "Update Cache Author", "doc": {"value": "Update the Author through the cache showcase endpoint and invalidate dependent profile responses."}, "tag": "author cache", "descriptor": [
         {"href": "#id"},
         {"href": "#name"},
         {"href": "#email"},

@@ -36,6 +36,7 @@ final class AuthorProfileCacheTest extends TestCase
         $this->assertSame(200, $ro->code);
         $this->assertSame(1, $body['authorId']);
         $this->assertSame(1, $body['_embedded']['author']['id']);
+        $this->assertSame($body['authorId'], $body['_embedded']['author']['id']);
         $this->assertArrayNotHasKey('_links', $body['_embedded']['author']);
         $this->assertArrayHasKey(Header::ETAG, $ro->headers);
         $this->assertArrayHasKey(Header::SURROGATE_KEY, $ro->headers);
@@ -80,8 +81,8 @@ final class AuthorProfileCacheTest extends TestCase
         $coldBody = json_decode((string) $cold, true, 512, JSON_THROW_ON_ERROR);
         $this->assertIsArray($coldBody);
 
-        $injector = Injector::getOverrideInstance('test-hal-api-app', new CacheShowcaseModule());
-        $resource = $injector->getInstance(ResourceInterface::class);
+        $resource = $this->freshResource();
+        // Warm the child in the same injector that renders the parent.
         $resource->get('app://self/cache/author', ['id' => 1]);
         $warm = $resource->get('app://self/cache/authorprofile', ['authorId' => 1]);
         $warmBody = json_decode((string) $warm, true, 512, JSON_THROW_ON_ERROR);
@@ -89,5 +90,12 @@ final class AuthorProfileCacheTest extends TestCase
 
         $this->assertSame($coldBody['_embedded']['author'], $warmBody['_embedded']['author']);
         $this->assertSame($cold->headers[Header::ETAG], $warm->headers[Header::ETAG]);
+    }
+
+    private function freshResource(): ResourceInterface
+    {
+        $injector = Injector::getOverrideInstance('test-hal-api-app', new CacheShowcaseModule());
+
+        return $injector->getInstance(ResourceInterface::class);
     }
 }

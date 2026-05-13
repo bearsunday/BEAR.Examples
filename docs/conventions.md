@@ -215,6 +215,13 @@ URI tags over donut interpolation of `#[Embed]` requests:
 #[CacheableResponse]
 class AuthorProfile extends ResourceObject
 {
+    public function __construct(
+        private readonly ResourceInterface $resource,
+        // Provided by BEAR.QueryRepository's RepositoryModule binding.
+        private readonly UriTagInterface $uriTag,
+    ) {
+    }
+
     public function onGet(int $authorId): static
     {
         $dependencyUri = 'app://self/cache/author?id=' . $authorId;
@@ -232,6 +239,13 @@ class AuthorProfile extends ResourceObject
         ];
 
         return $this;
+    }
+
+    private function authorBody(ResourceObject $author): array|null
+    {
+        $body = json_decode((string) $author, true);
+
+        return is_array($body) ? $body : null;
     }
 }
 ```

@@ -143,7 +143,7 @@ API Document
 |--------|------------|-------|
 | GET | id* | - |
 
-## Responses (10)
+## Responses (11)
 
 | Response | Schema | Properties |
 |----------|--------|------------|
@@ -157,6 +157,7 @@ API Document
 | Media | media.json | id, filename, mimeType, url, alt, width, height |
 | Tag | tag.json | id, slug, name |
 | TagList | tagList.json | items, totalCount |
+| Author_profile | author_profile.json | authorId, dependencyUri, cachePattern, _embedded |
 
 ## Query Interfaces (12)
 

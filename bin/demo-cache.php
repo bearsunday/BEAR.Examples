@@ -37,10 +37,11 @@ $demoLine('-------------------------------------------');
 
 $first = $resource->get($uri, $query);
 $firstView = (string) $first;
-$etag = (string) $first->headers[Header::ETAG];
+$etag = (string) ($first->headers[Header::ETAG] ?? '');
+$surrogateKey = (string) ($first->headers[Header::SURROGATE_KEY] ?? '');
 $demoLine("GET {$uri}?authorId=1 => {$first->code}");
-$demoLine("  ETag: {$etag}");
-$demoLine('  Surrogate-Key: ' . $uniqueHeaderTokens($first->headers[Header::SURROGATE_KEY]));
+$demoLine('  ETag: ' . ($etag !== '' ? $etag : 'n/a'));
+$demoLine('  Surrogate-Key: ' . ($surrogateKey !== '' ? $uniqueHeaderTokens($surrogateKey) : 'n/a'));
 $demoLine('  304 candidate: ' . ($httpCache->isNotModified([Header::HTTP_IF_NONE_MATCH => $etag]) ? 'yes' : 'no'));
 
 $resource->put('app://self/cache/author', [
@@ -52,9 +53,9 @@ $resource->put('app://self/cache/author', [
 
 $second = $resource->get($uri, $query);
 $secondView = (string) $second;
-$newEtag = (string) $second->headers[Header::ETAG];
+$newEtag = (string) ($second->headers[Header::ETAG] ?? '');
 $demoLine('');
 $demoLine('After PUT app://self/cache/author?id=1');
 $demoLine('  old ETag still valid: ' . ($httpCache->isNotModified([Header::HTTP_IF_NONE_MATCH => $etag]) ? 'yes' : 'no'));
-$demoLine("  new ETag: {$newEtag}");
+$demoLine('  new ETag: ' . ($newEtag !== '' ? $newEtag : 'n/a'));
 $demoLine('  view changed: ' . ($firstView !== $secondView ? 'yes' : 'no'));
