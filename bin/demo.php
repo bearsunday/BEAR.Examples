@@ -52,7 +52,7 @@ function run(string $cmd): void
  *
  * @return array{0: string, 1: string, 2: string, 3: string}
  */
-function detectDb(string $root): array
+function detectDb(): array
 {
     // 1) malt
     $maltStatus = (string) shell_exec('malt status 2>/dev/null');
@@ -78,7 +78,9 @@ function detectDb(string $root): array
 
     // 3) fallback SQLite
     $sqlitePath = '/tmp/bear_cms_demo.db';
-    @unlink($sqlitePath);
+    if (file_exists($sqlitePath)) {
+        unlink($sqlitePath);
+    }
 
     return ['sqlite:' . $sqlitePath, '', '', 'SQLite (fallback)'];
 }
@@ -116,7 +118,7 @@ fwrite(STDOUT, "DELETE app://self/article?id={$post->body['id']} → {$del->code
 
 // ── 3) Real DB ────────────────────────────────────────────────────
 section('3) Real DB — autodetect malt / docker / sqlite');
-[$dsn, $user, $password, $label] = detectDb($root);
+[$dsn, $user, $password, $label] = detectDb();
 fwrite(STDOUT, "Backend: {$label}\n");
 fwrite(STDOUT, "DSN:     {$dsn}\n");
 putenv("DB_DSN={$dsn}");
