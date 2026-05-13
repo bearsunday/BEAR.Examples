@@ -16,8 +16,8 @@ use Doctrine\DBAL\Connection;
 
 require dirname(__DIR__) . '/vendor/autoload.php';
 
-/** @var Connection $conn */
 $conn = require dirname(__DIR__) . '/migrations-db.php';
+assert($conn instanceof Connection);
 
 $fakeDir = dirname(__DIR__) . '/var/fake';
 $loadJson = static fn (string $name) => json_decode(
