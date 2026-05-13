@@ -5,6 +5,7 @@
     "description": "Reference CMS for BEAR.Sunday: ALPS-driven, BDR pattern, App-resource only.",
     "require": {
         "php": "^8.5.0",
+        "bear/async": "^0.3",
         "bear/package": "^1.14",
         "bear/qiq-module": "^2.0",
         "bear/query-repository": "^1.15",
@@ -118,6 +119,7 @@
         "serve": "COMPOSER_PROCESS_TIMEOUT=0 php -S 127.0.0.1:8081 -t public public/page.php",
         "serve:api": "COMPOSER_PROCESS_TIMEOUT=0 php -dzend_extension=xdebug.so -S 127.0.0.1:8080 -t public",
         "app": "php bin/app.php",
+        "async": "php bin/async.php",
         "page": "php bin/page.php",
         "profile": "php -dzend_extension=xdebug.so -dxdebug.mode=profile -dxdebug.output_dir=./var/log -dxdebug.profiler_output_name=cachegrind.out.%t bin/page.php get /",
         "demo": "php bin/demo.php",
@@ -140,7 +142,8 @@
         "clean": "Clear cache files",
         "serve": "Start built-in server for Qiq/Page HTML at http://127.0.0.1:8081",
         "serve:api": "Start built-in server for HAL JSON API at http://127.0.0.1:8080",
-        "app": "Request app resource",
+        "app": "Request app resource (sync linker)",
+        "async": "Request app resource via the ext-parallel async linker (Article's #[Embed]s run in parallel; requires ext-parallel + ZTS PHP)",
         "page": "Request page resource",
         "profile": "Profile page request (customize endpoint as needed)",
         "demo:variations": "Run the Article GET variations demo"

@@ -190,6 +190,41 @@ DELETE → GET (404) のラウンドトリップが通った。
 
 ArticleTest は POST→GET→PUT→GET→DELETE→GET の完全ラウンドトリップをカバー。
 
+### Phase 10.5: Async `#[Embed]` 配線 (Step 5.5 解消)
+
+`bear/async 0.3.0` リリースに伴い、handoff.md で deferred とされていた
+Step 5.5 を取り込んだ。0.3.0 は `bear/resource ^1.32` を要求するが、
+プロジェクトの `^1.17` 制約と composer 上の lock (1.31.1) は 1.32.0 への
+アップグレードで矛盾なく解決した (`composer require bear/async:^0.3 -W`)。
+
+導入内容は最小:
+
+- `bin/async.php` — README 推奨形そのまま。
+  `vendor/bear/async/bootstrap.php` を `require` し、`AppModule` には
+  一切触らず `ParallelRuntimeModule` を override 経由で被せる。
+- `composer async` スクリプト追加。
+
+並列化されるのは `src/Resource/App/Article.php` の 3つの `#[Embed]`
+(`author` / `category` / `tagList`) — それぞれ独立リソースなので
+代表的な利得サイト。`Author` / `Category` / `Tags` の `onGet` 応答は
+すべて scalar/array のみ (オブジェクト・closure・resource を返さない)
+なので、ext-parallel のスレッド間ペイロードコピー制約を満たす。
+
+**確認したこと:**
+- `composer test` → 187 tests pass / 11 skip (MySQL 必須の Integration)。
+  `bin/async.php` は opt-in なので sync テスト系列に一切影響しない。
+- ext-parallel + ZTS が無い環境で `bin/async.php` を叩くと
+  `BEAR\Async\Exception\ExtensionNotLoadedException` が即座に
+  install 手順付きで投げられる — 安全に fail する。
+- `bin/app.php` (sync) の動作は変わらず。
+
+**未確認 (環境制約):**
+- 並列実行そのものは ext-parallel + ZTS PHP 必須。当 CI/開発ホストに
+  ext-parallel が無いため、AsyncLinker の経路を実際に通すには
+  `vendor/bear/async/demo/` の Docker イメージか、別途
+  `pecl install parallel` が要る。Article の 3 embeds の壁時計時間が
+  本当に短縮されることの計測は次セッション以降の課題。
+
 ### Phase 11: ドキュメント
 
 - `README.md` — セットアップ (Fake / Malt+MySQL / SQLite) + 4コンテキスト表 + URI一覧
