@@ -49,6 +49,8 @@ function run(string $cmd): void
 
 /**
  * Detect which DB stack is running and return [dsn, user, password, label].
+ *
+ * @return array{0: string, 1: string, 2: string, 3: string}
  */
 function detectDb(string $root): array
 {
@@ -96,7 +98,7 @@ $rendered = json_decode((string) $ro, true);
 fwrite(STDOUT, "  title:           {$rendered['title']}\n");
 fwrite(STDOUT, "  publishedAt:     {$rendered['publishedAt']}\n");
 fwrite(STDOUT, "  embedded.author: {$rendered['_embedded']['author']['name']}\n");
-fwrite(STDOUT, "  embedded.tags:   " . count($rendered['_embedded']['tagList']['items']) . " tag(s)\n");
+fwrite(STDOUT, '  embedded.tags:   ' . count($rendered['_embedded']['tagList']['items']) . " tag(s)\n");
 
 $post = $fakeRes->post('app://self/article', [
     'slug' => 'demo-post-' . uniqid(),
@@ -155,7 +157,7 @@ section('4) Hypermedia walk — Articles → Article → Author');
 $list = $fakeRes->get('app://self/articles', ['perPage' => 3, 'status' => 'published']);
 $listBody = json_decode((string) $list, true);
 fwrite(STDOUT, "GET app://self/articles?status=published&perPage=3 → {$list->code}\n");
-fwrite(STDOUT, "  items: " . count($listBody['items']) . "\n");
+fwrite(STDOUT, '  items: ' . count($listBody['items']) . "\n");
 $firstId = $listBody['items'][0]['id'];
 
 $art = $fakeRes->get('app://self/article', ['id' => $firstId]);

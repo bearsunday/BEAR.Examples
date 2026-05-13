@@ -17,6 +17,7 @@
     <arg value="nps"/>
 
     <!-- Directories to be checked -->
+    <file>bin/demo.php</file>
     <file>src</file>
     <file>tests</file>
     <exclude-pattern>*/tests/tmp/*</exclude-pattern>
