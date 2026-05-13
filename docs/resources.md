@@ -101,6 +101,9 @@ GET. Query params: `page`, `perPage` (clamped 1..100, default 20),
 
 Cache showcase endpoint. GET `{authorId}` returns a small profile wrapper and
 manually includes `app://self/cache/author?id={authorId}` under `_embedded`.
+When exposed through the HTTP router, the same resource appears as
+`/cache/author-profile`; inside resource code and tests, use the canonical
+in-process URI `app://self/cache/authorprofile`.
 
 This resource is intentionally separate from the main `Article` resource. Its
 purpose is to make the cache dependency visible in the source code: the

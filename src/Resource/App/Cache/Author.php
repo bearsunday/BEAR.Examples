@@ -62,6 +62,7 @@ class Author extends ResourceObject
         }
 
         $this->authorCmd->update($id, $name, $email, $bio);
+        // The child write invalidates parent responses that declared this author URI tag.
         $this->repository->invalidateTags([$this->authorTag($id)]);
         $this->code = Code::OK;
         $this->body = ['id' => $id];

@@ -17,15 +17,11 @@ use MyVendor\Cms\Module\CacheShowcaseModule;
 
 require dirname(__DIR__) . '/autoload.php';
 
-function line(string $text = ''): void
-{
-    fwrite(STDOUT, $text . PHP_EOL);
-}
+$demoLine = static fn (string $text = ''): int|false => fwrite(STDOUT, $text . PHP_EOL);
 
-function uniqueHeaderTokens(string $header): string
-{
-    return implode(' ', array_unique(array_filter(explode(' ', $header))));
-}
+// QueryRepository can expose the same URI tag through parent and dependency
+// paths; collapse duplicates so the demo prints the dependency set once.
+$uniqueHeaderTokens = static fn (string $header): string => implode(' ', array_unique(array_filter(explode(' ', $header))));
 
 $injector = Injector::getOverrideInstance('fake-hal-api-app', new CacheShowcaseModule());
 $resource = $injector->getInstance(ResourceInterface::class);
@@ -36,16 +32,16 @@ assert($httpCache instanceof HttpCacheInterface);
 $uri = 'app://self/cache/authorprofile';
 $query = ['authorId' => 1];
 
-line('CacheableResponse + explicit URI dependency');
-line('-------------------------------------------');
+$demoLine('CacheableResponse + explicit URI dependency');
+$demoLine('-------------------------------------------');
 
 $first = $resource->get($uri, $query);
 $firstView = (string) $first;
 $etag = (string) $first->headers[Header::ETAG];
-line("GET {$uri}?authorId=1 => {$first->code}");
-line("  ETag: {$etag}");
-line('  Surrogate-Key: ' . uniqueHeaderTokens($first->headers[Header::SURROGATE_KEY]));
-line('  304 candidate: ' . ($httpCache->isNotModified([Header::HTTP_IF_NONE_MATCH => $etag]) ? 'yes' : 'no'));
+$demoLine("GET {$uri}?authorId=1 => {$first->code}");
+$demoLine("  ETag: {$etag}");
+$demoLine('  Surrogate-Key: ' . $uniqueHeaderTokens($first->headers[Header::SURROGATE_KEY]));
+$demoLine('  304 candidate: ' . ($httpCache->isNotModified([Header::HTTP_IF_NONE_MATCH => $etag]) ? 'yes' : 'no'));
 
 $resource->put('app://self/cache/author', [
     'id' => 1,
@@ -57,8 +53,8 @@ $resource->put('app://self/cache/author', [
 $second = $resource->get($uri, $query);
 $secondView = (string) $second;
 $newEtag = (string) $second->headers[Header::ETAG];
-line('');
-line('After PUT app://self/cache/author?id=1');
-line("  old ETag still valid: " . ($httpCache->isNotModified([Header::HTTP_IF_NONE_MATCH => $etag]) ? 'yes' : 'no'));
-line("  new ETag: {$newEtag}");
-line('  view changed: ' . ($firstView !== $secondView ? 'yes' : 'no'));
+$demoLine('');
+$demoLine('After PUT app://self/cache/author?id=1');
+$demoLine('  old ETag still valid: ' . ($httpCache->isNotModified([Header::HTTP_IF_NONE_MATCH => $etag]) ? 'yes' : 'no'));
+$demoLine("  new ETag: {$newEtag}");
+$demoLine('  view changed: ' . ($firstView !== $secondView ? 'yes' : 'no'));

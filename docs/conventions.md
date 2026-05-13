@@ -245,6 +245,9 @@ contract:
 - `ETag` exists on the cacheable response.
 - `Surrogate-Key` includes the parent URI tag and every embedded dependency URI
   tag.
+- The framework adds the parent resource tag; application code assigns the child
+  dependency tags it knows. Use `=` for that child dependency header in the
+  simple explicit case, and assert the final combined header in tests.
 - A write to the embedded resource invalidates the parent ETag.
 - Embedded child bodies are normalized from the rendered child representation
   so cache-miss and cache-hit paths produce the same parent view and ETag.
