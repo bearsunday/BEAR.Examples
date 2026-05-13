@@ -12,6 +12,8 @@
 
 FROM php:8.4-zts
 
+ARG SWOOLE_VERSION=6.1.8
+
 RUN apt-get update && apt-get install -y --no-install-recommends \
         git \
         unzip \
@@ -22,7 +24,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/* \
     && docker-php-ext-install pcntl pdo pdo_mysql pdo_sqlite zip
 
-RUN yes '' | pecl install swoole \
+RUN yes '' | pecl install swoole-${SWOOLE_VERSION} \
     && docker-php-ext-enable swoole
 
 COPY --from=composer:2 /usr/bin/composer /usr/local/bin/composer

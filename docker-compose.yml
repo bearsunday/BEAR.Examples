@@ -53,8 +53,6 @@ services:
       DB_DSN: "mysql:host=mysql;dbname=bear_cms;charset=utf8mb4"
       DB_USER: "root"
       DB_PASSWORD: "root"
-    ports:
-      - "8080:8080"
 
 volumes:
   bear_cms_mysql_data:

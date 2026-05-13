@@ -116,13 +116,14 @@ composer serve          # Qiq/Page HTML at http://127.0.0.1:8081
 ### Real database via docker-compose (cross-platform)
 
 ```bash
-docker compose up -d
+composer docker:up
 cp .env.dist .env
-DB_DSN='mysql:host=127.0.0.1;dbname=bear_cms;charset=utf8mb4' DB_USER=root DB_PASSWORD=root \
-  vendor/bin/doctrine-migrations migrate --no-interaction
-DB_DSN='mysql:host=127.0.0.1;dbname=bear_cms;charset=utf8mb4' DB_USER=root DB_PASSWORD=root \
-  php bin/seed.php
 ```
+
+`composer docker:up` starts only MySQL and runs migrations/seeding. Optional
+runtime containers are explicit: use `composer parallel:up` for the
+ext-parallel async entrypoint, or `composer swoole:up` when working on the
+Swoole runtime path.
 
 ### Real database via SQLite (CI / quick trials)
 

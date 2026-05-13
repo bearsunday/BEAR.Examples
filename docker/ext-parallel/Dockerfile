@@ -8,6 +8,8 @@
 
 FROM php:8.4-zts
 
+ARG PARALLEL_VERSION=1.2.12
+
 RUN apt-get update && apt-get install -y --no-install-recommends \
         git \
         unzip \
@@ -17,7 +19,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/* \
     && docker-php-ext-install pcntl pdo pdo_mysql pdo_sqlite zip
 
-RUN pecl install parallel \
+RUN pecl install parallel-${PARALLEL_VERSION} \
     && docker-php-ext-enable parallel
 
 COPY --from=composer:2 /usr/bin/composer /usr/local/bin/composer

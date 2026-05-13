@@ -203,6 +203,9 @@ Step 5.5 を取り込んだ。0.3.0 は `bear/resource ^1.32` を要求するが
   `vendor/bear/async/bootstrap.php` を `require` し、`AppModule` には
   一切触らず `ParallelRuntimeModule` を override 経由で被せる。
 - `composer async` スクリプト追加。
+- `composer.lock` は Composer 2.9.x で生成し、`bear/async` と
+  `bear/resource` の制約解決に必要な `-W` 由来の付随更新
+  (`json-schema` / Symfony components) を含む。
 
 並列化されるのは `src/Resource/App/Article.php` の 3つの `#[Embed]`
 (`author` / `category` / `tagList`) — それぞれ独立リソースなので
@@ -217,6 +220,12 @@ Step 5.5 を取り込んだ。0.3.0 は `bear/resource ^1.32` を要求するが
   `BEAR\Async\Exception\ExtensionNotLoadedException` が即座に
   install 手順付きで投げられる — 安全に fail する。
 - `bin/app.php` (sync) の動作は変わらず。
+- `composer demo` の 4.5 は async 経路の smoke に留める。PHP
+  プロセス起動・autoload・DI bootstrap の影響が大きいため、
+  `bin/app.php` と `bin/async.php` の壁時計比較を demo には出さない。
+- Docker の ext-parallel / ext-swoole PECL packages は version pin 済み。
+  `composer docker:up` は MySQL のみを起動し、runtime container は
+  `composer parallel:up` / `composer swoole:up` で明示的に起動する。
 
 **未確認 (環境制約):**
 - 並列実行そのものは ext-parallel + ZTS PHP 必須。当 CI/開発ホストに
@@ -224,6 +233,8 @@ Step 5.5 を取り込んだ。0.3.0 は `bear/resource ^1.32` を要求するが
   `vendor/bear/async/demo/` の Docker イメージか、別途
   `pecl install parallel` が要る。Article の 3 embeds の壁時計時間が
   本当に短縮されることの計測は次セッション以降の課題。
+- CI で ext-parallel smoke を回す job は未追加。Docker runtime が安定したら
+  `composer parallel:up && composer parallel:demo` を GitHub Actions に移す。
 
 ### Phase 11: ドキュメント
 

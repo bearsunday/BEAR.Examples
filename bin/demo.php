@@ -169,20 +169,24 @@ fwrite(STDOUT, "  → goAuthor id={$artBody['authorId']} → {$auth->code}, name
 // ── 4.5) Async embed via ext-parallel ────────────────────────────
 section('4.5) Async embed — Article via bin/async.php (ext-parallel)');
 if (extension_loaded('parallel')) {
-    // Sync baseline first, then async — same URI, two linkers.
     $env = "DB_DSN='{$dsn}' DB_USER='{$user}' DB_PASSWORD='{$password}'";
     $uri = "'app://self/article?id=1'";
 
-    $syncStart = microtime(true);
-    run("{$env} php {$root}/bin/app.php get {$uri} > /dev/null 2>&1");
-    $syncMs = (microtime(true) - $syncStart) * 1000;
+    $cmd = "{$env} php {$root}/bin/async.php get {$uri} 2>/dev/null";
+    fwrite(STDOUT, "$ {$cmd}\n");
+    $out = (string) shell_exec($cmd);
+    $body = json_decode($out, true);
+    $embedded = is_array($body) ? ($body['_embedded'] ?? []) : [];
 
-    $asyncStart = microtime(true);
-    run("{$env} php {$root}/bin/async.php get {$uri} > /dev/null 2>&1");
-    $asyncMs = (microtime(true) - $asyncStart) * 1000;
-
-    fwrite(STDOUT, sprintf("sync (bin/app.php):   %6.1f ms\n", $syncMs));
-    fwrite(STDOUT, sprintf("async (bin/async.php): %6.1f ms (author / category / tagList in parallel)\n", $asyncMs));
+    $report = static fn (string $rel): string => isset($embedded[$rel]) ? 'ok' : 'MISSING';
+    fwrite(STDOUT, sprintf(
+        "GET app://self/article?id=1 (parallel linker) → _embedded.author=%s, category=%s, tagList=%s\n",
+        $report('author'),
+        $report('category'),
+        $report('tagList'),
+    ));
+    fwrite(STDOUT, "(smoke only — fork-per-run overhead dominates wall clock, so no timing comparison is shown.\n");
+    fwrite(STDOUT, " For real benchmarking, drive AsyncLinker in-process within a single PHP run.)\n");
 } else {
     fwrite(STDOUT, "ext-parallel is not loaded — skipping parallel run.\n");
     fwrite(STDOUT, "To exercise this section locally:\n");

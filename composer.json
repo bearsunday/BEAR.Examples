@@ -155,6 +155,8 @@
         "clean": "Clear cache files",
         "serve": "Start built-in server for Qiq/Page HTML at http://127.0.0.1:8081",
         "serve:api": "Start built-in server for HAL JSON API at http://127.0.0.1:8080",
+        "docker:up": "Start only MySQL and run migrations/seeding; runtime containers are opt-in via parallel:up or swoole:up",
+        "docker:down": "Stop all docker-compose services",
         "app": "Request app resource (sync linker)",
         "async": "Request app resource via the ext-parallel async linker (Article's #[Embed]s run in parallel; requires ext-parallel + ZTS PHP)",
         "parallel:up": "Build & start the ext-parallel Docker container (provides ZTS PHP + ext-parallel for bin/async.php) + migrate/seed MySQL",
