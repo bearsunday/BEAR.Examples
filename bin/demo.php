@@ -14,6 +14,9 @@ declare(strict_types=1);
  *   3) Real DB              auto-detect malt → docker → sqlite, run
  *                           the same flow against the real backend
  *   4) Hypermedia walk      goArticleList → goArticle → goAuthor
+ *   4.5) Async embed        ext-parallel via bin/async.php
+ *                           (skipped with install hint if ext-parallel
+ *                           is not loaded)
  *   5) ALPS validate        asd --validate (skipped if asd missing)
  *   6) apidoc               composer doc (HTML / OpenAPI / llms.txt)
  *   7) CLI                  bin/cli/article-show against the real DB
@@ -163,6 +166,30 @@ $auth = $fakeRes->get('app://self/author', ['id' => $artBody['authorId']]);
 $authBody = json_decode((string) $auth, true);
 fwrite(STDOUT, "  → goAuthor id={$artBody['authorId']} → {$auth->code}, name=\"{$authBody['name']}\"\n");
 
+// ── 4.5) Async embed via ext-parallel ────────────────────────────
+section('4.5) Async embed — Article via bin/async.php (ext-parallel)');
+if (extension_loaded('parallel')) {
+    // Sync baseline first, then async — same URI, two linkers.
+    $env = "DB_DSN='{$dsn}' DB_USER='{$user}' DB_PASSWORD='{$password}'";
+    $uri = "'app://self/article?id=1'";
+
+    $syncStart = microtime(true);
+    run("{$env} php {$root}/bin/app.php get {$uri} > /dev/null 2>&1");
+    $syncMs = (microtime(true) - $syncStart) * 1000;
+
+    $asyncStart = microtime(true);
+    run("{$env} php {$root}/bin/async.php get {$uri} > /dev/null 2>&1");
+    $asyncMs = (microtime(true) - $asyncStart) * 1000;
+
+    fwrite(STDOUT, sprintf("sync (bin/app.php):   %6.1f ms\n", $syncMs));
+    fwrite(STDOUT, sprintf("async (bin/async.php): %6.1f ms (author / category / tagList in parallel)\n", $asyncMs));
+} else {
+    fwrite(STDOUT, "ext-parallel is not loaded — skipping parallel run.\n");
+    fwrite(STDOUT, "To exercise this section locally:\n");
+    fwrite(STDOUT, "  composer parallel:up && composer parallel:demo\n");
+    fwrite(STDOUT, "Or install on the host: pecl install parallel (requires ZTS PHP).\n");
+}
+
 // ── 5) ALPS validate ──────────────────────────────────────────────
 section('5) ALPS profile — validate');
 $asd = trim((string) shell_exec('which asd'));
@@ -183,4 +210,4 @@ run("DB_DSN='{$dsn}' DB_USER='{$user}' DB_PASSWORD='{$password}' {$root}/bin/cli
 run("DB_DSN='{$dsn}' DB_USER='{$user}' DB_PASSWORD='{$password}' {$root}/bin/cli/article-list -n 3 -s published 2>&1 | tail -5");
 
 section('Done');
-fwrite(STDOUT, "All seven sections completed against backend: {$label}\n");
+fwrite(STDOUT, "All sections completed against backend: {$label}\n");

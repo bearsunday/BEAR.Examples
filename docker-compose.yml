@@ -15,5 +15,46 @@ services:
       timeout: 3s
       retries: 20
 
+  # ext-parallel runtime for `bin/async.php`. Bring this up with
+  # `composer parallel:up` (or `docker compose up -d parallel`) to exercise
+  # Article's parallelised #[Embed] graph against the real MySQL backend.
+  parallel:
+    build:
+      context: .
+      dockerfile: docker/ext-parallel/Dockerfile
+    container_name: bear_cms_parallel
+    working_dir: /app
+    volumes:
+      - .:/app
+    command: ["sleep", "infinity"]
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      DB_DSN: "mysql:host=mysql;dbname=bear_cms;charset=utf8mb4"
+      DB_USER: "root"
+      DB_PASSWORD: "root"
+
+  # ext-swoole runtime. Bring this up with `composer swoole:up` once the
+  # AsyncSwooleModule wiring lands in AppModule (see handoff.md).
+  swoole:
+    build:
+      context: .
+      dockerfile: docker/ext-swoole/Dockerfile
+    container_name: bear_cms_swoole
+    working_dir: /app
+    volumes:
+      - .:/app
+    command: ["sleep", "infinity"]
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      DB_DSN: "mysql:host=mysql;dbname=bear_cms;charset=utf8mb4"
+      DB_USER: "root"
+      DB_PASSWORD: "root"
+    ports:
+      - "8080:8080"
+
 volumes:
   bear_cms_mysql_data:
