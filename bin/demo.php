@@ -14,6 +14,9 @@ declare(strict_types=1);
  *   3) Real DB              auto-detect malt → docker → sqlite, run
  *                           the same flow against the real backend
  *   4) Hypermedia walk      goArticleList → goArticle → goAuthor
+ *   4.5) Async embed        ext-parallel via bin/async.php
+ *                           (skipped with install hint if ext-parallel
+ *                           is not loaded)
  *   5) ALPS validate        asd --validate (skipped if asd missing)
  *   6) apidoc               composer doc (HTML / OpenAPI / llms.txt)
  *   7) CLI                  bin/cli/article-show against the real DB
@@ -46,8 +49,10 @@ function run(string $cmd): void
 
 /**
  * Detect which DB stack is running and return [dsn, user, password, label].
+ *
+ * @return array{0: string, 1: string, 2: string, 3: string}
  */
-function detectDb(string $root): array
+function detectDb(): array
 {
     // 1) malt
     $maltStatus = (string) shell_exec('malt status 2>/dev/null');
@@ -73,7 +78,9 @@ function detectDb(string $root): array
 
     // 3) fallback SQLite
     $sqlitePath = '/tmp/bear_cms_demo.db';
-    @unlink($sqlitePath);
+    if (file_exists($sqlitePath)) {
+        unlink($sqlitePath);
+    }
 
     return ['sqlite:' . $sqlitePath, '', '', 'SQLite (fallback)'];
 }
@@ -93,7 +100,7 @@ $rendered = json_decode((string) $ro, true);
 fwrite(STDOUT, "  title:           {$rendered['title']}\n");
 fwrite(STDOUT, "  publishedAt:     {$rendered['publishedAt']}\n");
 fwrite(STDOUT, "  embedded.author: {$rendered['_embedded']['author']['name']}\n");
-fwrite(STDOUT, "  embedded.tags:   " . count($rendered['_embedded']['tagList']['items']) . " tag(s)\n");
+fwrite(STDOUT, '  embedded.tags:   ' . count($rendered['_embedded']['tagList']['items']) . " tag(s)\n");
 
 $post = $fakeRes->post('app://self/article', [
     'slug' => 'demo-post-' . uniqid(),
@@ -111,7 +118,7 @@ fwrite(STDOUT, "DELETE app://self/article?id={$post->body['id']} → {$del->code
 
 // ── 3) Real DB ────────────────────────────────────────────────────
 section('3) Real DB — autodetect malt / docker / sqlite');
-[$dsn, $user, $password, $label] = detectDb($root);
+[$dsn, $user, $password, $label] = detectDb();
 fwrite(STDOUT, "Backend: {$label}\n");
 fwrite(STDOUT, "DSN:     {$dsn}\n");
 putenv("DB_DSN={$dsn}");
@@ -152,7 +159,7 @@ section('4) Hypermedia walk — Articles → Article → Author');
 $list = $fakeRes->get('app://self/articles', ['perPage' => 3, 'status' => 'published']);
 $listBody = json_decode((string) $list, true);
 fwrite(STDOUT, "GET app://self/articles?status=published&perPage=3 → {$list->code}\n");
-fwrite(STDOUT, "  items: " . count($listBody['items']) . "\n");
+fwrite(STDOUT, '  items: ' . count($listBody['items']) . "\n");
 $firstId = $listBody['items'][0]['id'];
 
 $art = $fakeRes->get('app://self/article', ['id' => $firstId]);
@@ -163,13 +170,55 @@ $auth = $fakeRes->get('app://self/author', ['id' => $artBody['authorId']]);
 $authBody = json_decode((string) $auth, true);
 fwrite(STDOUT, "  → goAuthor id={$artBody['authorId']} → {$auth->code}, name=\"{$authBody['name']}\"\n");
 
+// ── 4.5) Async embed via ext-parallel ────────────────────────────
+section('4.5) Async embed — Article via bin/async.php (ext-parallel)');
+if (! extension_loaded('parallel')) {
+    fwrite(STDOUT, "ext-parallel is not loaded — skipping parallel run.\n");
+    fwrite(STDOUT, "To exercise this section locally:\n");
+    fwrite(STDOUT, "  composer parallel:up && composer parallel:demo\n");
+    fwrite(STDOUT, "Or install on the host: pecl install parallel (requires ZTS PHP).\n");
+}
+
+if (extension_loaded('parallel')) {
+    $env = "DB_DSN='{$dsn}' DB_USER='{$user}' DB_PASSWORD='{$password}'";
+    $uri = "'app://self/article?id=1'";
+
+    $cmd = "{$env} php {$root}/bin/async.php get {$uri}";
+    fwrite(STDOUT, "$ {$cmd}\n");
+    $out = (string) shell_exec("{$cmd} 2>&1");
+    $parts = preg_split('/\R\R/', $out, 2);
+    $payload = $parts[1] ?? $out;
+    $body = json_decode($payload, true);
+    if (! is_array($body)) {
+        fwrite(STDOUT, "async command did not return a JSON body; raw output follows.\n");
+        fwrite(STDOUT, $out . "\n");
+    }
+
+    if (is_array($body)) {
+        $embedded = $body['_embedded'] ?? [];
+
+        $report = static fn (string $rel): string => isset($embedded[$rel]) ? 'ok' : 'MISSING';
+        fwrite(STDOUT, sprintf(
+            "GET app://self/article?id=1 (parallel linker) → _embedded.author=%s, category=%s, tagList=%s\n",
+            $report('author'),
+            $report('category'),
+            $report('tagList'),
+        ));
+    }
+
+    fwrite(STDOUT, "(smoke only — fork-per-run overhead dominates wall clock, so no timing comparison is shown.\n");
+    fwrite(STDOUT, " For real benchmarking, drive AsyncLinker in-process within a single PHP run.)\n");
+}
+
 // ── 5) ALPS validate ──────────────────────────────────────────────
 section('5) ALPS profile — validate');
 $asd = trim((string) shell_exec('which asd'));
+if ($asd === '') {
+    fwrite(STDOUT, "asd not installed (npm install -g app-state-diagram).\n");
+}
+
 if ($asd !== '') {
     run("asd --validate {$root}/var/alps/profile.json 2>&1 | tail -3");
-} else {
-    fwrite(STDOUT, "asd not installed (npm install -g app-state-diagram).\n");
 }
 
 // ── 6) apidoc ─────────────────────────────────────────────────────
@@ -183,4 +232,4 @@ run("DB_DSN='{$dsn}' DB_USER='{$user}' DB_PASSWORD='{$password}' {$root}/bin/cli
 run("DB_DSN='{$dsn}' DB_USER='{$user}' DB_PASSWORD='{$password}' {$root}/bin/cli/article-list -n 3 -s published 2>&1 | tail -5");
 
 section('Done');
-fwrite(STDOUT, "All seven sections completed against backend: {$label}\n");
+fwrite(STDOUT, "All sections completed against backend: {$label}\n");

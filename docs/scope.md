@@ -134,6 +134,7 @@ Patterns the codebase deliberately demonstrates (each appears in at least one pl
 | Ray.MediaQuery DML metadata result | `Samples\ArticleAffectedRowsCommandInterface` / `AffectedRows` |
 | Natural-key `by<Key>` post-INSERT lookup | `Article::onPost` → `bySlug`; same idea for `byEmail` / `byFilename` |
 | Manual `_embedded` build for ID-after-fetch | `Article::onGet` (`author`, `category`, `tagList`) |
+| BEAR.Async opt-in embed parallelization | `bin/async.php` overlays `ParallelRuntimeModule`; Article's `author` / `category` / `tagList` embeds are the reference graph |
 | Three Article GET implementation variations | `src/Resource/App/Variations/` (`composer demo:variations`) |
 | Stream transfer response | `Variations\MediaStream` uses `BEAR.Streamer` and an open file handle body |
 | PRG redirect on admin write | `Page/Admin/Article` and `Page/Admin/ArticleDelete` redirect 303 with `?saved=…` |
@@ -178,7 +179,7 @@ Drawn from `architecture.md` "What was intentionally not built", `journal/handof
 |---|------|--------------|----------------------|
 | D1 | `#[CacheableResponse]` across reads + `#[RefreshCache]` on writes | Was blocked on Resource #355 — **now unblocked** (BEAR.Resource 1.31.1) | Add class-level `#[CacheableResponse]` on read resources; `#[RefreshCache]` on writes. Verify cache log (`RepositoryLogger`) shows `try-donut-view` / `put-donut` / `invalidate-etag` |
 | D2 | Auth boundary for `Page/Admin/*` | Designed in [auth-boundary-plan.md](journal/auth-boundary-plan.md); not yet implemented | Implement typed `UserInterface` / `AdminUserInterface` providers; fold in CSRF + exception-mapping notes from the Codex adversarial review |
-| D3 | Async `#[Embed]` parallelization | `bear/async ^0.1` requires `bear/resource ^1.31` — **now compatible** | `composer require bear/async -W`, fix any API drift, attach `#[Async]` to read embeds |
+| D3 | Async Docker CI smoke | Runtime containers exist, but CI does not yet build ext-parallel and run `composer parallel:demo` | Add a focused GitHub Actions job once image build time and caching are acceptable |
 | D4 | Write-side CLI + read CLI for the other entities | `bear-cli-gen` so far only generated `article-show` / `article-list`; no write commands yet | Add `#[Cli]` to onPost/onPut/onDelete and to the missing read methods; `composer cli` regenerates |
 | D5 | Real Google OAuth integration test | Needs creds + callback URL | env-gated test that skips unless `GOOGLE_CLIENT_ID` is set |
 | D6 | MySQL integration coverage for `Media` | 4 of 5 entities covered (`tests/Integration/`) | Add `MediaMySQLTest` mirroring the existing pattern |

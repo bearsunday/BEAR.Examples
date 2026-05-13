@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 use BEAR\Resource\ResourceInterface;
 use MyVendor\Cms\Injector;
+use RuntimeException as PhpRuntimeException;
 
 require dirname(__DIR__) . '/autoload.php';
 
@@ -31,7 +32,7 @@ function run(string $cmd): void
     fwrite(STDOUT, "$ {$cmd}\n");
     passthru($cmd, $exitCode);
     if ($exitCode !== 0) {
-        throw new RuntimeException("Command failed ({$exitCode}): {$cmd}");
+        throw new PhpRuntimeException("Command failed ({$exitCode}): {$cmd}");
     }
 }
 
@@ -40,7 +41,10 @@ function tailOutput(string $cmd): string
     return 'bash -c ' . escapeshellarg('set -o pipefail; ' . $cmd . ' 2>&1 | tail -3');
 }
 
-@unlink($db);
+if (file_exists($db)) {
+    unlink($db);
+}
+
 putenv("DB_DSN={$dsn}");
 putenv('DB_USER=');
 putenv('DB_PASSWORD=');

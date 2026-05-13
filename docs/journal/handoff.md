@@ -35,6 +35,8 @@ composer serve:api          # HAL JSON API at http://127.0.0.1:8080
 
 Real DB setup: `composer malt:up` (macOS), `composer docker:up`
 (cross-platform), or `composer sqlite:up` (CI / no docker).
+`composer docker:up` starts only MySQL; async runtime containers are explicit
+via `composer parallel:up` and `composer swoole:up`.
 
 ---
 
@@ -84,6 +86,17 @@ defeats the reference value.
   - `test-hal-api-app` — PHPUnit (unit suites)
   - `html-test-hal-api-app` — PHPUnit Page/Qiq suites against FakeSqlQuery
 - `composer demo` is the entry point for verifying any change end-to-end.
+- **Async embed (Step 5.5)**: `bin/async.php` + `composer async` opt
+  into parallel `#[Embed]` execution via `bear/async` 0.3.x. AppModule
+  is unchanged — the library bootstrap overlays
+  `ParallelRuntimeModule` on the standard injector. The reference
+  parallelisation site is `src/Resource/App/Article.php:38-40`
+  (`author` / `category` / `tagList` — three independent embeds). The
+  entrypoint requires ext-parallel + ZTS PHP; without it
+  `BEAR\Async\Exception\ExtensionNotLoadedException` fires immediately
+  with the install instructions, and `bin/app.php` continues to serve
+  the sync path unchanged. `composer demo` treats this as a smoke check, not
+  a benchmark; process startup dominates fork-per-run timing.
 
 ---
 
@@ -106,10 +119,10 @@ If either lands, BEAR.Cms can adopt the fix:
 
 | Item | Why deferred | Recovery |
 |------|------|---------|
-| **Step 5.5: Async `#[Embed]` parallelisation** | `bear/async ^0.1` requires `bear/resource ^1.31`; current is `^1.17`. Upgrade is a multi-package breaking change | Try `composer require bear/async -W` in a branch, fix any API drift, run full test suite |
 | **Step 6: `#[CacheableResponse]` on all reads** | Blocked on BEAR.Resource#355 (cache hit + JsonSchema interaction). Currently zero resources have the attribute | When #355 lands, restore class-level `#[CacheableResponse]` on read resources + `#[RefreshCache]` on writes |
 | **phpstan baseline (2 entries)** | One vendor-interface return-type mismatch in `tests/Fake/FakeSqlQuery.php` (`getRowList` returns `list<object>` but `SqlQueryInterface` declares `array<array<mixed>>`); one OAuth provider arg-type widening. Both intentionally suppressed — see comment in `phpstan-baseline.neon`. | Wait for upstream `SqlQueryInterface` to relax its return type; then drop the entry |
 | **Write-side CLI** | Only `article-show` / `article-list` are generated. `article-add` / `article-update` / `article-delete` would round out the demo | Add `#[Cli]` to onPost/onPut/onDelete; `composer cli` regenerates |
+| **Async Docker CI smoke** | Docker runtimes exist locally, but GitHub Actions does not yet run `composer parallel:up && composer parallel:demo` | Add a focused workflow once the ext-parallel image build time and cache behaviour are acceptable |
 | **Real Google OAuth verification** | Code uses `league/oauth2-google` correctly but no integration test against real Google (needs creds + callback URL) | Add `tests/Integration/AuthGoogleTest.php` that skips unless `GOOGLE_CLIENT_ID` is set |
 
 ---

@@ -17,8 +17,10 @@
     <arg value="nps"/>
 
     <!-- Directories to be checked -->
+    <file>bin</file>
     <file>src</file>
     <file>tests</file>
+    <exclude-pattern>*/bin/semantic-ex/*</exclude-pattern>
     <exclude-pattern>*/tests/tmp/*</exclude-pattern>
 
     <!-- BEAR.Sunday Coding Standard (extends Doctrine with BEAR-specific sniffs) -->

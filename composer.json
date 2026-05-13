@@ -5,6 +5,7 @@
     "description": "Reference CMS for BEAR.Sunday: ALPS-driven, BDR pattern, App-resource only.",
     "require": {
         "php": "^8.5.0",
+        "bear/async": "^0.3",
         "bear/package": "^1.14",
         "bear/qiq-module": "^2.0",
         "bear/query-repository": "^1.15",
@@ -71,7 +72,7 @@
             "DB_DSN='mysql:host=127.0.0.1;port=3306;dbname=bear_cms;charset=utf8mb4' DB_USER=root DB_PASSWORD= php bin/seed.php"
         ],
         "docker:up": [
-            "docker compose up -d --wait",
+            "docker compose up -d --wait mysql",
             "@docker:db"
         ],
         "docker:down": "docker compose down",
@@ -79,6 +80,19 @@
             "DB_DSN='mysql:host=127.0.0.1;port=3306;dbname=bear_cms;charset=utf8mb4' DB_USER=root DB_PASSWORD=root ./vendor/bin/doctrine-migrations migrate --no-interaction",
             "DB_DSN='mysql:host=127.0.0.1;port=3306;dbname=bear_cms;charset=utf8mb4' DB_USER=root DB_PASSWORD=root php bin/seed.php"
         ],
+        "parallel:up": [
+            "@docker:up",
+            "docker compose up -d --wait parallel",
+            "docker compose exec -T parallel composer install --no-interaction --prefer-dist --ignore-platform-req=php"
+        ],
+        "parallel:down": "docker compose stop parallel",
+        "parallel:demo": "docker compose exec -T parallel php bin/async.php get 'app://self/article?id=1'",
+        "swoole:up": [
+            "@docker:up",
+            "docker compose up -d --wait swoole",
+            "docker compose exec -T swoole composer install --no-interaction --prefer-dist --ignore-platform-req=php"
+        ],
+        "swoole:down": "docker compose stop swoole",
         "sqlite:up": [
             "rm -f /tmp/bear_cms.db",
             "DB_DSN='sqlite:/tmp/bear_cms.db' ./vendor/bin/doctrine-migrations migrate --no-interaction",
@@ -99,7 +113,7 @@
             "./vendor/bin/psalm --show-info=true",
             "./vendor/bin/phpstan analyse -c phpstan.neon --memory-limit=512M"
         ],
-        "phpmd": "php -d error_reporting=22527 ./vendor/bin/phpmd src text ./phpmd.xml",
+        "phpmd": "php -d error_reporting=22527 ./vendor/bin/phpmd src,bin text ./phpmd.xml --exclude \"bin/semantic-ex/*\"",
         "security": "./vendor/bin/bear.security-scan src",
         "tests": [
             "@cs",
@@ -118,6 +132,7 @@
         "serve": "COMPOSER_PROCESS_TIMEOUT=0 php -S 127.0.0.1:8081 -t public public/page.php",
         "serve:api": "COMPOSER_PROCESS_TIMEOUT=0 php -dzend_extension=xdebug.so -S 127.0.0.1:8080 -t public",
         "app": "php bin/app.php",
+        "async": "php bin/async.php",
         "page": "php bin/page.php",
         "profile": "php -dzend_extension=xdebug.so -dxdebug.mode=profile -dxdebug.output_dir=./var/log -dxdebug.profiler_output_name=cachegrind.out.%t bin/page.php get /",
         "demo": "php bin/demo.php",
@@ -140,7 +155,15 @@
         "clean": "Clear cache files",
         "serve": "Start built-in server for Qiq/Page HTML at http://127.0.0.1:8081",
         "serve:api": "Start built-in server for HAL JSON API at http://127.0.0.1:8080",
-        "app": "Request app resource",
+        "docker:up": "Start only MySQL and run migrations/seeding; runtime containers are opt-in via parallel:up or swoole:up",
+        "docker:down": "Stop all docker-compose services",
+        "app": "Request app resource (sync linker)",
+        "async": "Request app resource via the ext-parallel async linker (Article's #[Embed]s run in parallel; requires ext-parallel + ZTS PHP)",
+        "parallel:up": "Build & start the ext-parallel Docker container (provides ZTS PHP + ext-parallel for bin/async.php) + migrate/seed MySQL",
+        "parallel:down": "Stop the ext-parallel container",
+        "parallel:demo": "Exec `php bin/async.php get app://self/article?id=1` inside the ext-parallel container",
+        "swoole:up": "Build & start the ext-swoole Docker container (provides ZTS PHP + ext-swoole) + migrate/seed MySQL",
+        "swoole:down": "Stop the ext-swoole container",
         "page": "Request page resource",
         "profile": "Profile page request (customize endpoint as needed)",
         "demo:variations": "Run the Article GET variations demo"
