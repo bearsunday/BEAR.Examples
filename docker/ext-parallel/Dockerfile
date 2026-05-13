@@ -6,7 +6,7 @@
 # kept as a standalone file so the parallel adapter is discoverable
 # under docker/ alongside ext-swoole.
 
-FROM php:8.4-zts
+FROM php:8.5-zts-bookworm
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
         git \

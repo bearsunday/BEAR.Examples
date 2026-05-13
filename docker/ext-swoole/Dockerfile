@@ -10,7 +10,7 @@
 # provisions the runtime; the application wiring is intentionally
 # left as a follow-up step (see docs/journal/handoff.md).
 
-FROM php:8.4-zts
+FROM php:8.5-zts-bookworm
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
         git \
