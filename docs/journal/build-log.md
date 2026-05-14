@@ -7,7 +7,7 @@ BEAR.Cms を ALPS → Fake → 実SQL の順に解像度を上げながら構築
 
 - プロジェクトディレクトリ: `/Users/akihito/git/BEAR.Cms`
 - VENDOR/PACKAGE: `MyVendor/Cms`
-- 開発DB: MySQL 8 (malt前提)、CI・試用は SQLite でも可
+- 開発DB: MySQL 8.4 LTS (malt前提)、CI・試用は SQLite でも可
 - 当初スコープ: App リソースのみ。後続セッションで read-only Qiq/Page HTML
   projection と未認証の Article 管理画面を追加。
 - 構築期間: 2026-04-25 (1セッション)
@@ -94,7 +94,7 @@ Resource 内で明示的に `$this->body['_embedded']` を組み立てる。
 
 ### Phase 6: インフラ (malt + Module/DI)
 
-`malt.json` — PHP 8.4 + MySQL 8 + Nginx + xdebug/pcov/pdo_mysql。
+`malt.json` — PHP 8.5 + MySQL 8.4 LTS + Nginx + xdebug/pcov/pdo_mysql。
 
 AppModule:
 - `AuraSqlModule($dsn, $user, $pass)` — env 経由
