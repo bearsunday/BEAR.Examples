@@ -411,7 +411,7 @@ $this->body += [          // ← 連想代入ではなく union
 
 ### ローカル環境
 
-- `malt.json` … Malt（PHP 8.5 + MySQL 8.0 + Nginx + xdebug/pcov/pdo_mysql）
+- `malt.json` … Malt（PHP 8.5 + MySQL 8.4 LTS + Nginx + xdebug/pcov/pdo_mysql）
 - `docker-compose.yml` … Docker 派の選択肢
 - どちらも `composer fake-cli` 経由で **DB なしの動作確認** が可能
 
