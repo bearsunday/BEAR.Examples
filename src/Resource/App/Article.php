@@ -139,8 +139,11 @@ class Article extends ResourceObject
 
     #[Alps('doDeleteArticle')]
     #[Purge(uri: 'app://self/articles')]
-    public function onDelete(int $id): static
-    {
+    #[Cli(name: 'article-delete', description: 'Delete an article')]
+    public function onDelete(
+        #[Option(shortName: 'i', description: 'Article id')]
+        int $id,
+    ): static {
         if ($this->article->item($id) === null) {
             $this->code = Code::NOT_FOUND;
             $this->body = ['message' => 'Article not found', 'id' => $id];

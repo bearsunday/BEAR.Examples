@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace MyVendor\Cms\Resource\App;
 
 use BEAR\ApiDoc\Annotation\Alps;
+use BEAR\Cli\Attribute\Cli;
 use BEAR\RepositoryModule\Annotation\CacheableResponse;
 use BEAR\Resource\Annotation\JsonSchema;
 use BEAR\Resource\Annotation\Link;
@@ -26,6 +27,7 @@ class Categories extends ResourceObject
     #[Alps('goCategoryList')]
     #[Link(rel: 'goCategory', href: 'app://self/category{?id}')]
     #[JsonSchema('categoryList.json')]
+    #[Cli(name: 'category-list', description: 'List all categories', output: 'count')]
     public function onGet(): static
     {
         $items = $this->category->list();

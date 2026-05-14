@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace MyVendor\Cms\Resource\App;
 
 use BEAR\ApiDoc\Annotation\Alps;
+use BEAR\Cli\Attribute\Cli;
+use BEAR\Cli\Attribute\Option;
 use BEAR\Resource\Annotation\JsonSchema;
 use BEAR\Resource\Code;
 use BEAR\Resource\ResourceObject;
@@ -24,8 +26,11 @@ class Media extends ResourceObject
 
     #[Alps('goMedia')]
     #[JsonSchema('media.json')]
-    public function onGet(int $id): static
-    {
+    #[Cli(name: 'media-show', description: 'Show a media item by id', output: 'filename')]
+    public function onGet(
+        #[Option(shortName: 'i', description: 'Media id')]
+        int $id,
+    ): static {
         $media = $this->media->item($id);
         if ($media === null) {
             $this->code = Code::NOT_FOUND;
@@ -49,12 +54,19 @@ class Media extends ResourceObject
 
     #[Alps('doCreateMedia')]
     #[JsonSchema(schema: 'write_response.json', params: 'media_create.json')]
+    #[Cli(name: 'media-add', description: 'Register a new media item')]
     public function onPost(
+        #[Option(shortName: 'f', description: 'File name')]
         string $filename,
+        #[Option(shortName: 'm', description: 'MIME type')]
         string $mimeType,
+        #[Option(shortName: 'u', description: 'Source URL')]
         string $url,
+        #[Option(shortName: 'a', description: 'Alt text')]
         string|null $alt = null,
+        #[Option(shortName: 'W', description: 'Width in pixels')]
         int $width = 0,
+        #[Option(shortName: 'H', description: 'Height in pixels')]
         int $height = 0,
     ): static {
         $this->mediaCmd->add(
@@ -76,8 +88,11 @@ class Media extends ResourceObject
     }
 
     #[Alps('doDeleteMedia')]
-    public function onDelete(int $id): static
-    {
+    #[Cli(name: 'media-delete', description: 'Delete a media item')]
+    public function onDelete(
+        #[Option(shortName: 'i', description: 'Media id')]
+        int $id,
+    ): static {
         if ($this->media->item($id) === null) {
             $this->code = Code::NOT_FOUND;
             $this->body = ['message' => 'Media not found', 'id' => $id];

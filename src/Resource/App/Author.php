@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace MyVendor\Cms\Resource\App;
 
 use BEAR\ApiDoc\Annotation\Alps;
+use BEAR\Cli\Attribute\Cli;
+use BEAR\Cli\Attribute\Option;
 use BEAR\Resource\Annotation\JsonSchema;
 use BEAR\Resource\Annotation\Link;
 use BEAR\Resource\Code;
@@ -26,8 +28,11 @@ class Author extends ResourceObject
     #[Alps('goAuthor')]
     #[Link(rel: 'goArticleList', href: 'app://self/articles')]
     #[JsonSchema('author.json')]
-    public function onGet(int $id): static
-    {
+    #[Cli(name: 'author-show', description: 'Show an author by id', output: 'name')]
+    public function onGet(
+        #[Option(shortName: 'i', description: 'Author id')]
+        int $id,
+    ): static {
         $author = $this->author->item($id);
         if ($author === null) {
             $this->code = Code::NOT_FOUND;
@@ -48,8 +53,15 @@ class Author extends ResourceObject
 
     #[Alps('doCreateAuthor')]
     #[JsonSchema(schema: 'write_response.json', params: 'author_create.json')]
-    public function onPost(string $name, string $email, string $bio = ''): static
-    {
+    #[Cli(name: 'author-add', description: 'Create a new author')]
+    public function onPost(
+        #[Option(shortName: 'n', description: 'Author name')]
+        string $name,
+        #[Option(shortName: 'e', description: 'Author email')]
+        string $email,
+        #[Option(shortName: 'b', description: 'Author bio')]
+        string $bio = '',
+    ): static {
         $this->authorCmd->add($name, $email, $bio);
         // byEmail after add is invariant per docs/conventions.md §4.
         $created = $this->author->byEmail($email);
@@ -63,8 +75,17 @@ class Author extends ResourceObject
 
     #[Alps('doUpdateAuthor')]
     #[JsonSchema(schema: 'write_response.json', params: 'author_update.json')]
-    public function onPut(int $id, string $name, string $email, string $bio = ''): static
-    {
+    #[Cli(name: 'author-update', description: 'Update an existing author')]
+    public function onPut(
+        #[Option(shortName: 'i', description: 'Author id')]
+        int $id,
+        #[Option(shortName: 'n', description: 'Author name')]
+        string $name,
+        #[Option(shortName: 'e', description: 'Author email')]
+        string $email,
+        #[Option(shortName: 'b', description: 'Author bio')]
+        string $bio = '',
+    ): static {
         if ($this->author->item($id) === null) {
             $this->code = Code::NOT_FOUND;
             $this->body = ['message' => 'Author not found', 'id' => $id];

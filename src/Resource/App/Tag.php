@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace MyVendor\Cms\Resource\App;
 
 use BEAR\ApiDoc\Annotation\Alps;
+use BEAR\Cli\Attribute\Cli;
+use BEAR\Cli\Attribute\Option;
 use BEAR\Resource\Annotation\JsonSchema;
 use BEAR\Resource\Annotation\Link;
 use BEAR\Resource\Code;
@@ -27,8 +29,11 @@ class Tag extends ResourceObject
     #[Link(rel: 'goTagList', href: 'app://self/tags')]
     #[Link(rel: 'goArticleList', href: 'app://self/articles{?tagId}')]
     #[JsonSchema('tag.json')]
-    public function onGet(int $id): static
-    {
+    #[Cli(name: 'tag-show', description: 'Show a tag by id', output: 'name')]
+    public function onGet(
+        #[Option(shortName: 'i', description: 'Tag id')]
+        int $id,
+    ): static {
         $tag = $this->tag->item($id);
         if ($tag === null) {
             $this->code = Code::NOT_FOUND;
@@ -48,8 +53,13 @@ class Tag extends ResourceObject
 
     #[Alps('doCreateTag')]
     #[JsonSchema(schema: 'write_response.json', params: 'tag_create.json')]
-    public function onPost(string $slug, string $name): static
-    {
+    #[Cli(name: 'tag-add', description: 'Create a new tag')]
+    public function onPost(
+        #[Option(shortName: 's', description: 'Tag slug')]
+        string $slug,
+        #[Option(shortName: 'n', description: 'Tag name')]
+        string $name,
+    ): static {
         $this->tagCmd->add($slug, $name);
         // bySlug after add is invariant per docs/conventions.md §4.
         $created = $this->tag->bySlug($slug);
@@ -62,8 +72,11 @@ class Tag extends ResourceObject
     }
 
     #[Alps('doDeleteTag')]
-    public function onDelete(int $id): static
-    {
+    #[Cli(name: 'tag-delete', description: 'Delete a tag')]
+    public function onDelete(
+        #[Option(shortName: 'i', description: 'Tag id')]
+        int $id,
+    ): static {
         if ($this->tag->item($id) === null) {
             $this->code = Code::NOT_FOUND;
             $this->body = ['message' => 'Tag not found', 'id' => $id];
