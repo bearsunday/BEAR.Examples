@@ -7,6 +7,7 @@ namespace MyVendor\Cms\Resource\App;
 use BEAR\ApiDoc\Annotation\Alps;
 use BEAR\Cli\Attribute\Cli;
 use BEAR\Cli\Attribute\Option;
+use BEAR\RepositoryModule\Annotation\CacheableResponse;
 use BEAR\Resource\Annotation\JsonSchema;
 use BEAR\Resource\Annotation\Link;
 use BEAR\Resource\ResourceObject;
@@ -22,6 +23,7 @@ use function max;
 use function min;
 
 #[Alps('ArticleList')]
+#[CacheableResponse]
 class Articles extends ResourceObject
 {
     public function __construct(

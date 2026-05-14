@@ -7,6 +7,7 @@ namespace MyVendor\Cms\Resource\App;
 use BEAR\ApiDoc\Annotation\Alps;
 use BEAR\Cli\Attribute\Cli;
 use BEAR\Cli\Attribute\Option;
+use BEAR\RepositoryModule\Annotation\Purge;
 use BEAR\Resource\Annotation\Embed;
 use BEAR\Resource\Annotation\JsonSchema;
 use BEAR\Resource\Annotation\Link;
@@ -71,6 +72,7 @@ class Article extends ResourceObject
 
     #[Alps('doCreateArticle')]
     #[JsonSchema(schema: 'write_response.json', params: 'article_create.json')]
+    #[Purge(uri: 'app://self/articles')]
     public function onPost(#[Input] ArticleCreateInput $input): static
     {
         $this->articleCmd->add(
@@ -106,6 +108,7 @@ class Article extends ResourceObject
 
     #[Alps('doUpdateArticle')]
     #[JsonSchema(schema: 'write_response.json', params: 'article_update.json')]
+    #[Purge(uri: 'app://self/articles')]
     public function onPut(#[Input] ArticleUpdateInput $input): static
     {
         if ($this->article->item($input->id) === null) {
@@ -135,6 +138,7 @@ class Article extends ResourceObject
     }
 
     #[Alps('doDeleteArticle')]
+    #[Purge(uri: 'app://self/articles')]
     public function onDelete(int $id): static
     {
         if ($this->article->item($id) === null) {
