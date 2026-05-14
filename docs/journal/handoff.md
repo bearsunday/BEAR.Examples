@@ -111,7 +111,7 @@ Both filed during the build:
 
 If either lands, BEAR.Cms can adopt the fix:
 - ApiDoc#76 → richer `composer doc` output (no project-side change needed beyond bumping version)
-- Resource#355 → reattach `#[CacheableResponse]` across all read resources
+- Resource#355 → reattach `#[CacheableResponse]` across all read resources. **Update (PR-C2):** the showcase now carries class-level `#[CacheableResponse]` on `Articles` / `Categories` plus `#[Purge]` on the matching writes. See scope.md D1 for the two exclusions (entity resources + embedded `Tags`).
 
 ---
 
@@ -119,7 +119,7 @@ If either lands, BEAR.Cms can adopt the fix:
 
 | Item | Why deferred | Recovery |
 |------|------|---------|
-| **Step 6: `#[CacheableResponse]` on all reads** | Blocked on BEAR.Resource#355 (cache hit + JsonSchema interaction). Currently zero resources have the attribute | When #355 lands, restore class-level `#[CacheableResponse]` on read resources + `#[RefreshCache]` on writes |
+| **Step 6: `#[CacheableResponse]` on all reads** | Partially landed in PR-C2: `Articles` / `Categories` have class-level `#[CacheableResponse]`, and `Article` / `Category` writes carry `#[Purge]`. Entity resources and embedded `Tags` are intentionally excluded — see scope.md D1 for the two upstream behaviours that make those cases unsafe | If the upstream `DonutCommandInterceptor` stops re-running `onGet` on deleted entities and the html-context renderer pipeline handles App-only resources, broaden the attribute to entity reads |
 | **phpstan baseline (2 entries)** | One vendor-interface return-type mismatch in `tests/Fake/FakeSqlQuery.php` (`getRowList` returns `list<object>` but `SqlQueryInterface` declares `array<array<mixed>>`); one OAuth provider arg-type widening. Both intentionally suppressed — see comment in `phpstan-baseline.neon`. | Wait for upstream `SqlQueryInterface` to relax its return type; then drop the entry |
 | **Write-side CLI** | Only `article-show` / `article-list` are generated. `article-add` / `article-update` / `article-delete` would round out the demo | Add `#[Cli]` to onPost/onPut/onDelete; `composer cli` regenerates |
 | **Async Docker CI smoke** | Docker runtimes exist locally, but GitHub Actions does not yet run `composer parallel:up && composer parallel:demo` | Add a focused workflow once the ext-parallel image build time and cache behaviour are acceptable |

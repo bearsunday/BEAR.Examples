@@ -20,6 +20,10 @@ use function uniqid;
  * so the matching list cache is invalidated after create/update/delete. This
  * test asserts those operations show up in the repository log, which is the
  * educational signal that the wiring is in place.
+ *
+ * Note: #[Purge(uri)] invalidates the canonical URI only. Query-string
+ * variants (e.g. app://self/articles?categoryId=3) keep their own cache
+ * entries and are not purged by these annotations — see scope.md D1.
  */
 final class CacheTest extends TestCase
 {
