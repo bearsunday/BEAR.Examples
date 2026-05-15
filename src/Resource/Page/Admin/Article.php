@@ -117,14 +117,12 @@ class Article extends ResourceObject
             return $articleId === null
                 ? $this->createArticle($values)
                 : $this->updateArticle($articleId, $values);
-        } catch (ValidationException $e) {
+        } catch (ValidationException | ParameterException $e) {
+            $errors = $e instanceof ValidationException
+                ? $e->getErrors()
+                : ['_global' => [$e->getMessage()]];
             $this->code = 422;
-            $this->body = $this->formBody($article, $values, $e->getErrors(), null);
-
-            return $this;
-        } catch (ParameterException $e) {
-            $this->code = 422;
-            $this->body = $this->formBody($article, $values, ['_global' => [$e->getMessage()]], null);
+            $this->body = $this->formBody($article, $values, $errors, null);
 
             return $this;
         }

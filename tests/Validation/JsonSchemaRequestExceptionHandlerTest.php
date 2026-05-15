@@ -9,7 +9,6 @@ use BEAR\Resource\ResourceObject;
 use MyVendor\Cms\Exception\ValidationException;
 use PHPUnit\Framework\TestCase;
 
-use function dirname;
 use function file_put_contents;
 use function sys_get_temp_dir;
 use function tempnam;
@@ -160,8 +159,5 @@ JSON);
         $written = file_put_contents($path, $json);
         self::assertNotFalse($written);
         $this->schemaFile = $path;
-        // dirname() reference satisfies static analysis that the var is used
-        // even if PHPUnit short-circuits before tearDown.
-        self::assertSame(dirname($path), dirname($path));
     }
 }

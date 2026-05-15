@@ -51,6 +51,12 @@ final readonly class JsonSchemaRequestExceptionHandler implements JsonSchemaRequ
         string $schemaFile,
     ): never {
         $errors = $this->collectErrors($arguments, $schemaFile);
+        // Re-validate can find nothing (schema mutated between runs, $ref
+        // resolution drift, …) — preserve the original failure rather than
+        // throw an empty-shape ValidationException that swallows the signal.
+        if ($errors === []) {
+            throw $e;
+        }
 
         throw new ValidationException($errors, $e);
     }

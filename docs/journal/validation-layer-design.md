@@ -48,6 +48,22 @@ the structured error array, then walks each error to build a
 `field => list<string>` map. Per-message lookup follows the
 **ajv-errors** convention:
 
+> **Trade-off recorded.** Running the validator twice (interceptor →
+> handler) is wasteful because `JsonSchemaException` only carries a
+> flattened string and discards the validator's structured errors.
+> The right fix is upstream — extending `JsonSchemaException` to
+> carry the `$validator->getErrors()` array so the handler can read
+> them directly. Until that lands the re-run is the only honest path;
+> it only runs on the validation-failure branch, so the cost is
+> bounded to the error path. (Upstream issue tracking this is filed
+> against `bearsunday/BEAR.Resource`.)
+
+If `collectErrors()` returns an empty map (schema mutated between
+interceptor and handler, `$ref` resolution drift, …) the handler
+rethrows the original `JsonSchemaException` rather than throwing a
+content-free `ValidationException` — an empty error shape would
+silently swallow the signal.
+
 - `properties.<field>.errorMessage.<constraint>` — per-constraint
   override on a field. `<constraint>` matches `ConstraintError`
   values: `pattern`, `minLength`, `maxLength`, `enum`, `minimum`,
