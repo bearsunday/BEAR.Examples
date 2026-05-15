@@ -772,6 +772,217 @@
                 }
             }
         },
+        "/cache/article-tags": {
+            "get": {
+                "operationId": "goCacheArticleTags",
+                "summary": "Cache showcase exception \u2014 body-derived variable-length dependency set.",
+                "description": "`#[Embed]` cannot statically express \"depend on N tag URIs where N comes\nfrom the database row for this article\", so this is the one place where\n`UriTagInterface::fromAssoc` is structurally required. See\n`docs/conventions.md` \u00a7 \"Exception \u2014 UriTagInterface::fromAssoc for\nbody-variable dependencies\".\n\nExactly one line of user-written cache code (the Surrogate-Key assignment)\nis required, and `ArticleTagsCacheTest::testSourceHasExactlyOneFromAssocCall`\npins that invariant.",
+                "parameters": [
+                    {
+                        "name": "articleId",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CacheArticleTags"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/cache/author": {
+            "get": {
+                "operationId": "goCacheAuthor",
+                "summary": "Cache showcase leaf \u2014 fully automatic dependency tracking.",
+                "description": "No cache-related primitives appear in this class: the `#[Cacheable]`\nattribute is the entire cache surface. The framework writes the self\nSurrogate-Key tag, parents that `#[Embed]` this resource pick it up via\n`EtagSetter::setCacheDependency`, and writes are auto-purged by\n`RefreshSameCommand` (the default `Commands` registered for `#[Cacheable]`\nclasses). See `tests/Resource/App/Cache/AuthorCacheTest.php` for the\nuser-zero-code invariant enforced by reflection.",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Author"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "operationId": "doUpdateCacheAuthor",
+                "summary": "Cache showcase leaf \u2014 fully automatic dependency tracking.",
+                "description": "No cache-related primitives appear in this class: the `#[Cacheable]`\nattribute is the entire cache surface. The framework writes the self\nSurrogate-Key tag, parents that `#[Embed]` this resource pick it up via\n`EtagSetter::setCacheDependency`, and writes are auto-purged by\n`RefreshSameCommand` (the default `Commands` registered for `#[Cacheable]`\nclasses). See `tests/Resource/App/Cache/AuthorCacheTest.php` for the\nuser-zero-code invariant enforced by reflection.",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "id": {
+                                        "type": "integer"
+                                    },
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "email": {
+                                        "type": "string"
+                                    },
+                                    "bio": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "id",
+                                    "name",
+                                    "email"
+                                ]
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/WriteResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    }
+                }
+            }
+        },
+        "/cache/author-profile": {
+            "get": {
+                "operationId": "goAuthorProfile",
+                "summary": "Cache showcase parent \u2014 single child dependency.",
+                "description": "`#[Embed]` handles the composition (the child resource is materialized into\n`_embedded.author` by `HalRenderer`), but the HAL renderer also moves the\nembed request out of `$ro->body` into `_embedded` before\n`EtagSetter::setCacheDependency` walks the body, so the auto-merge of the\nchild's Surrogate-Key into the parent's never fires. Cross-resource\ninvalidation therefore requires one line of manual code: a `fromAssoc`\nmapping the dependency to a Surrogate-Key tag, exactly like the N-child\n`Cache\\ArticleTags` case. See `docs/conventions.md` \u00a7 \"Cross-resource cache\ndependency: one `fromAssoc` line\".",
+                "parameters": [
+                    {
+                        "name": "authorId",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AuthorProfile"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/cache/tag": {
+            "get": {
+                "operationId": "goCacheTag",
+                "summary": "Cache showcase leaf \u2014 symmetric to {@see Author}.",
+                "description": "Zero cache-related primitives in this class. `#[Cacheable]` is the entire\ncache surface; the framework adds the self URI tag and writes are\nauto-purged by `RefreshSameCommand`. PUT here is the trigger for the\n`Cache\\ArticleTags` invalidation demo.",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Tag"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "operationId": "doUpdateCacheTag",
+                "summary": "Cache showcase leaf \u2014 symmetric to {@see Author}.",
+                "description": "Zero cache-related primitives in this class. `#[Cacheable]` is the entire\ncache surface; the framework adds the self URI tag and writes are\nauto-purged by `RefreshSameCommand`. PUT here is the trigger for the\n`Cache\\ArticleTags` invalidation demo.",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "id": {
+                                        "type": "integer"
+                                    },
+                                    "slug": {
+                                        "type": "string"
+                                    },
+                                    "name": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "id",
+                                    "slug",
+                                    "name"
+                                ]
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/WriteResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    }
+                }
+            }
+        },
         "/variations/article-as-array": {
             "get": {
                 "summary": "Comparison-only Article GET. Canonical equivalent: App\\Article::onGet().",
@@ -858,6 +1069,8 @@
         },
         "/variations/media-stream": {
             "get": {
+                "summary": "Comparison-only stream transfer.",
+                "description": "Canonical equivalent: App\\Media::onGet(), which keeps the response JSON-shaped.",
                 "parameters": [
                     {
                         "name": "id",
@@ -1285,6 +1498,63 @@
                     "totalCount": {
                         "type": "integer",
                         "minimum": 0
+                    }
+                }
+            },
+            "CacheArticleTags": {
+                "title": "CacheArticleTags",
+                "description": "Cache showcase: per-article tag list whose Surrogate-Key dependency set is body-derived and variable-length.",
+                "type": "object",
+                "required": [
+                    "articleId",
+                    "cachePattern",
+                    "items",
+                    "count"
+                ],
+                "properties": {
+                    "articleId": {
+                        "type": "integer",
+                        "minimum": 1
+                    },
+                    "cachePattern": {
+                        "type": "string",
+                        "description": "Human-readable name of the demonstrated cache pattern (fromAssoc exception)"
+                    },
+                    "items": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Tag"
+                        }
+                    },
+                    "count": {
+                        "type": "integer",
+                        "minimum": 0
+                    }
+                }
+            },
+            "AuthorProfile": {
+                "title": "AuthorProfile",
+                "description": "Cache showcase profile. Cache dependency on the embedded Author resource is resolved automatically by EtagSetter::setCacheDependency walking the body for #[Embed] requests.",
+                "type": "object",
+                "required": [
+                    "authorId",
+                    "dependencyUri",
+                    "cachePattern"
+                ],
+                "properties": {
+                    "authorId": {
+                        "type": "integer",
+                        "description": "Identifier of the embedded Author resource",
+                        "minimum": 1
+                    },
+                    "dependencyUri": {
+                        "type": "string",
+                        "description": "Diagnostic copy of the Embed src URI; the actual dependency is declared by #[Embed]",
+                        "pattern": "^app://self/cache/author\\?id=[1-9][0-9]*$"
+                    },
+                    "cachePattern": {
+                        "type": "string",
+                        "description": "Human-readable name of the demonstrated cache pattern (Embed-driven default or fromAssoc exception)"
                     }
                 }
             }

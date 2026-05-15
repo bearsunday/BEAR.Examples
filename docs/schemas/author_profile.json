@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/bear-cms/authorProfile",
+  "title": "AuthorProfile",
+  "description": "Cache showcase profile. Cache dependency on the embedded Author resource is resolved automatically by EtagSetter::setCacheDependency walking the body for #[Embed] requests.",
+  "type": "object",
+  "required": [
+    "authorId",
+    "dependencyUri",
+    "cachePattern"
+  ],
+  "properties": {
+    "authorId": {
+      "type": "integer",
+      "description": "Identifier of the embedded Author resource",
+      "minimum": 1
+    },
+    "dependencyUri": {
+      "type": "string",
+      "description": "Diagnostic copy of the Embed src URI; the actual dependency is declared by #[Embed]",
+      "pattern": "^app://self/cache/author\\?id=[1-9][0-9]*$"
+    },
+    "cachePattern": {
+      "type": "string",
+      "description": "Human-readable name of the demonstrated cache pattern (Embed-driven default or fromAssoc exception)"
+    }
+  }
+}

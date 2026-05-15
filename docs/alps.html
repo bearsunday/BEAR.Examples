@@ -14,7 +14,7 @@
             margin: 0 auto;
             padding: 25px;
         }
-
+    
         @media (max-width: 767px) {
             .markdown-body {
                 padding: 15px;
@@ -59,7 +59,7 @@
             margin-right: 2px;
             vertical-align: middle;
         }
-
+        
         /* Sematic Descriptor List */
         .descriptor-list {
             max-width: 100%;
@@ -84,22 +84,22 @@
             margin-right: 8px;
             border: 1px solid #000;
         }
-        .descriptor-list .semantic {
-            background-color: #FFFFFF;
+        .descriptor-list .semantic { 
+            background-color: #FFFFFF; 
         }
-        .descriptor-list .safe {
+        .descriptor-list .safe { 
             background-color: #00A86B;
-            background-image: linear-gradient(45deg, #008000 25%, transparent 25%, transparent 75%, #008000 75%, #008000),
+            background-image: linear-gradient(45deg, #008000 25%, transparent 25%, transparent 75%, #008000 75%, #008000), 
                               linear-gradient(45deg, #008000 25%, transparent 25%, transparent 75%, #008000 75%, #008000);
             background-size: 8px 8px;
             background-position: 0 0, 4px 4px;
         }
-        .descriptor-list .unsafe {
+        .descriptor-list .unsafe { 
             background-color: #FF4136;
             background-image: repeating-linear-gradient(45deg, #FF4136, #FF4136 4px, #FF725C 4px, #FF725C 8px);
         }
-
-        .descriptor-list .idempotent {
+        
+        .descriptor-list .idempotent { 
             background-color: #FFDC00;
             background-image: radial-gradient(#FFB700 20%, transparent 20%),
                               radial-gradient(#FFB700 20%, transparent 20%);
@@ -110,7 +110,7 @@
             color: #000;
             text-decoration: none;
         }
-
+        
         .legend {
             background-color: #ffffff;
             border-radius: 8px;
@@ -133,18 +133,18 @@
             margin-right: 8px;
         }
         .legend .semantic { background-color: #FFFFFF; }
-        .legend .safe {
+        .legend .safe { 
             background-color: #00A86B;
-            background-image: linear-gradient(45deg, #008000 25%, transparent 25%, transparent 75%, #008000 75%, #008000),
+            background-image: linear-gradient(45deg, #008000 25%, transparent 25%, transparent 75%, #008000 75%, #008000), 
                               linear-gradient(45deg, #008000 25%, transparent 25%, transparent 75%, #008000 75%, #008000);
             background-size: 8px 8px;
             background-position: 0 0, 4px 4px;
         }
-        .legend .unsafe {
+        .legend .unsafe { 
             background-color: #FF4136;
             background-image: repeating-linear-gradient(45deg, #FF4136, #FF4136 4px, #FF725C 4px, #FF725C 8px);
         }
-        .legend .idempotent {
+        .legend .idempotent { 
             background-color: #FFDC00;
             background-image: radial-gradient(#FFB700 20%, transparent 20%),
                               radial-gradient(#FFB700 20%, transparent 20%);
@@ -288,7 +288,7 @@ const setupModeSwitch = (switchId, graphId, otherGraphId) => {
             setupModeSwitch('asd-show-id', 'asd-graph-id', 'asd-graph-name');
             setupModeSwitch('asd-show-name', 'asd-graph-name', 'asd-graph-id');
             applySmoothScrollToLinks(document.querySelectorAll('a[href^="#"]'));
-            setupTagEventListener('article', ['Article', 'ArticleList', 'doCreateArticle', 'doDeleteArticle', 'doUpdateArticle', 'goArticle', 'goArticleList'], 'LightGreen'); setupTagEventListener('author', ['Author', 'doCreateAuthor', 'doUpdateAuthor', 'goAuthor'], 'SkyBlue'); setupTagEventListener('category', ['Category', 'CategoryList', 'doCreateCategory', 'doDeleteCategory', 'doUpdateCategory', 'goCategory', 'goCategoryList'], 'LightCoral'); setupTagEventListener('flow-browse', ['ArticleList', 'CategoryList', 'TagList', 'goArticleList', 'goCategoryList', 'goTagList'], 'LightSalmon'); setupTagEventListener('flow-publish', ['doCreateArticle', 'doDeleteArticle', 'doUpdateArticle'], 'Khaki'); setupTagEventListener('media', ['Media', 'doCreateMedia', 'doDeleteMedia', 'goMedia'], 'Plum'); setupTagEventListener('tag', ['Tag', 'TagList', 'doCreateTag', 'doDeleteTag', 'goTag', 'goTagList'], 'Wheat');
+            setupTagEventListener('article', ['Article', 'ArticleList', 'doCreateArticle', 'doDeleteArticle', 'doUpdateArticle', 'goArticle', 'goArticleList'], 'LightGreen'); setupTagEventListener('author', ['Author', 'doCreateAuthor', 'doUpdateAuthor', 'goAuthor'], 'SkyBlue'); setupTagEventListener('category', ['Category', 'CategoryList', 'doCreateCategory', 'doDeleteCategory', 'doUpdateCategory', 'goCategory', 'goCategoryList'], 'LightCoral'); setupTagEventListener('flow-browse', ['ArticleList', 'CategoryList', 'TagList', 'goArticleList', 'goCategoryList', 'goTagList'], 'LightSalmon'); setupTagEventListener('flow-publish', ['doCreateArticle', 'doDeleteArticle', 'doUpdateArticle'], 'Khaki'); setupTagEventListener('media', ['Media', 'doCreateMedia', 'doDeleteMedia', 'goMedia'], 'Plum'); setupTagEventListener('tag', ['Tag', 'TagList', 'doCreateTag', 'doDeleteTag', 'goTag', 'goTagList'], 'Wheat'); 
         } catch (error) {
                console.error("Error in main process:", error);
         }});

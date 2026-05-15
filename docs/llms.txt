@@ -2,7 +2,7 @@
 
 API Document
 
-## Routes (13)
+## Routes (17)
 
 | HTTP Route | Methods | Resource |
 |------------|---------|----------|
@@ -15,12 +15,16 @@ API Document
 | /media | GET, POST, DELETE | App/Media |
 | /tag | GET, POST, DELETE | App/Tag |
 | /tags | GET | App/Tags |
+| /cache/article-tags | GET | App/Cache/ArticleTags |
+| /cache/author | GET, PUT | App/Cache/Author |
+| /cache/author-profile | GET | App/Cache/AuthorProfile |
+| /cache/tag | GET, PUT | App/Cache/Tag |
 | /variations/article-as-array | GET | App/Variations/ArticleAsArray |
 | /variations/article-raw-pdo | GET | App/Variations/ArticleRawPdo |
 | /variations/article-sql-query | GET | App/Variations/ArticleSqlQuery |
 | /variations/media-stream | GET | App/Variations/MediaStream |
 
-## ResourceObjects (13)
+## ResourceObjects (17)
 
 ### App/Article
 `/article`
@@ -98,6 +102,36 @@ API Document
 |--------|------------|-------|
 | GET | articleId | href(goTag) |
 
+### App/Cache/ArticleTags
+`/cache/article-tags`
+
+| Method | Parameters | Links |
+|--------|------------|-------|
+| GET | articleId* | - |
+
+### App/Cache/Author
+`/cache/author`
+
+| Method | Parameters | Links |
+|--------|------------|-------|
+| GET | id* | - |
+| PUT | id*, name*, email*, bio | - |
+
+### App/Cache/AuthorProfile
+`/cache/author-profile`
+
+| Method | Parameters | Links |
+|--------|------------|-------|
+| GET | authorId* | src(author) |
+
+### App/Cache/Tag
+`/cache/tag`
+
+| Method | Parameters | Links |
+|--------|------------|-------|
+| GET | id* | - |
+| PUT | id*, slug*, name* | - |
+
 ### App/Variations/ArticleAsArray
 `/variations/article-as-array`
 
@@ -126,7 +160,7 @@ API Document
 |--------|------------|-------|
 | GET | id* | - |
 
-## Responses (10)
+## Responses (12)
 
 | Response | Schema | Properties |
 |----------|--------|------------|
@@ -140,6 +174,8 @@ API Document
 | Media | media.json | id, filename, mimeType, url, alt, width, height |
 | Tag | tag.json | id, slug, name |
 | TagList | tagList.json | items, totalCount |
+| Cache_article_tags | cache_article_tags.json | articleId, cachePattern, items, count |
+| Author_profile | author_profile.json | authorId, dependencyUri, cachePattern |
 
 ## Query Interfaces (12)
 
@@ -155,10 +191,10 @@ API Document
 | CategoryQueryInterface | item(id):Category, bySlug(slug):Category, list():array |
 | MediaCommandInterface | add(filename, mimeType, url, alt, width, height):void, delete(id):void |
 | MediaQueryInterface | item(id):Media, byFilename(filename):Media |
-| TagCommandInterface | add(slug, name):void, delete(id):void |
+| TagCommandInterface | add(slug, name):void, update(id, slug, name):void, delete(id):void |
 | TagQueryInterface | item(id):Tag, bySlug(slug):Tag, list():array, listByArticle(articleId):array |
 
-## SQL (34)
+## SQL (35)
 
 | File | Query |
 |------|-------|
@@ -304,6 +340,7 @@ ORDER BY name` |
     t.name
 FROM tags t
 JOIN article_tags at ON a...` |
+| tag_update.sql | `UPDATE tags SET slug = :slug, name = :name WHERE id = :id` |
 
 ## Entities (5)
 
