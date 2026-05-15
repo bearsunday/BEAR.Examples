@@ -17,6 +17,9 @@
     <testsuite name="smoke">
       <directory>tests/Smoke</directory>
     </testsuite>
+    <testsuite name="validation">
+      <directory>tests/Validation</directory>
+    </testsuite>
   </testsuites>
   <source>
     <include>

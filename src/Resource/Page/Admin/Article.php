@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace MyVendor\Cms\Resource\Page\Admin;
 
 use BEAR\Resource\Code;
-use BEAR\Resource\Exception\JsonSchemaException;
 use BEAR\Resource\Exception\ParameterException;
 use BEAR\Resource\ResourceInterface;
 use BEAR\Resource\ResourceObject;
@@ -14,6 +13,7 @@ use MyVendor\Cms\Entity\Article as ArticleEntity;
 use MyVendor\Cms\Entity\Author;
 use MyVendor\Cms\Entity\Category;
 use MyVendor\Cms\Entity\Tag;
+use MyVendor\Cms\Exception\ValidationException;
 use MyVendor\Cms\Query\ArticleQueryInterface;
 use MyVendor\Cms\Query\AuthorQueryInterface;
 use MyVendor\Cms\Query\CategoryQueryInterface;
@@ -29,7 +29,7 @@ use function trim;
  *     mode: 'create'|'edit',
  *     article: ArticleEntity|null,
  *     values: array<string, mixed>,
- *     errors: list<string>,
+ *     errors: array<string, list<string>>,
  *     authors: list<Author>,
  *     categories: list<Category>,
  *     tags: list<Tag>,
@@ -117,9 +117,14 @@ class Article extends ResourceObject
             return $articleId === null
                 ? $this->createArticle($values)
                 : $this->updateArticle($articleId, $values);
-        } catch (JsonSchemaException | ParameterException $e) {
+        } catch (ValidationException $e) {
             $this->code = 422;
-            $this->body = $this->formBody($article, $values, [$e->getMessage()], null);
+            $this->body = $this->formBody($article, $values, $e->getErrors(), null);
+
+            return $this;
+        } catch (ParameterException $e) {
+            $this->code = 422;
+            $this->body = $this->formBody($article, $values, ['_global' => [$e->getMessage()]], null);
 
             return $this;
         }
@@ -197,14 +202,14 @@ class Article extends ResourceObject
     }
 
     /**
-     * @param array<string, mixed> $values
-     * @param list<string>         $errors
+     * @param array<string, mixed>        $values
+     * @param array<string, list<string>> $errors
      *
      * @return array{
      *     mode: 'create'|'edit',
      *     article: ArticleEntity|null,
      *     values: array<string, mixed>,
-     *     errors: list<string>,
+     *     errors: array<string, list<string>>,
      *     authors: list<Author>,
      *     categories: list<Category>,
      *     tags: list<Tag>,

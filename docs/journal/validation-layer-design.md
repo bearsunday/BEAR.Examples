@@ -1,0 +1,205 @@
+# Validation layer design
+
+This note records the validation-layer architecture agreed on in
+[Issue #37](https://github.com/bearsunday/MyVendor.Cms/issues/37) and
+the modernisation meeting that followed. The corresponding code lives
+under `src/Validation/`, `src/Exception/ValidationException.php`, and
+the `errorMessage` keys in `var/json_validate/*.json`.
+
+---
+
+## Goal
+
+Make the **error shape on the wire** the same regardless of which
+layer detected the failure:
+
+1. Structural failure — JSON Schema (string length, regex, enum,
+   required, type, format, …).
+2. Type-shape failure that runs before the schema — DTO constructor
+   (e.g. `tagIds` scalar against `array` typed property), surfacing
+   as `BEAR\Resource\Exception\ParameterException`.
+3. Domain failure (deferred) — DB-dependent checks such as slug
+   uniqueness, FK existence, state-transition guards.
+
+Clients (both the HAL+JSON API and the Qiq admin pages) only see one
+shape: a field-keyed map of human-readable messages. Per Issue #37
+agreement, **the resource method itself does not throw domain
+validation exceptions** — that responsibility belongs to the DTO or a
+dedicated validator service called from the DTO. Today that surface
+isn't exercised yet; the architecture is set up so it can land
+without changing the wire contract.
+
+---
+
+## Components
+
+### `JsonSchemaRequestExceptionHandler`
+
+Implements
+`BEAR\Resource\JsonSchemaRequestExceptionHandlerInterface` — the
+hook `JsonSchemaInterceptor` calls when `params:` validation fails.
+The default `JsonSchemaRequestExceptionNullHandler` rethrows the
+original `JsonSchemaException`, which carries only a flattened
+`"[prop] message; …"` string.
+
+Our handler re-runs the validator (`justinrainbow/json-schema`,
+`CHECK_MODE_TYPE_CAST` — same flags the interceptor uses) to recover
+the structured error array, then walks each error to build a
+`field => list<string>` map. Per-message lookup follows the
+**ajv-errors** convention:
+
+- `properties.<field>.errorMessage.<constraint>` — per-constraint
+  override on a field. `<constraint>` matches `ConstraintError`
+  values: `pattern`, `minLength`, `maxLength`, `enum`, `minimum`,
+  `format`, `type`, etc.
+- `properties.<field>.errorMessage` as a string — fallback used for
+  any failure on the field. Useful when one message covers several
+  constraints (`"Slug is invalid."`).
+- `errorMessage.required.<field>` on the parent object — `required`
+  failures bubble up to the parent in justinrainbow, so the
+  override lives at the object level (mirroring ajv-errors).
+
+When no `errorMessage` matches, the validator's default message is
+used unchanged.
+
+### `ValidationException`
+
+Lives in `src/Exception/ValidationException.php`. Carries the
+`field => list<string>` map. Implements
+`BEAR\Resource\Exception\ExceptionInterface` so it joins the
+framework's exception hierarchy and is recognised by BEAR-side
+machinery without further wiring.
+
+The exception is the only practical short-circuit: the interceptor
+calls the handler **before** `$invocation->proceed()`, and if the
+handler returns normally the interceptor falls through to
+`proceed()` — so the resource method would run with invalid input
+regardless of any state the handler sets on `$ro`. Throwing is the
+contract.
+
+---
+
+## Wiring
+
+`AppModule::configure()` rebinds the handler after
+`JsonSchemaModule` is installed:
+
+```php
+$this->install(new JsonSchemaModule(/* … */));
+$this->bind(JsonSchemaRequestExceptionHandlerInterface::class)
+    ->to(JsonSchemaRequestExceptionHandler::class)
+    ->in(Scope::SINGLETON);
+```
+
+Test, fake, and CLI contexts inherit through `AppModule`, so the
+handler is active everywhere the JSON Schema interceptor runs.
+
+---
+
+## Resource-side contract
+
+App resources (`Resource/App/Article`, `Resource/App/Auth`, …)
+**do not** catch `ValidationException`. The exception propagates to
+the immediate caller — either a Page resource composing the App
+resource, or the test harness asserting against the structured
+errors. The wire contract for `app://` is "thrown exception with
+structured errors", not "422 body" — the BEAR.Resource invocation
+itself is the call site, and the body would otherwise need a global
+exception-to-status mapping that the framework deliberately leaves
+to the transfer layer.
+
+Page resources (`Resource/Page/Admin/Article`, etc.) catch
+`ValidationException` from the inner `app://` call and rewrite the
+form body to surface field-keyed errors:
+
+```php
+try {
+    return $this->resource->post('app://self/article', $values);
+} catch (ValidationException $e) {
+    $this->code = 422;
+    $this->body = $this->formBody($article, $values, $e->getErrors(), null);
+    return $this;
+}
+```
+
+`ParameterException` (DTO-shape failures) is caught separately and
+funnelled into the same 422 body under the `_global` field, so the
+form template renders both paths through a single error-list block.
+
+---
+
+## Schema authoring rules
+
+1. `errorMessage` lives next to the constraint it overrides. The
+   constraint itself stays — `pattern: "^[a-z]+$"` keeps doing the
+   actual validation, and `errorMessage.pattern` only owns the
+   *copy*.
+2. Required-field copy goes on the parent object under
+   `errorMessage.required.<field>`. JSON Schema reports `required`
+   on the parent; we keep the schema true to the validator's model.
+3. `errorMessage` is non-normative JSON Schema (sourced from
+   `ajv-errors`); other validators ignore it. That's the intended
+   trade-off — schemas are still portable, and only this codebase's
+   handler reads the overrides.
+4. Don't put `errorMessage` everywhere preemptively. Add it when the
+   default message reads awkwardly to a user or when the wording
+   needs to match the admin's vocabulary (e.g. "Status must be
+   either 'draft' or 'published'").
+
+---
+
+## Why DTO-side, not resource-side, for domain validation
+
+The meeting decision was that DB-dependent validation (slug
+uniqueness, FK existence) belongs in the DTO or a validator service
+called from the DTO — **not** in the resource method via inline
+`throw new SlugAlreadyTakenException`. The reasoning:
+
+- The resource method's job is the state transition. Mixing
+  validation throws into it confuses the layer.
+- The DTO is already the typed boundary between unsafe request data
+  and the resource. Pushing the domain check there means the
+  resource can trust the materialised object.
+- Today, Input DTOs (Ray.InputQuery's `#[Input]`-bound parameters)
+  are hydrated from the flat request array, not the DI container.
+  Extending them to invoke an injected validator is the next step;
+  the architectural slot is reserved here so the wire contract
+  doesn't change when it lands.
+
+When that lands, the DTO calls into a validator service that
+throws `ValidationException` with the same `field => list<string>`
+shape. `Page/Admin/Article` already catches `ValidationException`,
+so no resource-layer change is needed for the domain path.
+
+---
+
+## Out of scope (deferred)
+
+- **`SameOrigin` / `CsrfToken` interceptors** — Issue #37 alternatives
+  1 & 2 (CSRF as cross-cutting AOP). Independent PR.
+- **Confirmation-screen resource** — Issue #37 alternatives 3 & 5
+  (Article lifecycle resource: `draft → preview → published` as a
+  state-machine resource with HAL state transitions). Independent PR.
+- **JSON Schema for response error shape** — register a
+  `validation_problem.json` schema and validate the 422 body shape
+  in tests. Useful but not load-bearing for correctness; can land
+  alongside response-shape catalogue work.
+
+---
+
+## Test coverage
+
+- `tests/Resource/App/ArticleTest::testPostRejectsInvalidSlugPattern`
+  and `…testPostRejectsInvalidStatusEnum` lock the App-side
+  behaviour: `ValidationException` with a field key matching the
+  failing input.
+- `tests/Validation/JsonSchemaRequestExceptionHandlerTest` exercises
+  the handler against synthetic schemas to cover the
+  `errorMessage.required.<field>`, per-keyword, string-fallback,
+  and missing-`errorMessage` paths. Synthetic because, through the
+  App boundary, schema-required failures cannot reach the
+  interceptor — Article's DTO and Author's typed parameters reject
+  missing values first.
+- `tests/Resource/Page/Admin/ArticleTest::testInvalidCreateReturnsFormWithEscapedValues`
+  pins the Page-side 422 rendering: `<section class="ErrorList">`
+  appears and unsafe input is escaped.

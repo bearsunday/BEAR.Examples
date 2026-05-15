@@ -215,14 +215,21 @@ if (! isset($article) || $article === null) {
 警告のリグレッションを検出します。
 
 ### Status code
-| Method | 成功 | 見つからない | 検証失敗 |
-|--------|------|-------------|---------|
-| GET | 200 | 404 | n/a |
-| POST (リソースを作成する) | 201 + `Location` ヘッダ | n/a | 422 (`#[JsonSchema(params:)]` 経由) |
-| POST (アクション / 非作成) | 200 + body | n/a | 422 (`#[JsonSchema(params:)]` 経由) |
-| PUT | 200 | 404 | 422 |
-| DELETE | 204 | 404 | n/a |
-| 重複 `slug` (または他の unique key) | — | — | 409 (DB の `UniqueConstraintViolation` 経由、手動 catch なし) |
+| Method | 成功 | 見つからない | 検証失敗 (App 層) | 検証失敗 (Page 層) |
+|--------|------|-------------|--------------------|--------------------|
+| GET | 200 | 404 | n/a | n/a |
+| POST (リソースを作成する) | 201 + `Location` ヘッダ | n/a | `ValidationException` を throw | 422 + form 再描画 |
+| POST (アクション / 非作成) | 200 + body | n/a | `ValidationException` を throw | 422 + form 再描画 |
+| PUT | 200 | 404 | `ValidationException` を throw | 422 + form 再描画 |
+| DELETE | 204 | 404 | n/a | n/a |
+| 重複 `slug` (または他の unique key) | — | — | — | 409 (DB の `UniqueConstraintViolation` 経由、手動 catch なし) |
+
+App リソースは検証失敗を `ValidationException` (`field => list<string>`
+を保持) として throw します。422 body にはなりません — `app://` には
+thrown error を HTTP status に変換する transfer layer が存在しないためです。
+Page リソースは catch して 422 form を描画します。配線の詳細は
+[validation-layer-design.md](../journal/validation-layer-design.md)
+を参照してください。
 
 **POST は常に作成ではありません。** `201 + Location` は POST が新しい
 addressable resource を追加する場合に限ります (例: `Article::onPost` が
@@ -360,6 +367,41 @@ Ray.MediaQuery の DTO サポートは、Resource-to-Command 境界が本当に 
 - 汎用の `LogicException` / `RuntimeException` は使いません。`src/` 由来で
   throw する例外は `MyVendor\Cms\Exception\<DomainName>Exception` を定義します。
 - Read のエラー (見つからない) は throw せず、`$this->code` 経由で 404 を返します。
+- リクエスト検証失敗は `MyVendor\Cms\Exception\ValidationException`
+  (フレームワークの `JsonSchemaException` ではない) を throw し、
+  `field => list<string>` の map を保持します。
+  `JsonSchemaRequestExceptionHandler` が validator のエラーと
+  `errorMessage` の lookup から組み立て、Page リソースが catch して
+  422 form 再描画として surface します。詳細は
+  [validation-layer-design.md](../journal/validation-layer-design.md)
+  を参照してください。
+
+#### JSON Schema の `errorMessage` キー (ajv-errors 慣習)
+
+`var/json_validate/*.json` の schema は constraint の隣に
+`errorMessage` キーワードを置けます。constraint そのものは残ります —
+`pattern: "^[a-z]+$"` は引き続き検証を行い、`errorMessage.pattern` は
+ワイヤー上のコピーだけを所有します。
+
+```json
+"slug": {
+  "type": "string",
+  "pattern": "^[a-z0-9][a-z0-9-]*$",
+  "errorMessage": {
+    "pattern": "Slug must contain only lowercase letters, digits and hyphens."
+  }
+}
+```
+
+required フィールドのコピーは親側で
+`errorMessage.required.<field>` に置きます。`errorMessage` は
+プレーン文字列でも書けて、その場合はそのプロパティの任意の失敗に対する
+fallback になります。
+
+`errorMessage` は default validator メッセージが不自然な場合や、
+管理画面の語彙に合わせる必要があるときにだけ追加してください — override
+がない schema もそのまま動き、validator の default メッセージに
+fall through します。
 
 ### 呼び出し側での名前付き引数
 **positional がデフォルトです。** positional だと読み手が呼び出しを decode

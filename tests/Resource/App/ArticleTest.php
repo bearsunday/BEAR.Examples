@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace MyVendor\Cms\Resource\App;
 
-use BEAR\Resource\Exception\JsonSchemaException;
 use BEAR\Resource\Exception\ParameterException;
 use MyVendor\Cms\AbstractAppTestCase;
+use MyVendor\Cms\Exception\ValidationException;
 
 use function array_column;
 use function json_decode;
@@ -115,28 +115,47 @@ final class ArticleTest extends AbstractAppTestCase
 
     public function testPostRejectsInvalidSlugPattern(): void
     {
-        $this->expectException(JsonSchemaException::class);
-        $this->resource->post('app://self/article', [
-            'slug' => 'INVALID Slug With Spaces',
-            'title' => 'Title',
-            'body' => 'Body',
-            'authorId' => 1,
-            'categoryId' => 1,
-            'status' => 'draft',
-        ]);
+        try {
+            $this->resource->post('app://self/article', [
+                'slug' => 'INVALID Slug With Spaces',
+                'title' => 'Title',
+                'body' => 'Body',
+                'authorId' => 1,
+                'categoryId' => 1,
+                'status' => 'draft',
+            ]);
+            $this->fail('Expected ValidationException');
+        } catch (ValidationException $e) {
+            $errors = $e->getErrors();
+            $this->assertArrayHasKey('slug', $errors);
+            // The pattern message in article_create.json is the source of truth for the wire copy.
+            $this->assertSame(
+                'Slug must contain only lowercase letters, digits and hyphens.',
+                $errors['slug'][0],
+            );
+        }
     }
 
     public function testPostRejectsInvalidStatusEnum(): void
     {
-        $this->expectException(JsonSchemaException::class);
-        $this->resource->post('app://self/article', [
-            'slug' => 'valid-slug-' . uniqid(),
-            'title' => 'Title',
-            'body' => 'Body',
-            'authorId' => 1,
-            'categoryId' => 1,
-            'status' => 'invalid-status-value',
-        ]);
+        try {
+            $this->resource->post('app://self/article', [
+                'slug' => 'valid-slug-' . uniqid(),
+                'title' => 'Title',
+                'body' => 'Body',
+                'authorId' => 1,
+                'categoryId' => 1,
+                'status' => 'invalid-status-value',
+            ]);
+            $this->fail('Expected ValidationException');
+        } catch (ValidationException $e) {
+            $errors = $e->getErrors();
+            $this->assertArrayHasKey('status', $errors);
+            $this->assertSame(
+                "Status must be either 'draft' or 'published'.",
+                $errors['status'][0],
+            );
+        }
     }
 
     /**

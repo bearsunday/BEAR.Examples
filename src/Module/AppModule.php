@@ -6,6 +6,7 @@ namespace MyVendor\Cms\Module;
 
 use BEAR\Package\AbstractAppModule;
 use BEAR\Package\PackageModule;
+use BEAR\Resource\JsonSchemaRequestExceptionHandlerInterface;
 use BEAR\Resource\Module\JsonSchemaModule;
 use Koriym\EnvJson\EnvJson;
 use League\CommonMark\CommonMarkConverter;
@@ -23,6 +24,7 @@ use MyVendor\Cms\Provider\CurrentUserProvider;
 use MyVendor\Cms\Provider\GoogleProvider;
 use MyVendor\Cms\Service\CommonMarkRenderer;
 use MyVendor\Cms\Service\MarkdownRendererInterface;
+use MyVendor\Cms\Validation\JsonSchemaRequestExceptionHandler;
 use Ray\AuraSqlModule\AuraSqlModule;
 use Ray\Di\Scope;
 use Ray\MediaQuery\MediaQuerySqlModule;
@@ -65,6 +67,11 @@ final class AppModule extends AbstractAppModule
             $this->appMeta->appDir . '/var/json_schema',
             $this->appMeta->appDir . '/var/json_validate',
         ));
+        // Replace the null request handler with one that re-runs the validator
+        // to surface field-level errors. See src/Validation/JsonSchemaRequestExceptionHandler.
+        $this->bind(JsonSchemaRequestExceptionHandlerInterface::class)
+            ->to(JsonSchemaRequestExceptionHandler::class)
+            ->in(Scope::SINGLETON);
 
         // Domain-layer services (e.g. injected into Entity via FetchInjectionFactory).
         // toProvider, not toInstance: CommonMarkConverter wires Closures internally

@@ -3,7 +3,7 @@
  * @var 'create'|'edit' $mode
  * @var \MyVendor\Cms\Entity\Article|null $article
  * @var array<string, mixed> $values
- * @var list<string> $errors
+ * @var array<string, list<string>> $errors
  * @var list<\MyVendor\Cms\Entity\Author> $authors
  * @var list<\MyVendor\Cms\Entity\Category> $categories
  * @var list<\MyVendor\Cms\Entity\Tag> $tags
@@ -46,8 +46,10 @@ $nameFor = static function (array $entities, int $id): string {
     <section class="ErrorList">
       <h2>Could not save article</h2>
       <ul>
-        <?php foreach ($errors as $error): ?>
-          <li>{{h $error }}</li>
+        <?php foreach ($errors as $field => $messages): ?>
+          <?php foreach ($messages as $message): ?>
+            <li><?php if ($field !== '_global'): ?><strong>{{h $field }}</strong>: <?php endif ?>{{h $message }}</li>
+          <?php endforeach ?>
         <?php endforeach ?>
       </ul>
     </section>
