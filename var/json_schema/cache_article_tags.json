@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/bear-cms/cacheArticleTags",
+  "title": "CacheArticleTags",
+  "description": "Cache showcase: per-article tag list whose Surrogate-Key dependency set is body-derived and variable-length.",
+  "type": "object",
+  "required": [
+    "articleId",
+    "cachePattern",
+    "items",
+    "count"
+  ],
+  "properties": {
+    "articleId": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "cachePattern": {
+      "type": "string",
+      "description": "Human-readable name of the demonstrated cache pattern (fromAssoc exception)"
+    },
+    "items": {
+      "type": "array",
+      "items": {
+        "$ref": "tag.json"
+      }
+    },
+    "count": {
+      "type": "integer",
+      "minimum": 0
+    }
+  }
+}

@@ -16,7 +16,7 @@ then the code/docs follow.
 1. [Code structure](#1-code-structure) — namespaces, directory layout, Read/Write split
 2. [Contexts](#2-contexts) — `hal-api-app` / `cli-` / `fake-` / `test-` composition
 3. [Naming](#3-naming) — class, query method, resource property, SQL filename, ALPS, HAL rel
-4. [Resource patterns](#4-resource-patterns) — body construction, status codes, after-INSERT id, pagination, **input shape & validation**, exceptions, named arguments, method order
+4. [Resource patterns](#4-resource-patterns) — body construction, status codes, after-INSERT id, pagination, **input shape & validation**, exceptions, named arguments, method order, **cache**
 5. [Read/Write SQL contract](#5-readwrite-sql-contract) — column order, fetch mode, write-id detection
 6. [File / data layout](#6-filedata-layout) — `var/` artefact placement
 7. [Tests](#7-tests) — context wiring, hermetic fakes, hypermedia workflow tests
@@ -507,6 +507,86 @@ References:
 Reading top-to-bottom should mirror the public surface first, the
 implementation detail last. Helpers above the handlers force the reader
 to skim past internal plumbing before reaching the entry point.
+
+### Cache — `#[Cacheable]` and cross-resource invalidation
+
+The QueryRepository cache showcase lives at `src/Resource/App/Cache/*`
+and is exercised by `composer demo:cache`. It demonstrates the two
+patterns the codebase canonicalizes — nothing else is allowed.
+
+#### Default — leaves are user-zero-code
+
+A read resource that does not aggregate other resources needs only
+`#[Cacheable]`. The framework writes the self URI tag at save time, and
+`RefreshSameCommand` (auto-registered by `#[Cacheable]`) purges that
+tag on `PUT` / `POST` / `PATCH` / `DELETE` to the same URI. **Do not
+touch `Header::SURROGATE_KEY`, do not inject `UriTagInterface`, do not
+call `DonutRepositoryInterface::invalidateTags()`.** Each of those
+duplicates what the framework already does and breaks the
+`CacheDependency::depends()` assertion that forbids mixing manual and
+automatic Surrogate-Key writes on the same response.
+
+Canonical example: `Cache\Author`, `Cache\Tag`. The reflection tests
+`AuthorCacheTest::testSourceContainsNoCachePrimitives` pin the
+user-zero-code invariant — refactors that re-introduce manual cache
+code will fail the test.
+
+#### Cross-resource dependency — exactly one `fromAssoc` line
+
+When a resource declares that **another resource's URI** invalidates
+it, the parent must spell that dependency out — `#[Embed]` alone does
+not propagate child URI tags to the parent's Surrogate-Key because the
+HAL renderer moves Embed requests into `_embedded` before
+`EtagSetter::setCacheDependency()` walks the body. The contract is one
+line of cache code: assign `Header::SURROGATE_KEY` from
+`UriTagInterface::fromAssoc('<template>', $assocList)`.
+
+This is the same line whether the dependency set has one URI or N:
+
+- **One** (single-child composition): `Cache\AuthorProfile` declares
+  `app://self/cache/author?id={authorId}` via
+  `$this->uriTag->fromAssoc('app://self/cache/author{?id}', [['id' => $authorId]])`.
+  Composition still uses `#[Embed]` so the response body renders the
+  child into `_embedded.author`.
+- **N** (body-derived variable-length set): `Cache\ArticleTags` reads
+  N tag rows and maps them via
+  `$this->uriTag->fromAssoc('app://self/cache/tag{?id}', $items)`.
+  `#[Embed]` cannot statically express "depend on N URIs where N comes
+  from the database", so this is the only place a parent does its own
+  composition. When `$items === []`, leave the header unset —
+  `fromAssoc([])` returns `''` and Symfony's tag-aware cache adapter
+  rejects empty tags.
+
+The exactly-one-line invariant is pinned by
+`AuthorProfileCacheTest::testSourceHasExactlyOneFromAssocCall` and
+`ArticleTagsCacheTest::testSourceHasExactlyOneFromAssocCall`.
+
+The single-child `fromAssoc` line in `Cache\AuthorProfile` is a
+workaround for an upstream order-of-operations issue in
+`QueryRepository::put` (`toString()` runs HalRenderer before
+`EtagSetter::setCacheDependency()` walks the body, so the Embed
+auto-merge never sees a `Request`). Once the upstream fix lands, the
+single-child parent can drop to user-zero-code; the N-child
+`Cache\ArticleTags` will still need the explicit line because Embed
+cannot statically express a body-derived dependency set. See
+`docs/journal/upstream-issue-cache-dependency.md` for the draft issue
+body and the three candidate fixes.
+
+#### Anti-patterns
+
+- Writing the self URI into `Header::SURROGATE_KEY` — the framework's
+  `SurrogateKeys::setSurrogateHeader` already does this.
+- Calling `DonutRepositoryInterface::invalidateTags()` from `onPut` /
+  `onDelete` — `CommandInterceptor` + `RefreshSameCommand` already
+  purge the self URI tag on writes to `#[Cacheable]` resources.
+- Mixing `#[Embed]` and `fromAssoc()` on the same response in the hope
+  of "auto + manual" composition — the body-walk auto-merge does not
+  fire under HAL because `_embedded` strips the Request before the
+  walk. Use the explicit one-line pattern instead, exactly as
+  `Cache\AuthorProfile` does.
+- Reaching for `fromAssoc()` when there is no cross-resource
+  dependency at all — the default `#[Cacheable]`-only leaf is the
+  correct shape.
 
 ## 5. Read/Write SQL contract
 

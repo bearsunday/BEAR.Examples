@@ -97,6 +97,43 @@ GET. Query params: `page`, `perPage` (clamped 1..100, default 20),
 - POST — `filename`, `mimeType`, `url`, optional `alt`, `width`, `height`.
 - DELETE `{id}`.
 
+## Cache showcase resources (`app://self/cache/*`)
+
+A four-resource set under `src/Resource/App/Cache/*` that demonstrates the
+two BEAR QueryRepository cache patterns the codebase canonicalizes. The
+showcase is hermetic — `composer demo:cache` runs it against an in-memory
+`ArrayAdapter` bound by `CacheShowcaseModule`. See `docs/conventions.md`
+§ 4 "Cache" for the canonical pattern, and the reflection tests under
+`tests/Resource/App/Cache/` for the executable invariants.
+
+### Pattern A — `#[Cacheable]`-only leaf (user-zero-code)
+
+- `app://self/cache/author` (`Cache\Author`)
+- `app://self/cache/tag` (`Cache\Tag`)
+
+Both expose GET `{id}` and PUT `{id}`. Cache surface is one attribute:
+`#[Cacheable]`. The framework writes the self URI tag, and
+`RefreshSameCommand` purges it on write. No `Header::SURROGATE_KEY`, no
+`UriTagInterface`, no `DonutRepositoryInterface` appears in the class.
+
+### Pattern B — one-line `fromAssoc` parent (single-child or N-child)
+
+- `app://self/cache/authorprofile` (`Cache\AuthorProfile`) — GET only.
+  Composes `Cache\Author` via `#[Embed(rel: 'author', src: 'app://self/cache/author')]`
+  so the HAL renderer materializes the child into `_embedded.author`.
+  Cross-resource invalidation is one line:
+  `$this->headers[SURROGATE_KEY] = $uriTag->fromAssoc('app://self/cache/author{?id}', [['id' => $authorId]])`.
+- `app://self/cache/articletags` (`Cache\ArticleTags`) — GET only.
+  Reads N tag rows from the DB and declares the same one line for the
+  variable-length dependency set:
+  `$this->headers[SURROGATE_KEY] = $uriTag->fromAssoc('app://self/cache/tag{?id}', $items)`.
+  No `#[Embed]` — the dependency set comes from the body, so static
+  embed declaration cannot express it.
+
+PUT on a child URI cascades through to the parent's ETag via the
+Surrogate-Key tag. Run `composer demo:cache` to see the
+GET → cached → child-PUT → invalidated → re-GET flow for both patterns.
+
 ## HAL links
 
 Each Resource declares `#[Link]` attributes with URI templates (RFC 6570).

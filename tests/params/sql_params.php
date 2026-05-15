@@ -90,4 +90,5 @@ return [
     'tag_item.sql' => ['id' => 1],
     'tag_list.sql' => [],
     'tag_list_by_article.sql' => ['articleId' => 1],
+    'tag_update.sql' => ['slug' => 'smoke', 'name' => 'Smoke', 'id' => 1],
 ];
