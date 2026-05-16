@@ -11,7 +11,7 @@ next.
 | [build-log.md](build-log.md) | You want to follow the construction phase by phase |
 | [decisions-to-consult.md](decisions-to-consult.md) | You want to know *why* a particular naming / pattern choice was made |
 | [wishes-to-author.md](wishes-to-author.md) | Working on BEAR.Sunday itself; understanding what gaps a heavy user noticed |
-| [upstream-issue-cache-dependency.md](upstream-issue-cache-dependency.md) | Draft issue body (English) for `bearsunday/BEAR.QueryRepository` re: HAL parent auto-merge miss |
+| [upstream-issue-cache-dependency.md](upstream-issue-cache-dependency.md) | Archived diagnosis / resolved upstream — HAL parent auto-merge miss, fixed in `bear/query-repository` 1.16.0 (`bearsunday/BEAR.QueryRepository#174`). Kept as a record of the diagnosis and the three candidate fixes considered. |
 | [skill-proposals.md](skill-proposals.md) | Working on `bearsunday/BEAR.Skills`; 12 candidate skills with rationale |
 | [review-skill.md](review-skill.md) | About to write a critique / review / evaluation of any framework or codebase. Apply Step 6 self-check before publishing |
 

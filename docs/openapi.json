@@ -776,7 +776,7 @@
             "get": {
                 "operationId": "goCacheArticleTags",
                 "summary": "Cache showcase exception \u2014 body-derived variable-length dependency set.",
-                "description": "`#[Embed]` cannot statically express \"depend on N tag URIs where N comes\nfrom the database row for this article\", so this is the one place where\n`UriTagInterface::fromAssoc` is structurally required. See\n`docs/conventions.md` \u00a7 \"Exception \u2014 UriTagInterface::fromAssoc for\nbody-variable dependencies\".\n\nExactly one line of user-written cache code (the Surrogate-Key assignment)\nis required, and `ArticleTagsCacheTest::testSourceHasExactlyOneFromAssocCall`\npins that invariant.",
+                "description": "`#[Embed]` cannot statically express \"depend on N tag URIs where N comes\nfrom the database row for this article\", so this is the one place where\n`UriTagInterface::fromAssoc` is structurally required. See\n`docs/conventions.md` \u00a7 \"Cross-resource dependency \u2014 exactly one `fromAssoc`\nline\".\n\nExactly one line of user-written cache code (the Surrogate-Key assignment)\nis required, and `ArticleTagsCacheTest::testSourceHasExactlyOneFromAssocCall`\npins that invariant.\n\nInvalidation surface:\n- `PUT app://self/cache/tag?id={tagId}` \u2014 any tag whose URI is in the\n  current dependency set cascades through the Surrogate-Key.\n- `PUT app://self/cache/articletags?articleId={id}` \u2014 `RefreshSameCommand`\n  (the default `Commands` for `#[Cacheable]`) purges the self URI tag, so\n  the next GET re-queries and rebuilds the dependency set.\n\nOut of scope (intentional): writes to the main `app://self/article`\nresource that change `tagIds` are NOT wired into this cache's invalidation.\nThe showcase deliberately keeps the cache surface self-contained \u2014 adding\ncross-resource purges from the main Article path would couple it to the\nshowcase and obscure the canonical patterns. A production CMS that needs\nthis would add an explicit `DonutRepositoryInterface::purge()` call (or an\nequivalent tag invalidation) at the article-tag write site.",
                 "parameters": [
                     {
                         "name": "articleId",
@@ -797,6 +797,48 @@
                                 }
                             }
                         }
+                    }
+                }
+            },
+            "put": {
+                "operationId": "doUpdateCacheArticleTags",
+                "summary": "Replace the article's tag link set with the given tag ids.",
+                "description": "This is the showcase's own write entry point for tag-relation changes.\n`RefreshSameCommand` purges `app://self/cache/articletags?articleId={id}`\non completion, so the next GET re-renders against the updated relation.",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "articleId": {
+                                        "type": "integer"
+                                    },
+                                    "tagIds": {
+                                        "type": "array"
+                                    }
+                                },
+                                "required": [
+                                    "articleId",
+                                    "tagIds"
+                                ]
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/WriteResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
                     }
                 }
             }
@@ -883,7 +925,7 @@
             "get": {
                 "operationId": "goAuthorProfile",
                 "summary": "Cache showcase parent \u2014 single child dependency.",
-                "description": "`#[Embed]` handles the composition (the child resource is materialized into\n`_embedded.author` by `HalRenderer`), but the HAL renderer also moves the\nembed request out of `$ro->body` into `_embedded` before\n`EtagSetter::setCacheDependency` walks the body, so the auto-merge of the\nchild's Surrogate-Key into the parent's never fires. Cross-resource\ninvalidation therefore requires one line of manual code: a `fromAssoc`\nmapping the dependency to a Surrogate-Key tag, exactly like the N-child\n`Cache\\ArticleTags` case. See `docs/conventions.md` \u00a7 \"Cross-resource cache\ndependency: one `fromAssoc` line\".",
+                "description": "`#[Embed]` handles the composition (the child resource is materialized into\n`_embedded.author` by `HalRenderer`). Cross-resource invalidation is\nautomatic: `QueryRepository::setCacheDependency` walks the body before HAL\nmutates it and merges the child's Surrogate-Key into the parent.\n\nExistence of `authorId` is validated up-front: a missing author returns 404\nwith the Embed Request dropped by replacing `$this->body`. `CacheInterceptor`\nonly stores responses with code 200 (it purges on anything else), so a 404\nhere cannot end up as a stale cache entry.",
                 "parameters": [
                     {
                         "name": "authorId",

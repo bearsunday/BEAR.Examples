@@ -29,9 +29,9 @@ in the current `1.x` HEAD — if you find a discrepancy, that's a doc bug.
 | `app://self/media` | GET / POST / DELETE | No `media` collection (asymmetric — see "By design") |
 | `app://self/auth` | GET / POST | OAuth flow: GET returns authorization URL, POST exchanges `{code, state}` |
 | `app://self/cache/author` | GET / PUT | Cache showcase leaf — user-zero-code (`#[Cacheable]` only) |
-| `app://self/cache/authorprofile` | GET | Cache showcase parent — `#[Embed]` + one-line `fromAssoc` (single-child dependency) |
+| `app://self/cache/authorprofile` | GET | Cache showcase parent — `#[Embed]`-only automatic dependency (single-child, zero cache code; since `bear/query-repository` 1.16) |
 | `app://self/cache/tag` | GET / PUT | Cache showcase leaf — user-zero-code (`#[Cacheable]` only) |
-| `app://self/cache/articletags` | GET | Cache showcase parent — one-line `fromAssoc` for body-derived variable-length dependency set |
+| `app://self/cache/articletags` | GET / PUT | Cache showcase parent — one-line `fromAssoc` for body-derived variable-length dependency set; PUT is the showcase's own write entry point (main `app://self/article` writes are intentionally out of scope) |
 
 There is no `app://self/` entry point at the App layer; `Page/Index`
 serves as the public HTML entry. (Discoverability via HAL `_links` is
@@ -143,7 +143,8 @@ Patterns the codebase deliberately demonstrates (each appears in at least one pl
 | Three Article GET implementation variations | `src/Resource/App/Variations/` (`composer demo:variations`) |
 | Stream transfer response | `Variations\MediaStream` uses `BEAR.Streamer` and an open file handle body |
 | QueryRepository cache — user-zero-code leaf | `Cache\Author`, `Cache\Tag` (`#[Cacheable]` only; reflection-pinned) |
-| QueryRepository cache — one-line `fromAssoc` parent | `Cache\AuthorProfile` (single-child) and `Cache\ArticleTags` (N-child); reflection-pinned to exactly one `fromAssoc` call |
+| QueryRepository cache — `#[Embed]`-only parent (single-child, auto-merged) | `Cache\AuthorProfile`; reflection-pinned to zero manual cache code (since `bear/query-repository` 1.16.0) |
+| QueryRepository cache — one-line `fromAssoc` parent (N-child, body-derived) | `Cache\ArticleTags`; reflection-pinned to exactly one `fromAssoc` call |
 | PRG redirect on admin write | `Page/Admin/Article` and `Page/Admin/ArticleDelete` redirect 303 with `?saved=…` |
 
 ### Documentation surface

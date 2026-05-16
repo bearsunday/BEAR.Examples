@@ -15,7 +15,7 @@ API Document
 | /media | GET, POST, DELETE | App/Media |
 | /tag | GET, POST, DELETE | App/Tag |
 | /tags | GET | App/Tags |
-| /cache/article-tags | GET | App/Cache/ArticleTags |
+| /cache/article-tags | GET, PUT | App/Cache/ArticleTags |
 | /cache/author | GET, PUT | App/Cache/Author |
 | /cache/author-profile | GET | App/Cache/AuthorProfile |
 | /cache/tag | GET, PUT | App/Cache/Tag |
@@ -108,6 +108,7 @@ API Document
 | Method | Parameters | Links |
 |--------|------------|-------|
 | GET | articleId* | - |
+| PUT | articleId*, tagIds* | - |
 
 ### App/Cache/Author
 `/cache/author`

@@ -690,7 +690,7 @@
   <td rowspan="1"><a href="#TagList" class="schema-link">TagList</a></td>
 </tr>
 <tr>
-  <td rowspan="1" class="path-cell" id="path-cache/article-tags">/cache/article-tags</td>
+  <td rowspan="3" class="path-cell" id="path-cache/article-tags">/cache/article-tags</td>
   <td rowspan="1" class="method-cell"><span class="ti safe"></span>GET<div class="method-alps"><a href="alps.html#goCacheArticleTags" class="alps-link">goCacheArticleTags</a></div></td>
   <td><a href="alps.html#articleId" class="param alps-param" title="Article ID (filter)">articleId</a><span class="req">*</span></td>
   <td><span class="badge type-int">int</span></td>
@@ -699,6 +699,30 @@
       
     </div></td>
   <td rowspan="1"><a href="#CacheArticleTags" class="schema-link">CacheArticleTags</a></td>
+</tr>
+<tr>
+  
+  <td rowspan="2" class="method-cell"><span class="ti idempotent"></span>PUT<div class="method-title">Replace the article&#039;s tag link set with the given tag ids.</div><div class="method-desc">This is the showcase&#039;s own write entry point for tag-relation changes.
+`RefreshSameCommand` purges `app://self/cache/articletags?articleId={id}`
+on completion, so the next GET re-renders against the updated relation.</div><div class="method-alps"><a href="alps.html#doUpdateCacheArticleTags" class="alps-link">doUpdateCacheArticleTags</a></div></td>
+  <td><a href="alps.html#articleId" class="param alps-param" title="Article ID (filter)">articleId</a><span class="req">*</span></td>
+  <td><span class="badge type-int">int</span></td>
+  <td class="param-desc">Article ID (filter)</td>
+  <td><div class="extra-info">
+      <span class="badge constraint">minimum: 1</span>
+    </div></td>
+  <td rowspan="2"><a href="#WriteResponse" class="schema-link">WriteResponse</a></td>
+</tr>
+<tr>
+  
+  
+  <td><span class="param">tagIds</span><span class="req">*</span></td>
+  <td><span class="badge type-array">array</span></td>
+  <td class="param-desc"></td>
+  <td><div class="extra-info">
+      
+    </div></td>
+  
 </tr>
 <tr>
   <td rowspan="5" class="path-cell" id="path-cache/author">/cache/author</td>

@@ -12,9 +12,10 @@
 > and the three candidate fixes considered; this issue was never
 > posted upstream because the fix landed first.
 
-Draft body for filing against `bearsunday/BEAR.QueryRepository`. Discovered
-while building the `app://self/cache/*` showcase. Not yet posted —
-review/edit before opening upstream.
+Draft body that was prepared for filing against
+`bearsunday/BEAR.QueryRepository`. Discovered while building the
+`app://self/cache/*` showcase. The fix landed before the draft was
+posted, so this is kept as a record of the diagnosis.
 
 The local `xstep` wrapper was unusable during verification (missing
 `vendor/autoload.php` under `~/.claude/plugins/marketplaces/xdebug-mcp/bin/`),
@@ -168,9 +169,10 @@ Trace excerpt (`/tmp/xdebug-trace/trace.1597892585.xt.gz`, gunzipped):
 Final response headers contain `ETag: ...` but no `Surrogate-Key` for
 the embedded child URI.
 
-## Workaround (current showcase uses this)
+## Workaround (used in the showcase before 1.16.0)
 
-Declare the child dependency manually with one line of `fromAssoc`:
+Before the upstream fix landed, the showcase declared the child
+dependency manually with one line of `fromAssoc`:
 
 ```php
 #[Cacheable]
@@ -191,15 +193,16 @@ final class AuthorProfile extends ResourceObject
 }
 ```
 
-This works because `CacheDependency::depends` runs `assert(! isset($from->headers[Header::SURROGATE_KEY]))`,
-which holds in this case because `setCacheDependency` finds zero
-Requests and never reaches the assert — the manual `SURROGATE_KEY` is
-written directly and survives.
+This worked because `CacheDependency::depends` ran `assert(! isset($from->headers[Header::SURROGATE_KEY]))`,
+which held in this case because `setCacheDependency` found zero
+Requests and never reached the assert — the manual `SURROGATE_KEY` was
+written directly and survived.
 
-The workaround is acceptable for single dependencies but makes the
-single-child case look like a manual-write API, which obscures the
+The workaround was acceptable for single dependencies but made the
+single-child case look like a manual-write API, which obscured the
 intended user-zero-code design that `#[Embed]` + `#[Cacheable]` was
-supposed to express.
+supposed to express. With 1.16.0 the showcase no longer needs this
+line — `Cache\AuthorProfile` is now `#[Embed]`-only.
 
 ## Suggested fixes
 
@@ -285,9 +288,17 @@ that follow the recommendation.
 
 ## Reference
 
-`MyVendor.Cms` cache showcase implements both leaves and the
-one-line-manual parent at `src/Resource/App/Cache/*` with the
-`#[Cacheable]` + `#[Embed]` + one-`fromAssoc` line pattern documented in
-`docs/conventions.md` §4. Tests under `tests/Resource/App/Cache/`
-encode the invariants (including a `substr_count($src, 'fromAssoc(') === 1`
-check that pins the manual line to exactly one place).
+`MyVendor.Cms` cache showcase lives at `src/Resource/App/Cache/*`.
+Post-1.16 the canonical patterns are two shapes (see
+`docs/conventions.md` § Cache):
+
+- **Shape A** — `#[Embed]` alone for static single-child composition.
+  `Cache\AuthorProfile` carries zero lines of cache code;
+  `AuthorProfileCacheTest::testSourceHasNoManualCacheCode` pins
+  `substr_count($src, 'fromAssoc(') === 0` and
+  `substr_count($src, 'Header::SURROGATE_KEY') === 0`.
+- **Shape B** — one `fromAssoc` line for body-derived
+  variable-length dependency sets that `#[Embed]` cannot statically
+  express. `Cache\ArticleTags` is the canonical example;
+  `ArticleTagsCacheTest::testSourceHasExactlyOneFromAssocCall` pins
+  the one-line invariant.

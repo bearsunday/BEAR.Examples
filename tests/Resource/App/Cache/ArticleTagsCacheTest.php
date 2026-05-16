@@ -12,6 +12,7 @@ use MyVendor\Cms\Module\CacheShowcaseModule;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
+use function array_map;
 use function file_get_contents;
 use function substr_count;
 
@@ -21,6 +22,14 @@ use function substr_count;
  * dependency set is body-derived and variable-length, so `#[Embed]` cannot
  * express it statically — exactly one line of manual cache code is allowed,
  * pinned by `testSourceHasExactlyOneFromAssocCall`.
+ *
+ * Invalidation surface (also documented on `Cache\ArticleTags`):
+ *   - `PUT app://self/cache/tag?id={tagId}` cascades through Surrogate-Key.
+ *   - `PUT app://self/cache/articletags?articleId={id}` is the showcase's own
+ *     write entry point and self-purges via `RefreshSameCommand`.
+ * Writes to the main `app://self/article` resource that change `tagIds` are
+ * intentionally NOT wired into this cache — see the class docblock for the
+ * scope rationale.
  */
 final class ArticleTagsCacheTest extends TestCase
 {
@@ -115,6 +124,31 @@ final class ArticleTagsCacheTest extends TestCase
 
         $second = $this->resource->get('app://self/cache/articletags', ['articleId' => 3]);
         $this->assertSame($oldEtag, $second->headers[Header::ETAG]);
+    }
+
+    public function testPutInvalidatesSelfEtagAndRebuildsDependencySet(): void
+    {
+        $first = $this->resource->get('app://self/cache/articletags', ['articleId' => 3]);
+        $oldEtag = $first->headers[Header::ETAG];
+        $this->assertStringContainsString('_cache_tag_id=14', $first->headers[Header::SURROGATE_KEY]);
+
+        // Replace article 3's tag set: drop 14/18/20/47, keep none of them.
+        $put = $this->resource->put('app://self/cache/articletags', [
+            'articleId' => 3,
+            'tagIds' => [5, 7],
+        ]);
+        $this->assertSame(200, $put->code);
+
+        // RefreshSameCommand on the self URI tag invalidates the stored entry.
+        $this->assertFalse($this->httpCache->isNotModified([Header::HTTP_IF_NONE_MATCH => $oldEtag]));
+
+        $second = $this->resource->get('app://self/cache/articletags', ['articleId' => 3]);
+        $this->assertNotSame($oldEtag, $second->headers[Header::ETAG]);
+        $this->assertSame(2, $second->body['count']);
+        $this->assertSame([5, 7], array_map(static fn ($i) => $i['id'], $second->body['items']));
+        // New dependency set: tag 14 must be gone, tag 5 must be in.
+        $this->assertStringNotContainsString('_cache_tag_id=14', $second->headers[Header::SURROGATE_KEY]);
+        $this->assertStringContainsString('_cache_tag_id=5', $second->headers[Header::SURROGATE_KEY]);
     }
 
     /**
