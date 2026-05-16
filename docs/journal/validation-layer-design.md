@@ -55,8 +55,8 @@ the structured error array, then walks each error to build a
 > carry the `$validator->getErrors()` array so the handler can read
 > them directly. Until that lands the re-run is the only honest path;
 > it only runs on the validation-failure branch, so the cost is
-> bounded to the error path. (Upstream issue tracking this is filed
-> against `bearsunday/BEAR.Resource`.)
+> bounded to the error path. Tracked upstream as
+> [bearsunday/BEAR.Resource#364](https://github.com/bearsunday/BEAR.Resource/issues/364).
 
 If `collectErrors()` returns an empty map (schema mutated between
 interceptor and handler, `$ref` resolution drift, …) the handler
