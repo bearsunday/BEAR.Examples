@@ -19,13 +19,11 @@ use function substr_count;
 use const JSON_THROW_ON_ERROR;
 
 /**
- * Executable equivalent of `docs/conventions.md` § "Cross-resource cache
- * dependency: one `fromAssoc` line". `Cache\AuthorProfile` composes
- * `Cache\Author` via `#[Embed]` (HAL renders it into `_embedded.author`) and
- * declares the cross-resource invalidation contract with exactly one line of
- * cache code: a `fromAssoc` mapping the dependency URI to a Surrogate-Key
- * tag. Symmetric to `Cache\ArticleTags`, just with a single child rather than
- * an N-child body-derived set.
+ * `Cache\AuthorProfile` composes `Cache\Author` via `#[Embed]` (HAL renders it
+ * into `_embedded.author`) and gets cross-resource invalidation for free:
+ * `QueryRepository::setCacheDependency` merges the child's Surrogate-Key into
+ * the parent automatically. The class therefore contains zero manual cache
+ * primitives — composition is declared by `#[Embed]` alone.
  */
 final class AuthorProfileCacheTest extends TestCase
 {
@@ -52,9 +50,9 @@ final class AuthorProfileCacheTest extends TestCase
 
         $this->assertArrayHasKey(Header::ETAG, $ro->headers);
         $this->assertArrayHasKey(Header::SURROGATE_KEY, $ro->headers);
-        // The one manual line maps the child URI into the parent's
-        // Surrogate-Key so PUT app://self/cache/author?id=1 cascades into
-        // this response's invalidation set.
+        // QueryRepository merges the child's Surrogate-Key into the parent
+        // automatically, so PUT app://self/cache/author?id=1 cascades into
+        // this response's invalidation set with no manual cache code.
         $this->assertStringContainsString('_cache_author_id=1', $ro->headers[Header::SURROGATE_KEY]);
 
         $etag = $ro->headers[Header::ETAG];
@@ -107,13 +105,12 @@ final class AuthorProfileCacheTest extends TestCase
     }
 
     /**
-     * The parent class is allowed exactly one manual cache primitive: the
-     * `fromAssoc` assignment to Surrogate-Key that declares the single-child
-     * dependency. Refactors that add a second `fromAssoc`, drop down to
-     * manual `$this->resource->get(...)`, or reach for any other cache header
-     * should fail this test.
+     * The parent class must contain zero manual cache primitives: dependency
+     * resolution is handled by `QueryRepository::setCacheDependency` walking
+     * the body. Refactors that reach for `fromAssoc`, assign to Surrogate-Key,
+     * or drop down to manual `$this->resource->get(...)` should fail this test.
      */
-    public function testSourceHasExactlyOneFromAssocCall(): void
+    public function testSourceHasNoManualCacheCode(): void
     {
         $path = (new ReflectionClass(AuthorProfile::class))->getFileName();
         $this->assertIsString($path);
@@ -121,14 +118,14 @@ final class AuthorProfileCacheTest extends TestCase
         $this->assertIsString($src);
 
         $this->assertSame(
-            1,
+            0,
             substr_count($src, 'fromAssoc('),
-            'Cache\\AuthorProfile must contain exactly one fromAssoc() call.',
+            'Cache\\AuthorProfile must contain no fromAssoc() calls.',
         );
         $this->assertSame(
-            1,
+            0,
             substr_count($src, 'Header::SURROGATE_KEY'),
-            'Cache\\AuthorProfile must contain exactly one Header::SURROGATE_KEY reference.',
+            'Cache\\AuthorProfile must contain no Header::SURROGATE_KEY references.',
         );
         // No manual resource fetching — composition must use #[Embed].
         $this->assertStringNotContainsString('ResourceInterface', $src);
