@@ -531,46 +531,40 @@ Canonical example: `Cache\Author`, `Cache\Tag`. The reflection tests
 user-zero-code invariant — refactors that re-introduce manual cache
 code will fail the test.
 
-#### Cross-resource dependency — exactly one `fromAssoc` line
+#### Cross-resource dependency — two shapes
 
-When a resource declares that **another resource's URI** invalidates
-it, the parent must spell that dependency out — `#[Embed]` alone does
-not propagate child URI tags to the parent's Surrogate-Key because the
-HAL renderer moves Embed requests into `_embedded` before
-`EtagSetter::setCacheDependency()` walks the body. The contract is one
-line of cache code: assign `Header::SURROGATE_KEY` from
-`UriTagInterface::fromAssoc('<template>', $assocList)`.
+When a parent's invalidation depends on **another resource's URI**,
+the codebase recognises two shapes. Pick by whether the dependency
+set is statically expressible at declaration time.
 
-This is the same line whether the dependency set has one URI or N:
+**Shape A — `#[Embed]` alone (automatic).** When the parent composes
+exactly the children it depends on via `#[Embed]`, no manual cache
+code is required. `QueryRepository::setCacheDependency` walks the
+body before HAL renders, materializes each `AbstractRequest`, and
+merges every Cacheable child's Surrogate-Key into the parent
+automatically. `Cache\AuthorProfile` is the canonical example:
+`#[Embed(rel: 'author', src: 'app://self/cache/author')]` is the
+whole contract. The reflection test
+`AuthorProfileCacheTest::testSourceHasNoManualCacheCode` pins this —
+re-introducing `fromAssoc()` or `Header::SURROGATE_KEY` to a single-
+child parent will fail it.
 
-- **One** (single-child composition): `Cache\AuthorProfile` declares
-  `app://self/cache/author?id={authorId}` via
-  `$this->uriTag->fromAssoc('app://self/cache/author{?id}', [['id' => $authorId]])`.
-  Composition still uses `#[Embed]` so the response body renders the
-  child into `_embedded.author`.
-- **N** (body-derived variable-length set): `Cache\ArticleTags` reads
-  N tag rows and maps them via
-  `$this->uriTag->fromAssoc('app://self/cache/tag{?id}', $items)`.
-  `#[Embed]` cannot statically express "depend on N URIs where N comes
-  from the database", so this is the only place a parent does its own
-  composition. When `$items === []`, leave the header unset —
-  `fromAssoc([])` returns `''` and Symfony's tag-aware cache adapter
-  rejects empty tags.
-
-The exactly-one-line invariant is pinned by
-`AuthorProfileCacheTest::testSourceHasExactlyOneFromAssocCall` and
+**Shape B — explicit `fromAssoc` (dynamic / body-derived).** When
+the dependency set is **N URIs whose count or parameters come from
+the database**, `#[Embed]` cannot statically express it. The parent
+reads its rows and maps them through
+`UriTagInterface::fromAssoc('<template>', $assocList)`, assigning
+the result to `Header::SURROGATE_KEY`. `Cache\ArticleTags` is the
+canonical example: it reads N tag rows and maps them via
+`$this->uriTag->fromAssoc('app://self/cache/tag{?id}', $items)`.
+When `$items === []`, leave the header unset — `fromAssoc([])`
+returns `''` and Symfony's tag-aware cache adapter rejects empty
+tags. The exactly-one-line invariant is pinned by
 `ArticleTagsCacheTest::testSourceHasExactlyOneFromAssocCall`.
 
-The single-child `fromAssoc` line in `Cache\AuthorProfile` is a
-workaround for an upstream order-of-operations issue in
-`QueryRepository::put` (`toString()` runs HalRenderer before
-`EtagSetter::setCacheDependency()` walks the body, so the Embed
-auto-merge never sees a `Request`). Once the upstream fix lands, the
-single-child parent can drop to user-zero-code; the N-child
-`Cache\ArticleTags` will still need the explicit line because Embed
-cannot statically express a body-derived dependency set. See
-`docs/journal/upstream-issue-cache-dependency.md` for the draft issue
-body and the three candidate fixes.
+Pick A whenever the dependency set is `#[Embed]`-expressible. Reach
+for B only when the dependency count or parameters are
+body-derived.
 
 #### Anti-patterns
 
@@ -579,11 +573,12 @@ body and the three candidate fixes.
 - Calling `DonutRepositoryInterface::invalidateTags()` from `onPut` /
   `onDelete` — `CommandInterceptor` + `RefreshSameCommand` already
   purge the self URI tag on writes to `#[Cacheable]` resources.
-- Mixing `#[Embed]` and `fromAssoc()` on the same response in the hope
-  of "auto + manual" composition — the body-walk auto-merge does not
-  fire under HAL because `_embedded` strips the Request before the
-  walk. Use the explicit one-line pattern instead, exactly as
-  `Cache\AuthorProfile` does.
+- Mixing `#[Embed]` and `fromAssoc()` on the same response. Assigning
+  `Header::SURROGATE_KEY` manually short-circuits the body-walk
+  auto-merge (`setCacheDependency` early-returns when the header is
+  already set), so the embed's child tags are silently dropped unless
+  you include them in your `fromAssoc` list yourself. Pick one shape
+  per resource — A or B, never both.
 - Reaching for `fromAssoc()` when there is no cross-resource
   dependency at all — the default `#[Cacheable]`-only leaf is the
   correct shape.

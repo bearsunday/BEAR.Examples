@@ -1,5 +1,17 @@
 # Upstream issue draft — BEAR.QueryRepository cross-resource dependency under HAL
 
+> **RESOLVED** — fixed upstream in
+> [bearsunday/BEAR.QueryRepository#174](https://github.com/bearsunday/BEAR.QueryRepository/pull/174),
+> shipped in
+> [release 1.16.0](https://github.com/bearsunday/BEAR.QueryRepository/releases/tag/1.16.0)
+> (2026-05-16). `QueryRepository::setCacheDependency` now walks
+> `$ro->body` for `AbstractRequest` children before HAL mutates the
+> body, and the walk uses `AbstractRequest` rather than the concrete
+> `Request` so `AsyncRequest` and other sibling implementations are
+> covered too. The draft below is kept as a record of the diagnosis
+> and the three candidate fixes considered; this issue was never
+> posted upstream because the fix landed first.
+
 Draft body for filing against `bearsunday/BEAR.QueryRepository`. Discovered
 while building the `app://self/cache/*` showcase. Not yet posted —
 review/edit before opening upstream.
