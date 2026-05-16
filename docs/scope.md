@@ -28,6 +28,10 @@ in the current `1.x` HEAD — if you find a discrepancy, that's a doc bug.
 | `app://self/tag` / `tags` | GET / POST / DELETE | |
 | `app://self/media` | GET / POST / DELETE | No `media` collection (asymmetric — see "By design") |
 | `app://self/auth` | GET / POST | OAuth flow: GET returns authorization URL, POST exchanges `{code, state}` |
+| `app://self/cache/author` | GET / PUT | Cache showcase leaf — user-zero-code (`#[Cacheable]` only) |
+| `app://self/cache/authorprofile` | GET | Cache showcase parent — `#[Embed]`-only automatic dependency (single-child, zero cache code; since `bear/query-repository` 1.16) |
+| `app://self/cache/tag` | GET / PUT | Cache showcase leaf — user-zero-code (`#[Cacheable]` only) |
+| `app://self/cache/articletags` | GET / PUT | Cache showcase parent — one-line `fromAssoc` for body-derived variable-length dependency set; PUT is the showcase's own write entry point (main `app://self/article` writes are intentionally out of scope) |
 
 There is no `app://self/` entry point at the App layer; `Page/Index`
 serves as the public HTML entry. (Discoverability via HAL `_links` is
@@ -115,6 +119,7 @@ Note: Auth applies only to the OAuth flow itself. `Page/Admin/*` is **not** behi
 | `composer cli` | `bear-cli-gen` — generates `bin/cli/*` from `#[Cli]`-annotated resources |
 | `composer serve` / `serve:api` | HTML / API HTTP servers |
 | `composer demo` | End-to-end walkthrough |
+| `composer demo:cache` | QueryRepository cache showcase (hermetic, in-memory ArrayAdapter) |
 | `composer doc` | apidoc + ALPS HTML |
 | `composer compile` | bear.compile production graph |
 
@@ -137,6 +142,9 @@ Patterns the codebase deliberately demonstrates (each appears in at least one pl
 | BEAR.Async opt-in embed parallelization | `bin/async.php` overlays `ParallelRuntimeModule`; Article's `author` / `category` / `tagList` embeds are the reference graph |
 | Three Article GET implementation variations | `src/Resource/App/Variations/` (`composer demo:variations`) |
 | Stream transfer response | `Variations\MediaStream` uses `BEAR.Streamer` and an open file handle body |
+| QueryRepository cache — user-zero-code leaf | `Cache\Author`, `Cache\Tag` (`#[Cacheable]` only; reflection-pinned) |
+| QueryRepository cache — `#[Embed]`-only parent (single-child, auto-merged) | `Cache\AuthorProfile`; reflection-pinned to zero manual cache code (since `bear/query-repository` 1.16.0) |
+| QueryRepository cache — one-line `fromAssoc` parent (N-child, body-derived) | `Cache\ArticleTags`; reflection-pinned to exactly one `fromAssoc` call |
 | PRG redirect on admin write | `Page/Admin/Article` and `Page/Admin/ArticleDelete` redirect 303 with `?saved=…` |
 
 ### Documentation surface
@@ -153,7 +161,7 @@ These were once blockers that prevented the canonical pattern from being shown; 
 |---|------|-----------|
 | R1 | DTO recognition by `JsonSchemaInterceptor` ([BEAR.Resource#356](https://github.com/bearsunday/BEAR.Resource/issues/356)) | BEAR.Resource 1.31.1 — `Article` / `Auth` re-attached `#[JsonSchema]` |
 | R2 | OpenAPI generator skipped DTO methods ([BEAR.ApiDoc#81](https://github.com/bearsunday/BEAR.ApiDoc/issues/81)) | BEAR.ApiDoc 1.9.1 |
-| R3 | `JsonSchema` body validation on cache hit ([BEAR.Resource#355](https://github.com/bearsunday/BEAR.Resource/issues/355)) | BEAR.Resource 1.31.1 — this is the **upstream prerequisite for D1** (`#[CacheableResponse]` rollout); the rollout itself is still pending |
+| R3 | `JsonSchema` body validation on cache hit ([BEAR.Resource#355](https://github.com/bearsunday/BEAR.Resource/issues/355)) | BEAR.Resource 1.31.1 — unblocked the cache showcase under `src/Resource/App/Cache/*` (`composer demo:cache`); main-resource rollout remains D1 |
 | R4 | Typed-array DTO field × validation order pitfall ([decisions P8 #46](journal/decisions-to-consult.md)) | Defensive `mixed` + `is_array` guard documented in `conventions.md` §4 |
 | R7 | Admin write/delete failure propagation (CodeRabbit feedback on PR #18) | Commit `0d7f98d` — `Page/Admin/Article` and `Page/Admin/ArticleDelete` propagate 4xx codes back instead of redirecting |
 
@@ -169,7 +177,7 @@ These aren't bugs or backlog — they're deliberate choices that keep the refere
 | No `authors` or `media` list resource | The two collections that exist (`articles`, `categories`, `tags`) are enough to demonstrate the list pattern, filtering, and pagination. Adding more would be repetition |
 | No `app://self/` entry point | `Page/Index` is the public HTML entry; HAL discoverability is shown via per-resource `_links` |
 | JS-enhanced admin (HTMX or similar) | Out of demonstration scope; the patterns to demonstrate are server-side. An optional add-on would not change App-layer code |
-| `#[Cacheable]` / cache invalidation hooks beyond what D1 covers | The `#[CacheableResponse]` + `#[RefreshCache]` rollout (D1) is the only canonical caching demo planned |
+| Applying `#[Cacheable]` to the main `Article` resource | `Article` composes three embeds (`author`, `category`, `tagList`) and `tagList` is itself a body-derived variable-length list. Mixing `#[Embed]`-driven composition and `fromAssoc()`-driven cross-resource invalidation on the same response is exercised by the `Cache\*` showcase as the canonical pattern; leaving the main `Article` untouched keeps the principal resource side-by-side comparable against the showcase rather than entangling the two demos |
 
 ## Deferred / not built
 
@@ -177,7 +185,7 @@ Drawn from `architecture.md` "What was intentionally not built", `journal/handof
 
 | # | Item | Why deferred | Recovery / next step |
 |---|------|--------------|----------------------|
-| D1 | `#[CacheableResponse]` across reads + `#[RefreshCache]` on writes | Was blocked on Resource #355 — **now unblocked** (BEAR.Resource 1.31.1) | Add class-level `#[CacheableResponse]` on read resources; `#[RefreshCache]` on writes. Verify cache log (`RepositoryLogger`) shows `try-donut-view` / `put-donut` / `invalidate-etag` |
+| D1 | Cache rollout to the main `Article` resource | The standalone `Cache\*` showcase canonicalizes the two patterns (`#[Cacheable]`-only leaf, one-line `fromAssoc` parent) and is reflection-pinned. Extending the same pattern to the main `Article` is gated on a decision about whether `tagList` (body-derived variable-length child set) and the `author`/`category` single-child embeds should be served by one resource or split — the showcase deliberately demonstrates the patterns in isolation rather than entangling them on the principal CRUD surface | Decide split-vs-unified for `Article`'s body, then apply `#[Cacheable]` plus the corresponding `fromAssoc` line(s) on the parent. Verify cache log (`RepositoryLogger`) shows `try-donut-view` / `put-donut` / `invalidate-etag` |
 | D2 | Auth boundary for `Page/Admin/*` | Designed in [auth-boundary-plan.md](journal/auth-boundary-plan.md); not yet implemented | Implement typed `UserInterface` / `AdminUserInterface` providers; fold in CSRF + exception-mapping notes from the Codex adversarial review |
 | D3 | Async Docker CI smoke | Runtime containers exist, but CI does not yet build ext-parallel and run `composer parallel:demo` | Add a focused GitHub Actions job once image build time and caching are acceptable |
 | D4 | Write-side CLI + read CLI for the other entities | `bear-cli-gen` so far only generated `article-show` / `article-list`; no write commands yet | Add `#[Cli]` to onPost/onPut/onDelete and to the missing read methods; `composer cli` regenerates |

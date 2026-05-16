@@ -8,7 +8,7 @@
         "bear/async": "^0.3",
         "bear/package": "^1.14",
         "bear/qiq-module": "^2.0",
-        "bear/query-repository": "^1.15",
+        "bear/query-repository": "^1.16",
         "bear/resource": "^1.17",
         "bear/streamer": "^1.4",
         "bear/sunday": "^1.6",
@@ -136,7 +136,8 @@
         "page": "php bin/page.php",
         "profile": "php -dzend_extension=xdebug.so -dxdebug.mode=profile -dxdebug.output_dir=./var/log -dxdebug.profiler_output_name=cachegrind.out.%t bin/page.php get /",
         "demo": "php bin/demo.php",
-        "demo:variations": "php bin/demo-variations.php"
+        "demo:variations": "php bin/demo-variations.php",
+        "demo:cache": "php bin/demo-cache.php"
     },
     "scripts-descriptions": {
         "setup": "Setup the project",
@@ -166,7 +167,8 @@
         "swoole:down": "Stop the ext-swoole container",
         "page": "Request page resource",
         "profile": "Profile page request (customize endpoint as needed)",
-        "demo:variations": "Run the Article GET variations demo"
+        "demo:variations": "Run the Article GET variations demo",
+        "demo:cache": "Run the QueryRepository cache showcase (#[Embed] + one-line fromAssoc, hermetic ArrayAdapter)"
     },
     "config": {
         "sort-packages": true,

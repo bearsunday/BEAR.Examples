@@ -72,6 +72,21 @@ BEAR.Sunday としてはどれを推奨? あるいは「ケースバイケース
 `app://self/articles` の両方をパージしたい」みたいなケース。リソース URI の
 パターン指定 (`app://self/articles*`) は使えるか?
 
+### Q8. HAL 環境下で `#[Cacheable]` 親が `#[Embed]` 子の Surrogate-Key を自動マージしない ✅ RESOLVED (`bear/query-repository` 1.16.0)
+
+[bearsunday/BEAR.QueryRepository#174](https://github.com/bearsunday/BEAR.QueryRepository/pull/174)
+で `QueryRepository::setCacheDependency` が HAL の body 改変前に
+`$ro->body` 内の `AbstractRequest` 子を走査するように修正。`Request` ではなく
+`AbstractRequest` で書かれているため `AsyncRequest` 等の派生も同じ扱いに
+なる。本リポジトリの `Cache\AuthorProfile` も `#[Embed]` 単独・キャッシュ
+コードゼロ行で書き直し済み。経緯は
+[upstream-issue-cache-dependency.md](upstream-issue-cache-dependency.md)
+冒頭の RESOLVED ブロックを参照。
+
+xstep を使った verify は試みたものの、ローカルの xstep wrapper は
+`vendor/autoload.php` が無くて動かなかったため、`php -dxdebug.mode=trace`
+直接で取った trace で確認した。
+
 ---
 
 ## 希望 (Wishes)

@@ -97,6 +97,66 @@ GET. Query params: `page`, `perPage` (clamped 1..100, default 20),
 - POST — `filename`, `mimeType`, `url`, optional `alt`, `width`, `height`.
 - DELETE `{id}`.
 
+## Cache showcase resources (`app://self/cache/*`)
+
+A four-resource set under `src/Resource/App/Cache/*` that demonstrates the
+two BEAR QueryRepository cache patterns the codebase canonicalizes. The
+showcase is hermetic — `composer demo:cache` runs it against an in-memory
+`ArrayAdapter` bound by `CacheShowcaseModule`. See `docs/conventions.md`
+§ 4 "Cache" for the canonical pattern, and the reflection tests under
+`tests/Resource/App/Cache/` for the executable invariants.
+
+### Pattern A — `#[Cacheable]`-only leaf (user-zero-code)
+
+- `app://self/cache/author` (`Cache\Author`)
+- `app://self/cache/tag` (`Cache\Tag`)
+
+Both expose GET `{id}` and PUT `{id}`. Cache surface is one attribute:
+`#[Cacheable]`. The framework writes the self URI tag, and
+`RefreshSameCommand` purges it on write. No `Header::SURROGATE_KEY`, no
+`UriTagInterface`, no `DonutRepositoryInterface` appears in the class.
+
+### Pattern B — `#[Embed]`-only parent (automatic dependency, since `bear/query-repository` 1.16)
+
+- `app://self/cache/authorprofile` (`Cache\AuthorProfile`) — GET only.
+  Composes `Cache\Author` via `#[Embed(rel: 'author', src: 'app://self/cache/author')]`.
+  Zero lines of cache code: `QueryRepository::setCacheDependency` walks
+  `$ro->body` for `AbstractRequest` children before HAL rendering and
+  auto-merges the child's URI tag into the parent's Surrogate-Key.
+  No `UriTagInterface`, no `Header::SURROGATE_KEY` assignment in the
+  class. The reflection test pins this contract. A missing `authorId`
+  is rejected up-front with `Code::NOT_FOUND` (replacing `$this->body`
+  drops the `#[Embed]` Request), and `CacheInterceptor` only stores
+  responses with code 200 — anything else takes the purge branch, so a
+  404 cannot be served from a stale cache entry.
+
+### Pattern C — `fromAssoc` for body-derived variable-length dependencies
+
+- `app://self/cache/articletags` (`Cache\ArticleTags`) — GET / PUT.
+  Reads N tag rows from the DB and declares the variable-length
+  dependency set in one line:
+  `$this->headers[SURROGATE_KEY] = $uriTag->fromAssoc('app://self/cache/tag{?id}', $items)`.
+  No `#[Embed]` — the dependency set comes from the body, so static
+  embed declaration cannot express it. Mixing this with `#[Embed]` on
+  the same resource is an anti-pattern: a pre-set Surrogate-Key
+  short-circuits the auto-merge via `setCacheDependency`'s early return.
+  PUT is the showcase's own write entry point for tag-relation
+  changes; `RefreshSameCommand` purges the self URI tag, so the next
+  GET re-queries and rebuilds the dependency set.
+
+PUT on a child URI cascades through to the parent's ETag via the
+Surrogate-Key tag. Run `composer demo:cache` to see the
+GET → cached → child-PUT → invalidated → re-GET flow for both patterns.
+
+**Invalidation scope (intentional).** The showcase keeps its cache
+surface self-contained: writes to the main `app://self/article`
+resource that change `tagIds` are NOT wired into
+`app://self/cache/articletags` invalidation. A production CMS that
+needs cross-resource cascade would add an explicit
+`DonutRepositoryInterface::purge()` (or equivalent tag invalidation)
+at the article-tag write site — that coupling is deliberately kept
+out of the showcase to preserve the canonical pattern.
+
 ## HAL links
 
 Each Resource declares `#[Link]` attributes with URI templates (RFC 6570).

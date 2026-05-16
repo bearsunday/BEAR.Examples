@@ -67,6 +67,7 @@ final class FakeSqlQuery implements SqlQueryInterface
         'category_update',
         'category_delete',
         'tag_add',
+        'tag_update',
         'tag_delete',
         'author_add',
         'author_update',
@@ -422,6 +423,18 @@ final class FakeSqlQuery implements SqlQueryInterface
                 $this->execLog[$logIdx]['insertedId'] = $id;
 
                 return ['affectedRows' => 1, 'insertedId' => $id];
+
+            case 'tag_update':
+                return [
+                    'affectedRows' => $this->updateRow(
+                        'tag',
+                        (int) $values['id'],
+                        [
+                            'slug' => $values['slug'],
+                            'name' => $values['name'],
+                        ],
+                    ),
+                ];
 
             case 'tag_delete':
                 return ['affectedRows' => $this->deleteRow('tag', (int) $values['id'])];

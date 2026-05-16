@@ -1,0 +1,11 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CacheArticleTagsUpdateInput",
+  "description": "Input for PUT app://self/cache/articletags. Replaces the article's tag link set with the given tagIds (empty array clears all links).",
+  "type": "object",
+  "required": ["articleId", "tagIds"],
+  "properties": {
+    "articleId": {"type": "integer", "minimum": 1},
+    "tagIds":    {"type": "array", "items": {"type": "integer", "minimum": 1}}
+  }
+}

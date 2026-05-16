@@ -80,6 +80,7 @@ return [
     // tags -------------------------------------------------------------
     'TagCommandInterface::add' => ['smoke-media-query', 'Smoke'],
     'TagCommandInterface::delete' => [999],
+    'TagCommandInterface::update' => [1, 'smoke-media-query', 'Smoke'],
     'TagQueryInterface::bySlug' => ['bear-sunday'],
     'TagQueryInterface::item' => [1],
     'TagQueryInterface::list' => [],
