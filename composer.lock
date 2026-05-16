@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2deea4086241b9cbdf05f984aec66f7c",
+    "content-hash": "9e22ecc0a46d5b141db9eca9aac2dd42",
     "packages": [
         {
             "name": "aura/cli",
@@ -443,16 +443,16 @@
         },
         {
             "name": "bear/query-repository",
-            "version": "1.15.1",
+            "version": "1.16.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/bearsunday/BEAR.QueryRepository.git",
-                "reference": "41468fa9fe999dae546c4caa0d48655a9702a342"
+                "reference": "41a9b84f3b6e427f024647fa13c03eba5e801c04"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/bearsunday/BEAR.QueryRepository/zipball/41468fa9fe999dae546c4caa0d48655a9702a342",
-                "reference": "41468fa9fe999dae546c4caa0d48655a9702a342",
+                "url": "https://api.github.com/repos/bearsunday/BEAR.QueryRepository/zipball/41a9b84f3b6e427f024647fa13c03eba5e801c04",
+                "reference": "41a9b84f3b6e427f024647fa13c03eba5e801c04",
                 "shasum": ""
             },
             "require": {
@@ -519,9 +519,9 @@
             ],
             "support": {
                 "issues": "https://github.com/bearsunday/BEAR.QueryRepository/issues",
-                "source": "https://github.com/bearsunday/BEAR.QueryRepository/tree/1.15.1"
+                "source": "https://github.com/bearsunday/BEAR.QueryRepository/tree/1.16.0"
             },
-            "time": "2026-02-07T01:47:13+00:00"
+            "time": "2026-05-16T08:19:45+00:00"
         },
         {
             "name": "bear/resource",
