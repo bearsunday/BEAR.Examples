@@ -87,6 +87,23 @@ final class AuthorProfileCacheTest extends TestCase
         $this->assertStringContainsString('Cache Demo Author', $secondView);
     }
 
+    public function testMissingAuthorReturns404AndDropsEmbed(): void
+    {
+        $ro = $this->resource->get('app://self/cache/authorprofile', ['authorId' => 9999]);
+        $body = json_decode((string) $ro, true, 512, JSON_THROW_ON_ERROR);
+        $this->assertIsArray($body);
+
+        $this->assertSame(404, $ro->code);
+        $this->assertSame(9999, $body['id']);
+        $this->assertSame('Author not found', $body['message']);
+        // Replacing $this->body in onGet drops the Embed Request, so the 404
+        // payload does not carry a half-resolved _embedded.author.
+        $this->assertArrayNotHasKey('_embedded', $body);
+        // CacheInterceptor only stores responses with code 200; anything else
+        // takes the purge branch, so the 404 never gets stored as a fresh ETag.
+        $this->assertArrayNotHasKey(Header::ETAG, $ro->headers);
+    }
+
     public function testEmbeddedAuthorShapeIsStableWhenChildResourceIsAlreadyCached(): void
     {
         $cold = $this->resource->get('app://self/cache/authorprofile', ['authorId' => 1]);
@@ -102,6 +119,12 @@ final class AuthorProfileCacheTest extends TestCase
 
         $this->assertSame($coldBody['_embedded']['author'], $warmBody['_embedded']['author']);
         $this->assertSame($cold->headers[Header::ETAG], $warm->headers[Header::ETAG]);
+        // Pin the auto-merge under the warm-child path: even when the
+        // embedded resource is served from cache, the parent's Surrogate-Key
+        // must still carry the child URI tag so cross-resource invalidation
+        // keeps working.
+        $this->assertArrayHasKey(Header::SURROGATE_KEY, $warm->headers);
+        $this->assertStringContainsString('_cache_author_id=1', $warm->headers[Header::SURROGATE_KEY]);
     }
 
     /**

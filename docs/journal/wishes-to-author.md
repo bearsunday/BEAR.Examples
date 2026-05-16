@@ -72,18 +72,16 @@ BEAR.Sunday としてはどれを推奨? あるいは「ケースバイケース
 `app://self/articles` の両方をパージしたい」みたいなケース。リソース URI の
 パターン指定 (`app://self/articles*`) は使えるか?
 
-### Q8. HAL 環境下で `#[Cacheable]` 親が `#[Embed]` 子の Surrogate-Key を自動マージしない
+### Q8. HAL 環境下で `#[Cacheable]` 親が `#[Embed]` 子の Surrogate-Key を自動マージしない ✅ RESOLVED (`bear/query-repository` 1.16.0)
 
-`QueryRepository::put` 内で `$ro->toString()` → `HalRenderer::valuateElements`
-が `$ro->body` 中の `Request` を `_embedded` に移して unset した後で
-`EtagSetter::setCacheDependency` が `$ro->body` を走査するため、
-`depends()` が呼ばれず親の Surrogate-Key に子 URI タグが入らない。
-
-cache showcase (`app://self/cache/authorprofile`) は `fromAssoc` 1 行で
-回避しているが、本来は親 `#[Cacheable]` + `#[Embed]` だけで成立すべき
-パターン。詳細・再現コード・修正案 (3 通り) は
+[bearsunday/BEAR.QueryRepository#174](https://github.com/bearsunday/BEAR.QueryRepository/pull/174)
+で `QueryRepository::setCacheDependency` が HAL の body 改変前に
+`$ro->body` 内の `AbstractRequest` 子を走査するように修正。`Request` ではなく
+`AbstractRequest` で書かれているため `AsyncRequest` 等の派生も同じ扱いに
+なる。本リポジトリの `Cache\AuthorProfile` も `#[Embed]` 単独・キャッシュ
+コードゼロ行で書き直し済み。経緯は
 [upstream-issue-cache-dependency.md](upstream-issue-cache-dependency.md)
-に英語で起票準備済み。
+冒頭の RESOLVED ブロックを参照。
 
 xstep を使った verify は試みたものの、ローカルの xstep wrapper は
 `vendor/autoload.php` が無くて動かなかったため、`php -dxdebug.mode=trace`

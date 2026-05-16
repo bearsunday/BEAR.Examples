@@ -7,18 +7,19 @@ declare(strict_types=1);
  *
  * Demonstrates the two cache patterns the project canonicalizes:
  *
- *   Section 1 — Embed + one-line fromAssoc (single-child dependency)
+ *   Section 1 — Embed only, automatic dependency (single-child)
  *     Cache\AuthorProfile composes Cache\Author via #[Embed]. The HAL
- *     renderer materializes the child into _embedded.author. The parent
- *     declares the cross-resource invalidation contract with exactly one
- *     line of cache code: a fromAssoc() call mapping the child URI to a
- *     Surrogate-Key. PUT app://self/cache/author then cascades through
- *     to the parent's ETag.
+ *     renderer materializes the child into _embedded.author, and
+ *     QueryRepository::setCacheDependency walks $ro->body for
+ *     AbstractRequest children before HAL rendering, auto-merging the
+ *     child's URI tag into the parent's Surrogate-Key. Zero lines of
+ *     cache code in the parent class. PUT app://self/cache/author then
+ *     cascades through to the parent's ETag.
  *
  *   Section 2 — fromAssoc for body-derived variable-length dependencies
  *     Cache\ArticleTags reads N tag rows from the DB and depends on N
- *     tag URIs that #[Embed] cannot statically express. Again exactly
- *     one line: $this->headers[SURROGATE_KEY] = $uriTag->fromAssoc(...).
+ *     tag URIs that #[Embed] cannot statically express. Exactly one
+ *     line: $this->headers[SURROGATE_KEY] = $uriTag->fromAssoc(...).
  *     PUT app://self/cache/tag?id={one-of-the-tags} cascades through.
  *
  * Both leaves (Cache\Author, Cache\Tag) are user-zero-code: #[Cacheable]
@@ -58,10 +59,10 @@ $resource = $injector->getInstance(ResourceInterface::class);
 $httpCache = $injector->getInstance(HttpCacheInterface::class);
 
 // ── Section 1 ────────────────────────────────────────────────────
-section('1) Embed + one-line fromAssoc — Cache\\AuthorProfile ← Cache\\Author');
+section('1) Embed only — Cache\\AuthorProfile ← Cache\\Author (auto-merge)');
 fwrite(STDOUT, "  User-written cache code in this section:\n");
 fwrite(STDOUT, "    Cache\\Author        — 0 lines (#[Cacheable] only)\n");
-fwrite(STDOUT, "    Cache\\AuthorProfile — 1 line (\$this->uriTag->fromAssoc(...))\n");
+fwrite(STDOUT, "    Cache\\AuthorProfile — 0 lines (#[Embed] only; auto-merged by setCacheDependency)\n");
 
 $first = $resource->get('app://self/cache/authorprofile', ['authorId' => 1]);
 show('GET app://self/cache/authorprofile?authorId=1 (cold)', $first);

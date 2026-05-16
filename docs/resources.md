@@ -116,19 +116,26 @@ Both expose GET `{id}` and PUT `{id}`. Cache surface is one attribute:
 `RefreshSameCommand` purges it on write. No `Header::SURROGATE_KEY`, no
 `UriTagInterface`, no `DonutRepositoryInterface` appears in the class.
 
-### Pattern B — one-line `fromAssoc` parent (single-child or N-child)
+### Pattern B — `#[Embed]`-only parent (automatic dependency, since `bear/query-repository` 1.16)
 
 - `app://self/cache/authorprofile` (`Cache\AuthorProfile`) — GET only.
-  Composes `Cache\Author` via `#[Embed(rel: 'author', src: 'app://self/cache/author')]`
-  so the HAL renderer materializes the child into `_embedded.author`.
-  Cross-resource invalidation is one line:
-  `$this->headers[SURROGATE_KEY] = $uriTag->fromAssoc('app://self/cache/author{?id}', [['id' => $authorId]])`.
+  Composes `Cache\Author` via `#[Embed(rel: 'author', src: 'app://self/cache/author')]`.
+  Zero lines of cache code: `QueryRepository::setCacheDependency` walks
+  `$ro->body` for `AbstractRequest` children before HAL rendering and
+  auto-merges the child's URI tag into the parent's Surrogate-Key.
+  No `UriTagInterface`, no `Header::SURROGATE_KEY` assignment in the
+  class. The reflection test pins this contract.
+
+### Pattern C — `fromAssoc` for body-derived variable-length dependencies
+
 - `app://self/cache/articletags` (`Cache\ArticleTags`) — GET only.
-  Reads N tag rows from the DB and declares the same one line for the
-  variable-length dependency set:
+  Reads N tag rows from the DB and declares the variable-length
+  dependency set in one line:
   `$this->headers[SURROGATE_KEY] = $uriTag->fromAssoc('app://self/cache/tag{?id}', $items)`.
   No `#[Embed]` — the dependency set comes from the body, so static
-  embed declaration cannot express it.
+  embed declaration cannot express it. Mixing this with `#[Embed]` on
+  the same resource is an anti-pattern: a pre-set Surrogate-Key
+  short-circuits the auto-merge via `setCacheDependency`'s early return.
 
 PUT on a child URI cascades through to the parent's ETag via the
 Surrogate-Key tag. Run `composer demo:cache` to see the
