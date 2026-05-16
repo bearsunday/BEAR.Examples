@@ -239,6 +239,7 @@ Every Page test for such a resource includes
 | PUT | 200 | 404 | 422 |
 | DELETE | 204 | 404 | n/a |
 | Duplicate `slug` (or other unique key) | — | — | 409 (via DB `UniqueConstraintViolation`, no manual catch) |
+| POST (state transition, already in target state) | — | — | 409 + `{message, id, status}` (e.g. `ArticlePublish` on an already-published article) |
 
 **POST is not always creation.** `201 + Location` only applies when the
 POST adds a new addressable resource (e.g. `Article::onPost` creates
@@ -247,6 +248,11 @@ auth code-for-session exchange, password reset confirm, "log this
 event" endpoints — return `200` with the result body and no `Location`
 header. The `#[JsonSchema(params:)]` input-validation rule still
 applies.
+
+**State-transition resources** (e.g. `ArticlePublish`) live alongside
+the entity resource rather than as a method on it. The URI carries
+the transition; the entity resource keeps verb-rich CRUD. See
+[`article-publish-flow-design.md`](journal/article-publish-flow-design.md).
 
 ### After-INSERT id
 Never `lastInsertId` (driver-dependent, awkward to fake). Always

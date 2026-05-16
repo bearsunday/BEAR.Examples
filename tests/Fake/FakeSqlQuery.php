@@ -62,6 +62,7 @@ final class FakeSqlQuery implements SqlQueryInterface
     private const array WRITE_SQL_IDS = [
         'article_add',
         'article_update',
+        'article_publish',
         'article_delete',
         'category_add',
         'category_update',
@@ -380,6 +381,18 @@ final class FakeSqlQuery implements SqlQueryInterface
                             'excerpt' => $values['excerpt'] ?? null,
                             'status' => $values['status'],
                             'publishedAt' => $values['publishedAt'] ?? null,
+                        ],
+                    ),
+                ];
+
+            case 'article_publish':
+                return [
+                    'affectedRows' => $this->updateRow(
+                        'article',
+                        (int) $values['id'],
+                        [
+                            'status' => $values['status'],
+                            'publishedAt' => $values['publishedAt'],
                         ],
                     ),
                 ];

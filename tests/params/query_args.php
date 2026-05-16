@@ -24,6 +24,7 @@ return [
         1,
     ],
     'ArticleCommandInterface::delete' => [999],
+    'ArticleCommandInterface::publish' => [999, 'published', '2026-01-01 00:00:00'],
     'ArticleCommandInterface::update' => [
         999,
         'Updated',
