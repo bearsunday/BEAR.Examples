@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace MyVendor\Cms\Module;
 
 use MyVendor\Cms\Auth\AuthInterface;
+use MyVendor\Cms\Auth\AuthSessionInterface;
+use MyVendor\Cms\Fake\FakeAdminAuthSessionProvider;
 use MyVendor\Cms\Fake\FakeAuthProvider;
 use MyVendor\Cms\Fake\FakeSqlQuery;
 use Ray\Di\AbstractModule;
@@ -24,5 +26,6 @@ final class FakeModule extends AbstractModule
     {
         $this->bind(SqlQueryInterface::class)->to(FakeSqlQuery::class)->in(Scope::SINGLETON);
         $this->bind(AuthInterface::class)->to(FakeAuthProvider::class)->in(Scope::SINGLETON);
+        $this->bind(AuthSessionInterface::class)->toProvider(FakeAdminAuthSessionProvider::class)->in(Scope::SINGLETON);
     }
 }

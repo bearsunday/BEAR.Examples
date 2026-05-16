@@ -67,7 +67,7 @@ Intentionally not the focus:
 
 - A full production admin UI.
 - JavaScript-enhanced editing flows.
-- Production authorization policy for the demo admin.
+- CSRF protection and role policy beyond the author-scoped demo admin.
 - Exhaustive CRUD symmetry where it would only repeat an already-shown
   pattern.
 
@@ -135,6 +135,22 @@ DB_DSN="sqlite:/tmp/bear_cms.db" composer serve         # Qiq/Page HTML on :8081
 # or to expose the HAL JSON API on :8080:
 # DB_DSN="sqlite:/tmp/bear_cms.db" composer serve:api
 ```
+
+### Admin login
+
+The Page admin uses Google OAuth plus a PHP session. Configure the callback
+URL in `.env` and in the Google OAuth client:
+
+```dotenv
+GOOGLE_CLIENT_ID=...
+GOOGLE_CLIENT_SECRET=...
+GOOGLE_REDIRECT_URI=http://127.0.0.1:8081/admin/callback
+```
+
+Then start the Page server and sign in at
+`http://127.0.0.1:8081/admin/login`. The authenticated Google email must match
+an `authors.email` row; that author id becomes the admin's ownership boundary.
+Admins can manage only articles whose `authorId` matches their own author id.
 
 ### Built-in servers
 
@@ -210,7 +226,8 @@ composer doc
 The HAL JSON API is served by `composer serve:api` on
 `http://127.0.0.1:8080`. Page resources are served by `composer serve` on
 `http://127.0.0.1:8081/`. Public pages include `/`, `/articlelist`, and
-`/article?id=1`; the local admin starts at `/admin/index`.
+`/article?id=1`; the local admin sign-in starts at `/admin/login` and lands
+on `/admin/index`.
 
 ## Runtime Contexts
 

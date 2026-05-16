@@ -76,10 +76,10 @@ BEAR.Sunday の `prod-hal-api-app` / `test-hal-api-app` 規約はそのまま使
 
 ## 意図的に *作らなかった* もの
 
-- 管理ルートの認証 / 認可。`Page/Admin/*` は現在未認証です。型付きの
-  `UserInterface` / `AdminUserInterface` 境界は
-  [journal/auth-boundary-plan.md](journal/auth-boundary-plan.md) に設計済みで、
-  別 PR で実装予定です。
+- 本番向けの完全な admin security model。`Page/Admin/*` は型付きの
+  `UserInterface` / `AdminUserInterface` 注入と session-backed OAuth login で
+  保護済みですが、CSRF protection や author-scoped ownership を超える role model は
+  この reference slice の外です。
 - JavaScript で拡張した管理操作
 - キャッシュ無効化 (`#[Cacheable]`、`#[Purge]`) — フックポイントとして残しているが、
   リファレンスとしては不要

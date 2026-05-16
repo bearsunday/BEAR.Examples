@@ -7,6 +7,8 @@ namespace MyVendor\Cms\Renderer;
 use BEAR\Resource\RenderInterface;
 use BEAR\Resource\ResourceObject;
 use ErrorException;
+use MyVendor\Cms\Auth\AuthSessionInterface;
+use MyVendor\Cms\Auth\UserInterface;
 use MyVendor\Cms\Renderer\Exception\InvalidResourcePathException;
 use Override;
 use Qiq\Template;
@@ -33,6 +35,7 @@ final readonly class CmsQiqRenderer implements RenderInterface
 
     public function __construct(
         private Template $template,
+        private AuthSessionInterface $session,
     ) {
     }
 
@@ -50,7 +53,7 @@ final readonly class CmsQiqRenderer implements RenderInterface
         }
 
         $vars = is_array($ro->body) ? $ro->body : ['value' => $ro->body];
-        $vars += $this->cssVars($ro);
+        $vars += $this->commonVars($ro);
         if ($ro->code >= 500) {
             return $this->renderError($ro);
         }
@@ -119,8 +122,8 @@ final readonly class CmsQiqRenderer implements RenderInterface
         return $ro->view;
     }
 
-    /** @return array{cssLevel: int, cssLinks: array<int, string>} */
-    private function cssVars(ResourceObject $ro): array
+    /** @return array{cssLevel: int, cssLinks: array<int, string>, user: UserInterface} */
+    private function commonVars(ResourceObject $ro): array
     {
         $query = $ro->uri->query;
         $requested = isset($query['css']) ? (int) $query['css'] : self::DEFAULT_CSS_LEVEL;
@@ -139,6 +142,6 @@ final readonly class CmsQiqRenderer implements RenderInterface
             $links[$n] = $path . '?' . http_build_query($merged);
         }
 
-        return ['cssLevel' => $level, 'cssLinks' => $links];
+        return ['cssLevel' => $level, 'cssLinks' => $links, 'user' => $this->session->currentUser()];
     }
 }

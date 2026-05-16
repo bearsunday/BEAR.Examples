@@ -10,10 +10,16 @@ use BEAR\Resource\Module\JsonSchemaModule;
 use Koriym\EnvJson\EnvJson;
 use League\CommonMark\CommonMarkConverter;
 use League\OAuth2\Client\Provider\Google;
+use MyVendor\Cms\Auth\AdminUserInterface;
 use MyVendor\Cms\Auth\AuthInterface;
+use MyVendor\Cms\Auth\AuthSessionInterface;
 use MyVendor\Cms\Auth\GoogleAuthProvider;
+use MyVendor\Cms\Auth\NativeAuthSession;
+use MyVendor\Cms\Auth\UserInterface;
 use MyVendor\Cms\Factory\ArticleFactory;
+use MyVendor\Cms\Provider\AdminUserProvider;
 use MyVendor\Cms\Provider\CommonMarkConverterProvider;
+use MyVendor\Cms\Provider\CurrentUserProvider;
 use MyVendor\Cms\Provider\GoogleProvider;
 use MyVendor\Cms\Service\CommonMarkRenderer;
 use MyVendor\Cms\Service\MarkdownRendererInterface;
@@ -72,5 +78,8 @@ final class AppModule extends AbstractAppModule
         // Authentication: Google OAuth in production. FakeAuthProvider in test/fake.
         $this->bind(Google::class)->toProvider(GoogleProvider::class)->in(Scope::SINGLETON);
         $this->bind(AuthInterface::class)->to(GoogleAuthProvider::class)->in(Scope::SINGLETON);
+        $this->bind(AuthSessionInterface::class)->to(NativeAuthSession::class)->in(Scope::SINGLETON);
+        $this->bind(UserInterface::class)->toProvider(CurrentUserProvider::class);
+        $this->bind(AdminUserInterface::class)->toProvider(AdminUserProvider::class);
     }
 }

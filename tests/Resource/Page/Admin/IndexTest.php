@@ -4,16 +4,18 @@ declare(strict_types=1);
 
 namespace MyVendor\Cms\Resource\Page\Admin;
 
-use MyVendor\Cms\AbstractPageTestCase;
+use MyVendor\Cms\AbstractAdminPageTestCase;
 
-final class IndexTest extends AbstractPageTestCase
+final class IndexTest extends AbstractAdminPageTestCase
 {
-    public function testAdminIndexRedirectsToArticleList(): void
+    public function testAdminIndexRendersHub(): void
     {
         $ro = $this->resource->get('page://self/admin/index');
 
-        $this->assertSame(302, $ro->code);
-        $this->assertSame('/admin/articlelist', $ro->headers['Location']);
-        $this->assertSame('', $ro->toString());
+        $this->assertSame(200, $ro->code);
+        $html = $ro->toString();
+        $this->assertStringContainsString('<h1 class="AdminIndex">Admin</h1>', $html);
+        $this->assertStringContainsString('class="goAdminArticleList"', $html);
+        $this->assertStringContainsString('class="doCreateArticle"', $html);
     }
 }

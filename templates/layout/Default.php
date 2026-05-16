@@ -2,6 +2,7 @@
 /**
  * @var int $cssLevel
  * @var array<int, string> $cssLinks
+ * @var \MyVendor\Cms\Auth\UserInterface $user
  */
 ?>
 <!DOCTYPE html>
@@ -22,7 +23,12 @@
       <li><a class="goCategoryList" href="/categorylist">Categories</a></li>
       <li><a class="goTagList" href="/taglist">Tags</a></li>
     </ul>
-    <a class="goSignIn" href="/admin/index">Sign in</a>
+    <?php if ($user instanceof \MyVendor\Cms\Auth\AdminUserInterface): ?>
+      <a class="goAdminIndex" href="/admin/index">Admin</a>
+      <a class="doLogout" href="/admin/logout">Sign out</a>
+    <?php else: ?>
+      <a class="goSignIn" href="/admin/login">Sign in</a>
+    <?php endif ?>
   </nav>
   <header>
     {{ setBlock('header') ~}}{{= getBlock() ~}}

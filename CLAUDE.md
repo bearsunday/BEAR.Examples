@@ -6,19 +6,19 @@ Namespace `MyVendor\Cms\`. PSR-4 both under `src/` and `tests/`.
 Primary surface is the HAL+JSON App API. `src/Resource/Page/*` +
 `templates/Page/*` provide Qiq HTML: public pages are read-only, and
 `src/Resource/Page/Admin/*` adds article create/update/delete forms
-that wrap the App resources. No JS frontend yet. Admin pages are
-currently unauthenticated — the typed `UserInterface` /
-`AdminUserInterface` boundary is designed in
-`docs/journal/auth-boundary-plan.md` and will land in a follow-up PR.
+that wrap the App resources. No JS frontend yet. Admin pages are protected
+by the typed `UserInterface` / `AdminUserInterface` boundary and a
+session-backed OAuth login flow (`/admin/login` → `/admin/callback`).
 
 ## Contexts
 
 - `hal-api-app` / `cli-hal-api-app` — real DB via AuraSqlModule + MediaQuery.
 - `fake-hal-api-app` — same app, SqlQueryInterface overridden to FakeSqlQuery.
-  Works with no DB.
+  Works with no DB and binds a deterministic admin user for demos.
 - `test-hal-api-app` — loaded by PHPUnit via `AbstractAppTestCase`.
 - `html-hal-app` / `cli-html-hal-app` — Qiq/Page HTML over the real DB.
-- `html-test-hal-api-app` — Page tests rendered with HtmlModule + FakeSqlQuery.
+- `html-test-hal-api-app` — Page tests rendered with HtmlModule + FakeSqlQuery;
+  defaults to `Visitor`, with explicit fake admin session overrides in admin tests.
 
 Switching contexts loads/removes modules by keyword prefix; see
 `src/Module/{App,Fake,Test}Module.php`.

@@ -1,17 +1,18 @@
-# Auth boundary plan (follow-up to PR #18)
+# Auth boundary plan (implemented follow-up to PR #18)
 
 PR #18 left `Page/Admin/*` reachable by anyone. The minimal fix
 (removing the public link) shipped in PR #18; this doc records the
-real design, to be implemented in a separate PR.
+design now implemented for the admin boundary and the session-backed
+OAuth login flow.
 
 ---
 
 ## Goal
 
 Express "authenticated admin" at the **type level** so admin
-resources contain zero `if ($user === null)` branches. No real login
-UI yet — only the boundary into which a future OAuth/session layer
-plugs.
+resources contain zero `if ($user === null)` branches. The Page login
+flow stores the authenticated author-backed admin in the session; the
+App-layer `app://self/auth` resource remains a JSON OAuth exchange demo.
 
 ---
 
@@ -48,7 +49,8 @@ Two providers, both reading the same session/OAuth state:
    `AdminUserInterface` therefore *guarantees* admin at the type
    level.
 
-Future Google OAuth hook = swap the body of provider (1).
+Google OAuth is the production provider; tests and fake contexts use
+deterministic fake auth/session bindings.
 
 ---
 
@@ -115,18 +117,18 @@ is where the policy lives.
 
 | Context | `UserInterface` provider returns |
 |---------|----------------------------------|
-| `hal-api-app` / `html-hal-app` (production) | `Visitor` (until OAuth lands) |
+| `hal-api-app` / `html-hal-app` (production) | `NativeAuthSession::currentUser()` |
 | `cli-*` | `Visitor` (CLI has no session) |
-| `fake-hal-api-app` | configurable; default `AdminUser` so demos work |
+| `fake-hal-api-app` | default `AdminUser` so demos work |
 | `test-hal-api-app` (App resource tests) | `Visitor` |
-| `html-test-hal-api-app` (Page tests) | `AdminUser` for `Page/Admin/*` tests, `Visitor` for `Page/Index` admin-link-hidden test |
+| `html-test-hal-api-app` (Page tests) | `Visitor`, with per-test fake admin/session overrides |
 
 For per-test overrides, use a Fake module that lets tests bind a
 specific `UserInterface` instance.
 
 ---
 
-## In scope for the follow-up PR
+## Implemented scope
 
 - `Entity\Visitor`, `Entity\User`, `Entity\AdminUser`
 - `UserInterface`, `AdminUserInterface`
@@ -156,19 +158,21 @@ specific `UserInterface` instance.
   - new tests: admin A can edit/delete their own article (200/303);
     admin A on admin B's article returns 403 (or 404); admin A's
     `/admin/articlelist` excludes admin B's articles
+  - login tests: `/admin/login` redirects to the OAuth provider,
+    `/admin/callback` validates state and creates an admin session,
+    invalid state returns 401, `/admin/logout` clears the session
 
 ## Out of scope (deliberately deferred)
 
-- Real Google OAuth plumbing (the provider stays a stub)
-- Login / logout pages
-- Session persistence beyond what's needed to demo the boundary
+- Real Google OAuth integration test with live credentials
+- CSRF protection on write forms and logout
 - `User`-required (non-admin-only) pages
 - Editor / super-admin roles that can edit anyone's article (a
   flat per-author ownership model is enough for the sample)
 
 ---
 
-## How to resume in a new session
+## Historical resume prompt
 
 > "Implement `docs/journal/auth-boundary-plan.md`. Target branch:
 > `auth-boundary` off `1.x`. Don't touch PR #18."
