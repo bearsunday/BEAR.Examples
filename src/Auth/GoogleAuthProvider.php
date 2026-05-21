@@ -22,11 +22,16 @@ final class GoogleAuthProvider implements AuthInterface
     ) {
     }
 
-    public function getAuthorizationUrl(): string
+    public function getAuthorizationUrl(string|null $state = null): string
     {
-        return $this->provider->getAuthorizationUrl([
+        $options = [
             'scope' => ['openid', 'email', 'profile'],
-        ]);
+        ];
+        if ($state !== null) {
+            $options['state'] = $state;
+        }
+
+        return $this->provider->getAuthorizationUrl($options);
     }
 
     public function authenticate(string $code, string $state): AuthenticatedUser

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace MyVendor\Cms\Resource\Page\Admin;
 
 use BEAR\Resource\ResourceObject;
+use MyVendor\Cms\Auth\AdminUserInterface;
 use MyVendor\Cms\Entity\Article;
 use MyVendor\Cms\Factory\ArticleFactory;
 use MyVendor\Cms\Query\ArticleQueryInterface;
@@ -32,6 +33,7 @@ class ArticleList extends ResourceObject
     private const int MAX_PER_PAGE = 100;
 
     public function __construct(
+        private readonly AdminUserInterface $admin,
         private readonly ArticleQueryInterface $article,
         private readonly ArticleFactory $articleFactory,
     ) {
@@ -46,6 +48,7 @@ class ArticleList extends ResourceObject
         $page = max(1, $page);
         $perPage = max(1, min(self::MAX_PER_PAGE, $perPage));
         $pages = $this->article->list(
+            authorId: $this->admin->authorId(),
             status: $status,
             perPage: $perPage,
         );

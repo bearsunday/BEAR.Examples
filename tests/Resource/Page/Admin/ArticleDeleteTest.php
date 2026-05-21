@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace MyVendor\Cms\Resource\Page\Admin;
 
-use MyVendor\Cms\AbstractPageTestCase;
+use MyVendor\Cms\AbstractAdminPageTestCase;
 
 use function preg_match;
 use function uniqid;
 
-final class ArticleDeleteTest extends AbstractPageTestCase
+final class ArticleDeleteTest extends AbstractAdminPageTestCase
 {
     public function testDeleteConfirmationRendersArticle(): void
     {
@@ -53,5 +53,16 @@ final class ArticleDeleteTest extends AbstractPageTestCase
 
         $this->assertSame(404, $ro->code);
         $this->assertSame('Article not found', $ro->body['message']);
+    }
+
+    public function testDeleteOtherAuthorsArticleReturns403(): void
+    {
+        $confirm = $this->resource->get('page://self/admin/articledelete', ['id' => 2]);
+        $this->assertSame(403, $confirm->code);
+        $this->assertSame('Forbidden', $confirm->body['message']);
+
+        $deleted = $this->resource->post('page://self/admin/articledelete', ['id' => 2]);
+        $this->assertSame(403, $deleted->code);
+        $this->assertSame('Forbidden', $deleted->body['message']);
     }
 }

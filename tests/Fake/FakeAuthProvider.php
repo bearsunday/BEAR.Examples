@@ -17,14 +17,14 @@ final class FakeAuthProvider implements AuthInterface
 {
     public function __construct(
         private readonly string $userId = 'fake-user-1',
-        private readonly string $email = 'demo@example.com',
-        private readonly string $name = 'Demo User',
+        private readonly string $email = 'evelyn.moore1@example.com',
+        private readonly string $name = 'Evelyn Moore',
     ) {
     }
 
-    public function getAuthorizationUrl(): string
+    public function getAuthorizationUrl(string|null $state = null): string
     {
-        return 'https://example.test/fake-auth/authorize';
+        return 'https://example.test/fake-auth/authorize?state=' . (string) $state;
     }
 
     public function authenticate(string $code, string $state): AuthenticatedUser

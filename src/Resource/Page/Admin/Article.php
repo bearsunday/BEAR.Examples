@@ -4,15 +4,16 @@ declare(strict_types=1);
 
 namespace MyVendor\Cms\Resource\Page\Admin;
 
+use BEAR\Resource\Code;
 use BEAR\Resource\Exception\JsonSchemaException;
 use BEAR\Resource\Exception\ParameterException;
 use BEAR\Resource\ResourceInterface;
 use BEAR\Resource\ResourceObject;
+use MyVendor\Cms\Auth\AdminUserInterface;
 use MyVendor\Cms\Entity\Article as ArticleEntity;
 use MyVendor\Cms\Entity\Author;
 use MyVendor\Cms\Entity\Category;
 use MyVendor\Cms\Entity\Tag;
-use MyVendor\Cms\Exception\NoRegisteredAuthorException;
 use MyVendor\Cms\Query\ArticleQueryInterface;
 use MyVendor\Cms\Query\AuthorQueryInterface;
 use MyVendor\Cms\Query\CategoryQueryInterface;
@@ -40,6 +41,7 @@ class Article extends ResourceObject
 {
     public function __construct(
         private readonly ResourceInterface $resource,
+        private readonly AdminUserInterface $admin,
         private readonly ArticleQueryInterface $article,
         private readonly AuthorQueryInterface $author,
         private readonly CategoryQueryInterface $category,
@@ -55,6 +57,10 @@ class Article extends ResourceObject
             $this->body = ['message' => 'Article not found'];
 
             return $this;
+        }
+
+        if ($article !== null && ! $this->owns($article)) {
+            return $this->forbidden();
         }
 
         $this->body = $this->formBody($article, $this->valuesFromArticle($article), [], $saved);
@@ -76,9 +82,23 @@ class Article extends ResourceObject
         mixed $tagIds = [],
     ): static {
         $articleId = $this->intOrNull($id);
+        $article = null;
         if ($articleId === null) {
-            // Stub until AdminUserInterface lands; see docs/journal/auth-boundary-plan.md.
-            $authorId = $this->defaultAuthorId();
+            $authorId = $this->admin->authorId();
+        }
+
+        if ($articleId !== null) {
+            $article = $this->article->item($articleId);
+            if ($article === null) {
+                $this->code = Code::NOT_FOUND;
+                $this->body = ['message' => 'Article not found'];
+
+                return $this;
+            }
+
+            if (! $this->owns($article)) {
+                return $this->forbidden();
+            }
         }
 
         $values = $this->normaliseValues($articleId, [
@@ -98,7 +118,6 @@ class Article extends ResourceObject
                 ? $this->createArticle($values)
                 : $this->updateArticle($articleId, $values);
         } catch (JsonSchemaException | ParameterException $e) {
-            $article = $articleId === null ? null : $this->article->item($articleId);
             $this->code = 422;
             $this->body = $this->formBody($article, $values, [$e->getMessage()], null);
 
@@ -250,17 +269,6 @@ class Article extends ResourceObject
         return $string === '' ? null : $string;
     }
 
-    /** @see docs/journal/auth-boundary-plan.md — removed once AdminUserInterface is injected. */
-    private function defaultAuthorId(): int
-    {
-        $authors = $this->author->list();
-        if ($authors === []) {
-            throw new NoRegisteredAuthorException('Cannot create an article without a registered author.');
-        }
-
-        return $authors[0]->id;
-    }
-
     private function intOrNull(mixed $value): int|null
     {
         if ($value === null || $value === '') {
@@ -292,5 +300,18 @@ class Article extends ResourceObject
         $this->code = 303;
         $this->headers['Location'] = $location;
         $this->body = [];
+    }
+
+    private function owns(ArticleEntity $article): bool
+    {
+        return $article->authorId === $this->admin->authorId();
+    }
+
+    private function forbidden(): static
+    {
+        $this->code = Code::FORBIDDEN;
+        $this->body = ['message' => 'Forbidden'];
+
+        return $this;
     }
 }

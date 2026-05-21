@@ -4,14 +4,12 @@ declare(strict_types=1);
 
 namespace MyVendor\Cms\Resource\Page\Admin;
 
-use MyVendor\Cms\AbstractPageTestCase;
-use MyVendor\Cms\Exception\NoRegisteredAuthorException;
-use MyVendor\Cms\Fake\FakeAdminArticleDeps;
+use MyVendor\Cms\AbstractAdminPageTestCase;
 
 use function preg_match;
 use function uniqid;
 
-final class ArticleTest extends AbstractPageTestCase
+final class ArticleTest extends AbstractAdminPageTestCase
 {
     public function testCreateFormRendersWritableFields(): void
     {
@@ -121,31 +119,24 @@ final class ArticleTest extends AbstractPageTestCase
         $this->assertStringContainsString('<p class="Category">Category: <span class="name">Technology</span></p>', $html);
     }
 
-    /**
-     * Pin the create-without-author contract: the stub falls back to the first
-     * registered author, so an empty author list must surface as a domain
-     * exception rather than a silent (int) 0 cast. Will be removed when
-     * AdminUserInterface lands and the stub disappears.
-     */
-    public function testCreateThrowsWhenNoAuthorRegistered(): void
+    public function testEditOtherAuthorsArticleReturns403(): void
     {
-        $deps = new FakeAdminArticleDeps();
-        $page = new Article(
-            $deps->resource(),
-            $deps->articleQuery(),
-            $deps->emptyAuthorQuery(),
-            $deps->categoryQuery(),
-            $deps->tagQuery(),
-        );
+        $ro = $this->resource->get('page://self/admin/article', ['id' => 2]);
 
-        $this->expectException(NoRegisteredAuthorException::class);
-        $page->onPost(
-            id: null,
-            slug: 'no-author',
-            title: 'No author registered',
-            body: 'body',
-            categoryId: 1,
-            status: 'draft',
-        );
+        $this->assertSame(403, $ro->code);
+        $this->assertSame('Forbidden', $ro->body['message']);
+    }
+
+    public function testUpdateOtherAuthorsArticleReturns403(): void
+    {
+        $ro = $this->resource->post('page://self/admin/article', [
+            'id' => 2,
+            'title' => 'Not mine',
+            'body' => 'body',
+            'status' => 'draft',
+        ]);
+
+        $this->assertSame(403, $ro->code);
+        $this->assertSame('Forbidden', $ro->body['message']);
     }
 }

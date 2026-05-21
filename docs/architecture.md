@@ -76,11 +76,10 @@ as-is. The additions:
 
 ## What was intentionally *not* built
 
-- Authentication / authorisation around the admin routes. `Page/Admin/*`
-  is currently unauthenticated; the typed `UserInterface` /
-  `AdminUserInterface` boundary is designed in
-  [journal/auth-boundary-plan.md](journal/auth-boundary-plan.md) and
-  will land in a follow-up PR.
+- A full production admin security model. `Page/Admin/*` is protected by
+  typed `UserInterface` / `AdminUserInterface` injection and session-backed
+  OAuth login, but CSRF protection and richer roles beyond author-scoped
+  ownership are outside this reference slice.
 - JavaScript-enhanced admin interactions.
 - Cache invalidation (`#[Cacheable]`, `#[Purge]`) — left as a hook-in
   point; not needed for a reference

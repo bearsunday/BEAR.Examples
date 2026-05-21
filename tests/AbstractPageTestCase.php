@@ -5,6 +5,9 @@ declare(strict_types=1);
 namespace MyVendor\Cms;
 
 use BEAR\Resource\ResourceInterface;
+use MyVendor\Cms\Auth\UserInterface;
+use MyVendor\Cms\Auth\Visitor;
+use MyVendor\Cms\Fake\FakeUserModule;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -19,7 +22,14 @@ abstract class AbstractPageTestCase extends TestCase
 
     protected function setUp(): void
     {
-        $injector = Injector::getInstance('html-test-hal-api-app');
+        $injector = Injector::getOverrideInstance('html-test-hal-api-app', new FakeUserModule(new Visitor()));
         $this->resource = $injector->getInstance(ResourceInterface::class);
+    }
+
+    protected function resourceWithUser(UserInterface $user): ResourceInterface
+    {
+        $injector = Injector::getOverrideInstance('html-test-hal-api-app', new FakeUserModule($user));
+
+        return $injector->getInstance(ResourceInterface::class);
     }
 }
