@@ -125,7 +125,7 @@ Note: `Page/Admin/*` is now behind typed `AdminUserInterface` injection. The rem
 | `composer doc` | apidoc + ALPS HTML |
 | `composer compile` | bear.compile production graph |
 
-Generated read-side commands exist for `article-show` and `article-list` (under `bin/cli/`). Equivalents for the other entities and all write-side commands are not generated yet — see Deferred §.
+Generated commands exist for `article-show` and `article-list` (under `bin/cli/`). Expanding generation to the other entities and to the write-side methods is intentionally out of scope — see "By design".
 
 ### Reference patterns shown
 
@@ -177,6 +177,7 @@ These aren't bugs or backlog — they're deliberate choices that keep the refere
 |------|--------------|
 | Scalar `onPost` / `onPut` on Author, Category, Tag, Media | Kept scalar so a reader sees both styles side-by-side. `Article` and `Auth` show the `#[Input]` + DTO style; the others show plain scalar parameters. Migrating all four would erase the contrast |
 | No `authors` or `media` list resource | The two collections that exist (`articles`, `categories`, `tags`) are enough to demonstrate the list pattern, filtering, and pagination. Adding more would be repetition |
+| Generated CLI beyond `article-show` / `article-list` | `article-show` and `article-list` already demonstrate the `#[Cli]` / `#[Option]` pattern in full. Generating the same wrappers for the other entities and the write-side methods is the repetition this reference deliberately avoids — the same rationale as "No `authors` or `media` list resource" above. `Article::onPost` / `onPut` could not be CLI-exposed in any case: they take an `#[Input]` DTO and `bear/cli` only maps `#[Option]` scalar parameters, so that scalar-vs-DTO boundary is documented here rather than demonstrated with generated files |
 | No `app://self/` entry point | `Page/Index` is the public HTML entry; HAL discoverability is shown via per-resource `_links` |
 | JS-enhanced admin (HTMX or similar) | Out of demonstration scope; the patterns to demonstrate are server-side. An optional add-on would not change App-layer code |
 | Applying `#[Cacheable]` to the main `Article` resource | `Article` composes three embeds (`author`, `category`, `tagList`) and `tagList` is itself a body-derived variable-length list. Mixing `#[Embed]`-driven composition and `fromAssoc()`-driven cross-resource invalidation on the same response is exercised by the `Cache\*` showcase as the canonical pattern; leaving the main `Article` untouched keeps the principal resource side-by-side comparable against the showcase rather than entangling the two demos |
@@ -190,7 +191,6 @@ Drawn from `architecture.md` "What was intentionally not built", `journal/handof
 | D1 | `#[CacheableResponse]` on list reads + `#[Purge]` on writes (PR-C2) | **Partial — landed for non-embedded list reads.** `Articles` / `Categories` carry class-level `#[CacheableResponse]`; `Article` / `Category` writes carry `#[Purge(uri: 'app://self/{collection}')]`. Two intentional exclusions: (1) entity resources skip class-level caching because `DonutCommandInterceptor` re-runs `onGet` on deleted entities and mutates `204 → 404`; (2) `Tags` skips caching because it is embedded in `Article` via `#[Embed(rel: 'tagList')]` — when the html context materialises the embed, the donut pipeline calls `(string) $ro` and `CmsQiqRenderer` has no App-template, throws, and breaks the ETag chain. Note: `#[Purge(uri)]` invalidates the canonical URI only, not query-string variants (e.g. `?categoryId=3`) | Pipeline verified in `tests/Resource/App/CacheTest.php` (asserts `try-donut-view` / `put-donut` / `save-etag` / `purge-query-repository` in `RepositoryLogger`). Future follow-ups: per-query-string purge keys and entity-level caching once the delete-mutation upstream behavior is clarified |
 | D2 | ~~Auth boundary for `Page/Admin/*`~~ | Implemented with typed `UserInterface` / `AdminUserInterface` providers, session-backed OAuth login, and author-scoped admin ownership | Remaining follow-up: CSRF protection |
 | D3 | Async Docker CI smoke | Runtime containers exist, but CI does not yet build ext-parallel and run `composer parallel:demo` | Add a focused GitHub Actions job once image build time and caching are acceptable |
-| D4 | Write-side CLI + read CLI for the other entities | `bear-cli-gen` so far only generated `article-show` / `article-list`; no write commands yet | Add `#[Cli]` to onPost/onPut/onDelete and to the missing read methods; `composer cli` regenerates |
 | D5 | Real Google OAuth integration test | Needs creds + callback URL | env-gated test that skips unless `GOOGLE_CLIENT_ID` is set |
 | D6 | MySQL integration coverage for `Media` | 4 of 5 entities covered (`tests/Integration/`) | Add `MediaMySQLTest` mirroring the existing pattern |
 | D7 | `Articles` collection `totalCount` | Implemented via MediaQuery Page `total` | Keep schema/docs in sync when list shape changes |

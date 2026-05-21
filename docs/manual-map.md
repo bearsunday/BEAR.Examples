@@ -128,7 +128,7 @@ implemented, deferred, and by-design items.
 
 | Manual | Concept | Status | Code or doc anchor |
 |---|---|---|---|
-| [cli.md](https://bearsunday.github.io/manuals/1.0/en/cli.html) | CLI runner via `#[Cli]` | Partial | [bin/cli/article-show](../bin/cli/article-show), [bin/cli/article-list](../bin/cli/article-list); write-side CLI is deferred as D4 |
+| [cli.md](https://bearsunday.github.io/manuals/1.0/en/cli.html) | CLI runner via `#[Cli]` | Partial | [bin/cli/article-show](../bin/cli/article-show), [bin/cli/article-list](../bin/cli/article-list); wider CLI generation is intentionally out of scope (see scope.md "By design") |
 | [coding-guide.md](https://bearsunday.github.io/manuals/1.0/en/coding-guide.html) | Coding standards | Done | [docs/conventions.md](conventions.md), `composer cs`, `composer sa` |
 | [types.md](https://bearsunday.github.io/manuals/1.0/en/types.html) | Strict resource and DI types | Done | `final readonly` entities in [src/Entity](../src/Entity), typed inputs in [src/Input](../src/Input) |
 | [types-utility.md](https://bearsunday.github.io/manuals/1.0/en/types-utility.html) | PHPDoc utility types | Done | `array{...}` shapes in [src/Resource/App/Variations](../src/Resource/App/Variations) and query interfaces |
