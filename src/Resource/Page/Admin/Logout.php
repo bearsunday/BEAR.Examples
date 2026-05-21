@@ -7,7 +7,7 @@ namespace MyVendor\Cms\Resource\Page\Admin;
 use BEAR\Resource\ResourceObject;
 use MyVendor\Cms\Auth\AuthSessionInterface;
 
-/** @property array{} $body */
+/** @property array{message?: string} $body */
 class Logout extends ResourceObject
 {
     public function __construct(
@@ -16,6 +16,14 @@ class Logout extends ResourceObject
     }
 
     public function onGet(): static
+    {
+        $this->code = 405;
+        $this->body = ['message' => 'Method not allowed'];
+
+        return $this;
+    }
+
+    public function onPost(): static
     {
         $this->session->logout();
         $this->code = 303;

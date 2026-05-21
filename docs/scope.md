@@ -82,8 +82,10 @@ variation that demonstrates `BEAR.Streamer` without changing canonical
 | `FakeAuthProvider` | Test/fake context |
 | `AuthenticatedUser` | `final readonly` |
 | `Auth` resource | Auth flow shape with response schema |
+| `AuthSessionInterface` | Session-backed current-user, OAuth state, login, and logout boundary |
+| `AdminUserInterface` | Protects `Page/Admin/*` resources and carries author ownership |
 
-Note: Auth applies only to the OAuth flow itself. `Page/Admin/*` is **not** behind any auth guard yet (see Deferred §).
+Note: `Page/Admin/*` is now behind typed `AdminUserInterface` injection. The remaining auth follow-up is CSRF protection for admin form posts (see Deferred §).
 
 ### Persistence & migrations
 

@@ -39,6 +39,6 @@ class IndexTest extends AbstractPageTestCase
 
         $this->assertSame(200, $ro->code);
         $this->assertStringContainsString('<a class="goAdminIndex" href="/admin/index">Admin</a>', $ro->toString());
-        $this->assertStringContainsString('<a class="doLogout" href="/admin/logout">Sign out</a>', $ro->toString());
+        $this->assertStringContainsString('<form class="doLogout" method="post" action="/admin/logout"><button type="submit">Sign out</button></form>', $ro->toString());
     }
 }

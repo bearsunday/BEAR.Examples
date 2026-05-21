@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace MyVendor\Cms\Resource\Page\Admin;
 
 use MyVendor\Cms\AbstractPageTestCase;
+use MyVendor\Cms\Exception\UnauthenticatedException;
 
 final class LoginTest extends AbstractPageTestCase
 {
@@ -51,9 +52,30 @@ final class LoginTest extends AbstractPageTestCase
             'state' => 'fake-state',
         ]);
 
-        $logout = $this->resource->get('page://self/admin/logout');
+        $logout = $this->resource->post('page://self/admin/logout');
 
         $this->assertSame(303, $logout->code);
         $this->assertSame('/', $logout->headers['Location']);
+
+        $this->expectException(UnauthenticatedException::class);
+        $this->expectExceptionCode(401);
+        $this->resource->get('page://self/admin/index');
+    }
+
+    public function testLogoutGetDoesNotClearAdminSession(): void
+    {
+        $this->resource->get('page://self/admin/login');
+        $this->resource->get('page://self/admin/callback', [
+            'code' => 'fake-code',
+            'state' => 'fake-state',
+        ]);
+
+        $logout = $this->resource->get('page://self/admin/logout');
+
+        $this->assertSame(405, $logout->code);
+        $this->assertSame('Method not allowed', $logout->body['message']);
+
+        $admin = $this->resource->get('page://self/admin/index');
+        $this->assertSame(200, $admin->code);
     }
 }

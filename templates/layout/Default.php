@@ -25,7 +25,7 @@
     </ul>
     <?php if ($user instanceof \MyVendor\Cms\Auth\AdminUserInterface): ?>
       <a class="goAdminIndex" href="/admin/index">Admin</a>
-      <a class="doLogout" href="/admin/logout">Sign out</a>
+      <form class="doLogout" method="post" action="/admin/logout"><button type="submit">Sign out</button></form>
     <?php else: ?>
       <a class="goSignIn" href="/admin/login">Sign in</a>
     <?php endif ?>
