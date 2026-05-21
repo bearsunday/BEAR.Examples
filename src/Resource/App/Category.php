@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace MyVendor\Cms\Resource\App;
 
 use BEAR\ApiDoc\Annotation\Alps;
+use BEAR\RepositoryModule\Annotation\Purge;
 use BEAR\Resource\Annotation\JsonSchema;
 use BEAR\Resource\Annotation\Link;
 use BEAR\Resource\Code;
@@ -50,6 +51,7 @@ class Category extends ResourceObject
 
     #[Alps('doCreateCategory')]
     #[JsonSchema(schema: 'write_response.json', params: 'category_create.json')]
+    #[Purge(uri: 'app://self/categories')]
     public function onPost(
         string $slug,
         string $name,
@@ -69,6 +71,7 @@ class Category extends ResourceObject
 
     #[Alps('doUpdateCategory')]
     #[JsonSchema(schema: 'write_response.json', params: 'category_update.json')]
+    #[Purge(uri: 'app://self/categories')]
     public function onPut(
         int $id,
         string $name,
@@ -90,6 +93,7 @@ class Category extends ResourceObject
     }
 
     #[Alps('doDeleteCategory')]
+    #[Purge(uri: 'app://self/categories')]
     public function onDelete(int $id): static
     {
         if ($this->category->item($id) === null) {

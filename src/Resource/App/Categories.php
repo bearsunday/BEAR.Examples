@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace MyVendor\Cms\Resource\App;
 
 use BEAR\ApiDoc\Annotation\Alps;
+use BEAR\RepositoryModule\Annotation\CacheableResponse;
 use BEAR\Resource\Annotation\JsonSchema;
 use BEAR\Resource\Annotation\Link;
 use BEAR\Resource\ResourceObject;
@@ -14,6 +15,7 @@ use function array_map;
 use function count;
 
 #[Alps('CategoryList')]
+#[CacheableResponse]
 class Categories extends ResourceObject
 {
     public function __construct(

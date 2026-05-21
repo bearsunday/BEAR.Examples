@@ -81,8 +81,11 @@ as-is. The additions:
   OAuth login, but CSRF protection and richer roles beyond author-scoped
   ownership are outside this reference slice.
 - JavaScript-enhanced admin interactions.
-- Cache invalidation (`#[Cacheable]`, `#[Purge]`) — left as a hook-in
-  point; not needed for a reference
+- Per-query-string cache invalidation. `#[CacheableResponse]` +
+  `#[Purge]` are wired for list reads and writes (see scope.md D1);
+  query-string variants of list URIs (e.g. `articles?categoryId=3`)
+  share the canonical purge URI and are deliberately left to a
+  follow-up
 - Full UI pager rendering customization. Article collections already use
   Ray.MediaQuery `#[Pager]`; Page templates still render compact previous
   and next links themselves.

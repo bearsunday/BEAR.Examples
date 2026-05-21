@@ -81,8 +81,10 @@ BEAR.Sunday の `prod-hal-api-app` / `test-hal-api-app` 規約はそのまま使
   保護済みですが、CSRF protection や author-scoped ownership を超える role model は
   この reference slice の外です。
 - JavaScript で拡張した管理操作
-- キャッシュ無効化 (`#[Cacheable]`、`#[Purge]`) — フックポイントとして残しているが、
-  リファレンスとしては不要
+- query-string 別のキャッシュ無効化。`#[CacheableResponse]` + `#[Purge]` は
+  list 系の read/write に配線済み（scope.md D1 参照）。`articles?categoryId=3`
+  のような query-string variant は canonical purge URI を共有する設計で、
+  variant 別の purge は今後の follow-up とする
 - UI pager rendering の細かなカスタマイズ。Article collection はすでに
   Ray.MediaQuery `#[Pager]` を使い、Page template 側では compact な previous /
   next link を自前で描画します。
