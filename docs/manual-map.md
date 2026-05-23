@@ -173,10 +173,9 @@ highest-value gaps are:
 
 1. Auth boundary for `Page/Admin/*`: typed `UserInterface` /
    `AdminUserInterface`, per-record authorization, and CSRF.
-2. Write-side `#[Cli]` commands for create/update/delete flows.
-3. PSR-7 `ServerRequestInterface` injection example.
-4. Production `ProdModule` and deployment tuning notes.
-5. Redis cache adapter binding for the existing cache showcase.
-6. Real-CMS patterns not deeply covered by the manual: file upload, resource
+2. PSR-7 `ServerRequestInterface` injection example.
+3. Production `ProdModule` and deployment tuning notes.
+4. Redis cache adapter binding for the existing cache showcase.
+5. Real-CMS patterns not deeply covered by the manual: file upload, resource
    crawl, N+1 resolution, transaction wrapping, exception-to-HTTP mapping,
    search, and structured logging.
