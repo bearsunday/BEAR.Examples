@@ -20,6 +20,9 @@
     <testsuite name="validation">
       <directory>tests/Validation</directory>
     </testsuite>
+    <testsuite name="interceptor">
+      <directory>tests/Interceptor</directory>
+    </testsuite>
   </testsuites>
   <source>
     <include>
