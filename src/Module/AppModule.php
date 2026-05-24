@@ -88,5 +88,9 @@ final class AppModule extends AbstractAppModule
         $this->bind(AuthSessionInterface::class)->to(NativeAuthSession::class)->in(Scope::SINGLETON);
         $this->bind(UserInterface::class)->toProvider(CurrentUserProvider::class);
         $this->bind(AdminUserInterface::class)->toProvider(AdminUserProvider::class);
+
+        // Cross-origin defence for unsafe Page/Admin verbs. Same-origin
+        // gate today; #[CsrfToken] joins this module in PR-B2.
+        $this->install(new CsrfModule());
     }
 }
