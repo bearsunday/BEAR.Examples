@@ -46,6 +46,11 @@ return [
     'article_sqlquery_previous.sql' => ['publishedAt' => '2030-01-01 00:00:00', 'id' => 999],
     'article_tag_clear.sql' => ['articleId' => 1],
     'article_tag_link.sql' => ['articleId' => 1, 'tagId' => 50],
+    'article_publish.sql' => [
+        'status' => 'published',
+        'publishedAt' => '2026-01-01 00:00:00',
+        'id' => 1,
+    ],
     'article_update.sql' => [
         'title' => 'Updated',
         'body' => 'Body',

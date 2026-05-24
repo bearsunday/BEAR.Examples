@@ -1,0 +1,11 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ArticlePublishInput",
+  "description": "Input for POST app://self/article-publish. Performs the draft → published state transition.",
+  "type": "object",
+  "required": ["id"],
+  "properties": {
+    "id":          {"type": "integer", "minimum": 1},
+    "publishedAt": {"type": ["string", "null"], "format": "date-time"}
+  }
+}

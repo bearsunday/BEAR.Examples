@@ -30,6 +30,16 @@ interface ArticleCommandInterface
         string|null $publishedAt,
     ): void;
 
+    /**
+     * Apply the draft → published state transition.
+     *
+     * Distinct from `update()` so the publish flow's audit/lifecycle hooks
+     * (and the Page-level confirmation gate) can attach to a method whose
+     * sole responsibility is the state move — not arbitrary field edits.
+     */
+    #[DbQuery('article_publish')]
+    public function publish(int $id, string $status, string $publishedAt): void;
+
     #[DbQuery('article_delete')]
     public function delete(int $id): void;
 }

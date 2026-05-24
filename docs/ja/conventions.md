@@ -223,6 +223,7 @@ if (! isset($article) || $article === null) {
 | PUT | 200 | 404 | `ValidationException` を throw | 422 + form 再描画 |
 | DELETE | 204 | 404 | n/a | n/a |
 | 重複 `slug` (または他の unique key) | — | — | — | 409 (DB の `UniqueConstraintViolation` 経由、手動 catch なし) |
+| POST (状態遷移、すでに目的状態) | — | — | 409 + `{message, id, status}` (例: `ArticlePublish` を public 済み article に対して) | — |
 
 App リソースは検証失敗を `ValidationException` (`field => list<string>`
 を保持) として throw します。422 body にはなりません — `app://` には
@@ -237,6 +238,12 @@ addressable resource を追加する場合に限ります (例: `Article::onPost
 code-for-session 交換、パスワードリセット確定、「このイベントを記録する」
 endpoint — は結果 body と一緒に `200` を返し、`Location` ヘッダは付けません。
 `#[JsonSchema(params:)]` の input 検証ルールはどちらの場合でも適用されます。
+
+**状態遷移リソース** (例: `ArticlePublish`) はエンティティリソースの
+メソッドではなく、別リソースとして並べます。URI が遷移を表現し、
+エンティティリソースは verb-rich な CRUD に集中させます。詳細は
+[`article-publish-flow-design.md`](../journal/article-publish-flow-design.md)
+を参照してください。
 
 ### INSERT 後の id
 `lastInsertId` を使ってはいけません (driver 依存で fake しにくい)。client が

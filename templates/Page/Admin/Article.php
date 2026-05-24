@@ -108,6 +108,9 @@ $nameFor = static function (array $entities, int $id): string {
     <li><a href="/admin/index" class="goAdminIndex">Admin home</a></li>
     <li><a href="/admin/articlelist" class="goAdminArticleList">Back to article administration</a></li>
     <?php if ($isEdit): ?>
+      <?php if ($article->isDraft()): ?>
+        <li><a href="/admin/articleconfirm?id={{h $article->id }}" class="doPublishArticle">Publish article…</a></li>
+      <?php endif ?>
       <li><a href="/article?id={{h $article->id }}" class="goArticle">View public article</a></li>
       <li><a href="/admin/articledelete?id={{h $article->id }}" class="doDeleteArticle">Delete article</a></li>
     <?php endif ?>
