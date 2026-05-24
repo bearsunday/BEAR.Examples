@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace MyVendor\Cms\Validation;
 
 use BEAR\Resource\Exception\JsonSchemaException;
+use BEAR\Resource\JsonSchema\ConstraintViolation;
+use BEAR\Resource\JsonSchema\JsonSchemaError;
 use BEAR\Resource\ResourceObject;
 use MyVendor\Cms\Exception\ValidationException;
 use PHPUnit\Framework\TestCase;
@@ -20,7 +22,12 @@ use function unlink;
  * resource boundary, schema-required failures cannot reach the interceptor
  * (Article's DTO and Author's typed parameters both reject missing values
  * before the validator sees them), so this is the only place the
- * required-message path is verifiable.
+ * required-message path is verifiable in isolation. End-to-end wiring is
+ * covered by `tests/Resource/App/ArticleTest.php`.
+ *
+ * DTOs are hand-constructed here to keep the unit test hermetic from
+ * justinrainbow's validator. The DTO shapes mirror what the upstream
+ * `JsonSchemaErrorMapper` produces from the validator's raw error rows.
  */
 final class JsonSchemaRequestExceptionHandlerTest extends TestCase
 {
@@ -55,8 +62,18 @@ final class JsonSchemaRequestExceptionHandlerTest extends TestCase
 }
 JSON);
 
+        // justinrainbow reports `required` failures with the parent object
+        // as `property` (empty at root) and the missing field name in
+        // `constraint.params.property`.
+        $error = new JsonSchemaError(
+            '',
+            '',
+            'The property slug is required',
+            new ConstraintViolation('required', ['property' => 'slug']),
+        );
+
         try {
-            $this->dispatch(['title' => 'present']);
+            $this->dispatch([$error]);
             $this->fail('Expected ValidationException');
         } catch (ValidationException $e) {
             $errors = $e->getErrors();
@@ -82,8 +99,15 @@ JSON);
 }
 JSON);
 
+        $error = new JsonSchemaError(
+            'slug',
+            '/slug',
+            'Does not match the regex pattern ^[a-z]+$',
+            new ConstraintViolation('pattern', ['pattern' => '^[a-z]+$']),
+        );
+
         try {
-            $this->dispatch(['slug' => 'BAD-Slug']);
+            $this->dispatch([$error]);
             $this->fail('Expected ValidationException');
         } catch (ValidationException $e) {
             $errors = $e->getErrors();
@@ -109,8 +133,15 @@ JSON);
 }
 JSON);
 
+        $error = new JsonSchemaError(
+            'slug',
+            '/slug',
+            'Must be at least 3 characters long',
+            new ConstraintViolation('minLength', ['minLength' => 3]),
+        );
+
         try {
-            $this->dispatch(['slug' => 'a']);
+            $this->dispatch([$error]);
             $this->fail('Expected ValidationException');
         } catch (ValidationException $e) {
             $this->assertSame('Slug is invalid.', $e->getErrors()['slug'][0]);
@@ -128,26 +159,52 @@ JSON);
 }
 JSON);
 
+        $error = new JsonSchemaError(
+            'slug',
+            '/slug',
+            'Does not match the regex pattern ^[a-z]+$',
+            new ConstraintViolation('pattern', ['pattern' => '^[a-z]+$']),
+        );
+
         try {
-            $this->dispatch(['slug' => '123']);
+            $this->dispatch([$error]);
             $this->fail('Expected ValidationException');
         } catch (ValidationException $e) {
-            // Falls back to whatever justinrainbow emits — the assertion is
+            // Falls back to whatever the upstream emits — the assertion is
             // only that some message survives, not its exact wording.
             $this->assertNotEmpty($e->getErrors()['slug'][0]);
         }
     }
 
-    /** @param array<string, mixed> $arguments */
-    private function dispatch(array $arguments): void
+    public function testEmptyErrorsRethrowsOriginalException(): void
+    {
+        // Defence: a JsonSchemaException carrying no structured errors
+        // (manual throws, future paths bypassing the upstream mapper) is
+        // surfaced as-is rather than packed into an empty ValidationException.
+        $this->writeSchema(<<<'JSON'
+{"type": "object"}
+JSON);
+
+        $original = new JsonSchemaException('rethrow-marker');
+        $handler = new JsonSchemaRequestExceptionHandler();
+        $ro = new class extends ResourceObject {
+        };
+
+        $this->expectException(JsonSchemaException::class);
+        $this->expectExceptionMessage('rethrow-marker');
+        $handler->handleRequestException([], $ro, $original, $this->schemaFile);
+    }
+
+    /** @param list<JsonSchemaError> $errors */
+    private function dispatch(array $errors): void
     {
         $handler = new JsonSchemaRequestExceptionHandler();
         $ro = new class extends ResourceObject {
         };
         $handler->handleRequestException(
-            $arguments,
+            [],
             $ro,
-            new JsonSchemaException('triggered'),
+            new JsonSchemaException('triggered', 0, $errors),
             $this->schemaFile,
         );
     }

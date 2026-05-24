@@ -42,27 +42,21 @@ The default `JsonSchemaRequestExceptionNullHandler` rethrows the
 original `JsonSchemaException`, which carries only a flattened
 `"[prop] message; …"` string.
 
-Our handler re-runs the validator (`justinrainbow/json-schema`,
-`CHECK_MODE_TYPE_CAST` — same flags the interceptor uses) to recover
-the structured error array, then walks each error to build a
+Our handler reads `$e->getErrors()` — a `list<JsonSchemaError>`
+populated upstream by `JsonSchemaErrorMapper` from the validator's
+structured rows — and walks each error to build a
 `field => list<string>` map. Per-message lookup follows the
 **ajv-errors** convention:
 
-> **Trade-off recorded.** Running the validator twice (interceptor →
-> handler) is wasteful because `JsonSchemaException` only carries a
-> flattened string and discards the validator's structured errors.
-> The right fix is upstream — extending `JsonSchemaException` to
-> carry the `$validator->getErrors()` array so the handler can read
-> them directly. Until that lands the re-run is the only honest path;
-> it only runs on the validation-failure branch, so the cost is
-> bounded to the error path. Tracked upstream as
-> [bearsunday/BEAR.Resource#364](https://github.com/bearsunday/BEAR.Resource/issues/364).
+The structured-error carrier on `JsonSchemaException` landed via
+[bearsunday/BEAR.Resource#364](https://github.com/bearsunday/BEAR.Resource/issues/364);
+the handler no longer re-runs the validator.
 
-If `collectErrors()` returns an empty map (schema mutated between
-interceptor and handler, `$ref` resolution drift, …) the handler
-rethrows the original `JsonSchemaException` rather than throwing a
-content-free `ValidationException` — an empty error shape would
-silently swallow the signal.
+If `$e->getErrors()` is empty (manual throws, future paths that bypass
+the upstream mapper) the handler rethrows the original
+`JsonSchemaException` rather than surfacing a content-free
+`ValidationException` — an empty error shape would silently swallow
+the signal.
 
 - `properties.<field>.errorMessage.<constraint>` — per-constraint
   override on a field. `<constraint>` matches `ConstraintError`
@@ -210,12 +204,15 @@ so no resource-layer change is needed for the domain path.
   behaviour: `ValidationException` with a field key matching the
   failing input.
 - `tests/Validation/JsonSchemaRequestExceptionHandlerTest` exercises
-  the handler against synthetic schemas to cover the
-  `errorMessage.required.<field>`, per-keyword, string-fallback,
-  and missing-`errorMessage` paths. Synthetic because, through the
-  App boundary, schema-required failures cannot reach the
-  interceptor — Article's DTO and Author's typed parameters reject
-  missing values first.
+  the handler against hand-constructed `JsonSchemaError` DTOs paired
+  with synthetic schemas to cover the `errorMessage.required.<field>`,
+  per-keyword, string-fallback, missing-`errorMessage`, and
+  empty-errors-rethrow paths. Hand-constructed because the unit test
+  is intentionally hermetic from `justinrainbow/json-schema`; the
+  DTO shapes mirror what the upstream `JsonSchemaErrorMapper`
+  produces. Synthetic schemas because, through the App boundary,
+  schema-required failures cannot reach the interceptor — Article's
+  DTO and Author's typed parameters reject missing values first.
 - `tests/Resource/Page/Admin/ArticleTest::testInvalidCreateReturnsFormWithEscapedValues`
   pins the Page-side 422 rendering: `<section class="ErrorList">`
   appears and unsafe input is escaped.

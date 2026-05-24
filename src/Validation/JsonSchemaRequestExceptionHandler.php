@@ -5,10 +5,9 @@ declare(strict_types=1);
 namespace MyVendor\Cms\Validation;
 
 use BEAR\Resource\Exception\JsonSchemaException;
+use BEAR\Resource\JsonSchema\JsonSchemaError;
 use BEAR\Resource\JsonSchemaRequestExceptionHandlerInterface;
 use BEAR\Resource\ResourceObject;
-use JsonSchema\Constraints\Constraint;
-use JsonSchema\Validator;
 use MyVendor\Cms\Exception\ValidationException;
 use Override;
 use stdClass;
@@ -25,16 +24,16 @@ use function strtok;
 use const JSON_THROW_ON_ERROR;
 
 /**
- * Re-runs the validator to surface field-level errors with `errorMessage`
- * (ajv-errors convention) applied, then raises a `ValidationException`.
+ * Surfaces JSON Schema request failures as a per-field `ValidationException`.
  *
- * JsonSchemaInterceptor calls this hook with the original `JsonSchemaException`
- * (which only carries a flattened "[prop] msg; …" string). We re-validate against
- * the same schema to recover the structured error list, walk each error to look
- * up `errorMessage.<constraint>` on the corresponding property, and pack a
- * `field => list<string>` map. Throwing — rather than mutating `$ro` — is the
- * only way to short-circuit `$invocation->proceed()`; the surrounding
- * interceptor falls through to `proceed()` if the handler returns normally.
+ * `JsonSchemaInterceptor` calls this hook with the original
+ * `JsonSchemaException`, which since BEAR.Resource#364 carries the
+ * structured `list<JsonSchemaError>` produced by the validator. We walk
+ * each error to look up `errorMessage.<constraint>` (ajv-errors convention)
+ * on the corresponding property and pack a `field => list<string>` map.
+ * Throwing — rather than mutating `$ro` — is the only way to short-circuit
+ * `$invocation->proceed()`; the surrounding interceptor falls through to
+ * `proceed()` if the handler returns normally.
  *
  * @see docs/journal/validation-layer-design.md
  */
@@ -50,75 +49,63 @@ final readonly class JsonSchemaRequestExceptionHandler implements JsonSchemaRequ
         JsonSchemaException $e,
         string $schemaFile,
     ): never {
-        $errors = $this->collectErrors($arguments, $schemaFile);
-        // Re-validate can find nothing (schema mutated between runs, $ref
-        // resolution drift, …) — preserve the original failure rather than
-        // throw an empty-shape ValidationException that swallows the signal.
+        $errors = $e->getErrors();
+        // Defence against exceptions raised outside the interceptor — manual
+        // throws, future refactors, or any path that bypasses
+        // `JsonSchemaErrorMapper`. Preserve the original failure rather than
+        // surface an empty-shape ValidationException that swallows the signal.
         if ($errors === []) {
             throw $e;
         }
 
-        throw new ValidationException($errors, $e);
-    }
-
-    /**
-     * @param array<string, mixed> $arguments
-     *
-     * @return array<string, list<string>>
-     */
-    private function collectErrors(array $arguments, string $schemaFile): array
-    {
-        $schemaJson = file_get_contents($schemaFile);
-        $schema = is_string($schemaJson)
-            ? json_decode($schemaJson, false, 512, JSON_THROW_ON_ERROR)
-            : null;
-        assert($schema instanceof stdClass || $schema === null);
-
-        $validator = new Validator();
-        // Match the interceptor's validate(): use the file:// $ref so external
-        // schemas resolve identically when collecting errors.
-        $rootSchema = (object) ['$ref' => 'file://' . $schemaFile];
-        $target = $arguments;
-        $validator->validate($target, $rootSchema, Constraint::CHECK_MODE_TYPE_CAST);
-        /** @var list<array{property: string, message: string, constraint: array{name: string, params: array<string, mixed>}}> $rawErrors */
-        $rawErrors = $validator->getErrors();
-
+        $schema = $this->loadSchema($schemaFile);
         $collected = [];
-        foreach ($rawErrors as $error) {
+        foreach ($errors as $error) {
             $field = $this->fieldFromError($error);
             $messages = $collected[$field] ?? [];
             $messages[] = $this->resolveMessage($schema, $error);
             $collected[$field] = $messages;
         }
 
-        return $collected;
+        throw new ValidationException($collected, $e);
     }
 
-    /** @param array{property: string, constraint: array{name: string, params: array<string, mixed>}} $error */
-    private function fieldFromError(array $error): string
+    private function loadSchema(string $schemaFile): stdClass|null
+    {
+        $schemaJson = file_get_contents($schemaFile);
+        if (! is_string($schemaJson)) {
+            return null;
+        }
+
+        $schema = json_decode($schemaJson, false, 512, JSON_THROW_ON_ERROR);
+        assert($schema instanceof stdClass || $schema === null);
+
+        return $schema instanceof stdClass ? $schema : null;
+    }
+
+    private function fieldFromError(JsonSchemaError $error): string
     {
         // For `required` failures, justinrainbow reports the parent object as
         // the property (empty string at root); the missing field name is in
         // `constraint.params.property`.
-        if ($error['constraint']['name'] === 'required') {
-            $missing = $error['constraint']['params']['property'] ?? null;
+        if ($error->constraint->name === 'required') {
+            $missing = $error->constraint->params['property'] ?? null;
             if (is_string($missing) && $missing !== '') {
                 return $missing;
             }
         }
 
-        return $error['property'] === '' ? '_root' : $error['property'];
+        return $error->property === '' ? '_root' : $error->property;
     }
 
-    /** @param array{property: string, message: string, constraint: array{name: string, params: array<string, mixed>}} $error */
-    private function resolveMessage(stdClass|null $schema, array $error): string
+    private function resolveMessage(stdClass|null $schema, JsonSchemaError $error): string
     {
         if ($schema === null) {
-            return $error['message'];
+            return $error->message;
         }
 
         $field = $this->fieldFromError($error);
-        $constraint = $error['constraint']['name'];
+        $constraint = $error->constraint->name;
 
         if ($constraint === 'required') {
             // `errorMessage.required.<field>` at the object level — ajv-errors
@@ -138,7 +125,7 @@ final readonly class JsonSchemaRequestExceptionHandler implements JsonSchemaRequ
             }
         }
 
-        return $error['message'];
+        return $error->message;
     }
 
     private function lookupRequiredMessage(stdClass $schema, string $field): string|null
