@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace MyVendor\Cms\Resource\Page\Admin;
 
-use MyVendor\Cms\AbstractPageTestCase;
+use MyVendor\Cms\AbstractAdminPageTestCase;
 
 use function uniqid;
 
-final class ArticleConfirmTest extends AbstractPageTestCase
+final class ArticleConfirmTest extends AbstractAdminPageTestCase
 {
     public function testGetShowsDraftPreviewWithPublishForm(): void
     {
@@ -106,6 +106,21 @@ final class ArticleConfirmTest extends AbstractPageTestCase
         $this->assertStringNotContainsString('/admin/articleconfirm?id=' . $id, $ro->toString());
 
         $this->resource->delete('app://self/article', ['id' => $id]);
+    }
+
+    public function testConfirmOtherAuthorsArticleReturns403(): void
+    {
+        // Article id=2 in the fake fixtures is owned by a different author
+        // than the test admin (authorId=1) — mirrors the pattern in
+        // ArticleTest::testUpdateOtherAuthorsArticleReturns403 and
+        // ArticleDeleteTest::testDeleteOtherAuthorsArticleReturns403.
+        $preview = $this->resource->get('page://self/admin/articleconfirm', ['id' => 2]);
+        $this->assertSame(403, $preview->code);
+        $this->assertSame('Forbidden', $preview->body['message']);
+
+        $publish = $this->resource->post('page://self/admin/articleconfirm', ['id' => 2]);
+        $this->assertSame(403, $publish->code);
+        $this->assertSame('Forbidden', $publish->body['message']);
     }
 
     private function createDraft(): int

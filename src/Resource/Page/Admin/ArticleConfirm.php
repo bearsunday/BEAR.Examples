@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace MyVendor\Cms\Resource\Page\Admin;
 
+use BEAR\Resource\Code;
 use BEAR\Resource\ResourceInterface;
 use BEAR\Resource\ResourceObject;
+use MyVendor\Cms\Auth\AdminUserInterface;
 use MyVendor\Cms\Entity\Article;
 use MyVendor\Cms\Query\ArticleQueryInterface;
 use MyVendor\Cms\Query\AuthorQueryInterface;
@@ -42,6 +44,7 @@ class ArticleConfirm extends ResourceObject
 {
     public function __construct(
         private readonly ResourceInterface $resource,
+        private readonly AdminUserInterface $admin,
         private readonly ArticleQueryInterface $article,
         private readonly AuthorQueryInterface $author,
         private readonly CategoryQueryInterface $category,
@@ -59,6 +62,10 @@ class ArticleConfirm extends ResourceObject
             return $this;
         }
 
+        if (! $this->owns($article)) {
+            return $this->forbidden();
+        }
+
         $this->body = $this->previewBody($article, [], $article->isPublished());
 
         return $this;
@@ -72,6 +79,10 @@ class ArticleConfirm extends ResourceObject
             $this->body = ['message' => 'Article not found'];
 
             return $this;
+        }
+
+        if (! $this->owns($article)) {
+            return $this->forbidden();
         }
 
         $result = $this->resource->post('app://self/article-publish', ['id' => $id]);
@@ -102,6 +113,19 @@ class ArticleConfirm extends ResourceObject
         $this->code = 303;
         $this->headers['Location'] = '/article?id=' . $id;
         $this->body = [];
+
+        return $this;
+    }
+
+    private function owns(Article $article): bool
+    {
+        return $article->authorId === $this->admin->authorId();
+    }
+
+    private function forbidden(): static
+    {
+        $this->code = Code::FORBIDDEN;
+        $this->body = ['message' => 'Forbidden'];
 
         return $this;
     }
