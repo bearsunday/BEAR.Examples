@@ -8,6 +8,7 @@ use BEAR\Resource\RenderInterface;
 use BEAR\Resource\ResourceObject;
 use ErrorException;
 use MyVendor\Cms\Auth\AuthSessionInterface;
+use MyVendor\Cms\Auth\CsrfTokenInterface;
 use MyVendor\Cms\Auth\UserInterface;
 use MyVendor\Cms\Renderer\Exception\InvalidResourcePathException;
 use Override;
@@ -36,6 +37,7 @@ final readonly class CmsQiqRenderer implements RenderInterface
     public function __construct(
         private Template $template,
         private AuthSessionInterface $session,
+        private CsrfTokenInterface $csrf,
     ) {
     }
 
@@ -122,7 +124,7 @@ final readonly class CmsQiqRenderer implements RenderInterface
         return $ro->view;
     }
 
-    /** @return array{cssLevel: int, cssLinks: array<int, string>, user: UserInterface} */
+    /** @return array{cssLevel: int, cssLinks: array<int, string>, user: UserInterface, csrfToken: string} */
     private function commonVars(ResourceObject $ro): array
     {
         $query = $ro->uri->query;
@@ -142,6 +144,15 @@ final readonly class CmsQiqRenderer implements RenderInterface
             $links[$n] = $path . '?' . http_build_query($merged);
         }
 
-        return ['cssLevel' => $level, 'cssLinks' => $links, 'user' => $this->session->currentUser()];
+        // `csrfToken` is exposed to every template so layout-level forms
+        // (e.g. the sign-out form in the layout's nav) can embed the
+        // hidden field without each Page resource having to inject it
+        // into $this->body.
+        return [
+            'cssLevel' => $level,
+            'cssLinks' => $links,
+            'user' => $this->session->currentUser(),
+            'csrfToken' => $this->csrf->issue(),
+        ];
     }
 }

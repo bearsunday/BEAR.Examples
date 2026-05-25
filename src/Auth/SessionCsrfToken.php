@@ -67,6 +67,13 @@ final class SessionCsrfToken implements CsrfTokenInterface
         return hash_equals($stored, $candidate);
     }
 
+    #[Override]
+    public function clear(): void
+    {
+        $this->start();
+        unset($_SESSION[self::SESSION_KEY]);
+    }
+
     private function start(): void
     {
         if (session_status() === PHP_SESSION_ACTIVE) {

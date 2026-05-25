@@ -8,6 +8,7 @@ use BEAR\Resource\Code;
 use BEAR\Resource\Exception\ParameterException;
 use BEAR\Resource\ResourceInterface;
 use BEAR\Resource\ResourceObject;
+use MyVendor\Cms\Attribute\CsrfToken;
 use MyVendor\Cms\Attribute\SameOrigin;
 use MyVendor\Cms\Auth\AdminUserInterface;
 use MyVendor\Cms\Entity\Article as ArticleEntity;
@@ -71,6 +72,7 @@ class Article extends ResourceObject
 
     /** @SuppressWarnings("PHPMD.ExcessiveParameterList") Resource parameters mirror the HTML form fields. */
     #[SameOrigin]
+    #[CsrfToken]
     public function onPost(
         mixed $id = null,
         mixed $slug = '',

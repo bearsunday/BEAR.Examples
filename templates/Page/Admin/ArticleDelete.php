@@ -1,6 +1,7 @@
 <?php
 /**
  * @var \MyVendor\Cms\Entity\Article $article
+ * @var string $csrfToken
  */
 ?>
 {{ setLayout('layout/Default') }}
@@ -17,6 +18,7 @@
 
   <form class="DeleteForm" method="post" action="/admin/articledelete">
     <input type="hidden" name="id" value="{{a $article->id }}">
+    <input type="hidden" name="_csrf_token" value="{{h $csrfToken }}">
     <p>This action deletes the article.</p>
     <button type="submit" class="doDeleteArticle">Delete article</button>
   </form>

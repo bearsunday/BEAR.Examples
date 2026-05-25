@@ -42,4 +42,12 @@ final readonly class FakeCsrfToken implements CsrfTokenInterface
     {
         return $candidate !== '' && hash_equals($this->token, $candidate);
     }
+
+    #[Override]
+    public function clear(): void
+    {
+        // No-op: the fake's token is constructor-fixed and immutable. The
+        // post-logout-clears-token contract is exercised against
+        // SessionCsrfToken in its own focused test.
+    }
 }

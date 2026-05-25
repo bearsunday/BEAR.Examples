@@ -32,13 +32,12 @@ Both checks have to pass before a write reaches the resource method.
 
 ## Architecture
 
-Two attributes will eventually live together; this PR ships only the
-first:
+Two attributes layer the defence:
 
-| Attribute | What it requires | Where | Status |
-|---|---|---|---|
-| `#[SameOrigin]` | Browser-emitted same-origin signals (`Sec-Fetch-Site`, `Origin`, `Referer`) match the configured allowed origin. | All Page/Admin `onPost` methods. | **Landed (this PR)** |
-| `#[CsrfToken]` | A per-session token submitted as a hidden form field matches the one in session. | Destructive / session-changing onPost methods (`Article`, `ArticleDelete`, `ArticleConfirm`, `Logout`). | Tracked as PR-B2. |
+| Attribute | What it requires | Where |
+|---|---|---|
+| `#[SameOrigin]` | Browser-emitted same-origin signals (`Sec-Fetch-Site`, `Origin`, `Referer`) match the configured allowed origin. | All Page/Admin `onPost` methods. |
+| `#[CsrfToken]` | A per-session token submitted as `_csrf_token` in the form body matches the one stored in session. | Destructive / session-changing onPost methods: `Article`, `ArticleDelete`, `ArticleConfirm`, `Logout`. |
 
 The two layers stack — `#[SameOrigin]` defends the bulk of cookie-driven
 CSRF cheaply; `#[CsrfToken]` adds belt-and-braces protection on the

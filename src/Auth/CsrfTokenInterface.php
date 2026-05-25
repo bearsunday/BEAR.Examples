@@ -42,4 +42,11 @@ interface CsrfTokenInterface
      * stored / blank-submitted equality).
      */
     public function verify(string $candidate): bool;
+
+    /**
+     * Discards the stored token. The next `issue()` generates a fresh
+     * value — used by `AuthSessionInterface::logout()` so a post-
+     * logout request never reuses the previous session's token.
+     */
+    public function clear(): void;
 }
