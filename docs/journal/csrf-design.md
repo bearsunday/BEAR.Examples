@@ -93,25 +93,28 @@ In priority order:
    origin component. Used only when both `Sec-Fetch-Site` and
    `Origin` are absent.
 
-4. **All three absent**. With `AllowedOriginInterface::value()` non-
-   null, the request is rejected as 403 (fail-closed). With `value()`
-   null the gate short-circuits at the top of the interceptor and
-   never reaches this branch.
+4. **All three absent**. With `AllowedOrigin->value` non-null, the
+   request is rejected as 403 (fail-closed). With `value === null`
+   the gate short-circuits at the top of the interceptor and never
+   reaches this branch.
 
 ### Short-circuit mode
 
-`AllowedOriginInterface::value() === null` skips the gate entirely.
-That's the test / CLI / fake-app shape — none of those have a browser
-on the other side, so their requests can't have origin signals to
-check.
+`AllowedOrigin->value === null` disables **both** gates
+(`SameOriginInterceptor` and `CsrfTokenInterceptor`). That's the
+test / CLI / fake-app shape — none of those have a browser on the
+other side, so neither origin signals nor `_csrf_token` would be
+populated; both checks would always fail-closed, which would block
+legitimate CLI invocations of admin Page resources for no security
+benefit. Tying both gates to the same on/off knob keeps the mental
+model "production HTTP enforces, everywhere else skips" in one
+config value.
 
-**Production gotcha.** Because `null` means "allow", a production HTTP
+**Production gotcha.** Because `null` means "skip", a production HTTP
 deployment that forgets to set `CMS_ALLOWED_ORIGIN` silently disables
-the gate. The fail-closed path lives in a `ProdModule` that aborts at
-boot if the env var is missing — that module isn't in scope for this
-PR. Tracked under [docs/scope.md](../scope.md) Tier 2 "Production
-tuning notes"; see also `AllowedOriginInterface`'s docblock for the
-in-code warning.
+both gates. The fail-closed path belongs in a `ProdModule` that aborts
+at boot if the env var is missing — out of scope for this PR. Tracked
+under [docs/scope.md](../scope.md) Tier 2 "Production tuning notes".
 
 ### What this layer doesn't do
 

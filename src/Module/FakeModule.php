@@ -8,13 +8,12 @@ use MyVendor\Cms\Auth\AuthInterface;
 use MyVendor\Cms\Auth\AuthSessionInterface;
 use MyVendor\Cms\Auth\CsrfTokenInterface;
 use MyVendor\Cms\Fake\FakeAdminAuthSessionProvider;
-use MyVendor\Cms\Fake\FakeAllowedOrigin;
 use MyVendor\Cms\Fake\FakeAuthProvider;
 use MyVendor\Cms\Fake\FakeCsrfToken;
 use MyVendor\Cms\Fake\FakeRequestBodyToken;
 use MyVendor\Cms\Fake\FakeRequestOrigin;
 use MyVendor\Cms\Fake\FakeSqlQuery;
-use MyVendor\Cms\Http\AllowedOriginInterface;
+use MyVendor\Cms\Http\AllowedOrigin;
 use MyVendor\Cms\Http\RequestBodyTokenInterface;
 use MyVendor\Cms\Http\RequestOriginInterface;
 use Ray\Di\AbstractModule;
@@ -28,7 +27,7 @@ use Ray\MediaQuery\SqlQueryInterface;
  * without a real database / OAuth provider, backed by var/fake/*.json and
  * a fixed user identity.
  *
- * @SuppressWarnings("PHPMD.CouplingBetweenObjects") composition root by design — each fake binding adds two class names
+ * @SuppressWarnings("PHPMD.CouplingBetweenObjects") composition root
  */
 final class FakeModule extends AbstractModule
 {
@@ -38,17 +37,12 @@ final class FakeModule extends AbstractModule
         $this->bind(AuthInterface::class)->to(FakeAuthProvider::class)->in(Scope::SINGLETON);
         $this->bind(AuthSessionInterface::class)->toProvider(FakeAdminAuthSessionProvider::class)->in(Scope::SINGLETON);
 
-        // SameOriginInterceptor short-circuits when allowedOrigin is null,
-        // so fake / CLI runs don't need to script HTTP headers. Tests that
-        // exercise the gate rebind these via overrideModule().
+        // Force the CSRF gates off — fake / test runs don't drive HTTP, so
+        // there's no Sec-Fetch-Site / Origin / Referer / _csrf_token to
+        // script. Tests that exercise the gates rebind AllowedOrigin (and
+        // the relevant header / body fake) via overrideModule().
+        $this->bind(AllowedOrigin::class)->toInstance(new AllowedOrigin(null));
         $this->bind(RequestOriginInterface::class)->to(FakeRequestOrigin::class)->in(Scope::SINGLETON);
-        $this->bind(AllowedOriginInterface::class)->to(FakeAllowedOrigin::class)->in(Scope::SINGLETON);
-
-        // CsrfTokenInterceptor: the fake bindings default to a fixed token
-        // ("fake-csrf-token") that both sides return, so the interceptor's
-        // hash_equals path is exercised but passes. Tests that want the
-        // gate to trip override RequestBodyTokenInterface (or both) with
-        // a mismatching / null value.
         $this->bind(CsrfTokenInterface::class)->to(FakeCsrfToken::class)->in(Scope::SINGLETON);
         $this->bind(RequestBodyTokenInterface::class)->to(FakeRequestBodyToken::class)->in(Scope::SINGLETON);
     }

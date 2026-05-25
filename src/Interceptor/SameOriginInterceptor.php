@@ -6,7 +6,7 @@ namespace MyVendor\Cms\Interceptor;
 
 use BEAR\Resource\Exception\BadRequestException;
 use MyVendor\Cms\Exception\ForbiddenException;
-use MyVendor\Cms\Http\AllowedOriginInterface;
+use MyVendor\Cms\Http\AllowedOrigin;
 use MyVendor\Cms\Http\RequestOriginInterface;
 use Override;
 use Ray\Aop\MethodInterceptor;
@@ -30,7 +30,7 @@ final readonly class SameOriginInterceptor implements MethodInterceptor
 
     public function __construct(
         private RequestOriginInterface $request,
-        private AllowedOriginInterface $allowedOrigin,
+        private AllowedOrigin $allowedOrigin,
     ) {
     }
 
@@ -38,7 +38,7 @@ final readonly class SameOriginInterceptor implements MethodInterceptor
     #[Override]
     public function invoke(MethodInvocation $invocation): mixed
     {
-        $allowed = $this->allowedOrigin->value();
+        $allowed = $this->allowedOrigin->value;
         if ($allowed === null) {
             return $invocation->proceed();
         }

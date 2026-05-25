@@ -6,8 +6,8 @@ namespace MyVendor\Cms\Interceptor;
 
 use BEAR\Resource\Exception\BadRequestException;
 use MyVendor\Cms\Exception\ForbiddenException;
-use MyVendor\Cms\Fake\FakeAllowedOrigin;
 use MyVendor\Cms\Fake\FakeRequestOrigin;
+use MyVendor\Cms\Http\AllowedOrigin;
 use PHPUnit\Framework\TestCase;
 use Ray\Aop\ReflectiveMethodInvocation;
 
@@ -26,7 +26,7 @@ final class SameOriginInterceptorTest extends TestCase
         // No env configured → gate is off. Origin/Referer ignored entirely.
         $interceptor = new SameOriginInterceptor(
             new FakeRequestOrigin(fetchSite: 'cross-site', origin: 'https://attacker.example'),
-            new FakeAllowedOrigin(null),
+            new AllowedOrigin(null),
         );
 
         $result = $interceptor->invoke($this->invocation());
@@ -189,7 +189,7 @@ final class SameOriginInterceptorTest extends TestCase
     {
         $interceptor = new SameOriginInterceptor(
             new FakeRequestOrigin(fetchSite: 'same-origin'),
-            new FakeAllowedOrigin('not a url'),
+            new AllowedOrigin('not a url'),
         );
 
         $this->expectException(ForbiddenException::class);
@@ -200,7 +200,7 @@ final class SameOriginInterceptorTest extends TestCase
     {
         return new SameOriginInterceptor(
             $request,
-            new FakeAllowedOrigin('https://cms.example.com'),
+            new AllowedOrigin('https://cms.example.com'),
         );
     }
 

@@ -5,20 +5,19 @@ declare(strict_types=1);
 namespace MyVendor\Cms\Interceptor;
 
 use MyVendor\Cms\Fake\FakeRequestBodyToken;
+use MyVendor\Cms\Fake\FakeRequestOrigin;
+use MyVendor\Cms\Http\AllowedOrigin;
 use MyVendor\Cms\Http\RequestBodyTokenInterface;
+use MyVendor\Cms\Http\RequestOriginInterface;
 use Override;
 use Ray\Di\AbstractModule;
 
 /**
- * Test-only DI override that scripts `RequestBodyTokenInterface` to
- * report no submitted token — the rest of the test suite relies on
- * the default `FakeRequestBodyToken` returning a value that matches
- * `FakeCsrfToken`, so the gate normally short-circuits.
- *
- * Scoped to `CsrfTokenWiringTest` for the same locality reason as
- * `CrossSiteOriginOverrideModule`: keep the cross-cutting override
- * out of unrelated tests. Constructor accepts an inner module so the
- * test can chain `FakeUserModule` for admin session setup.
+ * Forces `CsrfTokenInterceptor` to actually evaluate (non-null
+ * AllowedOrigin) and scripts a missing submitted token to trip the
+ * gate. Also scripts `Sec-Fetch-Site: same-origin` so the stacked
+ * `SameOriginInterceptor` proceeds and lets the CSRF gate be the
+ * first to reject. Scoped to `CsrfTokenWiringTest`.
  */
 final class MissingCsrfTokenOverrideModule extends AbstractModule
 {
@@ -30,6 +29,10 @@ final class MissingCsrfTokenOverrideModule extends AbstractModule
     #[Override]
     protected function configure(): void
     {
+        $this->bind(AllowedOrigin::class)
+            ->toInstance(new AllowedOrigin('https://cms.example.com'));
+        $this->bind(RequestOriginInterface::class)
+            ->toInstance(new FakeRequestOrigin(fetchSite: 'same-origin'));
         $this->bind(RequestBodyTokenInterface::class)
             ->toInstance(new FakeRequestBodyToken(null));
     }

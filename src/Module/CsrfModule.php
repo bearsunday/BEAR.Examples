@@ -9,8 +9,7 @@ use MyVendor\Cms\Attribute\CsrfToken;
 use MyVendor\Cms\Attribute\SameOrigin;
 use MyVendor\Cms\Auth\CsrfTokenInterface;
 use MyVendor\Cms\Auth\SessionCsrfToken;
-use MyVendor\Cms\Http\AllowedOriginInterface;
-use MyVendor\Cms\Http\ImmutableAllowedOrigin;
+use MyVendor\Cms\Http\AllowedOrigin;
 use MyVendor\Cms\Http\RequestBodyTokenInterface;
 use MyVendor\Cms\Http\RequestOriginInterface;
 use MyVendor\Cms\Http\ServerRequestBodyToken;
@@ -32,9 +31,9 @@ final class CsrfModule extends AbstractModule
     #[Override]
     protected function configure(): void
     {
+        $this->bind(AllowedOrigin::class)->toInstance(new AllowedOrigin($this->allowedOrigin));
+
         $this->bind(RequestOriginInterface::class)->to(ServerRequestOrigin::class);
-        $this->bind(AllowedOriginInterface::class)
-            ->toInstance(new ImmutableAllowedOrigin($this->allowedOrigin));
         $this->bindInterceptor(
             $this->matcher->subclassesOf(ResourceObject::class),
             $this->matcher->annotatedWith(SameOrigin::class),
