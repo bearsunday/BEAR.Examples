@@ -185,11 +185,10 @@ so no resource-layer change is needed for the domain path.
 
 ## Out of scope (deferred)
 
-- **`SameOrigin` / `CsrfToken` interceptors** — Issue #37 alternatives
-  1 & 2 (CSRF as cross-cutting AOP). Independent PR.
-- **Confirmation-screen resource** — Issue #37 alternatives 3 & 5
-  (Article lifecycle resource: `draft → preview → published` as a
-  state-machine resource with HAL state transitions). Independent PR.
+- **`SameOrigin` / `CsrfToken` interceptors** — landed alongside this
+  PR; see [`csrf-design.md`](csrf-design.md).
+- **Confirmation-screen resource** — landed alongside this PR; see
+  [`article-publish-flow-design.md`](article-publish-flow-design.md).
 - **JSON Schema for response error shape** — register a
   `validation_problem.json` schema and validate the 422 body shape
   in tests. Useful but not load-bearing for correctness; can land
