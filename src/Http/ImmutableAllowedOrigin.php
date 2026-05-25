@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms\Fake;
+namespace MyVendor\Cms\Http;
 
-use MyVendor\Cms\Http\AllowedOriginInterface;
 use Override;
 
-final readonly class FakeAllowedOrigin implements AllowedOriginInterface
+/** Constructor-fixed `AllowedOriginInterface`. AppModule resolves the value once. */
+final readonly class ImmutableAllowedOrigin implements AllowedOriginInterface
 {
     public function __construct(private string|null $value = null)
     {

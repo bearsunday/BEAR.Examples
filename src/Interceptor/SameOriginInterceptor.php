@@ -19,44 +19,14 @@ use function parse_url;
 use function sprintf;
 use function strtolower;
 
-/**
- * Same-origin policy gate for browser-driven unsafe HTTP verbs.
- *
- * Applied via `#[SameOrigin]` (see `MyVendor\Cms\Attribute\SameOrigin`).
- * Resources annotated with that attribute have their invocation gated by
- * three signals, in order of precedence:
- *
- *  1. `Sec-Fetch-Site` (Fetch Metadata) — primary. JS cannot forge it
- *     (it's a forbidden request header), so a `same-origin` value is
- *     authoritative. Anything else (`cross-site`, `same-site`, `none`,
- *     or an unknown literal) is rejected outright.
- *  2. `Origin` — fallback for clients that don't emit `Sec-Fetch-Site`.
- *     Compared as a canonical origin (scheme + host lowercased, default
- *     ports collapsed) against the configured allowed origin.
- *  3. `Referer` — last-resort fallback. Same canonical comparison after
- *     extracting the URL's origin component.
- *
- * Failure modes:
- *
- *  - Mismatched / explicitly cross-site → `ForbiddenException` (403).
- *  - Malformed `Origin` / `Referer` (parse failure, opaque `null` origin,
- *    path / query / userinfo present on `Origin`) → `BadRequestException`
- *    (400). Treated as a client-shape problem, not a policy decision.
- *  - All three signals absent → `ForbiddenException` (403, fail-closed).
- *
- * The gate is intentionally bypassed when `AllowedOriginInterface::value()`
- * returns `null` — see that interface's docblock for the rationale and
- * the production fail-closed gap.
- *
- * **Scope reminder.** This interceptor checks request-side origin signals
- * only. The complementary protections — `SameSite=Lax` / `Secure` /
- * `HttpOnly` flags on the session cookie — live on the session cookie
- * issuer, not here.
- */
+/** Same-origin gate. See `docs/journal/csrf-design.md` for the algorithm. */
 final readonly class SameOriginInterceptor implements MethodInterceptor
 {
     private const array UNSAFE_FETCH_SITES = ['cross-site', 'same-site', 'none'];
     private const array DEFAULT_PORTS = ['http' => 80, 'https' => 443];
+
+    /** URL components that, if present, mean the value isn't a bare origin. */
+    private const array NON_ORIGIN_PARTS = ['user' => 0, 'pass' => 0, 'query' => 0, 'fragment' => 0];
 
     public function __construct(
         private RequestOriginInterface $request,
@@ -75,8 +45,6 @@ final readonly class SameOriginInterceptor implements MethodInterceptor
 
         $allowedCanonical = $this->canonicaliseOrigin($allowed);
         if ($allowedCanonical === null) {
-            // Misconfiguration surface — a malformed allowed-origin value
-            // should fail closed rather than silently allow.
             throw new ForbiddenException(
                 'Same-origin policy: configured allowed origin is malformed.',
             );
@@ -157,17 +125,10 @@ final readonly class SameOriginInterceptor implements MethodInterceptor
     }
 
     /**
-     * Canonical origin form: lowercase `scheme://host[:port]`, with
-     * scheme default ports collapsed. Returns `null` for malformed
-     * inputs or `Origin: null` (the unique opaque origin spec value),
-     * which the caller surfaces as 400 / 403 depending on side.
-     *
-     * Origin headers are spec'd to be just `scheme://host[:port]`; if
-     * path / query / fragment / userinfo turn up, treat it as malformed.
+     * Canonical origin form: lowercase `scheme://host[:port]`, default
+     * scheme ports collapsed. Returns `null` for malformed inputs or
+     * `Origin: null` (the unique opaque origin spec value).
      */
-    /** URL components that, if present, mean the value isn't a bare origin. */
-    private const array NON_ORIGIN_PARTS = ['user' => 0, 'pass' => 0, 'query' => 0, 'fragment' => 0];
-
     private function canonicaliseOrigin(string $value): string|null
     {
         if ($value === 'null') {
@@ -179,13 +140,11 @@ final readonly class SameOriginInterceptor implements MethodInterceptor
             return null;
         }
 
-        // Origin = scheme://host[:port] only.
         if (array_intersect_key($parts, self::NON_ORIGIN_PARTS) !== []) {
             return null;
         }
 
-        // parse_url accepts a single trailing slash on path; tolerate
-        // that one form but reject anything more substantive.
+        // parse_url tolerates a trailing slash on path; reject anything more.
         $path = array_key_exists('path', $parts) ? $parts['path'] : '';
         if ($path !== '' && $path !== '/') {
             return null;
@@ -194,10 +153,7 @@ final readonly class SameOriginInterceptor implements MethodInterceptor
         return $this->renderCanonical($parts['scheme'], $parts['host'], $parts['port'] ?? null);
     }
 
-    /**
-     * `Referer` is a full URL — extract its origin component only.
-     * `null` means malformed (parse_url failed or scheme/host missing).
-     */
+    /** `Referer` is a full URL — extract its origin component. */
     private function canonicaliseRefererOrigin(string $value): string|null
     {
         $parts = parse_url($value);

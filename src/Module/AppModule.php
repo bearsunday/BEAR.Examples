@@ -91,6 +91,8 @@ final class AppModule extends AbstractAppModule
 
         // Cross-origin defence for unsafe Page/Admin verbs: same-origin
         // gate (#[SameOrigin]) and synchroniser-token gate (#[CsrfToken]).
-        $this->install(new CsrfModule());
+        // Unset env → null → SameOriginInterceptor short-circuits (dev / CLI).
+        $allowedOrigin = (string) getenv('CMS_ALLOWED_ORIGIN') ?: null;
+        $this->install(new CsrfModule($allowedOrigin));
     }
 }

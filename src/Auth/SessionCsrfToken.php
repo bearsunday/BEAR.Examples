@@ -15,19 +15,7 @@ use function session_status;
 
 use const PHP_SESSION_ACTIVE;
 
-/**
- * `$_SESSION`-backed `CsrfTokenInterface`.
- *
- * Mirrors `NativeAuthSession`'s boundary discipline — `$_SESSION` is
- * touched here and only here for CSRF. Token entropy: 32 bytes from
- * `random_bytes` → 64-char hex (256 bits). Verification uses
- * `hash_equals` so timing leaks don't reveal partial matches.
- *
- * Token lifetime is per-session by design; see the interface docblock
- * for why per-request rotation isn't done.
- *
- * @SuppressWarnings("PHPMD.Superglobals") Session adapter boundary; mirrors `NativeAuthSession`.
- */
+/** @SuppressWarnings("PHPMD.Superglobals") Session adapter boundary. */
 final class SessionCsrfToken implements CsrfTokenInterface
 {
     private const string SESSION_KEY = 'cms_csrf_token';
@@ -54,13 +42,7 @@ final class SessionCsrfToken implements CsrfTokenInterface
         $this->start();
 
         $stored = $_SESSION[self::SESSION_KEY] ?? null;
-        if (! is_string($stored) || $stored === '') {
-            // No token was ever issued — refuse the equality check so a
-            // blank-submitted form on a fresh session can't slip through.
-            return false;
-        }
-
-        if ($candidate === '') {
+        if (! is_string($stored) || $stored === '' || $candidate === '') {
             return false;
         }
 

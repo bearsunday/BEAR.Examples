@@ -9,20 +9,6 @@ use Override;
 
 use function hash_equals;
 
-/**
- * Constructor-scripted `CsrfTokenInterface` for tests.
- *
- * Defaults to a fixed token that matches `FakeRequestBodyToken`'s
- * default submitted value, so a test that doesn't touch CSRF
- * concerns sees the interceptor short-circuit through. Tests that
- * exercise the gate construct this with a known token and the body
- * fake with a mismatching value (or a `null`).
- *
- * Using a fixed token rather than "always-true verify()" preserves
- * the verification path under test wiring — a passing test means
- * `hash_equals` actually returned `true`, not that verification was
- * stubbed away.
- */
 final readonly class FakeCsrfToken implements CsrfTokenInterface
 {
     public const string DEFAULT_TOKEN = 'fake-csrf-token';
@@ -46,8 +32,6 @@ final readonly class FakeCsrfToken implements CsrfTokenInterface
     #[Override]
     public function clear(): void
     {
-        // No-op: the fake's token is constructor-fixed and immutable. The
-        // post-logout-clears-token contract is exercised against
-        // SessionCsrfToken in its own focused test.
+        // No-op: the fake's token is constructor-fixed.
     }
 }
