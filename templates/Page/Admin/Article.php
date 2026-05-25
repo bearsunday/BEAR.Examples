@@ -10,6 +10,7 @@
  * @var list<int> $selectedTagIds
  * @var string|null $saved
  * @var string $csrfToken
+ * @var string $csrfTokenField
  */
 $isEdit = $mode === 'edit' && $article !== null;
 $title = (string) ($values['title'] ?? '');
@@ -57,7 +58,7 @@ $nameFor = static function (array $entities, int $id): string {
   <?php endif ?>
 
   <form class="ArticleForm" method="post" action="{{h $formAction }}">
-    <input type="hidden" name="_csrf_token" value="{{h $csrfToken }}">
+    <input type="hidden" name="{{h $csrfTokenField }}" value="{{h $csrfToken }}">
     <?php if ($isEdit): ?>
       <input type="hidden" name="id" value="{{h $article->id }}">
       <p class="slug">Slug: <code>{{h $article->slug }}</code></p>

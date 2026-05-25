@@ -4,6 +4,7 @@
  * @var array<int, string> $cssLinks
  * @var \MyVendor\Cms\Auth\UserInterface $user
  * @var string $csrfToken
+ * @var string $csrfTokenField
  */
 ?>
 <!DOCTYPE html>
@@ -26,7 +27,7 @@
     </ul>
     <?php if ($user instanceof \MyVendor\Cms\Auth\AdminUserInterface): ?>
       <a class="goAdminIndex" href="/admin/index">Admin</a>
-      <form class="doLogout" method="post" action="/admin/logout"><input type="hidden" name="_csrf_token" value="{{h $csrfToken }}"><button type="submit">Sign out</button></form>
+      <form class="doLogout" method="post" action="/admin/logout"><input type="hidden" name="{{h $csrfTokenField }}" value="{{h $csrfToken }}"><button type="submit">Sign out</button></form>
     <?php else: ?>
       <a class="goSignIn" href="/admin/login">Sign in</a>
     <?php endif ?>

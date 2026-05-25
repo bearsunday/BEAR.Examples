@@ -10,6 +10,7 @@ use ErrorException;
 use MyVendor\Cms\Auth\AuthSessionInterface;
 use MyVendor\Cms\Auth\CsrfTokenInterface;
 use MyVendor\Cms\Auth\UserInterface;
+use MyVendor\Cms\Http\CsrfTokenField;
 use MyVendor\Cms\Renderer\Exception\InvalidResourcePathException;
 use Override;
 use Qiq\Template;
@@ -38,6 +39,7 @@ final readonly class CmsQiqRenderer implements RenderInterface
         private Template $template,
         private AuthSessionInterface $session,
         private CsrfTokenInterface $csrf,
+        private CsrfTokenField $csrfTokenField,
     ) {
     }
 
@@ -124,7 +126,7 @@ final readonly class CmsQiqRenderer implements RenderInterface
         return $ro->view;
     }
 
-    /** @return array{cssLevel: int, cssLinks: array<int, string>, user: UserInterface, csrfToken: string} */
+    /** @return array{cssLevel: int, cssLinks: array<int, string>, user: UserInterface, csrfToken: string, csrfTokenField: string} */
     private function commonVars(ResourceObject $ro): array
     {
         $query = $ro->uri->query;
@@ -153,6 +155,7 @@ final readonly class CmsQiqRenderer implements RenderInterface
             'cssLinks' => $links,
             'user' => $this->session->currentUser(),
             'csrfToken' => $this->csrf->issue(),
+            'csrfTokenField' => $this->csrfTokenField->name,
         ];
     }
 }

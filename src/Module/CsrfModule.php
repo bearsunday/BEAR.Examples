@@ -10,6 +10,7 @@ use MyVendor\Cms\Attribute\SameOrigin;
 use MyVendor\Cms\Auth\CsrfTokenInterface;
 use MyVendor\Cms\Auth\SessionCsrfToken;
 use MyVendor\Cms\Http\AllowedOrigin;
+use MyVendor\Cms\Http\CsrfTokenField;
 use MyVendor\Cms\Http\RequestBodyTokenInterface;
 use MyVendor\Cms\Http\RequestOriginInterface;
 use MyVendor\Cms\Http\ServerRequestBodyToken;
@@ -23,8 +24,10 @@ use Ray\Di\Scope;
 /** @SuppressWarnings("PHPMD.CouplingBetweenObjects") composition root */
 final class CsrfModule extends AbstractModule
 {
-    public function __construct(private readonly string|null $allowedOrigin = null)
-    {
+    public function __construct(
+        private readonly string|null $allowedOrigin = null,
+        private readonly string $csrfTokenField = '_csrf_token',
+    ) {
         parent::__construct();
     }
 
@@ -32,6 +35,7 @@ final class CsrfModule extends AbstractModule
     protected function configure(): void
     {
         $this->bind(AllowedOrigin::class)->toInstance(new AllowedOrigin($this->allowedOrigin));
+        $this->bind(CsrfTokenField::class)->toInstance(new CsrfTokenField($this->csrfTokenField));
 
         $this->bind(RequestOriginInterface::class)->to(ServerRequestOrigin::class);
         $this->bindInterceptor(

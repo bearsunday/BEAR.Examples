@@ -11,12 +11,14 @@ use function is_string;
 /** @SuppressWarnings("PHPMD.Superglobals") Body adapter boundary. */
 final readonly class ServerRequestBodyToken implements RequestBodyTokenInterface
 {
-    public const string FIELD_NAME = '_csrf_token';
+    public function __construct(private CsrfTokenField $field)
+    {
+    }
 
     #[Override]
     public function submitted(): string|null
     {
-        $value = $_POST[self::FIELD_NAME] ?? null;
+        $value = $_POST[$this->field->name] ?? null;
         if (! is_string($value) || $value === '') {
             return null;
         }
