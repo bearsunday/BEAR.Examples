@@ -8,6 +8,7 @@ use BEAR\Resource\Exception\JsonSchemaException;
 use BEAR\Resource\JsonSchema\JsonSchemaError;
 use BEAR\Resource\JsonSchemaRequestExceptionHandlerInterface;
 use BEAR\Resource\ResourceObject;
+use JsonException;
 use MyVendor\Cms\Exception\ValidationException;
 use Override;
 use stdClass;
@@ -77,7 +78,17 @@ final readonly class JsonSchemaRequestExceptionHandler implements JsonSchemaRequ
             return null;
         }
 
-        $schema = json_decode($schemaJson, false, 512, JSON_THROW_ON_ERROR);
+        // Symmetry with the missing-file branch above — a corrupt schema
+        // file falls back to the validator's default message rather than
+        // crashing every form validation. The validator already passed
+        // the schema once (we're inside the failure handler), so this
+        // mostly catches a file mutated between interceptor and handler.
+        try {
+            $schema = json_decode($schemaJson, false, 512, JSON_THROW_ON_ERROR);
+        } catch (JsonException) {
+            return null;
+        }
+
         assert($schema instanceof stdClass || $schema === null);
 
         return $schema instanceof stdClass ? $schema : null;

@@ -89,8 +89,8 @@ final class AppModule extends AbstractAppModule
         $this->bind(UserInterface::class)->toProvider(CurrentUserProvider::class);
         $this->bind(AdminUserInterface::class)->toProvider(AdminUserProvider::class);
 
-        // Cross-origin defence for unsafe Page/Admin verbs. Same-origin
-        // gate today; #[CsrfToken] joins this module in PR-B2.
+        // Cross-origin defence for unsafe Page/Admin verbs: same-origin
+        // gate (#[SameOrigin]) and synchroniser-token gate (#[CsrfToken]).
         $this->install(new CsrfModule());
     }
 }
