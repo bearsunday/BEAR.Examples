@@ -14,6 +14,7 @@ use MyVendor\Cms\Entity\Article as ArticleEntity;
 use MyVendor\Cms\Entity\Author;
 use MyVendor\Cms\Entity\Category;
 use MyVendor\Cms\Entity\Tag;
+use MyVendor\Cms\Exception\ValidationFailedException;
 use MyVendor\Cms\Query\ArticleQueryInterface;
 use MyVendor\Cms\Query\AuthorQueryInterface;
 use MyVendor\Cms\Query\CategoryQueryInterface;
@@ -120,6 +121,11 @@ class Article extends ResourceObject
         } catch (JsonSchemaException | ParameterException $e) {
             $this->code = 422;
             $this->body = $this->formBody($article, $values, [$e->getMessage()], null);
+
+            return $this;
+        } catch (ValidationFailedException $e) {
+            $this->code = 422;
+            $this->body = $this->formBody($article, $values, $this->flattenErrors($e->errors()), null);
 
             return $this;
         }
@@ -229,6 +235,23 @@ class Article extends ResourceObject
             'selectedTagIds' => $this->normaliseTagIds($values['tagIds'] ?? []),
             'saved' => $saved,
         ];
+    }
+
+    /**
+     * @param array<string, list<string>> $errors
+     *
+     * @return list<string>
+     */
+    private function flattenErrors(array $errors): array
+    {
+        $messages = [];
+        foreach ($errors as $field => $fieldErrors) {
+            foreach ($fieldErrors as $error) {
+                $messages[] = $field . ': ' . $error;
+            }
+        }
+
+        return $messages;
     }
 
     /** @return array<string, mixed> */

@@ -6,7 +6,10 @@ namespace MyVendor\Cms\Auth;
 
 use League\OAuth2\Client\Provider\Google;
 use League\OAuth2\Client\Provider\GoogleUser;
+use MyVendor\Cms\Exception\OAuthConfigurationException;
 use MyVendor\Cms\Exception\UnexpectedAuthProviderResponseException;
+
+use function getenv;
 
 /**
  * Real Google OAuth provider.
@@ -24,6 +27,7 @@ final class GoogleAuthProvider implements AuthInterface
 
     public function getAuthorizationUrl(string|null $state = null): string
     {
+        $this->assertConfigured();
         $options = [
             'scope' => ['openid', 'email', 'profile'],
         ];
@@ -36,6 +40,7 @@ final class GoogleAuthProvider implements AuthInterface
 
     public function authenticate(string $code, string $state): AuthenticatedUser
     {
+        $this->assertConfigured();
         $token = $this->provider->getAccessToken('authorization_code', ['code' => $code]);
         $user = $this->provider->getResourceOwner($token);
         if (! $user instanceof GoogleUser) {
@@ -47,5 +52,18 @@ final class GoogleAuthProvider implements AuthInterface
             email: (string) $user->getEmail(),
             name: (string) $user->getName(),
         );
+    }
+
+    private function assertConfigured(): void
+    {
+        if (
+            (string) getenv('GOOGLE_CLIENT_ID') !== ''
+            && (string) getenv('GOOGLE_CLIENT_SECRET') !== ''
+            && (string) getenv('GOOGLE_REDIRECT_URI') !== ''
+        ) {
+            return;
+        }
+
+        throw new OAuthConfigurationException();
     }
 }

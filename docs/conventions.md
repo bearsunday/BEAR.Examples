@@ -34,7 +34,7 @@ then the code/docs follow.
 | Module composition | `FakeModule` provides the binding; `TestModule` *installs* `FakeModule`. Two-stage so prod/cli/fake/test contexts can compose differently |
 | Resource placement | `src/Resource/App/<Class>.php` — every URI is a class. No `App/Index.php` unless a "/" entry-point is meaningful |
 | Read/Write split | Always two interfaces per entity: `<Entity>QueryInterface` (Read) and `<Entity>CommandInterface` (Write). Both live in `src/Query/` — the interface name suffix carries the Read/Write distinction so `MediaQuerySqlModule` can scan a single directory. Never mix Read and Write methods on the same interface |
-| MediaQuery result placement | `src/Result/*` contains typed Ray.MediaQuery result objects returned from `src/Query/*Interface` methods. These are not domain entities; they wrap query execution context or DML metadata. For read queries, treat them as query-local projections: typed read-side views assembled from a specific `#[DbQuery]` result, not controller/service helpers. Keep the directory dedicated to query results so `src/Query` and `src/Result` stay a readable pair |
+| MediaQuery result placement | `src/Result/*` contains typed Ray.MediaQuery result objects returned from `src/Query/*Interface` methods. These are not domain entities; they wrap query execution context or DML metadata. For read queries, treat them as query-local projections: typed read-side views assembled from a specific `#[DbQuery]` result, not controller/service helpers. They may expose named `Generator` traversals (for example `ArticleSelection::published()`) or disposable read models for one presentation concern (for example `ArticleFeedItem`). Keep the directory dedicated to query results so `src/Query` and `src/Result` stay a readable pair |
 
 ### Variation resources
 
@@ -276,7 +276,7 @@ educational value is in seeing each pattern *applied where it fits*.
 
 | Endpoint | Shape | Validation | Rationale |
 |---|---|---|---|
-| `Article::onPost` | `ArticleCreateInput` DTO | `#[JsonSchema(schema: 'write_response.json', params: 'article_create.json')]` | 9 fields including `tagIds` list — flat signature would be unreadable; cohere as a struct |
+| `Article::onPost` | `ArticleCreateInput` DTO | `#[JsonSchema(schema: 'write_response.json', params: 'article_create.json')]` + `#[Validate(ArticleValidator::class, 'create')]` | 9 fields including `tagIds` list — flat signature would be unreadable; cohere as a struct. The validator handles DB-backed invariants such as slug uniqueness |
 | `Article::onPut`  | `ArticleUpdateInput` DTO | `#[JsonSchema(schema: 'write_response.json', params: 'article_update.json')]` | 7 fields including tri-state `tagIds` (`null`/`[]`/list with replace semantics) — tri-state needs typed carrier |
 | `Auth::onPost`    | `AuthExchangeInput` DTO  | `#[JsonSchema(schema: 'auth_response.json', params: 'auth_exchange.json')]` | OAuth `code`/`state` is a meaningful struct, not two unrelated scalars; readability over field count |
 | `Author::onPost`  | scalar | `#[JsonSchema(params: 'author_create.json')]` | 3 trivial fields; method signature *is* the contract |
@@ -322,6 +322,23 @@ coalesce `null` to your intended default (`[]` for create-style,
 id from the OAuth provider) rather than the shared
 `write_response.json` (integer DB id) — pick the response schema by
 what the endpoint actually returns, not by template.
+
+#### Application validation with injected services
+
+Use parameter-level `#[Validate(Service::class, 'method')]` when a
+Resource method needs validation that depends on injected collaborators
+or application state, for example uniqueness checks. The validator
+method receives the already-materialised argument and returns
+`ValidationErrors`; it does not throw for expected violations.
+`ValidationInterceptor` merges all such errors and raises
+`ValidationFailedException` (422) only after the validation pass.
+
+Current use: `Article::onPost` validates `ArticleCreateInput` with
+`ArticleValidator::create()`, which checks `ArticleQueryInterface::bySlug()`
+and reports `slug: This slug is already in use.`. `Page/Admin/Article`
+catches the same exception and re-renders the form with the field
+messages. Keep JSON Schema responsible for input shape/range, and keep
+`#[Validate]` for stateful invariants that schemas cannot know.
 
 #### Decision rule (fit-driven)
 

@@ -41,7 +41,7 @@ demonstrated from each top-level resource.)
 
 | Surface | Resources | Verbs |
 |---------|-----------|-------|
-| Public read-only | `Index`, `Article`, `ArticleList`, `Author`, `AuthorList`, `Category`, `CategoryList`, `Tag`, `TagList` | GET only |
+| Public read-only | `Index`, `Article`, `ArticleList`, `ArticleFeed`, `Author`, `AuthorList`, `Category`, `CategoryList`, `Tag`, `TagList` | GET only |
 | Admin write | `Page/Admin/Article` (create / edit form) | GET, POST |
 | Admin write | `Page/Admin/ArticleDelete` (confirm form) | GET, POST |
 | Admin read | `Page/Admin/ArticleList` | GET only |
@@ -84,6 +84,8 @@ variation that demonstrates `BEAR.Streamer` without changing canonical
 | `Auth` resource | Auth flow shape with response schema |
 | `AuthSessionInterface` | Session-backed current-user, OAuth state, login, and logout boundary |
 | `AdminUserInterface` | Protects `Page/Admin/*` resources and carries author ownership |
+| Page/Admin unauthenticated access | HTML error handler converts `UnauthenticatedException` from typed admin injection into `303 Location: /admin/login` |
+| OAuth configuration guard | Missing `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, or `GOOGLE_REDIRECT_URI` returns local `503` with `Google OAuth is not configured.` instead of redirecting to a broken Google URL |
 
 Note: `Page/Admin/*` is now behind typed `AdminUserInterface` injection. The remaining auth follow-up is CSRF protection for admin form posts (see Deferred §).
 
@@ -138,6 +140,8 @@ Patterns the codebase deliberately demonstrates (each appears in at least one pl
 | Tri-state optional collection input | `tagIds` on `ArticleCreateInput` / `ArticleUpdateInput` |
 | Ray.MediaQuery pager | `ArticleQueryInterface::list()` / `PagesInterface` |
 | Ray.MediaQuery SELECT result class | `ArticleSelectionQueryInterface::list()` / `ArticleSelection` |
+| Named Generator traversal | `ArticleSelection::published()` yields published `Article` rows without template-side status checks |
+| CQRS query-side projection | `ArticleSelection::feed()` yields disposable `ArticleFeedItem` read models for `Page/ArticleFeed` |
 | Ray.MediaQuery DML metadata result | `Samples\ArticleAffectedRowsCommandInterface` / `AffectedRows` |
 | Natural-key `by<Key>` post-INSERT lookup | `Article::onPost` → `bySlug`; same idea for `byEmail` / `byFilename` |
 | Manual `_embedded` build for ID-after-fetch | `Article::onGet` (`author`, `category`, `tagList`) |
@@ -188,7 +192,7 @@ Drawn from `architecture.md` "What was intentionally not built", `journal/handof
 | # | Item | Why deferred | Recovery / next step |
 |---|------|--------------|----------------------|
 | D1 | `#[CacheableResponse]` on list reads + `#[Purge]` on writes (PR-C2) | **Partial — landed for non-embedded list reads.** `Articles` / `Categories` carry class-level `#[CacheableResponse]`; `Article` / `Category` writes carry `#[Purge(uri: 'app://self/{collection}')]`. Two intentional exclusions: (1) entity resources skip class-level caching because `DonutCommandInterceptor` re-runs `onGet` on deleted entities and mutates `204 → 404`; (2) `Tags` skips caching because it is embedded in `Article` via `#[Embed(rel: 'tagList')]` — when the html context materialises the embed, the donut pipeline calls `(string) $ro` and `CmsQiqRenderer` has no App-template, throws, and breaks the ETag chain. Note: `#[Purge(uri)]` invalidates the canonical URI only, not query-string variants (e.g. `?categoryId=3`) | Pipeline verified in `tests/Resource/App/CacheTest.php` (asserts `try-donut-view` / `put-donut` / `save-etag` / `purge-query-repository` in `RepositoryLogger`). Future follow-ups: per-query-string purge keys and entity-level caching once the delete-mutation upstream behavior is clarified |
-| D2 | ~~Auth boundary for `Page/Admin/*`~~ | Implemented with typed `UserInterface` / `AdminUserInterface` providers, session-backed OAuth login, and author-scoped admin ownership | Remaining follow-up: CSRF protection |
+| D2 | ~~Auth boundary for `Page/Admin/*`~~ | Implemented with typed `UserInterface` / `AdminUserInterface` providers, session-backed OAuth login, author-scoped admin ownership, unauthenticated redirect to `/admin/login`, and local OAuth-missing configuration error | Remaining follow-up: CSRF protection |
 | D3 | Async Docker CI smoke | Runtime containers exist, but CI does not yet build ext-parallel and run `composer parallel:demo` | Add a focused GitHub Actions job once image build time and caching are acceptable |
 | D4 | Write-side CLI + read CLI for the other entities | `bear-cli-gen` so far only generated `article-show` / `article-list`; no write commands yet | Add `#[Cli]` to onPost/onPut/onDelete and to the missing read methods; `composer cli` regenerates |
 | D5 | Real Google OAuth integration test | Needs creds + callback URL | env-gated test that skips unless `GOOGLE_CLIENT_ID` is set |

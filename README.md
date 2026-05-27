@@ -6,10 +6,10 @@ MyVendor.Cms is a reference CMS built on
 [BEAR.Sunday](https://bearsunday.github.io/).
 
 It demonstrates HAL+JSON App resources over Ray.MediaQuery, Qiq Page
-resources for reader-facing HTML, and a minimal Article admin. The domain
-has five entities: Article, Category, Tag, Author, and Media. Every App
-resource has read/write coverage where meaningful, plus an Auth resource
-for the Google OAuth flow.
+resources for reader-facing HTML, query-side projections for alternate read
+concerns, and a minimal Article admin. The domain has five entities:
+Article, Category, Tag, Author, and Media. Every App resource has read/write
+coverage where meaningful, plus an Auth resource for the Google OAuth flow.
 
 ## Background
 
@@ -33,7 +33,8 @@ pipeline:
    [var/json_schema/](var/json_schema) is derived from the fake, not
    decided up front.
 4. **Read path** — readonly entities (`src/Entity/`), `#[DbQuery]`
-   interfaces (`src/Query/`), and `tests/Fake/FakeSqlQuery.php`.
+   interfaces (`src/Query/`), query result projections (`src/Result/`),
+   and `tests/Fake/FakeSqlQuery.php`.
 5. **Write path** — Command interfaces (`src/Query/*CommandInterface.php`)
    fronted by Resource `onPost`, `onPut`, and `onDelete` methods.
 6. **Real DB** — Doctrine Migrations and the seed script load the same fake
@@ -57,6 +58,8 @@ In scope:
 - App resources with HAL links/embeds, JSON Schema validation, and
   Ray.MediaQuery read/write contracts.
 - Page resources using Qiq for public HTML and a small local Article admin.
+- CQRS query-side projections such as `ArticleFeedItem`, where the same SQL
+  rows become a different read model for a different display concern.
 - Fake/real DB parity, deterministic semantic data, and MySQL/SQLite setup.
 - Read/write naming conventions, SQL filename conventions, and Resource
   body/status patterns.
@@ -225,9 +228,9 @@ composer doc
 
 The HAL JSON API is served by `composer serve:api` on
 `http://127.0.0.1:8080`. Page resources are served by `composer serve` on
-`http://127.0.0.1:8081/`. Public pages include `/`, `/articlelist`, and
-`/article?id=1`; the local admin sign-in starts at `/admin/login` and lands
-on `/admin/index`.
+`http://127.0.0.1:8081/`. Public pages include `/`, `/articlelist`,
+`/articlefeed`, and `/article?id=1`; the local admin sign-in starts at
+`/admin/login` and lands on `/admin/index`.
 
 ## Runtime Contexts
 

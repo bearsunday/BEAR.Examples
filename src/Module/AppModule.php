@@ -65,6 +65,7 @@ final class AppModule extends AbstractAppModule
             $this->appMeta->appDir . '/var/json_schema',
             $this->appMeta->appDir . '/var/json_validate',
         ));
+        $this->install(new ValidationModule());
 
         // Domain-layer services (e.g. injected into Entity via FetchInjectionFactory).
         // toProvider, not toInstance: CommonMarkConverter wires Closures internally

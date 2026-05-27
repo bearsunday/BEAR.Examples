@@ -53,6 +53,36 @@ domain entity method や controller / service helper ではありません。
 `ArticleFactory` で row を hydrate し、`PostQueryContext::$rows` に hydrated
 `Article` rows を入れ、`ArticleSelection::fromContext()` を呼びます。
 
+`ArticleSelection::published()` は basic な iterator 例です。戻り値は
+`Generator` で、published な `Article` row だけを yield します。caller は
+template に status 判定を書く代わりに、名前付き traversal を選べます。
+
+```php
+foreach ($articles->published() as $article) {
+    // published Article を描画する
+}
+```
+
+`page://self/articlefeed` は CQRS projection の応用例です。同じ SQL に基づく
+`ArticleSelection` を使いますが、`ArticleSelection::feed()` は `Article`
+entity ではなく `ArticleFeedItem` read model を yield します。feed item は
+この表示関心のためだけの使い捨て query-side projection で、article URL、
+summary、published date label、`5 minutes ago` のような relative
+`postedAgoLabel` を持ちます。
+
+template は描画だけに集中できます。
+
+```php
+foreach ($articles->feed() as $item) {
+    // $item は Article ではなく ArticleFeedItem
+}
+```
+
+目的は `src/Resource/App/Variations/` route を増やすことではありません。あの
+route 群は Article GET の実装スタイル比較用です。`ArticleFeed` は、同じ rows
+に対して別の read concern があれば、別の query-side projection を作れることを
+示します。
+
 ## Affected Rows
 
 `ArticleAffectedRowsCommandInterface` は DML metadata result のサンプルです。

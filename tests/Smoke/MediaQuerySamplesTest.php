@@ -4,16 +4,20 @@ declare(strict_types=1);
 
 namespace MyVendor\Cms\Smoke;
 
+use DateTimeImmutable;
+use Generator;
 use MyVendor\Cms\Entity\Article;
 use MyVendor\Cms\Injector;
 use MyVendor\Cms\Query\ArticleCommandInterface;
 use MyVendor\Cms\Query\ArticleQueryInterface;
 use MyVendor\Cms\Query\ArticleSelectionQueryInterface;
 use MyVendor\Cms\Query\Samples\ArticleAffectedRowsCommandInterface;
+use MyVendor\Cms\Result\ArticleFeedItem;
 use PHPUnit\Framework\TestCase;
 use Ray\AuraSqlModule\Pagerfanta\Page;
 use Ray\MediaQuery\PagesInterface;
 
+use function count;
 use function iterator_to_array;
 use function uniqid;
 
@@ -41,12 +45,29 @@ final class MediaQuerySamplesTest extends TestCase
 
         $this->assertGreaterThan(0, $articles->count());
         $this->assertNotSame([], $articles->titles());
-        $this->assertSame($articles->count(), $articles->published()->count());
+        $this->assertInstanceOf(Generator::class, $articles->published());
+        $published = iterator_to_array($articles->published(), false);
+        $this->assertSame($articles->count(), count($published));
 
         $first = $articles->first();
         $this->assertInstanceOf(Article::class, $first);
         $this->assertTrue($first->isPublished());
         $this->assertContainsOnlyInstancesOf(Article::class, iterator_to_array($articles));
+    }
+
+    public function testSelectResultClassProjectsFeedItems(): void
+    {
+        $query = Injector::getInstance('test-hal-api-app')->getInstance(ArticleSelectionQueryInterface::class);
+
+        $articles = $query->list();
+        $feed = $articles->feed(new DateTimeImmutable('2026-11-23T16:46:00Z'));
+
+        $this->assertInstanceOf(Generator::class, $feed);
+        $items = iterator_to_array($feed, false);
+        $this->assertNotSame([], $items);
+        $this->assertContainsOnlyInstancesOf(ArticleFeedItem::class, $items);
+        $this->assertSame('5 minutes ago', $items[0]->postedAgoLabel);
+        $this->assertSame('2026-11-23', $items[0]->publishedAtLabel);
     }
 
     public function testAffectedRowsSampleReturnsDmlMetadata(): void

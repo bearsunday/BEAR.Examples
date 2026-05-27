@@ -39,7 +39,23 @@ Article の後は、小さな resource family を読んで同じ規約を確認�
 - `Media.php` は upload 的な data と filename lookup。
 - `Auth.php` は CRUD 形ではない action-style resource。
 
-## Pass 4: Runtime Context
+## Pass 4: Query Projection
+
+canonical な entity response ではなく、CQRS の read-side projection を見たいときは
+MediaQuery result の例を読みます。
+
+1. `src/Query/ArticleSelectionQueryInterface.php` — array ではなく型付き result
+   object を返す `#[DbQuery]` method。
+2. `src/Result/ArticleSelection.php` — hydrate 済み `Article` rows を包み、
+   `published()` や `feed()` のような named `Generator` traversal を公開します。
+3. `src/Result/ArticleFeedItem.php` — feed 表示関心のための使い捨て read model
+   (`postedAgoLabel`、date label、URL、summary)。
+4. `src/Resource/Page/ArticleFeed.php` と `templates/Page/ArticleFeed.php` —
+   status / null 判定なしで projection を描画する Page template。
+5. `docs/media-query-samples.md` — pager、SELECT result、Generator、projection、
+   AffectedRows sample の説明。
+
+## Pass 5: Runtime Context
 
 最後に composition と test support を読みます。
 
@@ -55,6 +71,7 @@ Article の後は、小さな resource family を読んで同じ規約を確認�
 | Resource layer | `src/Resource/App/*` | HTTP method の形、status code、body construction、`#[JsonSchema]`、`#[Link]`、`#[Embed]`。 |
 | Entity layer | `src/Entity/*` | immutable な domain data、computed field、data の近くに置くべき振る舞い。 |
 | Query layer | `src/Query/*` | Read/Write split、method 名、attribute が PHP method と SQL file をどう対応させるか。 |
+| Result layer | `src/Result/*` | 型付き MediaQuery result、named Generator traversal、query-side projection。 |
 | SQL layer | `var/db/sql/*` | column alias、parameter 名、entity/resource が受け取る row shape。 |
 | Composition | `src/Module/*` | production、fake、test の context-specific wiring。 |
 | Tests and fakes | `tests/*` | executable contract。fake は便利な data を返すだけでなく、意味を保つ必要があります。 |
@@ -67,6 +84,8 @@ Article の後は、小さな resource family を読んで同じ規約を確認�
   は Article GET variation set。
 - [`src/Resource/App/Variations/README.ja.md`](../../src/Resource/App/Variations/README.ja.md)
   は日本語版。
+- [`docs/media-query-samples.md`](../media-query-samples.md) は MediaQuery pager、
+  型付き result、Generator、projection、DML metadata sample。
 - [`docs/conventions.md`](../conventions.md) は命名や shape のルールを確認する場所。
 
 ## 読むときのルール

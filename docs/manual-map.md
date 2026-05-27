@@ -152,7 +152,7 @@ single manual chapter.
 | Input DTO via `#[Input]` contrasted with scalar resource params | [src/Input/ArticleCreateInput.php](../src/Input/ArticleCreateInput.php), [src/Resource/App/Author.php](../src/Resource/App/Author.php) |
 | Tri-state optional collection input (`null`, empty list, list) | [src/Input/ArticleCreateInput.php](../src/Input/ArticleCreateInput.php), [src/Resource/App/Article.php](../src/Resource/App/Article.php) |
 | MediaQuery pager / `PagesInterface` | [src/Query/ArticleQueryInterface.php](../src/Query/ArticleQueryInterface.php) |
-| MediaQuery SELECT result class | [src/Query/ArticleSelectionQueryInterface.php](../src/Query/ArticleSelectionQueryInterface.php) |
+| MediaQuery SELECT result class, named Generator traversal, and feed projection | [src/Query/ArticleSelectionQueryInterface.php](../src/Query/ArticleSelectionQueryInterface.php), [src/Result/ArticleSelection.php](../src/Result/ArticleSelection.php), [src/Result/ArticleFeedItem.php](../src/Result/ArticleFeedItem.php), [src/Resource/Page/ArticleFeed.php](../src/Resource/Page/ArticleFeed.php) |
 | MediaQuery DML metadata return | [src/Query/Samples/ArticleAffectedRowsCommandInterface.php](../src/Query/Samples/ArticleAffectedRowsCommandInterface.php) |
 | Natural-key post-insert lookup | [src/Resource/App/Article.php](../src/Resource/App/Article.php), [src/Query/ArticleQueryInterface.php](../src/Query/ArticleQueryInterface.php) |
 | Manual `_embedded` build for ID-after-fetch cases | [src/Resource/App/Article.php](../src/Resource/App/Article.php) |

@@ -34,7 +34,7 @@
 | Module 構成 | `FakeModule` が binding を提供し、`TestModule` が `FakeModule` を *install* します。prod / cli / fake / test の各 context が異なる構成を取れるよう二段階にしています |
 | Resource 配置 | `src/Resource/App/<Class>.php` — すべての URI が class です。"/" entry-point に意味がない限り `App/Index.php` は作りません |
 | Read/Write 分離 | entity ごとに必ず 2 つの interface を作ります: `<Entity>QueryInterface` (Read) と `<Entity>CommandInterface` (Write)。両方とも `src/Query/` に置き、interface 名の suffix で Read/Write の区別を担うことで、`MediaQuerySqlModule` が単一ディレクトリをスキャンできます。Read と Write を同じ interface に混在させてはいけません |
-| MediaQuery result 配置 | `src/Result/*` は `src/Query/*Interface` method から返される型付き Ray.MediaQuery result object の置き場です。これは domain entity ではなく、query execution context や DML metadata を包む object です。read query では query-local projection、つまり特定の `#[DbQuery]` 結果から組み立てる型付き read-side view として扱います。controller / service helper ではありません。このディレクトリは query result 専用に保ち、`src/Query` と `src/Result` が読みやすい対になるようにします |
+| MediaQuery result 配置 | `src/Result/*` は `src/Query/*Interface` method から返される型付き Ray.MediaQuery result object の置き場です。これは domain entity ではなく、query execution context や DML metadata を包む object です。read query では query-local projection、つまり特定の `#[DbQuery]` 結果から組み立てる型付き read-side view として扱います。controller / service helper ではありません。`ArticleSelection::published()` のような named `Generator` traversal や、`ArticleFeedItem` のように 1 つの表示関心に閉じた使い捨て read model を公開して構いません。このディレクトリは query result 専用に保ち、`src/Query` と `src/Result` が読みやすい対になるようにします |
 
 ### Variation resources
 
@@ -260,7 +260,7 @@ endpoint は Resource 境界で DTO、別の endpoint は名前付き scalar par
 
 | Endpoint | Shape | Validation | 理由 |
 |---|---|---|---|
-| `Article::onPost` | `ArticleCreateInput` DTO | `#[JsonSchema(schema: 'write_response.json', params: 'article_create.json')]` | `tagIds` list を含む 9 フィールド — flat な signature では読めない。struct としてまとめる |
+| `Article::onPost` | `ArticleCreateInput` DTO | `#[JsonSchema(schema: 'write_response.json', params: 'article_create.json')]` + `#[Validate(ArticleValidator::class, 'create')]` | `tagIds` list を含む 9 フィールド — flat な signature では読めない。struct としてまとめる。validator は slug uniqueness のような DB-backed invariant を扱う |
 | `Article::onPut`  | `ArticleUpdateInput` DTO | `#[JsonSchema(schema: 'write_response.json', params: 'article_update.json')]` | tri-state `tagIds` を含む 7 フィールド (`null`/`[]`/list で replace semantics) — tri-state は型付きの carrier が必要 |
 | `Auth::onPost`    | `AuthExchangeInput` DTO  | `#[JsonSchema(schema: 'auth_response.json', params: 'auth_exchange.json')]` | OAuth の `code`/`state` は意味のある struct で、無関係な 2 つの scalar ではない。フィールド数より読みやすさを優先 |
 | `Author::onPost`  | scalar | `#[JsonSchema(params: 'author_create.json')]` | trivial な 3 フィールド。メソッド signature *が* contract |
@@ -302,6 +302,22 @@ parameter を `mixed` で宣言し、明示的に型チェックし、不正な 
 `Auth::onPost` は共有の `write_response.json` (整数 DB id) ではなく専用の
 `auth_response.json` (OAuth provider 由来の string subject id) を使います —
 response schema は endpoint が実際に何を返すかで選び、テンプレートで選ばないでください。
+
+#### injected service を使う application validation
+
+Resource method が injected collaborator や application state に依存する検証
+(例: uniqueness check) を必要とする場合は、parameter-level の
+`#[Validate(Service::class, 'method')]` を使います。validator method は
+materialize 済みの引数を受け取り、期待される違反については throw せず
+`ValidationErrors` を返します。`ValidationInterceptor` がそれらを merge し、
+validation pass の後にだけ `ValidationFailedException` (422) を投げます。
+
+現在の適用: `Article::onPost` は `ArticleCreateInput` を
+`ArticleValidator::create()` で検証します。これは
+`ArticleQueryInterface::bySlug()` で slug 重複を確認し、
+`slug: This slug is already in use.` を報告します。`Page/Admin/Article` は同じ
+例外を catch し、field message と共に form を再描画します。入力 shape/range は
+JSON Schema、schema が知り得ない stateful invariant は `#[Validate]` に分けます。
 
 #### 判断ルール (fit-driven)
 

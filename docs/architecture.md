@@ -15,6 +15,8 @@ JSON Schema (constraints derived from observation, not decided)
    ↓
 BDR code — readonly entities + #[DbQuery] interfaces
    ↓
+Query result projections — typed read-side views / named Generator traversals
+   ↓
 FakeSqlQuery (in-memory) — full Read+Write stack runs without a DB
    ↓
 Doctrine Migrations + seed — real schema + same seed data
@@ -38,11 +40,19 @@ See [BDR_PATTERN-ja.md](https://github.com/ray-di/Ray.MediaQuery/blob/1.x/BDR_PA
 | Domain    | `src/Entity/*`       | Final readonly classes: invariant data             |
 | Resource  | `src/Query/*`        | `#[DbQuery]` Read interfaces → entity              |
 |           | `src/Query/*`        | `#[DbQuery]` Write interfaces → `void`             |
+|           | `src/Result/*`       | Typed MediaQuery results and CQRS read-side projections |
 
 Factories are not used here: the simplest path is `FetchNewInstance` via
 PDO::FETCH_FUNC, which constructs the entity positionally from the SELECT
 column order. SQL files in `var/db/sql/` therefore project columns in the
 exact order each entity's `__construct` expects.
+
+`src/Result/*` is where query-specific read models live when an entity is not
+the shape the caller wants. `ArticleSelection` wraps the hydrated Article rows,
+`published()` exposes a named Generator traversal, and `feed()` yields
+`ArticleFeedItem` projections for `Page/ArticleFeed`. This keeps template
+conditionals and relative-time presentation concerns out of both SQL and the
+canonical `Article` entity.
 
 ## Read vs Write dispatch
 

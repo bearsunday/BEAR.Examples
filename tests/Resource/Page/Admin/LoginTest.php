@@ -5,7 +5,11 @@ declare(strict_types=1);
 namespace MyVendor\Cms\Resource\Page\Admin;
 
 use MyVendor\Cms\AbstractPageTestCase;
+use MyVendor\Cms\Auth\AuthenticatedUser;
+use MyVendor\Cms\Auth\AuthInterface;
+use MyVendor\Cms\Exception\OAuthConfigurationException;
 use MyVendor\Cms\Exception\UnauthenticatedException;
+use MyVendor\Cms\Fake\FakeAuthSession;
 
 final class LoginTest extends AbstractPageTestCase
 {
@@ -31,6 +35,31 @@ final class LoginTest extends AbstractPageTestCase
 
         $admin = $this->resource->get('page://self/admin/index');
         $this->assertSame(200, $admin->code);
+    }
+
+    public function testLoginShowsLocalErrorWhenOAuthIsNotConfigured(): void
+    {
+        $ro = (new Login(
+            new class implements AuthInterface {
+                public function getAuthorizationUrl(string|null $state = null): string
+                {
+                    unset($state);
+
+                    throw new OAuthConfigurationException();
+                }
+
+                public function authenticate(string $code, string $state): AuthenticatedUser
+                {
+                    unset($code, $state);
+
+                    throw new OAuthConfigurationException();
+                }
+            },
+            new FakeAuthSession(),
+        ))->onGet();
+
+        $this->assertSame(503, $ro->code);
+        $this->assertSame('Google OAuth is not configured.', $ro->body['message']);
     }
 
     public function testCallbackRejectsInvalidState(): void

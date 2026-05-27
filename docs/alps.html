@@ -268,7 +268,7 @@ const setupModeSwitch = (switchId, graphId, otherGraphId) => {
     <div class="markdown-body">
         <h1>BEAR.Cms Reference CMS</h1>
 
-<p>ALPS profile for the BEAR.Cms App resource API. Covers articles, categories, tags, authors and media with read and write transitions.</p>
+<p>ALPS profile for the BEAR.Cms reference CMS as a whole. Covers the public HTML browsing surface, Page/Admin authentication and article management flow, and the HAL App resource API for articles, categories, tags, authors, media and auth.</p>
 
 <!-- Container for the ASDs -->
 
@@ -281,14 +281,14 @@ const setupModeSwitch = (switchId, graphId, otherGraphId) => {
     document.addEventListener('DOMContentLoaded', async function() {
         try {
             await Promise.all([
-                    renderGraph("#asd-graph-id", 'digraph application_state_diagram {  graph [    labelloc="t";    fontname="Helvetica"    label="BEAR.Cms Reference CMS";    URL="index.html" target="_parent"  ];  node [shape = box, style = "bold,filled" fillcolor="lightgray"];    Article [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>Article<br />(id)<br />(slug)<br />(title)<br />(body)<br />(excerpt)<br />(status)<br />(publishedAt)<br />(authorId)<br />(categoryId)<br />(Author)<br />(Category)<br />(Tag)<br /></td></tr></table>>,shape=box URL="#Article" target="_parent"]    ArticleList [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>ArticleList<br />(id)<br />(slug)<br />(title)<br />(excerpt)<br />(status)<br />(publishedAt)<br />(page)<br />(perPage)<br />(totalCount)<br /></td></tr></table>>,shape=box URL="#ArticleList" target="_parent"]    Author [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>Author<br />(id)<br />(name)<br />(email)<br />(bio)<br /></td></tr></table>>,shape=box URL="#Author" target="_parent"]    Category [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>Category<br />(id)<br />(slug)<br />(name)<br />(description)<br />(parentId)<br /></td></tr></table>>,shape=box URL="#Category" target="_parent"]    CategoryList [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>CategoryList<br />(id)<br />(slug)<br />(name)<br />(parentId)<br /></td></tr></table>>,shape=box URL="#CategoryList" target="_parent"]    Media [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>Media<br />(id)<br />(filename)<br />(mimeType)<br />(url)<br />(alt)<br />(width)<br />(height)<br /></td></tr></table>>,shape=box URL="#Media" target="_parent"]    Tag [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>Tag<br />(id)<br />(slug)<br />(name)<br /></td></tr></table>>,shape=box URL="#Tag" target="_parent"]    TagList [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>TagList<br />(id)<br />(slug)<br />(name)<br /></td></tr></table>>,shape=box URL="#TagList" target="_parent"]    Article -> Article [label = <doUpdateArticle (idempotent)> URL="#doUpdateArticle" target="_parent" fontsize=13 class="doUpdateArticle" penwidth=1.5];    Article -> ArticleList [label=<<table border="0"><tr><td align="left" href="#doDeleteArticle" tooltip="doDeleteArticle (idempotent)" >doDeleteArticle (idempotent)</td></tr><tr><td align="left" href="#goArticleList" tooltip="goArticleList (safe)" >goArticleList (safe)</td></tr></table>> fontsize=13];    Article -> Author [label = <goAuthor (safe)> URL="#goAuthor" target="_parent" fontsize=13 class="goAuthor" penwidth=1.5];    Article -> Category [label = <goCategory (safe)> URL="#goCategory" target="_parent" fontsize=13 class="goCategory" penwidth=1.5];    ArticleList -> Article [label=<<table border="0"><tr><td align="left" href="#doCreateArticle" tooltip="doCreateArticle (unsafe)" >doCreateArticle (unsafe)</td></tr><tr><td align="left" href="#goArticle" tooltip="goArticle (safe)" >goArticle (safe)</td></tr></table>> fontsize=13];    Author -> ArticleList [label = <goArticleList (safe)> URL="#goArticleList" target="_parent" fontsize=13 class="goArticleList" penwidth=1.5];    Author -> Author [label = <doUpdateAuthor (idempotent)> URL="#doUpdateAuthor" target="_parent" fontsize=13 class="doUpdateAuthor" penwidth=1.5];    Category -> ArticleList [label = <goArticleList (safe)> URL="#goArticleList" target="_parent" fontsize=13 class="goArticleList" penwidth=1.5];    Category -> Category [label = <doUpdateCategory (idempotent)> URL="#doUpdateCategory" target="_parent" fontsize=13 class="doUpdateCategory" penwidth=1.5];    Category -> CategoryList [label=<<table border="0"><tr><td align="left" href="#doDeleteCategory" tooltip="doDeleteCategory (idempotent)" >doDeleteCategory (idempotent)</td></tr><tr><td align="left" href="#goCategoryList" tooltip="goCategoryList (safe)" >goCategoryList (safe)</td></tr></table>> fontsize=13];    CategoryList -> Category [label=<<table border="0"><tr><td align="left" href="#doCreateCategory" tooltip="doCreateCategory (unsafe)" >doCreateCategory (unsafe)</td></tr><tr><td align="left" href="#goCategory" tooltip="goCategory (safe)" >goCategory (safe)</td></tr></table>> fontsize=13];    Media -> Media [label = <doDeleteMedia (idempotent)> URL="#doDeleteMedia" target="_parent" fontsize=13 class="doDeleteMedia" penwidth=1.5];    Tag -> ArticleList [label = <goArticleList (safe)> URL="#goArticleList" target="_parent" fontsize=13 class="goArticleList" penwidth=1.5];    Tag -> TagList [label=<<table border="0"><tr><td align="left" href="#doDeleteTag" tooltip="doDeleteTag (idempotent)" >doDeleteTag (idempotent)</td></tr><tr><td align="left" href="#goTagList" tooltip="goTagList (safe)" >goTagList (safe)</td></tr></table>> fontsize=13];    TagList -> Tag [label=<<table border="0"><tr><td align="left" href="#doCreateTag" tooltip="doCreateTag (unsafe)" >doCreateTag (unsafe)</td></tr><tr><td align="left" href="#goTag" tooltip="goTag (safe)" >goTag (safe)</td></tr></table>> fontsize=13];    Article [label = <Article> URL="#Article" target="_parent"]    ArticleList [label = <ArticleList> URL="#ArticleList" target="_parent"]    Author [label = <Author> URL="#Author" target="_parent"]    Category [label = <Category> URL="#Category" target="_parent"]    CategoryList [label = <CategoryList> URL="#CategoryList" target="_parent"]    Media [label = <Media> URL="#Media" target="_parent"]    Tag [label = <Tag> URL="#Tag" target="_parent"]    TagList [label = <TagList> URL="#TagList" target="_parent"]}'),
-                    renderGraph("#asd-graph-name", 'digraph application_state_diagram {  graph [    labelloc="t";    fontname="Helvetica"    label="BEAR.Cms Reference CMS";    URL="index.html" target="_parent"  ];  node [shape = box, style = "bold,filled" fillcolor="lightgray"];    Article [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>Article Detail<br />(Identifier)<br />(URL-safe Slug)<br />(Title)<br />(Article Body)<br />(Excerpt)<br />(Lifecycle Status)<br />(Published At)<br />(Author ID (FK))<br />(Category ID (FK))<br />(Author Detail)<br />(Category Detail)<br />(Tag Detail)<br /></td></tr></table>>,shape=box URL="#Article" target="_parent"]    ArticleList [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>Article List<br />(Identifier)<br />(URL-safe Slug)<br />(Title)<br />(Excerpt)<br />(Lifecycle Status)<br />(Published At)<br />(Page Number)<br />(Per-Page Count)<br />(Total Count)<br /></td></tr></table>>,shape=box URL="#ArticleList" target="_parent"]    Author [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>Author Detail<br />(Identifier)<br />(Name)<br />(Email)<br />(Biography)<br /></td></tr></table>>,shape=box URL="#Author" target="_parent"]    Category [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>Category Detail<br />(Identifier)<br />(URL-safe Slug)<br />(Name)<br />(Description)<br />(Parent Category ID (self-FK))<br /></td></tr></table>>,shape=box URL="#Category" target="_parent"]    CategoryList [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>Category List<br />(Identifier)<br />(URL-safe Slug)<br />(Name)<br />(Parent Category ID (self-FK))<br /></td></tr></table>>,shape=box URL="#CategoryList" target="_parent"]    Media [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>Media Detail<br />(Identifier)<br />(Filename)<br />(MIME Type)<br />(URL)<br />(Alt Text)<br />(Width)<br />(Height)<br /></td></tr></table>>,shape=box URL="#Media" target="_parent"]    Tag [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>Tag Detail<br />(Identifier)<br />(URL-safe Slug)<br />(Name)<br /></td></tr></table>>,shape=box URL="#Tag" target="_parent"]    TagList [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>Tag List<br />(Identifier)<br />(URL-safe Slug)<br />(Name)<br /></td></tr></table>>,shape=box URL="#TagList" target="_parent"]    Article -> Article [label = <<u>Update Article</u>> URL="#doUpdateArticle" target="_parent" fontsize=13 class="doUpdateArticle" penwidth=1.5];    Article -> ArticleList [label=<<table border="0"><tr><td align="left" href="#doDeleteArticle" tooltip="doDeleteArticle (idempotent)" ><u>Delete Article</u></td></tr><tr><td align="left" href="#goArticleList" tooltip="goArticleList (safe)" >View Article List</td></tr></table>> fontsize=13];    Article -> Author [label = <View Author> URL="#goAuthor" target="_parent" fontsize=13 class="goAuthor" penwidth=1.5];    Article -> Category [label = <View Category> URL="#goCategory" target="_parent" fontsize=13 class="goCategory" penwidth=1.5];    ArticleList -> Article [label=<<table border="0"><tr><td align="left" href="#doCreateArticle" tooltip="doCreateArticle (unsafe)" ><b><u>Create Article</u></b></td></tr><tr><td align="left" href="#goArticle" tooltip="goArticle (safe)" >View Article</td></tr></table>> fontsize=13];    Author -> ArticleList [label = <View Article List> URL="#goArticleList" target="_parent" fontsize=13 class="goArticleList" penwidth=1.5];    Author -> Author [label = <<u>Update Author</u>> URL="#doUpdateAuthor" target="_parent" fontsize=13 class="doUpdateAuthor" penwidth=1.5];    Category -> ArticleList [label = <View Article List> URL="#goArticleList" target="_parent" fontsize=13 class="goArticleList" penwidth=1.5];    Category -> Category [label = <<u>Update Category</u>> URL="#doUpdateCategory" target="_parent" fontsize=13 class="doUpdateCategory" penwidth=1.5];    Category -> CategoryList [label=<<table border="0"><tr><td align="left" href="#doDeleteCategory" tooltip="doDeleteCategory (idempotent)" ><u>Delete Category</u></td></tr><tr><td align="left" href="#goCategoryList" tooltip="goCategoryList (safe)" >View Category List</td></tr></table>> fontsize=13];    CategoryList -> Category [label=<<table border="0"><tr><td align="left" href="#doCreateCategory" tooltip="doCreateCategory (unsafe)" ><b><u>Create Category</u></b></td></tr><tr><td align="left" href="#goCategory" tooltip="goCategory (safe)" >View Category</td></tr></table>> fontsize=13];    Media -> Media [label = <<u>Delete Media</u>> URL="#doDeleteMedia" target="_parent" fontsize=13 class="doDeleteMedia" penwidth=1.5];    Tag -> ArticleList [label = <View Article List> URL="#goArticleList" target="_parent" fontsize=13 class="goArticleList" penwidth=1.5];    Tag -> TagList [label=<<table border="0"><tr><td align="left" href="#doDeleteTag" tooltip="doDeleteTag (idempotent)" ><u>Delete Tag</u></td></tr><tr><td align="left" href="#goTagList" tooltip="goTagList (safe)" >View Tag List</td></tr></table>> fontsize=13];    TagList -> Tag [label=<<table border="0"><tr><td align="left" href="#doCreateTag" tooltip="doCreateTag (unsafe)" ><b><u>Create Tag</u></b></td></tr><tr><td align="left" href="#goTag" tooltip="goTag (safe)" >View Tag</td></tr></table>> fontsize=13];    Article [label = <Article Detail> URL="#Article" target="_parent"]    ArticleList [label = <Article List> URL="#ArticleList" target="_parent"]    Author [label = <Author Detail> URL="#Author" target="_parent"]    Category [label = <Category Detail> URL="#Category" target="_parent"]    CategoryList [label = <Category List> URL="#CategoryList" target="_parent"]    Media [label = <Media Detail> URL="#Media" target="_parent"]    Tag [label = <Tag Detail> URL="#Tag" target="_parent"]    TagList [label = <Tag List> URL="#TagList" target="_parent"]}')
+                    renderGraph("#asd-graph-id", 'digraph application_state_diagram {  graph [    labelloc="t";    fontname="Helvetica"    label="BEAR.Cms Reference CMS";    URL="index.html" target="_parent"  ];  node [shape = box, style = "bold,filled" fillcolor="lightgray"];    AdminArticleDeleteConfirm [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>AdminArticleDeleteConfirm<br />(id)<br />(slug)<br />(title)<br />(status)<br /></td></tr></table>>,shape=box URL="#AdminArticleDeleteConfirm" target="_parent"]    AdminArticleForm [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>AdminArticleForm<br />(id)<br />(slug)<br />(title)<br />(body)<br />(excerpt)<br />(status)<br />(publishedAt)<br />(categoryId)<br />(tagIds)<br />(saved)<br />(message)<br /></td></tr></table>>,shape=box URL="#AdminArticleForm" target="_parent"]    AdminArticleList [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>AdminArticleList<br />(id)<br />(slug)<br />(title)<br />(status)<br />(page)<br />(perPage)<br />(deleted)<br /></td></tr></table>>,shape=box URL="#AdminArticleList" target="_parent"]    AdminIndex [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>AdminIndex<br />(name)<br />(email)<br />(authorId)<br /></td></tr></table>>,shape=box URL="#AdminIndex" target="_parent"]    AdminLogin [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>AdminLogin<br />(authState)<br />(authorizationUrl)<br />(message)<br /></td></tr></table>>,shape=box URL="#AdminLogin" target="_parent"]    Article [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>Article<br />(id)<br />(slug)<br />(title)<br />(body)<br />(excerpt)<br />(status)<br />(publishedAt)<br />(authorId)<br />(categoryId)<br />(Author)<br />(Category)<br />(Tag)<br /></td></tr></table>>,shape=box URL="#Article" target="_parent"]    ArticleFeed [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>ArticleFeed<br />(id)<br />(slug)<br />(title)<br />(excerpt)<br />(publishedAt)<br /></td></tr></table>>,shape=box URL="#ArticleFeed" target="_parent"]    ArticleList [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>ArticleList<br />(id)<br />(slug)<br />(title)<br />(excerpt)<br />(status)<br />(publishedAt)<br />(page)<br />(perPage)<br />(totalCount)<br /></td></tr></table>>,shape=box URL="#ArticleList" target="_parent"]    AuthStart [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>AuthStart<br />(authorizationUrl)<br /></td></tr></table>>,shape=box URL="#AuthStart" target="_parent"]    AuthenticatedUser [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>AuthenticatedUser<br />(id)<br />(email)<br />(name)<br /></td></tr></table>>,shape=box URL="#AuthenticatedUser" target="_parent"]    Author [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>Author<br />(id)<br />(name)<br />(email)<br />(bio)<br /></td></tr></table>>,shape=box URL="#Author" target="_parent"]    AuthorList [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>AuthorList<br />(id)<br />(name)<br />(email)<br />(bio)<br /></td></tr></table>>,shape=box URL="#AuthorList" target="_parent"]    Category [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>Category<br />(id)<br />(slug)<br />(name)<br />(description)<br />(parentId)<br /></td></tr></table>>,shape=box URL="#Category" target="_parent"]    CategoryList [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>CategoryList<br />(id)<br />(slug)<br />(name)<br />(parentId)<br /></td></tr></table>>,shape=box URL="#CategoryList" target="_parent"]    Media [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>Media<br />(id)<br />(filename)<br />(mimeType)<br />(url)<br />(alt)<br />(width)<br />(height)<br /></td></tr></table>>,shape=box URL="#Media" target="_parent"]    OAuthConfigurationError [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>OAuthConfigurationError<br />(message)<br /></td></tr></table>>,shape=box URL="#OAuthConfigurationError" target="_parent"]    OAuthProvider [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>OAuthProvider<br />(authCode)<br />(authState)<br /></td></tr></table>>,shape=box URL="#OAuthProvider" target="_parent"]    Tag [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>Tag<br />(id)<br />(slug)<br />(name)<br /></td></tr></table>>,shape=box URL="#Tag" target="_parent"]    TagList [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>TagList<br />(id)<br />(slug)<br />(name)<br /></td></tr></table>>,shape=box URL="#TagList" target="_parent"]    AdminArticleDeleteConfirm -> AdminArticleForm [label = <goAdminArticleForm (safe)> URL="#goAdminArticleForm" target="_parent" fontsize=13 class="goAdminArticleForm" penwidth=1.5];    AdminArticleDeleteConfirm -> AdminArticleList [label=<<table border="0"><tr><td align="left" href="#doAdminDeleteArticle" tooltip="doAdminDeleteArticle (idempotent)" >doAdminDeleteArticle (idempotent)</td></tr><tr><td align="left" href="#goAdminArticleList" tooltip="goAdminArticleList (safe)" >goAdminArticleList (safe)</td></tr></table>> fontsize=13];    AdminArticleDeleteConfirm -> Home [label = <doLogout (unsafe)> URL="#doLogout" target="_parent" fontsize=13 class="doLogout" penwidth=1.5];    AdminArticleForm -> AdminArticleDeleteConfirm [label = <goAdminArticleDeleteConfirm (safe)> URL="#goAdminArticleDeleteConfirm" target="_parent" fontsize=13 class="goAdminArticleDeleteConfirm" penwidth=1.5];    AdminArticleForm -> AdminArticleForm [label=<<table border="0"><tr><td align="left" href="#doAdminCreateArticle" tooltip="doAdminCreateArticle (unsafe)" >doAdminCreateArticle (unsafe)</td></tr><tr><td align="left" href="#doAdminUpdateArticle" tooltip="doAdminUpdateArticle (idempotent)" >doAdminUpdateArticle (idempotent)</td></tr></table>> fontsize=13];    AdminArticleForm -> AdminArticleList [label = <goAdminArticleList (safe)> URL="#goAdminArticleList" target="_parent" fontsize=13 class="goAdminArticleList" penwidth=1.5];    AdminArticleForm -> AdminIndex [label = <goAdminIndex (safe)> URL="#goAdminIndex" target="_parent" fontsize=13 class="goAdminIndex" penwidth=1.5];    AdminArticleForm -> Article [label = <goArticle (safe)> URL="#goArticle" target="_parent" fontsize=13 class="goArticle" penwidth=1.5];    AdminArticleForm -> Home [label = <doLogout (unsafe)> URL="#doLogout" target="_parent" fontsize=13 class="doLogout" penwidth=1.5];    AdminArticleList -> AdminArticleDeleteConfirm [label = <goAdminArticleDeleteConfirm (safe)> URL="#goAdminArticleDeleteConfirm" target="_parent" fontsize=13 class="goAdminArticleDeleteConfirm" penwidth=1.5];    AdminArticleList -> AdminArticleForm [label = <goAdminArticleForm (safe)> URL="#goAdminArticleForm" target="_parent" fontsize=13 class="goAdminArticleForm" penwidth=1.5];    AdminArticleList -> AdminArticleList [label = <goAdminArticleList (safe)> URL="#goAdminArticleList" target="_parent" fontsize=13 class="goAdminArticleList" penwidth=1.5];    AdminArticleList -> AdminIndex [label = <goAdminIndex (safe)> URL="#goAdminIndex" target="_parent" fontsize=13 class="goAdminIndex" penwidth=1.5];    AdminArticleList -> Article [label = <goArticle (safe)> URL="#goArticle" target="_parent" fontsize=13 class="goArticle" penwidth=1.5];    AdminArticleList -> Home [label=<<table border="0"><tr><td align="left" href="#doLogout" tooltip="doLogout (unsafe)" >doLogout (unsafe)</td></tr><tr><td align="left" href="#goHome" tooltip="goHome (safe)" >goHome (safe)</td></tr></table>> fontsize=13];    AdminIndex -> AdminArticleForm [label = <goAdminArticleForm (safe)> URL="#goAdminArticleForm" target="_parent" fontsize=13 class="goAdminArticleForm" penwidth=1.5];    AdminIndex -> AdminArticleList [label = <goAdminArticleList (safe)> URL="#goAdminArticleList" target="_parent" fontsize=13 class="goAdminArticleList" penwidth=1.5];    AdminIndex -> Home [label=<<table border="0"><tr><td align="left" href="#doLogout" tooltip="doLogout (unsafe)" >doLogout (unsafe)</td></tr><tr><td align="left" href="#goHome" tooltip="goHome (safe)" >goHome (safe)</td></tr></table>> fontsize=13];    AdminLogin -> Home [label = <goHome (safe)> URL="#goHome" target="_parent" fontsize=13 class="goHome" penwidth=1.5];    AdminLogin -> OAuthConfigurationError [label = <goOAuthConfigurationError (safe)> URL="#goOAuthConfigurationError" target="_parent" fontsize=13 class="goOAuthConfigurationError" penwidth=1.5];    AdminLogin -> OAuthProvider [label = <goOAuthProvider (safe)> URL="#goOAuthProvider" target="_parent" fontsize=13 class="goOAuthProvider" penwidth=1.5];    Article -> Article [label = <doUpdateArticle (idempotent)> URL="#doUpdateArticle" target="_parent" fontsize=13 class="doUpdateArticle" penwidth=1.5];    Article -> ArticleList [label=<<table border="0"><tr><td align="left" href="#doDeleteArticle" tooltip="doDeleteArticle (idempotent)" >doDeleteArticle (idempotent)</td></tr><tr><td align="left" href="#goArticleList" tooltip="goArticleList (safe)" >goArticleList (safe)</td></tr></table>> fontsize=13];    Article -> Author [label = <goAuthor (safe)> URL="#goAuthor" target="_parent" fontsize=13 class="goAuthor" penwidth=1.5];    Article -> Category [label = <goCategory (safe)> URL="#goCategory" target="_parent" fontsize=13 class="goCategory" penwidth=1.5];    Article -> Home [label = <goHome (safe)> URL="#goHome" target="_parent" fontsize=13 class="goHome" penwidth=1.5];    ArticleFeed -> Article [label = <goArticle (safe)> URL="#goArticle" target="_parent" fontsize=13 class="goArticle" penwidth=1.5];    ArticleFeed -> Home [label = <goHome (safe)> URL="#goHome" target="_parent" fontsize=13 class="goHome" penwidth=1.5];    ArticleList -> Article [label=<<table border="0"><tr><td align="left" href="#doCreateArticle" tooltip="doCreateArticle (unsafe)" >doCreateArticle (unsafe)</td></tr><tr><td align="left" href="#goArticle" tooltip="goArticle (safe)" >goArticle (safe)</td></tr></table>> fontsize=13];    ArticleList -> ArticleFeed [label = <goArticleFeed (safe)> URL="#goArticleFeed" target="_parent" fontsize=13 class="goArticleFeed" penwidth=1.5];    ArticleList -> AuthorList [label = <goAuthorList (safe)> URL="#goAuthorList" target="_parent" fontsize=13 class="goAuthorList" penwidth=1.5];    ArticleList -> CategoryList [label = <goCategoryList (safe)> URL="#goCategoryList" target="_parent" fontsize=13 class="goCategoryList" penwidth=1.5];    ArticleList -> Home [label = <goHome (safe)> URL="#goHome" target="_parent" fontsize=13 class="goHome" penwidth=1.5];    ArticleList -> TagList [label = <goTagList (safe)> URL="#goTagList" target="_parent" fontsize=13 class="goTagList" penwidth=1.5];    AuthStart -> AuthenticatedUser [label = <doExchangeAuthCode (unsafe)> URL="#doExchangeAuthCode" target="_parent" fontsize=13 class="doExchangeAuthCode" penwidth=1.5];    AuthStart -> OAuthProvider [label = <goOAuthProvider (safe)> URL="#goOAuthProvider" target="_parent" fontsize=13 class="goOAuthProvider" penwidth=1.5];    Author -> ArticleList [label = <goArticleList (safe)> URL="#goArticleList" target="_parent" fontsize=13 class="goArticleList" penwidth=1.5];    Author -> Author [label = <doUpdateAuthor (idempotent)> URL="#doUpdateAuthor" target="_parent" fontsize=13 class="doUpdateAuthor" penwidth=1.5];    Author -> AuthorList [label = <goAuthorList (safe)> URL="#goAuthorList" target="_parent" fontsize=13 class="goAuthorList" penwidth=1.5];    Author -> Home [label = <goHome (safe)> URL="#goHome" target="_parent" fontsize=13 class="goHome" penwidth=1.5];    AuthorList -> Author [label = <goAuthor (safe)> URL="#goAuthor" target="_parent" fontsize=13 class="goAuthor" penwidth=1.5];    AuthorList -> Home [label = <goHome (safe)> URL="#goHome" target="_parent" fontsize=13 class="goHome" penwidth=1.5];    Category -> ArticleList [label = <goArticleList (safe)> URL="#goArticleList" target="_parent" fontsize=13 class="goArticleList" penwidth=1.5];    Category -> Category [label = <doUpdateCategory (idempotent)> URL="#doUpdateCategory" target="_parent" fontsize=13 class="doUpdateCategory" penwidth=1.5];    Category -> CategoryList [label=<<table border="0"><tr><td align="left" href="#doDeleteCategory" tooltip="doDeleteCategory (idempotent)" >doDeleteCategory (idempotent)</td></tr><tr><td align="left" href="#goCategoryList" tooltip="goCategoryList (safe)" >goCategoryList (safe)</td></tr></table>> fontsize=13];    Category -> Home [label = <goHome (safe)> URL="#goHome" target="_parent" fontsize=13 class="goHome" penwidth=1.5];    CategoryList -> Category [label=<<table border="0"><tr><td align="left" href="#doCreateCategory" tooltip="doCreateCategory (unsafe)" >doCreateCategory (unsafe)</td></tr><tr><td align="left" href="#goCategory" tooltip="goCategory (safe)" >goCategory (safe)</td></tr></table>> fontsize=13];    CategoryList -> Home [label = <goHome (safe)> URL="#goHome" target="_parent" fontsize=13 class="goHome" penwidth=1.5];    Home -> AdminIndex [label = <goAdminIndex (safe)> URL="#goAdminIndex" target="_parent" fontsize=13 class="goAdminIndex" penwidth=1.5];    Home -> AdminLogin [label = <goAdminLogin (safe)> URL="#goAdminLogin" target="_parent" fontsize=13 class="goAdminLogin" penwidth=1.5];    Home -> ArticleFeed [label = <goArticleFeed (safe)> URL="#goArticleFeed" target="_parent" fontsize=13 class="goArticleFeed" penwidth=1.5];    Home -> ArticleList [label = <goArticleList (safe)> URL="#goArticleList" target="_parent" fontsize=13 class="goArticleList" penwidth=1.5];    Home -> AuthStart [label = <goAuthStart (safe)> URL="#goAuthStart" target="_parent" fontsize=13 class="goAuthStart" penwidth=1.5];    Home -> AuthorList [label = <goAuthorList (safe)> URL="#goAuthorList" target="_parent" fontsize=13 class="goAuthorList" penwidth=1.5];    Home -> CategoryList [label = <goCategoryList (safe)> URL="#goCategoryList" target="_parent" fontsize=13 class="goCategoryList" penwidth=1.5];    Home -> TagList [label = <goTagList (safe)> URL="#goTagList" target="_parent" fontsize=13 class="goTagList" penwidth=1.5];    Media -> Home [label = <goHome (safe)> URL="#goHome" target="_parent" fontsize=13 class="goHome" penwidth=1.5];    Media -> Media [label = <doDeleteMedia (idempotent)> URL="#doDeleteMedia" target="_parent" fontsize=13 class="doDeleteMedia" penwidth=1.5];    OAuthConfigurationError -> AdminLogin [label = <goAdminLogin (safe)> URL="#goAdminLogin" target="_parent" fontsize=13 class="goAdminLogin" penwidth=1.5];    OAuthConfigurationError -> Home [label = <goHome (safe)> URL="#goHome" target="_parent" fontsize=13 class="goHome" penwidth=1.5];    OAuthProvider -> AdminIndex [label = <doCompleteLogin (unsafe)> URL="#doCompleteLogin" target="_parent" fontsize=13 class="doCompleteLogin" penwidth=1.5];    OAuthProvider -> AdminLogin [label = <goAdminLogin (safe)> URL="#goAdminLogin" target="_parent" fontsize=13 class="goAdminLogin" penwidth=1.5];    Tag -> ArticleList [label = <goArticleList (safe)> URL="#goArticleList" target="_parent" fontsize=13 class="goArticleList" penwidth=1.5];    Tag -> Home [label = <goHome (safe)> URL="#goHome" target="_parent" fontsize=13 class="goHome" penwidth=1.5];    Tag -> TagList [label=<<table border="0"><tr><td align="left" href="#doDeleteTag" tooltip="doDeleteTag (idempotent)" >doDeleteTag (idempotent)</td></tr><tr><td align="left" href="#goTagList" tooltip="goTagList (safe)" >goTagList (safe)</td></tr></table>> fontsize=13];    TagList -> Home [label = <goHome (safe)> URL="#goHome" target="_parent" fontsize=13 class="goHome" penwidth=1.5];    TagList -> Tag [label=<<table border="0"><tr><td align="left" href="#doCreateTag" tooltip="doCreateTag (unsafe)" >doCreateTag (unsafe)</td></tr><tr><td align="left" href="#goTag" tooltip="goTag (safe)" >goTag (safe)</td></tr></table>> fontsize=13];    AdminArticleDeleteConfirm [label = <AdminArticleDeleteConfirm> URL="#AdminArticleDeleteConfirm" target="_parent"]    AdminArticleForm [label = <AdminArticleForm> URL="#AdminArticleForm" target="_parent"]    AdminArticleList [label = <AdminArticleList> URL="#AdminArticleList" target="_parent"]    Home [label = <Home> URL="#Home" target="_parent"]    AdminIndex [label = <AdminIndex> URL="#AdminIndex" target="_parent"]    Article [label = <Article> URL="#Article" target="_parent"]    AdminLogin [label = <AdminLogin> URL="#AdminLogin" target="_parent"]    OAuthConfigurationError [label = <OAuthConfigurationError> URL="#OAuthConfigurationError" target="_parent"]    OAuthProvider [label = <OAuthProvider> URL="#OAuthProvider" target="_parent"]    ArticleList [label = <ArticleList> URL="#ArticleList" target="_parent"]    Author [label = <Author> URL="#Author" target="_parent"]    Category [label = <Category> URL="#Category" target="_parent"]    ArticleFeed [label = <ArticleFeed> URL="#ArticleFeed" target="_parent"]    AuthorList [label = <AuthorList> URL="#AuthorList" target="_parent"]    CategoryList [label = <CategoryList> URL="#CategoryList" target="_parent"]    TagList [label = <TagList> URL="#TagList" target="_parent"]    AuthStart [label = <AuthStart> URL="#AuthStart" target="_parent"]    AuthenticatedUser [label = <AuthenticatedUser> URL="#AuthenticatedUser" target="_parent"]    Media [label = <Media> URL="#Media" target="_parent"]    Tag [label = <Tag> URL="#Tag" target="_parent"]}'),
+                    renderGraph("#asd-graph-name", 'digraph application_state_diagram {  graph [    labelloc="t";    fontname="Helvetica"    label="BEAR.Cms Reference CMS";    URL="index.html" target="_parent"  ];  node [shape = box, style = "bold,filled" fillcolor="lightgray"];    AdminArticleDeleteConfirm [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>Admin Article Delete Confirmation<br />(Identifier)<br />(URL-safe Slug)<br />(Title)<br />(Lifecycle Status)<br /></td></tr></table>>,shape=box URL="#AdminArticleDeleteConfirm" target="_parent"]    AdminArticleForm [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>Admin Article Form<br />(Identifier)<br />(URL-safe Slug)<br />(Title)<br />(Article Body)<br />(Excerpt)<br />(Lifecycle Status)<br />(Published At)<br />(Category ID (FK))<br />(Selected Tag IDs)<br />(Save Notice)<br />(User-Facing Message)<br /></td></tr></table>>,shape=box URL="#AdminArticleForm" target="_parent"]    AdminArticleList [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>Admin Article List<br />(Identifier)<br />(URL-safe Slug)<br />(Title)<br />(Lifecycle Status)<br />(Page Number)<br />(Per-Page Count)<br />(Delete Notice)<br /></td></tr></table>>,shape=box URL="#AdminArticleList" target="_parent"]    AdminIndex [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>Admin Home<br />(Name)<br />(Email)<br />(Author ID (FK))<br /></td></tr></table>>,shape=box URL="#AdminIndex" target="_parent"]    AdminLogin [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>Admin Login<br />(OAuth State)<br />(OAuth Authorization URL)<br />(User-Facing Message)<br /></td></tr></table>>,shape=box URL="#AdminLogin" target="_parent"]    Article [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>Article Detail<br />(Identifier)<br />(URL-safe Slug)<br />(Title)<br />(Article Body)<br />(Excerpt)<br />(Lifecycle Status)<br />(Published At)<br />(Author ID (FK))<br />(Category ID (FK))<br />(Author Detail)<br />(Category Detail)<br />(Tag Detail)<br /></td></tr></table>>,shape=box URL="#Article" target="_parent"]    ArticleFeed [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>Article Feed<br />(Identifier)<br />(URL-safe Slug)<br />(Title)<br />(Excerpt)<br />(Published At)<br /></td></tr></table>>,shape=box URL="#ArticleFeed" target="_parent"]    ArticleList [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>Article List<br />(Identifier)<br />(URL-safe Slug)<br />(Title)<br />(Excerpt)<br />(Lifecycle Status)<br />(Published At)<br />(Page Number)<br />(Per-Page Count)<br />(Total Count)<br /></td></tr></table>>,shape=box URL="#ArticleList" target="_parent"]    AuthStart [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>Auth Start<br />(OAuth Authorization URL)<br /></td></tr></table>>,shape=box URL="#AuthStart" target="_parent"]    AuthenticatedUser [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>Authenticated User<br />(Identifier)<br />(Email)<br />(Name)<br /></td></tr></table>>,shape=box URL="#AuthenticatedUser" target="_parent"]    Author [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>Author Detail<br />(Identifier)<br />(Name)<br />(Email)<br />(Biography)<br /></td></tr></table>>,shape=box URL="#Author" target="_parent"]    AuthorList [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>Author List<br />(Identifier)<br />(Name)<br />(Email)<br />(Biography)<br /></td></tr></table>>,shape=box URL="#AuthorList" target="_parent"]    Category [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>Category Detail<br />(Identifier)<br />(URL-safe Slug)<br />(Name)<br />(Description)<br />(Parent Category ID (self-FK))<br /></td></tr></table>>,shape=box URL="#Category" target="_parent"]    CategoryList [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>Category List<br />(Identifier)<br />(URL-safe Slug)<br />(Name)<br />(Parent Category ID (self-FK))<br /></td></tr></table>>,shape=box URL="#CategoryList" target="_parent"]    Media [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>Media Detail<br />(Identifier)<br />(Filename)<br />(MIME Type)<br />(URL)<br />(Alt Text)<br />(Width)<br />(Height)<br /></td></tr></table>>,shape=box URL="#Media" target="_parent"]    OAuthConfigurationError [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>OAuth Configuration Error<br />(User-Facing Message)<br /></td></tr></table>>,shape=box URL="#OAuthConfigurationError" target="_parent"]    OAuthProvider [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>OAuth Provider<br />(OAuth Authorization Code)<br />(OAuth State)<br /></td></tr></table>>,shape=box URL="#OAuthProvider" target="_parent"]    Tag [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>Tag Detail<br />(Identifier)<br />(URL-safe Slug)<br />(Name)<br /></td></tr></table>>,shape=box URL="#Tag" target="_parent"]    TagList [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>Tag List<br />(Identifier)<br />(URL-safe Slug)<br />(Name)<br /></td></tr></table>>,shape=box URL="#TagList" target="_parent"]    AdminArticleDeleteConfirm -> AdminArticleForm [label = <View Admin Article Form> URL="#goAdminArticleForm" target="_parent" fontsize=13 class="goAdminArticleForm" penwidth=1.5];    AdminArticleDeleteConfirm -> AdminArticleList [label=<<table border="0"><tr><td align="left" href="#doAdminDeleteArticle" tooltip="doAdminDeleteArticle (idempotent)" ><u>Delete Article in Admin</u></td></tr><tr><td align="left" href="#goAdminArticleList" tooltip="goAdminArticleList (safe)" >View Admin Article List</td></tr></table>> fontsize=13];    AdminArticleDeleteConfirm -> Home [label = <<b><u>Log Out</u></b>> URL="#doLogout" target="_parent" fontsize=13 class="doLogout" penwidth=1.5];    AdminArticleForm -> AdminArticleDeleteConfirm [label = <Confirm Admin Article Delete> URL="#goAdminArticleDeleteConfirm" target="_parent" fontsize=13 class="goAdminArticleDeleteConfirm" penwidth=1.5];    AdminArticleForm -> AdminArticleForm [label=<<table border="0"><tr><td align="left" href="#doAdminCreateArticle" tooltip="doAdminCreateArticle (unsafe)" ><b><u>Create Article in Admin</u></b></td></tr><tr><td align="left" href="#doAdminUpdateArticle" tooltip="doAdminUpdateArticle (idempotent)" ><u>Update Article in Admin</u></td></tr></table>> fontsize=13];    AdminArticleForm -> AdminArticleList [label = <View Admin Article List> URL="#goAdminArticleList" target="_parent" fontsize=13 class="goAdminArticleList" penwidth=1.5];    AdminArticleForm -> AdminIndex [label = <View Admin Home> URL="#goAdminIndex" target="_parent" fontsize=13 class="goAdminIndex" penwidth=1.5];    AdminArticleForm -> Article [label = <View Article> URL="#goArticle" target="_parent" fontsize=13 class="goArticle" penwidth=1.5];    AdminArticleForm -> Home [label = <<b><u>Log Out</u></b>> URL="#doLogout" target="_parent" fontsize=13 class="doLogout" penwidth=1.5];    AdminArticleList -> AdminArticleDeleteConfirm [label = <Confirm Admin Article Delete> URL="#goAdminArticleDeleteConfirm" target="_parent" fontsize=13 class="goAdminArticleDeleteConfirm" penwidth=1.5];    AdminArticleList -> AdminArticleForm [label = <View Admin Article Form> URL="#goAdminArticleForm" target="_parent" fontsize=13 class="goAdminArticleForm" penwidth=1.5];    AdminArticleList -> AdminArticleList [label = <View Admin Article List> URL="#goAdminArticleList" target="_parent" fontsize=13 class="goAdminArticleList" penwidth=1.5];    AdminArticleList -> AdminIndex [label = <View Admin Home> URL="#goAdminIndex" target="_parent" fontsize=13 class="goAdminIndex" penwidth=1.5];    AdminArticleList -> Article [label = <View Article> URL="#goArticle" target="_parent" fontsize=13 class="goArticle" penwidth=1.5];    AdminArticleList -> Home [label=<<table border="0"><tr><td align="left" href="#doLogout" tooltip="doLogout (unsafe)" ><b><u>Log Out</u></b></td></tr><tr><td align="left" href="#goHome" tooltip="goHome (safe)" >Go Home</td></tr></table>> fontsize=13];    AdminIndex -> AdminArticleForm [label = <View Admin Article Form> URL="#goAdminArticleForm" target="_parent" fontsize=13 class="goAdminArticleForm" penwidth=1.5];    AdminIndex -> AdminArticleList [label = <View Admin Article List> URL="#goAdminArticleList" target="_parent" fontsize=13 class="goAdminArticleList" penwidth=1.5];    AdminIndex -> Home [label=<<table border="0"><tr><td align="left" href="#doLogout" tooltip="doLogout (unsafe)" ><b><u>Log Out</u></b></td></tr><tr><td align="left" href="#goHome" tooltip="goHome (safe)" >Go Home</td></tr></table>> fontsize=13];    AdminLogin -> Home [label = <Go Home> URL="#goHome" target="_parent" fontsize=13 class="goHome" penwidth=1.5];    AdminLogin -> OAuthConfigurationError [label = <Show OAuth Configuration Error> URL="#goOAuthConfigurationError" target="_parent" fontsize=13 class="goOAuthConfigurationError" penwidth=1.5];    AdminLogin -> OAuthProvider [label = <Go to OAuth Provider> URL="#goOAuthProvider" target="_parent" fontsize=13 class="goOAuthProvider" penwidth=1.5];    Article -> Article [label = <<u>Update Article</u>> URL="#doUpdateArticle" target="_parent" fontsize=13 class="doUpdateArticle" penwidth=1.5];    Article -> ArticleList [label=<<table border="0"><tr><td align="left" href="#doDeleteArticle" tooltip="doDeleteArticle (idempotent)" ><u>Delete Article</u></td></tr><tr><td align="left" href="#goArticleList" tooltip="goArticleList (safe)" >View Article List</td></tr></table>> fontsize=13];    Article -> Author [label = <View Author> URL="#goAuthor" target="_parent" fontsize=13 class="goAuthor" penwidth=1.5];    Article -> Category [label = <View Category> URL="#goCategory" target="_parent" fontsize=13 class="goCategory" penwidth=1.5];    Article -> Home [label = <Go Home> URL="#goHome" target="_parent" fontsize=13 class="goHome" penwidth=1.5];    ArticleFeed -> Article [label = <View Article> URL="#goArticle" target="_parent" fontsize=13 class="goArticle" penwidth=1.5];    ArticleFeed -> Home [label = <Go Home> URL="#goHome" target="_parent" fontsize=13 class="goHome" penwidth=1.5];    ArticleList -> Article [label=<<table border="0"><tr><td align="left" href="#doCreateArticle" tooltip="doCreateArticle (unsafe)" ><b><u>Create Article</u></b></td></tr><tr><td align="left" href="#goArticle" tooltip="goArticle (safe)" >View Article</td></tr></table>> fontsize=13];    ArticleList -> ArticleFeed [label = <View Article Feed> URL="#goArticleFeed" target="_parent" fontsize=13 class="goArticleFeed" penwidth=1.5];    ArticleList -> AuthorList [label = <View Author List> URL="#goAuthorList" target="_parent" fontsize=13 class="goAuthorList" penwidth=1.5];    ArticleList -> CategoryList [label = <View Category List> URL="#goCategoryList" target="_parent" fontsize=13 class="goCategoryList" penwidth=1.5];    ArticleList -> Home [label = <Go Home> URL="#goHome" target="_parent" fontsize=13 class="goHome" penwidth=1.5];    ArticleList -> TagList [label = <View Tag List> URL="#goTagList" target="_parent" fontsize=13 class="goTagList" penwidth=1.5];    AuthStart -> AuthenticatedUser [label = <<b><u>Exchange Auth Code</u></b>> URL="#doExchangeAuthCode" target="_parent" fontsize=13 class="doExchangeAuthCode" penwidth=1.5];    AuthStart -> OAuthProvider [label = <Go to OAuth Provider> URL="#goOAuthProvider" target="_parent" fontsize=13 class="goOAuthProvider" penwidth=1.5];    Author -> ArticleList [label = <View Article List> URL="#goArticleList" target="_parent" fontsize=13 class="goArticleList" penwidth=1.5];    Author -> Author [label = <<u>Update Author</u>> URL="#doUpdateAuthor" target="_parent" fontsize=13 class="doUpdateAuthor" penwidth=1.5];    Author -> AuthorList [label = <View Author List> URL="#goAuthorList" target="_parent" fontsize=13 class="goAuthorList" penwidth=1.5];    Author -> Home [label = <Go Home> URL="#goHome" target="_parent" fontsize=13 class="goHome" penwidth=1.5];    AuthorList -> Author [label = <View Author> URL="#goAuthor" target="_parent" fontsize=13 class="goAuthor" penwidth=1.5];    AuthorList -> Home [label = <Go Home> URL="#goHome" target="_parent" fontsize=13 class="goHome" penwidth=1.5];    Category -> ArticleList [label = <View Article List> URL="#goArticleList" target="_parent" fontsize=13 class="goArticleList" penwidth=1.5];    Category -> Category [label = <<u>Update Category</u>> URL="#doUpdateCategory" target="_parent" fontsize=13 class="doUpdateCategory" penwidth=1.5];    Category -> CategoryList [label=<<table border="0"><tr><td align="left" href="#doDeleteCategory" tooltip="doDeleteCategory (idempotent)" ><u>Delete Category</u></td></tr><tr><td align="left" href="#goCategoryList" tooltip="goCategoryList (safe)" >View Category List</td></tr></table>> fontsize=13];    Category -> Home [label = <Go Home> URL="#goHome" target="_parent" fontsize=13 class="goHome" penwidth=1.5];    CategoryList -> Category [label=<<table border="0"><tr><td align="left" href="#doCreateCategory" tooltip="doCreateCategory (unsafe)" ><b><u>Create Category</u></b></td></tr><tr><td align="left" href="#goCategory" tooltip="goCategory (safe)" >View Category</td></tr></table>> fontsize=13];    CategoryList -> Home [label = <Go Home> URL="#goHome" target="_parent" fontsize=13 class="goHome" penwidth=1.5];    Home -> AdminIndex [label = <View Admin Home> URL="#goAdminIndex" target="_parent" fontsize=13 class="goAdminIndex" penwidth=1.5];    Home -> AdminLogin [label = <Go to Admin Login> URL="#goAdminLogin" target="_parent" fontsize=13 class="goAdminLogin" penwidth=1.5];    Home -> ArticleFeed [label = <View Article Feed> URL="#goArticleFeed" target="_parent" fontsize=13 class="goArticleFeed" penwidth=1.5];    Home -> ArticleList [label = <View Article List> URL="#goArticleList" target="_parent" fontsize=13 class="goArticleList" penwidth=1.5];    Home -> AuthStart [label = <Start App Auth> URL="#goAuthStart" target="_parent" fontsize=13 class="goAuthStart" penwidth=1.5];    Home -> AuthorList [label = <View Author List> URL="#goAuthorList" target="_parent" fontsize=13 class="goAuthorList" penwidth=1.5];    Home -> CategoryList [label = <View Category List> URL="#goCategoryList" target="_parent" fontsize=13 class="goCategoryList" penwidth=1.5];    Home -> TagList [label = <View Tag List> URL="#goTagList" target="_parent" fontsize=13 class="goTagList" penwidth=1.5];    Media -> Home [label = <Go Home> URL="#goHome" target="_parent" fontsize=13 class="goHome" penwidth=1.5];    Media -> Media [label = <<u>Delete Media</u>> URL="#doDeleteMedia" target="_parent" fontsize=13 class="doDeleteMedia" penwidth=1.5];    OAuthConfigurationError -> AdminLogin [label = <Go to Admin Login> URL="#goAdminLogin" target="_parent" fontsize=13 class="goAdminLogin" penwidth=1.5];    OAuthConfigurationError -> Home [label = <Go Home> URL="#goHome" target="_parent" fontsize=13 class="goHome" penwidth=1.5];    OAuthProvider -> AdminIndex [label = <<b><u>Complete Admin Login</u></b>> URL="#doCompleteLogin" target="_parent" fontsize=13 class="doCompleteLogin" penwidth=1.5];    OAuthProvider -> AdminLogin [label = <Go to Admin Login> URL="#goAdminLogin" target="_parent" fontsize=13 class="goAdminLogin" penwidth=1.5];    Tag -> ArticleList [label = <View Article List> URL="#goArticleList" target="_parent" fontsize=13 class="goArticleList" penwidth=1.5];    Tag -> Home [label = <Go Home> URL="#goHome" target="_parent" fontsize=13 class="goHome" penwidth=1.5];    Tag -> TagList [label=<<table border="0"><tr><td align="left" href="#doDeleteTag" tooltip="doDeleteTag (idempotent)" ><u>Delete Tag</u></td></tr><tr><td align="left" href="#goTagList" tooltip="goTagList (safe)" >View Tag List</td></tr></table>> fontsize=13];    TagList -> Home [label = <Go Home> URL="#goHome" target="_parent" fontsize=13 class="goHome" penwidth=1.5];    TagList -> Tag [label=<<table border="0"><tr><td align="left" href="#doCreateTag" tooltip="doCreateTag (unsafe)" ><b><u>Create Tag</u></b></td></tr><tr><td align="left" href="#goTag" tooltip="goTag (safe)" >View Tag</td></tr></table>> fontsize=13];    AdminArticleDeleteConfirm [label = <Admin Article Delete Confirmation> URL="#AdminArticleDeleteConfirm" target="_parent"]    AdminArticleForm [label = <Admin Article Form> URL="#AdminArticleForm" target="_parent"]    AdminArticleList [label = <Admin Article List> URL="#AdminArticleList" target="_parent"]    Home [label = <Home Page> URL="#Home" target="_parent"]    AdminIndex [label = <Admin Home> URL="#AdminIndex" target="_parent"]    Article [label = <Article Detail> URL="#Article" target="_parent"]    AdminLogin [label = <Admin Login> URL="#AdminLogin" target="_parent"]    OAuthConfigurationError [label = <OAuth Configuration Error> URL="#OAuthConfigurationError" target="_parent"]    OAuthProvider [label = <OAuth Provider> URL="#OAuthProvider" target="_parent"]    ArticleList [label = <Article List> URL="#ArticleList" target="_parent"]    Author [label = <Author Detail> URL="#Author" target="_parent"]    Category [label = <Category Detail> URL="#Category" target="_parent"]    ArticleFeed [label = <Article Feed> URL="#ArticleFeed" target="_parent"]    AuthorList [label = <Author List> URL="#AuthorList" target="_parent"]    CategoryList [label = <Category List> URL="#CategoryList" target="_parent"]    TagList [label = <Tag List> URL="#TagList" target="_parent"]    AuthStart [label = <Auth Start> URL="#AuthStart" target="_parent"]    AuthenticatedUser [label = <Authenticated User> URL="#AuthenticatedUser" target="_parent"]    Media [label = <Media Detail> URL="#Media" target="_parent"]    Tag [label = <Tag Detail> URL="#Tag" target="_parent"]}')
             ]);
             setupTagTrigger();
             setupModeSwitch('asd-show-id', 'asd-graph-id', 'asd-graph-name');
             setupModeSwitch('asd-show-name', 'asd-graph-name', 'asd-graph-id');
             applySmoothScrollToLinks(document.querySelectorAll('a[href^="#"]'));
-            setupTagEventListener('article', ['Article', 'ArticleList', 'doCreateArticle', 'doDeleteArticle', 'doUpdateArticle', 'goArticle', 'goArticleList'], 'LightGreen'); setupTagEventListener('author', ['Author', 'doCreateAuthor', 'doUpdateAuthor', 'goAuthor'], 'SkyBlue'); setupTagEventListener('category', ['Category', 'CategoryList', 'doCreateCategory', 'doDeleteCategory', 'doUpdateCategory', 'goCategory', 'goCategoryList'], 'LightCoral'); setupTagEventListener('flow-browse', ['ArticleList', 'CategoryList', 'TagList', 'goArticleList', 'goCategoryList', 'goTagList'], 'LightSalmon'); setupTagEventListener('flow-publish', ['doCreateArticle', 'doDeleteArticle', 'doUpdateArticle'], 'Khaki'); setupTagEventListener('media', ['Media', 'doCreateMedia', 'doDeleteMedia', 'goMedia'], 'Plum'); setupTagEventListener('tag', ['Tag', 'TagList', 'doCreateTag', 'doDeleteTag', 'goTag', 'goTagList'], 'Wheat'); 
+            setupTagEventListener('admin', ['AdminArticleDeleteConfirm', 'AdminArticleForm', 'AdminArticleList', 'AdminIndex', 'AdminLogin', 'OAuthConfigurationError', 'doAdminCreateArticle', 'doAdminDeleteArticle', 'doAdminUpdateArticle', 'doCompleteLogin', 'doLogout', 'goAdminArticleDeleteConfirm', 'goAdminArticleForm', 'goAdminArticleList', 'goAdminIndex', 'goAdminLogin', 'goOAuthConfigurationError'], 'LightGreen'); setupTagEventListener('app', ['AuthStart', 'AuthenticatedUser', 'doExchangeAuthCode', 'goAuthStart'], 'SkyBlue'); setupTagEventListener('article', ['AdminArticleDeleteConfirm', 'AdminArticleForm', 'AdminArticleList', 'Article', 'ArticleFeed', 'ArticleList', 'doAdminCreateArticle', 'doAdminDeleteArticle', 'doAdminUpdateArticle', 'doCreateArticle', 'doDeleteArticle', 'doUpdateArticle', 'goAdminArticleDeleteConfirm', 'goAdminArticleForm', 'goAdminArticleList', 'goArticle', 'goArticleFeed', 'goArticleList'], 'LightCoral'); setupTagEventListener('auth', ['AdminLogin', 'AuthStart', 'AuthenticatedUser', 'OAuthConfigurationError', 'OAuthProvider', 'doCompleteLogin', 'doExchangeAuthCode', 'doLogout', 'goAdminLogin', 'goAuthStart', 'goOAuthConfigurationError', 'goOAuthProvider'], 'LightSalmon'); setupTagEventListener('author', ['Author', 'AuthorList', 'doCreateAuthor', 'doUpdateAuthor', 'goAuthor', 'goAuthorList'], 'Khaki'); setupTagEventListener('category', ['Category', 'CategoryList', 'doCreateCategory', 'doDeleteCategory', 'doUpdateCategory', 'goCategory', 'goCategoryList'], 'Plum'); setupTagEventListener('error', ['OAuthConfigurationError', 'goOAuthConfigurationError'], 'Wheat'); setupTagEventListener('external', ['OAuthProvider', 'goOAuthProvider'], 'LightGreen'); setupTagEventListener('feed', ['ArticleFeed', 'goArticleFeed'], 'SkyBlue'); setupTagEventListener('flow-admin', ['AdminArticleList', 'AdminIndex', 'goAdminArticleList', 'goAdminIndex'], 'LightCoral'); setupTagEventListener('flow-browse', ['ArticleList', 'AuthorList', 'CategoryList', 'Home', 'TagList', 'goArticleList', 'goAuthorList', 'goCategoryList', 'goHome', 'goTagList'], 'LightSalmon'); setupTagEventListener('flow-login', ['AdminLogin', 'OAuthProvider', 'doCompleteLogin', 'doExchangeAuthCode', 'doLogout', 'goAdminLogin', 'goOAuthProvider'], 'Khaki'); setupTagEventListener('flow-publish', ['AdminArticleDeleteConfirm', 'AdminArticleForm', 'doAdminCreateArticle', 'doAdminDeleteArticle', 'doAdminUpdateArticle', 'doCreateArticle', 'doDeleteArticle', 'doUpdateArticle', 'goAdminArticleDeleteConfirm', 'goAdminArticleForm'], 'Plum'); setupTagEventListener('media', ['Media', 'doCreateMedia', 'doDeleteMedia', 'goMedia'], 'Wheat'); setupTagEventListener('public', ['ArticleFeed', 'AuthorList', 'Home', 'goArticleFeed', 'goAuthorList', 'goHome'], 'LightGreen'); setupTagEventListener('tag', ['Tag', 'TagList', 'doCreateTag', 'doDeleteTag', 'goTag', 'goTagList'], 'SkyBlue'); 
         } catch (error) {
                console.error("Error in main process:", error);
         }});
@@ -303,12 +303,21 @@ const setupModeSwitch = (switchId, graphId, otherGraphId) => {
 </div>
 
 <div class="selector-container"><span class="selector-label">Tags:</span>
+<span class="selector-option"><input type="checkbox" id="tag-admin" class="tag-trigger-checkbox" data-tag="admin" name="tag-admin"><label for="tag-admin"> admin</label></span>
+<span class="selector-option"><input type="checkbox" id="tag-app" class="tag-trigger-checkbox" data-tag="app" name="tag-app"><label for="tag-app"> app</label></span>
 <span class="selector-option"><input type="checkbox" id="tag-article" class="tag-trigger-checkbox" data-tag="article" name="tag-article"><label for="tag-article"> article</label></span>
+<span class="selector-option"><input type="checkbox" id="tag-auth" class="tag-trigger-checkbox" data-tag="auth" name="tag-auth"><label for="tag-auth"> auth</label></span>
 <span class="selector-option"><input type="checkbox" id="tag-author" class="tag-trigger-checkbox" data-tag="author" name="tag-author"><label for="tag-author"> author</label></span>
 <span class="selector-option"><input type="checkbox" id="tag-category" class="tag-trigger-checkbox" data-tag="category" name="tag-category"><label for="tag-category"> category</label></span>
+<span class="selector-option"><input type="checkbox" id="tag-error" class="tag-trigger-checkbox" data-tag="error" name="tag-error"><label for="tag-error"> error</label></span>
+<span class="selector-option"><input type="checkbox" id="tag-external" class="tag-trigger-checkbox" data-tag="external" name="tag-external"><label for="tag-external"> external</label></span>
+<span class="selector-option"><input type="checkbox" id="tag-feed" class="tag-trigger-checkbox" data-tag="feed" name="tag-feed"><label for="tag-feed"> feed</label></span>
+<span class="selector-option"><input type="checkbox" id="tag-flow-admin" class="tag-trigger-checkbox" data-tag="flow-admin" name="tag-flow-admin"><label for="tag-flow-admin"> flow-admin</label></span>
 <span class="selector-option"><input type="checkbox" id="tag-flow-browse" class="tag-trigger-checkbox" data-tag="flow-browse" name="tag-flow-browse"><label for="tag-flow-browse"> flow-browse</label></span>
+<span class="selector-option"><input type="checkbox" id="tag-flow-login" class="tag-trigger-checkbox" data-tag="flow-login" name="tag-flow-login"><label for="tag-flow-login"> flow-login</label></span>
 <span class="selector-option"><input type="checkbox" id="tag-flow-publish" class="tag-trigger-checkbox" data-tag="flow-publish" name="tag-flow-publish"><label for="tag-flow-publish"> flow-publish</label></span>
 <span class="selector-option"><input type="checkbox" id="tag-media" class="tag-trigger-checkbox" data-tag="media" name="tag-media"><label for="tag-media"> media</label></span>
+<span class="selector-option"><input type="checkbox" id="tag-public" class="tag-trigger-checkbox" data-tag="public" name="tag-public"><label for="tag-public"> public</label></span>
 <span class="selector-option"><input type="checkbox" id="tag-tag" class="tag-trigger-checkbox" data-tag="tag" name="tag-tag"><label for="tag-tag"> tag</label></span></div>
 
 <h2>Semantic Descriptors</h2>
@@ -316,18 +325,35 @@ const setupModeSwitch = (switchId, graphId, otherGraphId) => {
 <div class="descriptor-list">
 
 <ul>
+<li><span class="indicator semantic" data-tooltip="semantic"> </span> <a href="#AdminArticleDeleteConfirm">AdminArticleDeleteConfirm</a></li>
+<li><span class="indicator semantic" data-tooltip="semantic"> </span> <a href="#AdminArticleForm">AdminArticleForm</a></li>
+<li><span class="indicator semantic" data-tooltip="semantic"> </span> <a href="#AdminArticleList">AdminArticleList</a></li>
+<li><span class="indicator semantic" data-tooltip="semantic"> </span> <a href="#AdminIndex">AdminIndex</a></li>
+<li><span class="indicator semantic" data-tooltip="semantic"> </span> <a href="#AdminLogin">AdminLogin</a></li>
 <li><span class="indicator semantic" data-tooltip="semantic"> </span> <a href="#alt">alt</a></li>
 <li><span class="indicator semantic" data-tooltip="semantic"> </span> <a href="#Article">Article</a></li>
+<li><span class="indicator semantic" data-tooltip="semantic"> </span> <a href="#ArticleFeed">ArticleFeed</a></li>
 <li><span class="indicator semantic" data-tooltip="semantic"> </span> <a href="#articleId">articleId</a></li>
 <li><span class="indicator semantic" data-tooltip="semantic"> </span> <a href="#ArticleList">ArticleList</a></li>
+<li><span class="indicator semantic" data-tooltip="semantic"> </span> <a href="#authCode">authCode</a></li>
+<li><span class="indicator semantic" data-tooltip="semantic"> </span> <a href="#AuthenticatedUser">AuthenticatedUser</a></li>
 <li><span class="indicator semantic" data-tooltip="semantic"> </span> <a href="#Author">Author</a></li>
 <li><span class="indicator semantic" data-tooltip="semantic"> </span> <a href="#authorId">authorId</a></li>
+<li><span class="indicator semantic" data-tooltip="semantic"> </span> <a href="#authorizationUrl">authorizationUrl</a></li>
+<li><span class="indicator semantic" data-tooltip="semantic"> </span> <a href="#AuthorList">AuthorList</a></li>
+<li><span class="indicator semantic" data-tooltip="semantic"> </span> <a href="#AuthStart">AuthStart</a></li>
+<li><span class="indicator semantic" data-tooltip="semantic"> </span> <a href="#authState">authState</a></li>
 <li><span class="indicator semantic" data-tooltip="semantic"> </span> <a href="#bio">bio</a></li>
 <li><span class="indicator semantic" data-tooltip="semantic"> </span> <a href="#body">body</a></li>
 <li><span class="indicator semantic" data-tooltip="semantic"> </span> <a href="#Category">Category</a></li>
 <li><span class="indicator semantic" data-tooltip="semantic"> </span> <a href="#categoryId">categoryId</a></li>
 <li><span class="indicator semantic" data-tooltip="semantic"> </span> <a href="#CategoryList">CategoryList</a></li>
+<li><span class="indicator semantic" data-tooltip="semantic"> </span> <a href="#deleted">deleted</a></li>
 <li><span class="indicator semantic" data-tooltip="semantic"> </span> <a href="#description">description</a></li>
+<li><span class="indicator unsafe" data-tooltip="unsafe"> </span> <a href="#doAdminCreateArticle">doAdminCreateArticle</a></li>
+<li><span class="indicator idempotent" data-tooltip="idempotent"> </span> <a href="#doAdminDeleteArticle">doAdminDeleteArticle</a></li>
+<li><span class="indicator idempotent" data-tooltip="idempotent"> </span> <a href="#doAdminUpdateArticle">doAdminUpdateArticle</a></li>
+<li><span class="indicator unsafe" data-tooltip="unsafe"> </span> <a href="#doCompleteLogin">doCompleteLogin</a></li>
 <li><span class="indicator unsafe" data-tooltip="unsafe"> </span> <a href="#doCreateArticle">doCreateArticle</a></li>
 <li><span class="indicator unsafe" data-tooltip="unsafe"> </span> <a href="#doCreateAuthor">doCreateAuthor</a></li>
 <li><span class="indicator unsafe" data-tooltip="unsafe"> </span> <a href="#doCreateCategory">doCreateCategory</a></li>
@@ -337,33 +363,52 @@ const setupModeSwitch = (switchId, graphId, otherGraphId) => {
 <li><span class="indicator idempotent" data-tooltip="idempotent"> </span> <a href="#doDeleteCategory">doDeleteCategory</a></li>
 <li><span class="indicator idempotent" data-tooltip="idempotent"> </span> <a href="#doDeleteMedia">doDeleteMedia</a></li>
 <li><span class="indicator idempotent" data-tooltip="idempotent"> </span> <a href="#doDeleteTag">doDeleteTag</a></li>
+<li><span class="indicator unsafe" data-tooltip="unsafe"> </span> <a href="#doExchangeAuthCode">doExchangeAuthCode</a></li>
+<li><span class="indicator unsafe" data-tooltip="unsafe"> </span> <a href="#doLogout">doLogout</a></li>
 <li><span class="indicator idempotent" data-tooltip="idempotent"> </span> <a href="#doUpdateArticle">doUpdateArticle</a></li>
 <li><span class="indicator idempotent" data-tooltip="idempotent"> </span> <a href="#doUpdateAuthor">doUpdateAuthor</a></li>
 <li><span class="indicator idempotent" data-tooltip="idempotent"> </span> <a href="#doUpdateCategory">doUpdateCategory</a></li>
 <li><span class="indicator semantic" data-tooltip="semantic"> </span> <a href="#email">email</a></li>
 <li><span class="indicator semantic" data-tooltip="semantic"> </span> <a href="#excerpt">excerpt</a></li>
 <li><span class="indicator semantic" data-tooltip="semantic"> </span> <a href="#filename">filename</a></li>
+<li><span class="indicator safe" data-tooltip="safe"> </span> <a href="#goAdminArticleDeleteConfirm">goAdminArticleDeleteConfirm</a></li>
+<li><span class="indicator safe" data-tooltip="safe"> </span> <a href="#goAdminArticleForm">goAdminArticleForm</a></li>
+<li><span class="indicator safe" data-tooltip="safe"> </span> <a href="#goAdminArticleList">goAdminArticleList</a></li>
+<li><span class="indicator safe" data-tooltip="safe"> </span> <a href="#goAdminIndex">goAdminIndex</a></li>
+<li><span class="indicator safe" data-tooltip="safe"> </span> <a href="#goAdminLogin">goAdminLogin</a></li>
 <li><span class="indicator safe" data-tooltip="safe"> </span> <a href="#goArticle">goArticle</a></li>
+<li><span class="indicator safe" data-tooltip="safe"> </span> <a href="#goArticleFeed">goArticleFeed</a></li>
 <li><span class="indicator safe" data-tooltip="safe"> </span> <a href="#goArticleList">goArticleList</a></li>
 <li><span class="indicator safe" data-tooltip="safe"> </span> <a href="#goAuthor">goAuthor</a></li>
+<li><span class="indicator safe" data-tooltip="safe"> </span> <a href="#goAuthorList">goAuthorList</a></li>
+<li><span class="indicator safe" data-tooltip="safe"> </span> <a href="#goAuthStart">goAuthStart</a></li>
 <li><span class="indicator safe" data-tooltip="safe"> </span> <a href="#goCategory">goCategory</a></li>
 <li><span class="indicator safe" data-tooltip="safe"> </span> <a href="#goCategoryList">goCategoryList</a></li>
+<li><span class="indicator safe" data-tooltip="safe"> </span> <a href="#goHome">goHome</a></li>
 <li><span class="indicator safe" data-tooltip="safe"> </span> <a href="#goMedia">goMedia</a></li>
+<li><span class="indicator safe" data-tooltip="safe"> </span> <a href="#goOAuthConfigurationError">goOAuthConfigurationError</a></li>
+<li><span class="indicator safe" data-tooltip="safe"> </span> <a href="#goOAuthProvider">goOAuthProvider</a></li>
 <li><span class="indicator safe" data-tooltip="safe"> </span> <a href="#goTag">goTag</a></li>
 <li><span class="indicator safe" data-tooltip="safe"> </span> <a href="#goTagList">goTagList</a></li>
 <li><span class="indicator semantic" data-tooltip="semantic"> </span> <a href="#height">height</a></li>
+<li><span class="indicator semantic" data-tooltip="semantic"> </span> <a href="#Home">Home</a></li>
 <li><span class="indicator semantic" data-tooltip="semantic"> </span> <a href="#id">id</a></li>
 <li><span class="indicator semantic" data-tooltip="semantic"> </span> <a href="#Media">Media</a></li>
+<li><span class="indicator semantic" data-tooltip="semantic"> </span> <a href="#message">message</a></li>
 <li><span class="indicator semantic" data-tooltip="semantic"> </span> <a href="#mimeType">mimeType</a></li>
 <li><span class="indicator semantic" data-tooltip="semantic"> </span> <a href="#name">name</a></li>
+<li><span class="indicator semantic" data-tooltip="semantic"> </span> <a href="#OAuthConfigurationError">OAuthConfigurationError</a></li>
+<li><span class="indicator semantic" data-tooltip="semantic"> </span> <a href="#OAuthProvider">OAuthProvider</a></li>
 <li><span class="indicator semantic" data-tooltip="semantic"> </span> <a href="#page">page</a></li>
 <li><span class="indicator semantic" data-tooltip="semantic"> </span> <a href="#parentId">parentId</a></li>
 <li><span class="indicator semantic" data-tooltip="semantic"> </span> <a href="#perPage">perPage</a></li>
 <li><span class="indicator semantic" data-tooltip="semantic"> </span> <a href="#publishedAt">publishedAt</a></li>
+<li><span class="indicator semantic" data-tooltip="semantic"> </span> <a href="#saved">saved</a></li>
 <li><span class="indicator semantic" data-tooltip="semantic"> </span> <a href="#slug">slug</a></li>
 <li><span class="indicator semantic" data-tooltip="semantic"> </span> <a href="#status">status</a></li>
 <li><span class="indicator semantic" data-tooltip="semantic"> </span> <a href="#Tag">Tag</a></li>
 <li><span class="indicator semantic" data-tooltip="semantic"> </span> <a href="#tagId">tagId</a></li>
+<li><span class="indicator semantic" data-tooltip="semantic"> </span> <a href="#tagIds">tagIds</a></li>
 <li><span class="indicator semantic" data-tooltip="semantic"> </span> <a href="#TagList">TagList</a></li>
 <li><span class="indicator semantic" data-tooltip="semantic"> </span> <a href="#title">title</a></li>
 <li><span class="indicator semantic" data-tooltip="semantic"> </span> <a href="#totalCount">totalCount</a></li>
@@ -391,6 +436,381 @@ const setupModeSwitch = (switchId, graphId, otherGraphId) => {
         Idempotent
     </div>
 </div>
+
+<h3><a id="AdminArticleDeleteConfirm">AdminArticleDeleteConfirm</a></h3>
+
+<ul>
+<li>type: semantic</li>
+<li>title: Admin Article Delete Confirmation</li>
+<li>doc: Confirmation state before deleting an admin-owned article.</li>
+<li>tag: <a href="#tag-admin">admin</a>, <a href="#tag-article">article</a>, <a href="#tag-flow-publish">flow-publish</a></li>
+<li>descriptor</li>
+</ul>
+
+<table>
+<thead>
+<tr>
+  <th>id</th>
+  <th>type</th>
+  <th>title</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><a href="#id">id</a></td>
+  <td>semantic</td>
+  <td>Identifier</td>
+</tr>
+<tr>
+  <td><a href="#slug">slug</a></td>
+  <td>semantic</td>
+  <td>URL-safe Slug</td>
+</tr>
+<tr>
+  <td><a href="#title">title</a></td>
+  <td>semantic</td>
+  <td>Title</td>
+</tr>
+<tr>
+  <td><a href="#status">status</a></td>
+  <td>semantic</td>
+  <td>Lifecycle Status</td>
+</tr>
+<tr>
+  <td><a href="#goAdminArticleForm">goAdminArticleForm</a></td>
+  <td>safe</td>
+  <td>View Admin Article Form</td>
+</tr>
+<tr>
+  <td><a href="#goAdminArticleList">goAdminArticleList</a></td>
+  <td>safe</td>
+  <td>View Admin Article List</td>
+</tr>
+<tr>
+  <td><a href="#doLogout">doLogout</a></td>
+  <td>unsafe</td>
+  <td>Log Out</td>
+</tr>
+<tr>
+  <td><a href="#doAdminDeleteArticle">doAdminDeleteArticle</a></td>
+  <td>idempotent</td>
+  <td>Delete Article in Admin</td>
+</tr>
+</tbody>
+</table>
+
+<h3><a id="AdminArticleForm">AdminArticleForm</a></h3>
+
+<ul>
+<li>type: semantic</li>
+<li>title: Admin Article Form</li>
+<li>doc: Create/edit article form. Create requires slug/category; edit keeps slug/category immutable and returns here with a saved notice.</li>
+<li>tag: <a href="#tag-admin">admin</a>, <a href="#tag-article">article</a>, <a href="#tag-flow-publish">flow-publish</a></li>
+<li>descriptor</li>
+</ul>
+
+<table>
+<thead>
+<tr>
+  <th>id</th>
+  <th>type</th>
+  <th>title</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><a href="#id">id</a></td>
+  <td>semantic</td>
+  <td>Identifier</td>
+</tr>
+<tr>
+  <td><a href="#slug">slug</a></td>
+  <td>semantic</td>
+  <td>URL-safe Slug</td>
+</tr>
+<tr>
+  <td><a href="#title">title</a></td>
+  <td>semantic</td>
+  <td>Title</td>
+</tr>
+<tr>
+  <td><a href="#body">body</a></td>
+  <td>semantic</td>
+  <td>Article Body</td>
+</tr>
+<tr>
+  <td><a href="#excerpt">excerpt</a></td>
+  <td>semantic</td>
+  <td>Excerpt</td>
+</tr>
+<tr>
+  <td><a href="#status">status</a></td>
+  <td>semantic</td>
+  <td>Lifecycle Status</td>
+</tr>
+<tr>
+  <td><a href="#publishedAt">publishedAt</a></td>
+  <td>semantic</td>
+  <td>Published At</td>
+</tr>
+<tr>
+  <td><a href="#categoryId">categoryId</a></td>
+  <td>semantic</td>
+  <td>Category ID (FK)</td>
+</tr>
+<tr>
+  <td><a href="#tagIds">tagIds</a></td>
+  <td>semantic</td>
+  <td>Selected Tag IDs</td>
+</tr>
+<tr>
+  <td><a href="#saved">saved</a></td>
+  <td>semantic</td>
+  <td>Save Notice</td>
+</tr>
+<tr>
+  <td><a href="#message">message</a></td>
+  <td>semantic</td>
+  <td>User-Facing Message</td>
+</tr>
+<tr>
+  <td><a href="#goAdminIndex">goAdminIndex</a></td>
+  <td>safe</td>
+  <td>View Admin Home</td>
+</tr>
+<tr>
+  <td><a href="#goAdminArticleList">goAdminArticleList</a></td>
+  <td>safe</td>
+  <td>View Admin Article List</td>
+</tr>
+<tr>
+  <td><a href="#goArticle">goArticle</a></td>
+  <td>safe</td>
+  <td>View Article</td>
+</tr>
+<tr>
+  <td><a href="#goAdminArticleDeleteConfirm">goAdminArticleDeleteConfirm</a></td>
+  <td>safe</td>
+  <td>Confirm Admin Article Delete</td>
+</tr>
+<tr>
+  <td><a href="#doAdminCreateArticle">doAdminCreateArticle</a></td>
+  <td>unsafe</td>
+  <td>Create Article in Admin</td>
+</tr>
+<tr>
+  <td><a href="#doLogout">doLogout</a></td>
+  <td>unsafe</td>
+  <td>Log Out</td>
+</tr>
+<tr>
+  <td><a href="#doAdminUpdateArticle">doAdminUpdateArticle</a></td>
+  <td>idempotent</td>
+  <td>Update Article in Admin</td>
+</tr>
+</tbody>
+</table>
+
+<h3><a id="AdminArticleList">AdminArticleList</a></h3>
+
+<ul>
+<li>type: semantic</li>
+<li>title: Admin Article List</li>
+<li>doc: Authenticated article administration list, scoped to the signed-in admin author.</li>
+<li>tag: <a href="#tag-admin">admin</a>, <a href="#tag-article">article</a>, <a href="#tag-flow-admin">flow-admin</a></li>
+<li>descriptor</li>
+</ul>
+
+<table>
+<thead>
+<tr>
+  <th>id</th>
+  <th>type</th>
+  <th>title</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><a href="#id">id</a></td>
+  <td>semantic</td>
+  <td>Identifier</td>
+</tr>
+<tr>
+  <td><a href="#slug">slug</a></td>
+  <td>semantic</td>
+  <td>URL-safe Slug</td>
+</tr>
+<tr>
+  <td><a href="#title">title</a></td>
+  <td>semantic</td>
+  <td>Title</td>
+</tr>
+<tr>
+  <td><a href="#status">status</a></td>
+  <td>semantic</td>
+  <td>Lifecycle Status</td>
+</tr>
+<tr>
+  <td><a href="#page">page</a></td>
+  <td>semantic</td>
+  <td>Page Number</td>
+</tr>
+<tr>
+  <td><a href="#perPage">perPage</a></td>
+  <td>semantic</td>
+  <td>Per-Page Count</td>
+</tr>
+<tr>
+  <td><a href="#deleted">deleted</a></td>
+  <td>semantic</td>
+  <td>Delete Notice</td>
+</tr>
+<tr>
+  <td><a href="#goAdminIndex">goAdminIndex</a></td>
+  <td>safe</td>
+  <td>View Admin Home</td>
+</tr>
+<tr>
+  <td><a href="#goAdminArticleList">goAdminArticleList</a></td>
+  <td>safe</td>
+  <td>View Admin Article List</td>
+</tr>
+<tr>
+  <td><a href="#goAdminArticleForm">goAdminArticleForm</a></td>
+  <td>safe</td>
+  <td>View Admin Article Form</td>
+</tr>
+<tr>
+  <td><a href="#goAdminArticleDeleteConfirm">goAdminArticleDeleteConfirm</a></td>
+  <td>safe</td>
+  <td>Confirm Admin Article Delete</td>
+</tr>
+<tr>
+  <td><a href="#goArticle">goArticle</a></td>
+  <td>safe</td>
+  <td>View Article</td>
+</tr>
+<tr>
+  <td><a href="#goHome">goHome</a></td>
+  <td>safe</td>
+  <td>Go Home</td>
+</tr>
+<tr>
+  <td><a href="#doLogout">doLogout</a></td>
+  <td>unsafe</td>
+  <td>Log Out</td>
+</tr>
+</tbody>
+</table>
+
+<h3><a id="AdminIndex">AdminIndex</a></h3>
+
+<ul>
+<li>type: semantic</li>
+<li>title: Admin Home</li>
+<li>doc: Authenticated admin landing page. Visitors attempting to enter an admin state are redirected to AdminLogin.</li>
+<li>tag: <a href="#tag-admin">admin</a>, <a href="#tag-flow-admin">flow-admin</a></li>
+<li>descriptor</li>
+</ul>
+
+<table>
+<thead>
+<tr>
+  <th>id</th>
+  <th>type</th>
+  <th>title</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><a href="#name">name</a></td>
+  <td>semantic</td>
+  <td>Name</td>
+</tr>
+<tr>
+  <td><a href="#email">email</a></td>
+  <td>semantic</td>
+  <td>Email</td>
+</tr>
+<tr>
+  <td><a href="#authorId">authorId</a></td>
+  <td>semantic</td>
+  <td>Author ID (FK)</td>
+</tr>
+<tr>
+  <td><a href="#goAdminArticleList">goAdminArticleList</a></td>
+  <td>safe</td>
+  <td>View Admin Article List</td>
+</tr>
+<tr>
+  <td><a href="#goAdminArticleForm">goAdminArticleForm</a></td>
+  <td>safe</td>
+  <td>View Admin Article Form</td>
+</tr>
+<tr>
+  <td><a href="#goHome">goHome</a></td>
+  <td>safe</td>
+  <td>Go Home</td>
+</tr>
+<tr>
+  <td><a href="#doLogout">doLogout</a></td>
+  <td>unsafe</td>
+  <td>Log Out</td>
+</tr>
+</tbody>
+</table>
+
+<h3><a id="AdminLogin">AdminLogin</a></h3>
+
+<ul>
+<li>type: semantic</li>
+<li>title: Admin Login</li>
+<li>doc: Page/Admin sign-in entry. With OAuth configured it redirects to the provider; without configuration it yields OAuthConfigurationError.</li>
+<li>tag: <a href="#tag-admin">admin</a>, <a href="#tag-auth">auth</a>, <a href="#tag-flow-login">flow-login</a></li>
+<li>descriptor</li>
+</ul>
+
+<table>
+<thead>
+<tr>
+  <th>id</th>
+  <th>type</th>
+  <th>title</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><a href="#authState">authState</a></td>
+  <td>semantic</td>
+  <td>OAuth State</td>
+</tr>
+<tr>
+  <td><a href="#authorizationUrl">authorizationUrl</a></td>
+  <td>semantic</td>
+  <td>OAuth Authorization URL</td>
+</tr>
+<tr>
+  <td><a href="#message">message</a></td>
+  <td>semantic</td>
+  <td>User-Facing Message</td>
+</tr>
+<tr>
+  <td><a href="#goOAuthProvider">goOAuthProvider</a></td>
+  <td>safe</td>
+  <td>Go to OAuth Provider</td>
+</tr>
+<tr>
+  <td><a href="#goOAuthConfigurationError">goOAuthConfigurationError</a></td>
+  <td>safe</td>
+  <td>Show OAuth Configuration Error</td>
+</tr>
+<tr>
+  <td><a href="#goHome">goHome</a></td>
+  <td>safe</td>
+  <td>Go Home</td>
+</tr>
+</tbody>
+</table>
 
 <h3><a id="alt">alt</a></h3>
 
@@ -495,6 +915,11 @@ const setupModeSwitch = (switchId, graphId, otherGraphId) => {
   <td>View Category</td>
 </tr>
 <tr>
+  <td><a href="#goHome">goHome</a></td>
+  <td>safe</td>
+  <td>Go Home</td>
+</tr>
+<tr>
   <td><a href="#doUpdateArticle">doUpdateArticle</a></td>
   <td>idempotent</td>
   <td>Update Article</td>
@@ -503,6 +928,63 @@ const setupModeSwitch = (switchId, graphId, otherGraphId) => {
   <td><a href="#doDeleteArticle">doDeleteArticle</a></td>
   <td>idempotent</td>
   <td>Delete Article</td>
+</tr>
+</tbody>
+</table>
+
+<h3><a id="ArticleFeed">ArticleFeed</a></h3>
+
+<ul>
+<li>type: semantic</li>
+<li>title: Article Feed</li>
+<li>doc: Machine-readable article feed projection for published article selections.</li>
+<li>tag: <a href="#tag-article">article</a>, <a href="#tag-public">public</a>, <a href="#tag-feed">feed</a></li>
+<li>descriptor</li>
+</ul>
+
+<table>
+<thead>
+<tr>
+  <th>id</th>
+  <th>type</th>
+  <th>title</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><a href="#id">id</a></td>
+  <td>semantic</td>
+  <td>Identifier</td>
+</tr>
+<tr>
+  <td><a href="#slug">slug</a></td>
+  <td>semantic</td>
+  <td>URL-safe Slug</td>
+</tr>
+<tr>
+  <td><a href="#title">title</a></td>
+  <td>semantic</td>
+  <td>Title</td>
+</tr>
+<tr>
+  <td><a href="#excerpt">excerpt</a></td>
+  <td>semantic</td>
+  <td>Excerpt</td>
+</tr>
+<tr>
+  <td><a href="#publishedAt">publishedAt</a></td>
+  <td>semantic</td>
+  <td>Published At</td>
+</tr>
+<tr>
+  <td><a href="#goArticle">goArticle</a></td>
+  <td>safe</td>
+  <td>View Article</td>
+</tr>
+<tr>
+  <td><a href="#goHome">goHome</a></td>
+  <td>safe</td>
+  <td>Go Home</td>
 </tr>
 </tbody>
 </table>
@@ -584,9 +1066,79 @@ const setupModeSwitch = (switchId, graphId, otherGraphId) => {
   <td>View Article</td>
 </tr>
 <tr>
+  <td><a href="#goHome">goHome</a></td>
+  <td>safe</td>
+  <td>Go Home</td>
+</tr>
+<tr>
+  <td><a href="#goAuthorList">goAuthorList</a></td>
+  <td>safe</td>
+  <td>View Author List</td>
+</tr>
+<tr>
+  <td><a href="#goCategoryList">goCategoryList</a></td>
+  <td>safe</td>
+  <td>View Category List</td>
+</tr>
+<tr>
+  <td><a href="#goTagList">goTagList</a></td>
+  <td>safe</td>
+  <td>View Tag List</td>
+</tr>
+<tr>
+  <td><a href="#goArticleFeed">goArticleFeed</a></td>
+  <td>safe</td>
+  <td>View Article Feed</td>
+</tr>
+<tr>
   <td><a href="#doCreateArticle">doCreateArticle</a></td>
   <td>unsafe</td>
   <td>Create Article</td>
+</tr>
+</tbody>
+</table>
+
+<h3><a id="authCode">authCode</a></h3>
+
+<ul>
+<li>type: semantic</li>
+<li>title: OAuth Authorization Code</li>
+<li>doc: Opaque code returned by the OAuth provider callback.</li>
+</ul>
+
+<h3><a id="AuthenticatedUser">AuthenticatedUser</a></h3>
+
+<ul>
+<li>type: semantic</li>
+<li>title: Authenticated User</li>
+<li>doc: App API response after exchanging an OAuth code for a user identity.</li>
+<li>tag: <a href="#tag-auth">auth</a>, <a href="#tag-app">app</a></li>
+<li>descriptor</li>
+</ul>
+
+<table>
+<thead>
+<tr>
+  <th>id</th>
+  <th>type</th>
+  <th>title</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><a href="#id">id</a></td>
+  <td>semantic</td>
+  <td>Identifier</td>
+</tr>
+<tr>
+  <td><a href="#email">email</a></td>
+  <td>semantic</td>
+  <td>Email</td>
+</tr>
+<tr>
+  <td><a href="#name">name</a></td>
+  <td>semantic</td>
+  <td>Name</td>
 </tr>
 </tbody>
 </table>
@@ -635,6 +1187,16 @@ const setupModeSwitch = (switchId, graphId, otherGraphId) => {
   <td>View Article List</td>
 </tr>
 <tr>
+  <td><a href="#goHome">goHome</a></td>
+  <td>safe</td>
+  <td>Go Home</td>
+</tr>
+<tr>
+  <td><a href="#goAuthorList">goAuthorList</a></td>
+  <td>safe</td>
+  <td>View Author List</td>
+</tr>
+<tr>
   <td><a href="#doUpdateAuthor">doUpdateAuthor</a></td>
   <td>idempotent</td>
   <td>Update Author</td>
@@ -647,6 +1209,111 @@ const setupModeSwitch = (switchId, graphId, otherGraphId) => {
 <ul>
 <li>type: semantic</li>
 <li>title: Author ID (FK)</li>
+</ul>
+
+<h3><a id="authorizationUrl">authorizationUrl</a></h3>
+
+<ul>
+<li>type: semantic</li>
+<li>title: OAuth Authorization URL</li>
+<li>doc: URL where the client or browser starts the OAuth authorization step.</li>
+</ul>
+
+<h3><a id="AuthorList">AuthorList</a></h3>
+
+<ul>
+<li>type: semantic</li>
+<li>title: Author List</li>
+<li>doc: Public list of authors.</li>
+<li>tag: <a href="#tag-author">author</a>, <a href="#tag-public">public</a>, <a href="#tag-flow-browse">flow-browse</a></li>
+<li>descriptor</li>
+</ul>
+
+<table>
+<thead>
+<tr>
+  <th>id</th>
+  <th>type</th>
+  <th>title</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><a href="#id">id</a></td>
+  <td>semantic</td>
+  <td>Identifier</td>
+</tr>
+<tr>
+  <td><a href="#name">name</a></td>
+  <td>semantic</td>
+  <td>Name</td>
+</tr>
+<tr>
+  <td><a href="#email">email</a></td>
+  <td>semantic</td>
+  <td>Email</td>
+</tr>
+<tr>
+  <td><a href="#bio">bio</a></td>
+  <td>semantic</td>
+  <td>Biography</td>
+</tr>
+<tr>
+  <td><a href="#goAuthor">goAuthor</a></td>
+  <td>safe</td>
+  <td>View Author</td>
+</tr>
+<tr>
+  <td><a href="#goHome">goHome</a></td>
+  <td>safe</td>
+  <td>Go Home</td>
+</tr>
+</tbody>
+</table>
+
+<h3><a id="AuthStart">AuthStart</a></h3>
+
+<ul>
+<li>type: semantic</li>
+<li>title: Auth Start</li>
+<li>doc: App API state that exposes the OAuth authorization URL.</li>
+<li>tag: <a href="#tag-auth">auth</a>, <a href="#tag-app">app</a></li>
+<li>descriptor</li>
+</ul>
+
+<table>
+<thead>
+<tr>
+  <th>id</th>
+  <th>type</th>
+  <th>title</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><a href="#authorizationUrl">authorizationUrl</a></td>
+  <td>semantic</td>
+  <td>OAuth Authorization URL</td>
+</tr>
+<tr>
+  <td><a href="#goOAuthProvider">goOAuthProvider</a></td>
+  <td>safe</td>
+  <td>Go to OAuth Provider</td>
+</tr>
+<tr>
+  <td><a href="#doExchangeAuthCode">doExchangeAuthCode</a></td>
+  <td>unsafe</td>
+  <td>Exchange Auth Code</td>
+</tr>
+</tbody>
+</table>
+
+<h3><a id="authState">authState</a></h3>
+
+<ul>
+<li>type: semantic</li>
+<li>title: OAuth State</li>
+<li>doc: CSRF protection state issued before redirecting to the OAuth provider.</li>
 </ul>
 
 <h3><a id="bio">bio</a></h3>
@@ -719,6 +1386,11 @@ const setupModeSwitch = (switchId, graphId, otherGraphId) => {
   <td>View Article List</td>
 </tr>
 <tr>
+  <td><a href="#goHome">goHome</a></td>
+  <td>safe</td>
+  <td>Go Home</td>
+</tr>
+<tr>
   <td><a href="#doUpdateCategory">doUpdateCategory</a></td>
   <td>idempotent</td>
   <td>Update Category</td>
@@ -782,12 +1454,25 @@ const setupModeSwitch = (switchId, graphId, otherGraphId) => {
   <td>View Category</td>
 </tr>
 <tr>
+  <td><a href="#goHome">goHome</a></td>
+  <td>safe</td>
+  <td>Go Home</td>
+</tr>
+<tr>
   <td><a href="#doCreateCategory">doCreateCategory</a></td>
   <td>unsafe</td>
   <td>Create Category</td>
 </tr>
 </tbody>
 </table>
+
+<h3><a id="deleted">deleted</a></h3>
+
+<ul>
+<li>type: semantic</li>
+<li>title: Delete Notice</li>
+<li>doc: Page/Admin notice indicating that an article was deleted.</li>
+</ul>
 
 <h3><a id="description">description</a></h3>
 
@@ -796,6 +1481,188 @@ const setupModeSwitch = (switchId, graphId, otherGraphId) => {
 <li>title: Description</li>
 <li>def: <a href="https://schema.org/description">https://schema.org/description</a></li>
 </ul>
+
+<h3><a id="doAdminCreateArticle">doAdminCreateArticle</a></h3>
+
+<ul>
+<li>type: unsafe</li>
+<li>title: Create Article in Admin</li>
+<li>doc: Submit the admin create form, create an article for the signed-in author, and return to the edit form with a created notice.</li>
+<li>tag: <a href="#tag-admin">admin</a>, <a href="#tag-article">article</a>, <a href="#tag-flow-publish">flow-publish</a></li>
+<li>rt: <a href="#AdminArticleForm">AdminArticleForm</a></li>
+<li>descriptor</li>
+</ul>
+
+<table>
+<thead>
+<tr>
+  <th>id</th>
+  <th>type</th>
+  <th>title</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><a href="#slug">slug</a></td>
+  <td>semantic</td>
+  <td>URL-safe Slug</td>
+</tr>
+<tr>
+  <td><a href="#title">title</a></td>
+  <td>semantic</td>
+  <td>Title</td>
+</tr>
+<tr>
+  <td><a href="#body">body</a></td>
+  <td>semantic</td>
+  <td>Article Body</td>
+</tr>
+<tr>
+  <td><a href="#excerpt">excerpt</a></td>
+  <td>semantic</td>
+  <td>Excerpt</td>
+</tr>
+<tr>
+  <td><a href="#status">status</a></td>
+  <td>semantic</td>
+  <td>Lifecycle Status</td>
+</tr>
+<tr>
+  <td><a href="#publishedAt">publishedAt</a></td>
+  <td>semantic</td>
+  <td>Published At</td>
+</tr>
+<tr>
+  <td><a href="#categoryId">categoryId</a></td>
+  <td>semantic</td>
+  <td>Category ID (FK)</td>
+</tr>
+<tr>
+  <td><a href="#tagIds">tagIds</a></td>
+  <td>semantic</td>
+  <td>Selected Tag IDs</td>
+</tr>
+</tbody>
+</table>
+
+<h3><a id="doAdminDeleteArticle">doAdminDeleteArticle</a></h3>
+
+<ul>
+<li>type: idempotent</li>
+<li>title: Delete Article in Admin</li>
+<li>doc: Delete an admin-owned article and return to the admin article list with a deleted notice.</li>
+<li>tag: <a href="#tag-admin">admin</a>, <a href="#tag-article">article</a>, <a href="#tag-flow-publish">flow-publish</a></li>
+<li>rt: <a href="#AdminArticleList">AdminArticleList</a></li>
+<li>descriptor</li>
+</ul>
+
+<table>
+<thead>
+<tr>
+  <th>id</th>
+  <th>type</th>
+  <th>title</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><a href="#id">id</a></td>
+  <td>semantic</td>
+  <td>Identifier</td>
+</tr>
+</tbody>
+</table>
+
+<h3><a id="doAdminUpdateArticle">doAdminUpdateArticle</a></h3>
+
+<ul>
+<li>type: idempotent</li>
+<li>title: Update Article in Admin</li>
+<li>doc: Submit the admin edit form, update an owned article, and return to the edit form with an updated notice.</li>
+<li>tag: <a href="#tag-admin">admin</a>, <a href="#tag-article">article</a>, <a href="#tag-flow-publish">flow-publish</a></li>
+<li>rt: <a href="#AdminArticleForm">AdminArticleForm</a></li>
+<li>descriptor</li>
+</ul>
+
+<table>
+<thead>
+<tr>
+  <th>id</th>
+  <th>type</th>
+  <th>title</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><a href="#id">id</a></td>
+  <td>semantic</td>
+  <td>Identifier</td>
+</tr>
+<tr>
+  <td><a href="#title">title</a></td>
+  <td>semantic</td>
+  <td>Title</td>
+</tr>
+<tr>
+  <td><a href="#body">body</a></td>
+  <td>semantic</td>
+  <td>Article Body</td>
+</tr>
+<tr>
+  <td><a href="#excerpt">excerpt</a></td>
+  <td>semantic</td>
+  <td>Excerpt</td>
+</tr>
+<tr>
+  <td><a href="#status">status</a></td>
+  <td>semantic</td>
+  <td>Lifecycle Status</td>
+</tr>
+<tr>
+  <td><a href="#publishedAt">publishedAt</a></td>
+  <td>semantic</td>
+  <td>Published At</td>
+</tr>
+<tr>
+  <td><a href="#tagIds">tagIds</a></td>
+  <td>semantic</td>
+  <td>Selected Tag IDs</td>
+</tr>
+</tbody>
+</table>
+
+<h3><a id="doCompleteLogin">doCompleteLogin</a></h3>
+
+<ul>
+<li>type: unsafe</li>
+<li>title: Complete Admin Login</li>
+<li>doc: Consume OAuth callback code/state, match the Google email to an Author, and create the admin session.</li>
+<li>tag: <a href="#tag-admin">admin</a>, <a href="#tag-auth">auth</a>, <a href="#tag-flow-login">flow-login</a></li>
+<li>rt: <a href="#AdminIndex">AdminIndex</a></li>
+<li>descriptor</li>
+</ul>
+
+<table>
+<thead>
+<tr>
+  <th>id</th>
+  <th>type</th>
+  <th>title</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><a href="#authCode">authCode</a></td>
+  <td>semantic</td>
+  <td>OAuth Authorization Code</td>
+</tr>
+<tr>
+  <td><a href="#authState">authState</a></td>
+  <td>semantic</td>
+  <td>OAuth State</td>
+</tr>
+</tbody>
+</table>
 
 <h3><a id="doCreateArticle">doCreateArticle</a></h3>
 
@@ -860,6 +1727,7 @@ const setupModeSwitch = (switchId, graphId, otherGraphId) => {
 <ul>
 <li>type: unsafe</li>
 <li>title: Create Author</li>
+<li>doc: Create an author and return the created author detail.</li>
 <li>tag: <a href="#tag-author">author</a></li>
 <li>rt: <a href="#Author">Author</a></li>
 <li>descriptor</li>
@@ -897,6 +1765,7 @@ const setupModeSwitch = (switchId, graphId, otherGraphId) => {
 <ul>
 <li>type: unsafe</li>
 <li>title: Create Category</li>
+<li>doc: Create a category and return the created category detail.</li>
 <li>tag: <a href="#tag-category">category</a></li>
 <li>rt: <a href="#Category">Category</a></li>
 <li>descriptor</li>
@@ -939,6 +1808,7 @@ const setupModeSwitch = (switchId, graphId, otherGraphId) => {
 <ul>
 <li>type: unsafe</li>
 <li>title: Upload Media</li>
+<li>doc: Register a media asset and return the created media detail.</li>
 <li>tag: <a href="#tag-media">media</a></li>
 <li>rt: <a href="#Media">Media</a></li>
 <li>descriptor</li>
@@ -991,6 +1861,7 @@ const setupModeSwitch = (switchId, graphId, otherGraphId) => {
 <ul>
 <li>type: unsafe</li>
 <li>title: Create Tag</li>
+<li>doc: Create a tag and return the created tag detail.</li>
 <li>tag: <a href="#tag-tag">tag</a></li>
 <li>rt: <a href="#Tag">Tag</a></li>
 <li>descriptor</li>
@@ -1023,6 +1894,7 @@ const setupModeSwitch = (switchId, graphId, otherGraphId) => {
 <ul>
 <li>type: idempotent</li>
 <li>title: Delete Article</li>
+<li>doc: Delete an existing article and return to the article collection.</li>
 <li>tag: <a href="#tag-article">article</a>, <a href="#tag-flow-publish">flow-publish</a></li>
 <li>rt: <a href="#ArticleList">ArticleList</a></li>
 <li>descriptor</li>
@@ -1050,6 +1922,7 @@ const setupModeSwitch = (switchId, graphId, otherGraphId) => {
 <ul>
 <li>type: idempotent</li>
 <li>title: Delete Category</li>
+<li>doc: Delete a category and return to the category collection.</li>
 <li>tag: <a href="#tag-category">category</a></li>
 <li>rt: <a href="#CategoryList">CategoryList</a></li>
 <li>descriptor</li>
@@ -1077,6 +1950,7 @@ const setupModeSwitch = (switchId, graphId, otherGraphId) => {
 <ul>
 <li>type: idempotent</li>
 <li>title: Delete Media</li>
+<li>doc: Delete a media asset.</li>
 <li>tag: <a href="#tag-media">media</a></li>
 <li>rt: <a href="#Media">Media</a></li>
 <li>descriptor</li>
@@ -1104,6 +1978,7 @@ const setupModeSwitch = (switchId, graphId, otherGraphId) => {
 <ul>
 <li>type: idempotent</li>
 <li>title: Delete Tag</li>
+<li>doc: Delete a tag and return to the tag collection.</li>
 <li>tag: <a href="#tag-tag">tag</a></li>
 <li>rt: <a href="#TagList">TagList</a></li>
 <li>descriptor</li>
@@ -1126,11 +2001,55 @@ const setupModeSwitch = (switchId, graphId, otherGraphId) => {
 </tbody>
 </table>
 
+<h3><a id="doExchangeAuthCode">doExchangeAuthCode</a></h3>
+
+<ul>
+<li>type: unsafe</li>
+<li>title: Exchange Auth Code</li>
+<li>doc: Exchange an OAuth code/state pair for an authenticated user representation.</li>
+<li>tag: <a href="#tag-auth">auth</a>, <a href="#tag-app">app</a>, <a href="#tag-flow-login">flow-login</a></li>
+<li>rt: <a href="#AuthenticatedUser">AuthenticatedUser</a></li>
+<li>descriptor</li>
+</ul>
+
+<table>
+<thead>
+<tr>
+  <th>id</th>
+  <th>type</th>
+  <th>title</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><a href="#authCode">authCode</a></td>
+  <td>semantic</td>
+  <td>OAuth Authorization Code</td>
+</tr>
+<tr>
+  <td><a href="#authState">authState</a></td>
+  <td>semantic</td>
+  <td>OAuth State</td>
+</tr>
+</tbody>
+</table>
+
+<h3><a id="doLogout">doLogout</a></h3>
+
+<ul>
+<li>type: unsafe</li>
+<li>title: Log Out</li>
+<li>doc: Clear the admin session and return to the public home page.</li>
+<li>tag: <a href="#tag-admin">admin</a>, <a href="#tag-auth">auth</a>, <a href="#tag-flow-login">flow-login</a></li>
+<li>rt: <a href="#Home">Home</a></li>
+</ul>
+
 <h3><a id="doUpdateArticle">doUpdateArticle</a></h3>
 
 <ul>
 <li>type: idempotent</li>
 <li>title: Update Article</li>
+<li>doc: Update an existing article representation in the App API.</li>
 <li>tag: <a href="#tag-article">article</a>, <a href="#tag-flow-publish">flow-publish</a></li>
 <li>rt: <a href="#Article">Article</a></li>
 <li>descriptor</li>
@@ -1178,6 +2097,7 @@ const setupModeSwitch = (switchId, graphId, otherGraphId) => {
 <ul>
 <li>type: idempotent</li>
 <li>title: Update Author</li>
+<li>doc: Update an existing author.</li>
 <li>tag: <a href="#tag-author">author</a></li>
 <li>rt: <a href="#Author">Author</a></li>
 <li>descriptor</li>
@@ -1220,6 +2140,7 @@ const setupModeSwitch = (switchId, graphId, otherGraphId) => {
 <ul>
 <li>type: idempotent</li>
 <li>title: Update Category</li>
+<li>doc: Update an existing category.</li>
 <li>tag: <a href="#tag-category">category</a></li>
 <li>rt: <a href="#Category">Category</a></li>
 <li>descriptor</li>
@@ -1280,6 +2201,120 @@ const setupModeSwitch = (switchId, graphId, otherGraphId) => {
 <li>title: Filename</li>
 </ul>
 
+<h3><a id="goAdminArticleDeleteConfirm">goAdminArticleDeleteConfirm</a></h3>
+
+<ul>
+<li>type: safe</li>
+<li>title: Confirm Admin Article Delete</li>
+<li>doc: Open the delete confirmation for an admin-owned article.</li>
+<li>tag: <a href="#tag-admin">admin</a>, <a href="#tag-article">article</a>, <a href="#tag-flow-publish">flow-publish</a></li>
+<li>rt: <a href="#AdminArticleDeleteConfirm">AdminArticleDeleteConfirm</a></li>
+<li>descriptor</li>
+</ul>
+
+<table>
+<thead>
+<tr>
+  <th>id</th>
+  <th>type</th>
+  <th>title</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><a href="#id">id</a></td>
+  <td>semantic</td>
+  <td>Identifier</td>
+</tr>
+</tbody>
+</table>
+
+<h3><a id="goAdminArticleForm">goAdminArticleForm</a></h3>
+
+<ul>
+<li>type: safe</li>
+<li>title: View Admin Article Form</li>
+<li>doc: Open the article create form, or edit form when id is provided.</li>
+<li>tag: <a href="#tag-admin">admin</a>, <a href="#tag-article">article</a>, <a href="#tag-flow-publish">flow-publish</a></li>
+<li>rt: <a href="#AdminArticleForm">AdminArticleForm</a></li>
+<li>descriptor</li>
+</ul>
+
+<table>
+<thead>
+<tr>
+  <th>id</th>
+  <th>type</th>
+  <th>title</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><a href="#id">id</a></td>
+  <td>semantic</td>
+  <td>Identifier</td>
+</tr>
+</tbody>
+</table>
+
+<h3><a id="goAdminArticleList">goAdminArticleList</a></h3>
+
+<ul>
+<li>type: safe</li>
+<li>title: View Admin Article List</li>
+<li>doc: List articles owned by the signed-in admin, with optional status filter and pagination.</li>
+<li>tag: <a href="#tag-admin">admin</a>, <a href="#tag-article">article</a>, <a href="#tag-flow-admin">flow-admin</a></li>
+<li>rt: <a href="#AdminArticleList">AdminArticleList</a></li>
+<li>descriptor</li>
+</ul>
+
+<table>
+<thead>
+<tr>
+  <th>id</th>
+  <th>type</th>
+  <th>title</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><a href="#status">status</a></td>
+  <td>semantic</td>
+  <td>Lifecycle Status</td>
+</tr>
+<tr>
+  <td><a href="#page">page</a></td>
+  <td>semantic</td>
+  <td>Page Number</td>
+</tr>
+<tr>
+  <td><a href="#perPage">perPage</a></td>
+  <td>semantic</td>
+  <td>Per-Page Count</td>
+</tr>
+</tbody>
+</table>
+
+<h3><a id="goAdminIndex">goAdminIndex</a></h3>
+
+<ul>
+<li>type: safe</li>
+<li>title: View Admin Home</li>
+<li>doc: Open the admin landing page. Requires an admin session; visitors are redirected to AdminLogin.</li>
+<li>tag: <a href="#tag-admin">admin</a>, <a href="#tag-flow-admin">flow-admin</a></li>
+<li>rt: <a href="#AdminIndex">AdminIndex</a></li>
+</ul>
+
+<h3><a id="goAdminLogin">goAdminLogin</a></h3>
+
+<ul>
+<li>type: safe</li>
+<li>title: Go to Admin Login</li>
+<li>doc: Enter the admin sign-in flow. Unauthenticated admin access redirects here.</li>
+<li>tag: <a href="#tag-admin">admin</a>, <a href="#tag-auth">auth</a>, <a href="#tag-flow-login">flow-login</a></li>
+<li>rt: <a href="#AdminLogin">AdminLogin</a></li>
+</ul>
+
 <h3><a id="goArticle">goArticle</a></h3>
 
 <ul>
@@ -1307,6 +2342,16 @@ const setupModeSwitch = (switchId, graphId, otherGraphId) => {
 </tr>
 </tbody>
 </table>
+
+<h3><a id="goArticleFeed">goArticleFeed</a></h3>
+
+<ul>
+<li>type: safe</li>
+<li>title: View Article Feed</li>
+<li>doc: Retrieve the article feed projection.</li>
+<li>tag: <a href="#tag-article">article</a>, <a href="#tag-public">public</a>, <a href="#tag-feed">feed</a></li>
+<li>rt: <a href="#ArticleFeed">ArticleFeed</a></li>
+</ul>
 
 <h3><a id="goArticleList">goArticleList</a></h3>
 
@@ -1361,6 +2406,7 @@ const setupModeSwitch = (switchId, graphId, otherGraphId) => {
 <ul>
 <li>type: safe</li>
 <li>title: View Author</li>
+<li>doc: Retrieve one author by id.</li>
 <li>tag: <a href="#tag-author">author</a></li>
 <li>rt: <a href="#Author">Author</a></li>
 <li>descriptor</li>
@@ -1383,11 +2429,32 @@ const setupModeSwitch = (switchId, graphId, otherGraphId) => {
 </tbody>
 </table>
 
+<h3><a id="goAuthorList">goAuthorList</a></h3>
+
+<ul>
+<li>type: safe</li>
+<li>title: View Author List</li>
+<li>doc: Browse all public authors.</li>
+<li>tag: <a href="#tag-author">author</a>, <a href="#tag-public">public</a>, <a href="#tag-flow-browse">flow-browse</a></li>
+<li>rt: <a href="#AuthorList">AuthorList</a></li>
+</ul>
+
+<h3><a id="goAuthStart">goAuthStart</a></h3>
+
+<ul>
+<li>type: safe</li>
+<li>title: Start App Auth</li>
+<li>doc: Request the App API OAuth authorization URL.</li>
+<li>tag: <a href="#tag-auth">auth</a>, <a href="#tag-app">app</a></li>
+<li>rt: <a href="#AuthStart">AuthStart</a></li>
+</ul>
+
 <h3><a id="goCategory">goCategory</a></h3>
 
 <ul>
 <li>type: safe</li>
 <li>title: View Category</li>
+<li>doc: Retrieve one category by id.</li>
 <li>tag: <a href="#tag-category">category</a></li>
 <li>rt: <a href="#Category">Category</a></li>
 <li>descriptor</li>
@@ -1415,8 +2482,19 @@ const setupModeSwitch = (switchId, graphId, otherGraphId) => {
 <ul>
 <li>type: safe</li>
 <li>title: View Category List</li>
+<li>doc: Browse all categories.</li>
 <li>tag: <a href="#tag-category">category</a>, <a href="#tag-flow-browse">flow-browse</a></li>
 <li>rt: <a href="#CategoryList">CategoryList</a></li>
+</ul>
+
+<h3><a id="goHome">goHome</a></h3>
+
+<ul>
+<li>type: safe</li>
+<li>title: Go Home</li>
+<li>doc: Return to the public CMS home page.</li>
+<li>tag: <a href="#tag-public">public</a>, <a href="#tag-flow-browse">flow-browse</a></li>
+<li>rt: <a href="#Home">Home</a></li>
 </ul>
 
 <h3><a id="goMedia">goMedia</a></h3>
@@ -1424,6 +2502,7 @@ const setupModeSwitch = (switchId, graphId, otherGraphId) => {
 <ul>
 <li>type: safe</li>
 <li>title: View Media</li>
+<li>doc: Retrieve one media asset by id.</li>
 <li>tag: <a href="#tag-media">media</a></li>
 <li>rt: <a href="#Media">Media</a></li>
 <li>descriptor</li>
@@ -1446,11 +2525,50 @@ const setupModeSwitch = (switchId, graphId, otherGraphId) => {
 </tbody>
 </table>
 
+<h3><a id="goOAuthConfigurationError">goOAuthConfigurationError</a></h3>
+
+<ul>
+<li>type: safe</li>
+<li>title: Show OAuth Configuration Error</li>
+<li>doc: System branch when OAuth provider settings are missing.</li>
+<li>tag: <a href="#tag-admin">admin</a>, <a href="#tag-auth">auth</a>, <a href="#tag-error">error</a></li>
+<li>rt: <a href="#OAuthConfigurationError">OAuthConfigurationError</a></li>
+</ul>
+
+<h3><a id="goOAuthProvider">goOAuthProvider</a></h3>
+
+<ul>
+<li>type: safe</li>
+<li>title: Go to OAuth Provider</li>
+<li>doc: Redirect the browser to the configured Google OAuth provider.</li>
+<li>tag: <a href="#tag-auth">auth</a>, <a href="#tag-external">external</a>, <a href="#tag-flow-login">flow-login</a></li>
+<li>rt: <a href="#OAuthProvider">OAuthProvider</a></li>
+<li>descriptor</li>
+</ul>
+
+<table>
+<thead>
+<tr>
+  <th>id</th>
+  <th>type</th>
+  <th>title</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><a href="#authState">authState</a></td>
+  <td>semantic</td>
+  <td>OAuth State</td>
+</tr>
+</tbody>
+</table>
+
 <h3><a id="goTag">goTag</a></h3>
 
 <ul>
 <li>type: safe</li>
 <li>title: View Tag</li>
+<li>doc: Retrieve one tag by id.</li>
 <li>tag: <a href="#tag-tag">tag</a></li>
 <li>rt: <a href="#Tag">Tag</a></li>
 <li>descriptor</li>
@@ -1478,6 +2596,7 @@ const setupModeSwitch = (switchId, graphId, otherGraphId) => {
 <ul>
 <li>type: safe</li>
 <li>title: View Tag List</li>
+<li>doc: Browse all tags.</li>
 <li>tag: <a href="#tag-tag">tag</a>, <a href="#tag-flow-browse">flow-browse</a></li>
 <li>rt: <a href="#TagList">TagList</a></li>
 </ul>
@@ -1489,6 +2608,68 @@ const setupModeSwitch = (switchId, graphId, otherGraphId) => {
 <li>title: Height</li>
 <li>def: <a href="https://schema.org/height">https://schema.org/height</a></li>
 </ul>
+
+<h3><a id="Home">Home</a></h3>
+
+<ul>
+<li>type: semantic</li>
+<li>title: Home Page</li>
+<li>doc: Public CMS entry point with article teasers and navigation to browse, feed, and admin entry points.</li>
+<li>tag: <a href="#tag-public">public</a>, <a href="#tag-flow-browse">flow-browse</a></li>
+<li>descriptor</li>
+</ul>
+
+<table>
+<thead>
+<tr>
+  <th>id</th>
+  <th>type</th>
+  <th>title</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><a href="#goArticleList">goArticleList</a></td>
+  <td>safe</td>
+  <td>View Article List</td>
+</tr>
+<tr>
+  <td><a href="#goAuthorList">goAuthorList</a></td>
+  <td>safe</td>
+  <td>View Author List</td>
+</tr>
+<tr>
+  <td><a href="#goCategoryList">goCategoryList</a></td>
+  <td>safe</td>
+  <td>View Category List</td>
+</tr>
+<tr>
+  <td><a href="#goTagList">goTagList</a></td>
+  <td>safe</td>
+  <td>View Tag List</td>
+</tr>
+<tr>
+  <td><a href="#goArticleFeed">goArticleFeed</a></td>
+  <td>safe</td>
+  <td>View Article Feed</td>
+</tr>
+<tr>
+  <td><a href="#goAdminLogin">goAdminLogin</a></td>
+  <td>safe</td>
+  <td>Go to Admin Login</td>
+</tr>
+<tr>
+  <td><a href="#goAdminIndex">goAdminIndex</a></td>
+  <td>safe</td>
+  <td>View Admin Home</td>
+</tr>
+<tr>
+  <td><a href="#goAuthStart">goAuthStart</a></td>
+  <td>safe</td>
+  <td>Start App Auth</td>
+</tr>
+</tbody>
+</table>
 
 <h3><a id="id">id</a></h3>
 
@@ -1552,12 +2733,25 @@ const setupModeSwitch = (switchId, graphId, otherGraphId) => {
   <td>Height</td>
 </tr>
 <tr>
+  <td><a href="#goHome">goHome</a></td>
+  <td>safe</td>
+  <td>Go Home</td>
+</tr>
+<tr>
   <td><a href="#doDeleteMedia">doDeleteMedia</a></td>
   <td>idempotent</td>
   <td>Delete Media</td>
 </tr>
 </tbody>
 </table>
+
+<h3><a id="message">message</a></h3>
+
+<ul>
+<li>type: semantic</li>
+<li>title: User-Facing Message</li>
+<li>doc: Human-readable error or status message.</li>
+</ul>
 
 <h3><a id="mimeType">mimeType</a></h3>
 
@@ -1574,6 +2768,85 @@ const setupModeSwitch = (switchId, graphId, otherGraphId) => {
 <li>title: Name</li>
 <li>def: <a href="https://schema.org/name">https://schema.org/name</a></li>
 </ul>
+
+<h3><a id="OAuthConfigurationError">OAuthConfigurationError</a></h3>
+
+<ul>
+<li>type: semantic</li>
+<li>title: OAuth Configuration Error</li>
+<li>doc: Local error state shown when Google OAuth settings are missing, preventing a broken redirect to the provider.</li>
+<li>tag: <a href="#tag-admin">admin</a>, <a href="#tag-auth">auth</a>, <a href="#tag-error">error</a></li>
+<li>descriptor</li>
+</ul>
+
+<table>
+<thead>
+<tr>
+  <th>id</th>
+  <th>type</th>
+  <th>title</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><a href="#message">message</a></td>
+  <td>semantic</td>
+  <td>User-Facing Message</td>
+</tr>
+<tr>
+  <td><a href="#goAdminLogin">goAdminLogin</a></td>
+  <td>safe</td>
+  <td>Go to Admin Login</td>
+</tr>
+<tr>
+  <td><a href="#goHome">goHome</a></td>
+  <td>safe</td>
+  <td>Go Home</td>
+</tr>
+</tbody>
+</table>
+
+<h3><a id="OAuthProvider">OAuthProvider</a></h3>
+
+<ul>
+<li>type: semantic</li>
+<li>title: OAuth Provider</li>
+<li>doc: External Google OAuth authorization page. The provider returns to the CMS callback with code and state.</li>
+<li>tag: <a href="#tag-auth">auth</a>, <a href="#tag-external">external</a>, <a href="#tag-flow-login">flow-login</a></li>
+<li>descriptor</li>
+</ul>
+
+<table>
+<thead>
+<tr>
+  <th>id</th>
+  <th>type</th>
+  <th>title</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><a href="#authCode">authCode</a></td>
+  <td>semantic</td>
+  <td>OAuth Authorization Code</td>
+</tr>
+<tr>
+  <td><a href="#authState">authState</a></td>
+  <td>semantic</td>
+  <td>OAuth State</td>
+</tr>
+<tr>
+  <td><a href="#goAdminLogin">goAdminLogin</a></td>
+  <td>safe</td>
+  <td>Go to Admin Login</td>
+</tr>
+<tr>
+  <td><a href="#doCompleteLogin">doCompleteLogin</a></td>
+  <td>unsafe</td>
+  <td>Complete Admin Login</td>
+</tr>
+</tbody>
+</table>
 
 <h3><a id="page">page</a></h3>
 
@@ -1604,6 +2877,14 @@ const setupModeSwitch = (switchId, graphId, otherGraphId) => {
 <li>type: semantic</li>
 <li>title: Published At</li>
 <li>def: <a href="https://schema.org/datePublished">https://schema.org/datePublished</a></li>
+</ul>
+
+<h3><a id="saved">saved</a></h3>
+
+<ul>
+<li>type: semantic</li>
+<li>title: Save Notice</li>
+<li>doc: Page/Admin notice indicating that an article was created or updated.</li>
 </ul>
 
 <h3><a id="slug">slug</a></h3>
@@ -1666,6 +2947,11 @@ const setupModeSwitch = (switchId, graphId, otherGraphId) => {
   <td>View Article List</td>
 </tr>
 <tr>
+  <td><a href="#goHome">goHome</a></td>
+  <td>safe</td>
+  <td>Go Home</td>
+</tr>
+<tr>
   <td><a href="#doDeleteTag">doDeleteTag</a></td>
   <td>idempotent</td>
   <td>Delete Tag</td>
@@ -1678,6 +2964,14 @@ const setupModeSwitch = (switchId, graphId, otherGraphId) => {
 <ul>
 <li>type: semantic</li>
 <li>title: Tag ID (filter)</li>
+</ul>
+
+<h3><a id="tagIds">tagIds</a></h3>
+
+<ul>
+<li>type: semantic</li>
+<li>title: Selected Tag IDs</li>
+<li>doc: Set of tag identifiers selected in the article form.</li>
 </ul>
 
 <h3><a id="TagList">TagList</a></h3>
@@ -1717,6 +3011,11 @@ const setupModeSwitch = (switchId, graphId, otherGraphId) => {
   <td><a href="#goTag">goTag</a></td>
   <td>safe</td>
   <td>View Tag</td>
+</tr>
+<tr>
+  <td><a href="#goHome">goHome</a></td>
+  <td>safe</td>
+  <td>Go Home</td>
 </tr>
 <tr>
   <td><a href="#doCreateTag">doCreateTag</a></td>
@@ -1765,9 +3064,7 @@ const setupModeSwitch = (switchId, graphId, otherGraphId) => {
   &quot;$schema&quot;: &quot;https://alps-io.github.io/schemas/alps.json&quot;,
   &quot;alps&quot;: {
     &quot;title&quot;: &quot;BEAR.Cms Reference CMS&quot;,
-    &quot;doc&quot;: {
-      &quot;value&quot;: &quot;ALPS profile for the BEAR.Cms App resource API. Covers articles, categories, tags, authors and media with read and write transitions.&quot;
-    },
+    &quot;doc&quot;: {&quot;value&quot;: &quot;ALPS profile for the BEAR.Cms reference CMS as a whole. Covers the public HTML browsing surface, Page/Admin authentication and article management flow, and the HAL App resource API for articles, categories, tags, authors, media and auth.&quot;},
     &quot;descriptor&quot;: [
       {&quot;id&quot;: &quot;id&quot;, &quot;title&quot;: &quot;Identifier&quot;, &quot;def&quot;: &quot;https://schema.org/identifier&quot;},
       {&quot;id&quot;: &quot;slug&quot;, &quot;title&quot;: &quot;URL-safe Slug&quot;, &quot;doc&quot;: {&quot;value&quot;: &quot;Lower-case kebab-case unique identifier used in human-readable URIs.&quot;}},
@@ -1786,18 +3083,22 @@ const setupModeSwitch = (switchId, graphId, otherGraphId) => {
       {&quot;id&quot;: &quot;alt&quot;, &quot;title&quot;: &quot;Alt Text&quot;, &quot;doc&quot;: {&quot;value&quot;: &quot;Accessibility text describing the media.&quot;}},
       {&quot;id&quot;: &quot;width&quot;, &quot;title&quot;: &quot;Width&quot;, &quot;def&quot;: &quot;https://schema.org/width&quot;},
       {&quot;id&quot;: &quot;height&quot;, &quot;title&quot;: &quot;Height&quot;, &quot;def&quot;: &quot;https://schema.org/height&quot;},
-
       {&quot;id&quot;: &quot;authorId&quot;, &quot;title&quot;: &quot;Author ID (FK)&quot;},
       {&quot;id&quot;: &quot;categoryId&quot;, &quot;title&quot;: &quot;Category ID (FK)&quot;},
       {&quot;id&quot;: &quot;parentId&quot;, &quot;title&quot;: &quot;Parent Category ID (self-FK)&quot;, &quot;doc&quot;: {&quot;value&quot;: &quot;Nullable reference for hierarchical categories.&quot;}},
       {&quot;id&quot;: &quot;tagId&quot;, &quot;title&quot;: &quot;Tag ID (filter)&quot;},
       {&quot;id&quot;: &quot;articleId&quot;, &quot;title&quot;: &quot;Article ID (filter)&quot;},
-
       {&quot;id&quot;: &quot;page&quot;, &quot;title&quot;: &quot;Page Number&quot;, &quot;doc&quot;: {&quot;value&quot;: &quot;1-indexed pagination page.&quot;}},
       {&quot;id&quot;: &quot;perPage&quot;, &quot;title&quot;: &quot;Per-Page Count&quot;},
       {&quot;id&quot;: &quot;totalCount&quot;, &quot;title&quot;: &quot;Total Count&quot;},
-
-      {&quot;id&quot;: &quot;Article&quot;, &quot;title&quot;: &quot;Article Detail&quot;, &quot;doc&quot;: {&quot;value&quot;: &quot;Single article with embedded Author, Category and Tags.&quot;}, &quot;descriptor&quot;: [
+      {&quot;id&quot;: &quot;authorizationUrl&quot;, &quot;title&quot;: &quot;OAuth Authorization URL&quot;, &quot;doc&quot;: {&quot;value&quot;: &quot;URL where the client or browser starts the OAuth authorization step.&quot;}},
+      {&quot;id&quot;: &quot;authCode&quot;, &quot;title&quot;: &quot;OAuth Authorization Code&quot;, &quot;doc&quot;: {&quot;value&quot;: &quot;Opaque code returned by the OAuth provider callback.&quot;}},
+      {&quot;id&quot;: &quot;authState&quot;, &quot;title&quot;: &quot;OAuth State&quot;, &quot;doc&quot;: {&quot;value&quot;: &quot;CSRF protection state issued before redirecting to the OAuth provider.&quot;}},
+      {&quot;id&quot;: &quot;message&quot;, &quot;title&quot;: &quot;User-Facing Message&quot;, &quot;doc&quot;: {&quot;value&quot;: &quot;Human-readable error or status message.&quot;}},
+      {&quot;id&quot;: &quot;saved&quot;, &quot;title&quot;: &quot;Save Notice&quot;, &quot;doc&quot;: {&quot;value&quot;: &quot;Page/Admin notice indicating that an article was created or updated.&quot;}},
+      {&quot;id&quot;: &quot;deleted&quot;, &quot;title&quot;: &quot;Delete Notice&quot;, &quot;doc&quot;: {&quot;value&quot;: &quot;Page/Admin notice indicating that an article was deleted.&quot;}},
+      {&quot;id&quot;: &quot;tagIds&quot;, &quot;title&quot;: &quot;Selected Tag IDs&quot;, &quot;doc&quot;: {&quot;value&quot;: &quot;Set of tag identifiers selected in the article form.&quot;}},
+      {&quot;id&quot;: &quot;Article&quot;, &quot;title&quot;: &quot;Article Detail&quot;, &quot;doc&quot;: {&quot;value&quot;: &quot;Single article with embedded Author, Category and Tags.&quot;}, &quot;tag&quot;: &quot;article&quot;, &quot;descriptor&quot;: [
         {&quot;href&quot;: &quot;#id&quot;},
         {&quot;href&quot;: &quot;#slug&quot;},
         {&quot;href&quot;: &quot;#title&quot;},
@@ -1814,10 +3115,10 @@ const setupModeSwitch = (switchId, graphId, otherGraphId) => {
         {&quot;href&quot;: &quot;#goAuthor&quot;},
         {&quot;href&quot;: &quot;#goCategory&quot;},
         {&quot;href&quot;: &quot;#doUpdateArticle&quot;},
-        {&quot;href&quot;: &quot;#doDeleteArticle&quot;}
-      ], &quot;tag&quot;: &quot;article&quot;},
-
-      {&quot;id&quot;: &quot;ArticleList&quot;, &quot;title&quot;: &quot;Article List&quot;, &quot;doc&quot;: {&quot;value&quot;: &quot;Paginated list of articles; supports filtering by category, tag, or status.&quot;}, &quot;descriptor&quot;: [
+        {&quot;href&quot;: &quot;#doDeleteArticle&quot;},
+        {&quot;href&quot;: &quot;#goHome&quot;}
+      ]},
+      {&quot;id&quot;: &quot;ArticleList&quot;, &quot;title&quot;: &quot;Article List&quot;, &quot;doc&quot;: {&quot;value&quot;: &quot;Paginated list of articles; supports filtering by category, tag, or status.&quot;}, &quot;tag&quot;: &quot;article flow-browse&quot;, &quot;descriptor&quot;: [
         {&quot;href&quot;: &quot;#id&quot;},
         {&quot;href&quot;: &quot;#slug&quot;},
         {&quot;href&quot;: &quot;#title&quot;},
@@ -1828,10 +3129,14 @@ const setupModeSwitch = (switchId, graphId, otherGraphId) => {
         {&quot;href&quot;: &quot;#perPage&quot;},
         {&quot;href&quot;: &quot;#totalCount&quot;},
         {&quot;href&quot;: &quot;#goArticle&quot;},
-        {&quot;href&quot;: &quot;#doCreateArticle&quot;}
-      ], &quot;tag&quot;: &quot;article flow-browse&quot;},
-
-      {&quot;id&quot;: &quot;Category&quot;, &quot;title&quot;: &quot;Category Detail&quot;, &quot;descriptor&quot;: [
+        {&quot;href&quot;: &quot;#doCreateArticle&quot;},
+        {&quot;href&quot;: &quot;#goHome&quot;},
+        {&quot;href&quot;: &quot;#goAuthorList&quot;},
+        {&quot;href&quot;: &quot;#goCategoryList&quot;},
+        {&quot;href&quot;: &quot;#goTagList&quot;},
+        {&quot;href&quot;: &quot;#goArticleFeed&quot;}
+      ]},
+      {&quot;id&quot;: &quot;Category&quot;, &quot;title&quot;: &quot;Category Detail&quot;, &quot;tag&quot;: &quot;category&quot;, &quot;descriptor&quot;: [
         {&quot;href&quot;: &quot;#id&quot;},
         {&quot;href&quot;: &quot;#slug&quot;},
         {&quot;href&quot;: &quot;#name&quot;},
@@ -1840,45 +3145,46 @@ const setupModeSwitch = (switchId, graphId, otherGraphId) => {
         {&quot;href&quot;: &quot;#goCategoryList&quot;},
         {&quot;href&quot;: &quot;#goArticleList&quot;},
         {&quot;href&quot;: &quot;#doUpdateCategory&quot;},
-        {&quot;href&quot;: &quot;#doDeleteCategory&quot;}
-      ], &quot;tag&quot;: &quot;category&quot;},
-
-      {&quot;id&quot;: &quot;CategoryList&quot;, &quot;title&quot;: &quot;Category List&quot;, &quot;descriptor&quot;: [
+        {&quot;href&quot;: &quot;#doDeleteCategory&quot;},
+        {&quot;href&quot;: &quot;#goHome&quot;}
+      ]},
+      {&quot;id&quot;: &quot;CategoryList&quot;, &quot;title&quot;: &quot;Category List&quot;, &quot;tag&quot;: &quot;category flow-browse&quot;, &quot;descriptor&quot;: [
         {&quot;href&quot;: &quot;#id&quot;},
         {&quot;href&quot;: &quot;#slug&quot;},
         {&quot;href&quot;: &quot;#name&quot;},
         {&quot;href&quot;: &quot;#parentId&quot;},
         {&quot;href&quot;: &quot;#goCategory&quot;},
-        {&quot;href&quot;: &quot;#doCreateCategory&quot;}
-      ], &quot;tag&quot;: &quot;category flow-browse&quot;},
-
-      {&quot;id&quot;: &quot;Tag&quot;, &quot;title&quot;: &quot;Tag Detail&quot;, &quot;descriptor&quot;: [
+        {&quot;href&quot;: &quot;#doCreateCategory&quot;},
+        {&quot;href&quot;: &quot;#goHome&quot;}
+      ]},
+      {&quot;id&quot;: &quot;Tag&quot;, &quot;title&quot;: &quot;Tag Detail&quot;, &quot;tag&quot;: &quot;tag&quot;, &quot;descriptor&quot;: [
         {&quot;href&quot;: &quot;#id&quot;},
         {&quot;href&quot;: &quot;#slug&quot;},
         {&quot;href&quot;: &quot;#name&quot;},
         {&quot;href&quot;: &quot;#goTagList&quot;},
         {&quot;href&quot;: &quot;#goArticleList&quot;},
-        {&quot;href&quot;: &quot;#doDeleteTag&quot;}
-      ], &quot;tag&quot;: &quot;tag&quot;},
-
-      {&quot;id&quot;: &quot;TagList&quot;, &quot;title&quot;: &quot;Tag List&quot;, &quot;descriptor&quot;: [
+        {&quot;href&quot;: &quot;#doDeleteTag&quot;},
+        {&quot;href&quot;: &quot;#goHome&quot;}
+      ]},
+      {&quot;id&quot;: &quot;TagList&quot;, &quot;title&quot;: &quot;Tag List&quot;, &quot;tag&quot;: &quot;tag flow-browse&quot;, &quot;descriptor&quot;: [
         {&quot;href&quot;: &quot;#id&quot;},
         {&quot;href&quot;: &quot;#slug&quot;},
         {&quot;href&quot;: &quot;#name&quot;},
         {&quot;href&quot;: &quot;#goTag&quot;},
-        {&quot;href&quot;: &quot;#doCreateTag&quot;}
-      ], &quot;tag&quot;: &quot;tag flow-browse&quot;},
-
-      {&quot;id&quot;: &quot;Author&quot;, &quot;title&quot;: &quot;Author Detail&quot;, &quot;descriptor&quot;: [
+        {&quot;href&quot;: &quot;#doCreateTag&quot;},
+        {&quot;href&quot;: &quot;#goHome&quot;}
+      ]},
+      {&quot;id&quot;: &quot;Author&quot;, &quot;title&quot;: &quot;Author Detail&quot;, &quot;tag&quot;: &quot;author&quot;, &quot;descriptor&quot;: [
         {&quot;href&quot;: &quot;#id&quot;},
         {&quot;href&quot;: &quot;#name&quot;},
         {&quot;href&quot;: &quot;#email&quot;},
         {&quot;href&quot;: &quot;#bio&quot;},
         {&quot;href&quot;: &quot;#goArticleList&quot;},
-        {&quot;href&quot;: &quot;#doUpdateAuthor&quot;}
-      ], &quot;tag&quot;: &quot;author&quot;},
-
-      {&quot;id&quot;: &quot;Media&quot;, &quot;title&quot;: &quot;Media Detail&quot;, &quot;descriptor&quot;: [
+        {&quot;href&quot;: &quot;#doUpdateAuthor&quot;},
+        {&quot;href&quot;: &quot;#goHome&quot;},
+        {&quot;href&quot;: &quot;#goAuthorList&quot;}
+      ]},
+      {&quot;id&quot;: &quot;Media&quot;, &quot;title&quot;: &quot;Media Detail&quot;, &quot;tag&quot;: &quot;media&quot;, &quot;descriptor&quot;: [
         {&quot;href&quot;: &quot;#id&quot;},
         {&quot;href&quot;: &quot;#filename&quot;},
         {&quot;href&quot;: &quot;#mimeType&quot;},
@@ -1886,9 +3192,120 @@ const setupModeSwitch = (switchId, graphId, otherGraphId) => {
         {&quot;href&quot;: &quot;#alt&quot;},
         {&quot;href&quot;: &quot;#width&quot;},
         {&quot;href&quot;: &quot;#height&quot;},
-        {&quot;href&quot;: &quot;#doDeleteMedia&quot;}
-      ], &quot;tag&quot;: &quot;media&quot;},
-
+        {&quot;href&quot;: &quot;#doDeleteMedia&quot;},
+        {&quot;href&quot;: &quot;#goHome&quot;}
+      ]},
+      {&quot;id&quot;: &quot;Home&quot;, &quot;title&quot;: &quot;Home Page&quot;, &quot;doc&quot;: {&quot;value&quot;: &quot;Public CMS entry point with article teasers and navigation to browse, feed, and admin entry points.&quot;}, &quot;tag&quot;: &quot;public flow-browse&quot;, &quot;descriptor&quot;: [
+        {&quot;href&quot;: &quot;#goArticleList&quot;},
+        {&quot;href&quot;: &quot;#goAuthorList&quot;},
+        {&quot;href&quot;: &quot;#goCategoryList&quot;},
+        {&quot;href&quot;: &quot;#goTagList&quot;},
+        {&quot;href&quot;: &quot;#goArticleFeed&quot;},
+        {&quot;href&quot;: &quot;#goAdminLogin&quot;},
+        {&quot;href&quot;: &quot;#goAdminIndex&quot;},
+        {&quot;href&quot;: &quot;#goAuthStart&quot;}
+      ]},
+      {&quot;id&quot;: &quot;AuthorList&quot;, &quot;title&quot;: &quot;Author List&quot;, &quot;doc&quot;: {&quot;value&quot;: &quot;Public list of authors.&quot;}, &quot;tag&quot;: &quot;author public flow-browse&quot;, &quot;descriptor&quot;: [
+        {&quot;href&quot;: &quot;#id&quot;},
+        {&quot;href&quot;: &quot;#name&quot;},
+        {&quot;href&quot;: &quot;#email&quot;},
+        {&quot;href&quot;: &quot;#bio&quot;},
+        {&quot;href&quot;: &quot;#goAuthor&quot;},
+        {&quot;href&quot;: &quot;#goHome&quot;}
+      ]},
+      {&quot;id&quot;: &quot;ArticleFeed&quot;, &quot;title&quot;: &quot;Article Feed&quot;, &quot;doc&quot;: {&quot;value&quot;: &quot;Machine-readable article feed projection for published article selections.&quot;}, &quot;tag&quot;: &quot;article public feed&quot;, &quot;descriptor&quot;: [
+        {&quot;href&quot;: &quot;#id&quot;},
+        {&quot;href&quot;: &quot;#slug&quot;},
+        {&quot;href&quot;: &quot;#title&quot;},
+        {&quot;href&quot;: &quot;#excerpt&quot;},
+        {&quot;href&quot;: &quot;#publishedAt&quot;},
+        {&quot;href&quot;: &quot;#goArticle&quot;},
+        {&quot;href&quot;: &quot;#goHome&quot;}
+      ]},
+      {&quot;id&quot;: &quot;AuthStart&quot;, &quot;title&quot;: &quot;Auth Start&quot;, &quot;doc&quot;: {&quot;value&quot;: &quot;App API state that exposes the OAuth authorization URL.&quot;}, &quot;tag&quot;: &quot;auth app&quot;, &quot;descriptor&quot;: [
+        {&quot;href&quot;: &quot;#authorizationUrl&quot;},
+        {&quot;href&quot;: &quot;#goOAuthProvider&quot;},
+        {&quot;href&quot;: &quot;#doExchangeAuthCode&quot;}
+      ]},
+      {&quot;id&quot;: &quot;AuthenticatedUser&quot;, &quot;title&quot;: &quot;Authenticated User&quot;, &quot;doc&quot;: {&quot;value&quot;: &quot;App API response after exchanging an OAuth code for a user identity.&quot;}, &quot;tag&quot;: &quot;auth app&quot;, &quot;descriptor&quot;: [
+        {&quot;href&quot;: &quot;#id&quot;},
+        {&quot;href&quot;: &quot;#email&quot;},
+        {&quot;href&quot;: &quot;#name&quot;}
+      ]},
+      {&quot;id&quot;: &quot;AdminLogin&quot;, &quot;title&quot;: &quot;Admin Login&quot;, &quot;doc&quot;: {&quot;value&quot;: &quot;Page/Admin sign-in entry. With OAuth configured it redirects to the provider; without configuration it yields OAuthConfigurationError.&quot;}, &quot;tag&quot;: &quot;admin auth flow-login&quot;, &quot;descriptor&quot;: [
+        {&quot;href&quot;: &quot;#authState&quot;},
+        {&quot;href&quot;: &quot;#authorizationUrl&quot;},
+        {&quot;href&quot;: &quot;#message&quot;},
+        {&quot;href&quot;: &quot;#goOAuthProvider&quot;},
+        {&quot;href&quot;: &quot;#goOAuthConfigurationError&quot;},
+        {&quot;href&quot;: &quot;#goHome&quot;}
+      ]},
+      {&quot;id&quot;: &quot;OAuthProvider&quot;, &quot;title&quot;: &quot;OAuth Provider&quot;, &quot;doc&quot;: {&quot;value&quot;: &quot;External Google OAuth authorization page. The provider returns to the CMS callback with code and state.&quot;}, &quot;tag&quot;: &quot;auth external flow-login&quot;, &quot;descriptor&quot;: [
+        {&quot;href&quot;: &quot;#authCode&quot;},
+        {&quot;href&quot;: &quot;#authState&quot;},
+        {&quot;href&quot;: &quot;#doCompleteLogin&quot;},
+        {&quot;href&quot;: &quot;#goAdminLogin&quot;}
+      ]},
+      {&quot;id&quot;: &quot;OAuthConfigurationError&quot;, &quot;title&quot;: &quot;OAuth Configuration Error&quot;, &quot;doc&quot;: {&quot;value&quot;: &quot;Local error state shown when Google OAuth settings are missing, preventing a broken redirect to the provider.&quot;}, &quot;tag&quot;: &quot;admin auth error&quot;, &quot;descriptor&quot;: [
+        {&quot;href&quot;: &quot;#message&quot;},
+        {&quot;href&quot;: &quot;#goAdminLogin&quot;},
+        {&quot;href&quot;: &quot;#goHome&quot;}
+      ]},
+      {&quot;id&quot;: &quot;AdminIndex&quot;, &quot;title&quot;: &quot;Admin Home&quot;, &quot;doc&quot;: {&quot;value&quot;: &quot;Authenticated admin landing page. Visitors attempting to enter an admin state are redirected to AdminLogin.&quot;}, &quot;tag&quot;: &quot;admin flow-admin&quot;, &quot;descriptor&quot;: [
+        {&quot;href&quot;: &quot;#name&quot;},
+        {&quot;href&quot;: &quot;#email&quot;},
+        {&quot;href&quot;: &quot;#authorId&quot;},
+        {&quot;href&quot;: &quot;#goAdminArticleList&quot;},
+        {&quot;href&quot;: &quot;#goAdminArticleForm&quot;},
+        {&quot;href&quot;: &quot;#goHome&quot;},
+        {&quot;href&quot;: &quot;#doLogout&quot;}
+      ]},
+      {&quot;id&quot;: &quot;AdminArticleList&quot;, &quot;title&quot;: &quot;Admin Article List&quot;, &quot;doc&quot;: {&quot;value&quot;: &quot;Authenticated article administration list, scoped to the signed-in admin author.&quot;}, &quot;tag&quot;: &quot;admin article flow-admin&quot;, &quot;descriptor&quot;: [
+        {&quot;href&quot;: &quot;#id&quot;},
+        {&quot;href&quot;: &quot;#slug&quot;},
+        {&quot;href&quot;: &quot;#title&quot;},
+        {&quot;href&quot;: &quot;#status&quot;},
+        {&quot;href&quot;: &quot;#page&quot;},
+        {&quot;href&quot;: &quot;#perPage&quot;},
+        {&quot;href&quot;: &quot;#deleted&quot;},
+        {&quot;href&quot;: &quot;#goAdminIndex&quot;},
+        {&quot;href&quot;: &quot;#goAdminArticleList&quot;},
+        {&quot;href&quot;: &quot;#goAdminArticleForm&quot;},
+        {&quot;href&quot;: &quot;#goAdminArticleDeleteConfirm&quot;},
+        {&quot;href&quot;: &quot;#goArticle&quot;},
+        {&quot;href&quot;: &quot;#goHome&quot;},
+        {&quot;href&quot;: &quot;#doLogout&quot;}
+      ]},
+      {&quot;id&quot;: &quot;AdminArticleForm&quot;, &quot;title&quot;: &quot;Admin Article Form&quot;, &quot;doc&quot;: {&quot;value&quot;: &quot;Create/edit article form. Create requires slug/category; edit keeps slug/category immutable and returns here with a saved notice.&quot;}, &quot;tag&quot;: &quot;admin article flow-publish&quot;, &quot;descriptor&quot;: [
+        {&quot;href&quot;: &quot;#id&quot;},
+        {&quot;href&quot;: &quot;#slug&quot;},
+        {&quot;href&quot;: &quot;#title&quot;},
+        {&quot;href&quot;: &quot;#body&quot;},
+        {&quot;href&quot;: &quot;#excerpt&quot;},
+        {&quot;href&quot;: &quot;#status&quot;},
+        {&quot;href&quot;: &quot;#publishedAt&quot;},
+        {&quot;href&quot;: &quot;#categoryId&quot;},
+        {&quot;href&quot;: &quot;#tagIds&quot;},
+        {&quot;href&quot;: &quot;#saved&quot;},
+        {&quot;href&quot;: &quot;#message&quot;},
+        {&quot;href&quot;: &quot;#goAdminIndex&quot;},
+        {&quot;href&quot;: &quot;#goAdminArticleList&quot;},
+        {&quot;href&quot;: &quot;#goArticle&quot;},
+        {&quot;href&quot;: &quot;#goAdminArticleDeleteConfirm&quot;},
+        {&quot;href&quot;: &quot;#doAdminCreateArticle&quot;},
+        {&quot;href&quot;: &quot;#doAdminUpdateArticle&quot;},
+        {&quot;href&quot;: &quot;#doLogout&quot;}
+      ]},
+      {&quot;id&quot;: &quot;AdminArticleDeleteConfirm&quot;, &quot;title&quot;: &quot;Admin Article Delete Confirmation&quot;, &quot;doc&quot;: {&quot;value&quot;: &quot;Confirmation state before deleting an admin-owned article.&quot;}, &quot;tag&quot;: &quot;admin article flow-publish&quot;, &quot;descriptor&quot;: [
+        {&quot;href&quot;: &quot;#id&quot;},
+        {&quot;href&quot;: &quot;#slug&quot;},
+        {&quot;href&quot;: &quot;#title&quot;},
+        {&quot;href&quot;: &quot;#status&quot;},
+        {&quot;href&quot;: &quot;#goAdminArticleForm&quot;},
+        {&quot;href&quot;: &quot;#goAdminArticleList&quot;},
+        {&quot;href&quot;: &quot;#doAdminDeleteArticle&quot;},
+        {&quot;href&quot;: &quot;#doLogout&quot;}
+      ]},
       {&quot;id&quot;: &quot;goArticleList&quot;, &quot;type&quot;: &quot;safe&quot;, &quot;rt&quot;: &quot;#ArticleList&quot;, &quot;title&quot;: &quot;View Article List&quot;, &quot;doc&quot;: {&quot;value&quot;: &quot;List published articles, filterable by category, tag or status.&quot;}, &quot;tag&quot;: &quot;article flow-browse&quot;, &quot;descriptor&quot;: [
         {&quot;href&quot;: &quot;#page&quot;},
         {&quot;href&quot;: &quot;#perPage&quot;},
@@ -1899,21 +3316,20 @@ const setupModeSwitch = (switchId, graphId, otherGraphId) => {
       {&quot;id&quot;: &quot;goArticle&quot;, &quot;type&quot;: &quot;safe&quot;, &quot;rt&quot;: &quot;#Article&quot;, &quot;title&quot;: &quot;View Article&quot;, &quot;doc&quot;: {&quot;value&quot;: &quot;Retrieve a single article by id with embedded Author/Category/Tags.&quot;}, &quot;tag&quot;: &quot;article&quot;, &quot;descriptor&quot;: [
         {&quot;href&quot;: &quot;#id&quot;}
       ]},
-      {&quot;id&quot;: &quot;goCategoryList&quot;, &quot;type&quot;: &quot;safe&quot;, &quot;rt&quot;: &quot;#CategoryList&quot;, &quot;title&quot;: &quot;View Category List&quot;, &quot;tag&quot;: &quot;category flow-browse&quot;},
-      {&quot;id&quot;: &quot;goCategory&quot;, &quot;type&quot;: &quot;safe&quot;, &quot;rt&quot;: &quot;#Category&quot;, &quot;title&quot;: &quot;View Category&quot;, &quot;tag&quot;: &quot;category&quot;, &quot;descriptor&quot;: [
+      {&quot;id&quot;: &quot;goCategoryList&quot;, &quot;type&quot;: &quot;safe&quot;, &quot;rt&quot;: &quot;#CategoryList&quot;, &quot;title&quot;: &quot;View Category List&quot;, &quot;tag&quot;: &quot;category flow-browse&quot;, &quot;doc&quot;: {&quot;value&quot;: &quot;Browse all categories.&quot;}},
+      {&quot;id&quot;: &quot;goCategory&quot;, &quot;type&quot;: &quot;safe&quot;, &quot;rt&quot;: &quot;#Category&quot;, &quot;title&quot;: &quot;View Category&quot;, &quot;tag&quot;: &quot;category&quot;, &quot;doc&quot;: {&quot;value&quot;: &quot;Retrieve one category by id.&quot;}, &quot;descriptor&quot;: [
         {&quot;href&quot;: &quot;#id&quot;}
       ]},
-      {&quot;id&quot;: &quot;goTagList&quot;, &quot;type&quot;: &quot;safe&quot;, &quot;rt&quot;: &quot;#TagList&quot;, &quot;title&quot;: &quot;View Tag List&quot;, &quot;tag&quot;: &quot;tag flow-browse&quot;},
-      {&quot;id&quot;: &quot;goTag&quot;, &quot;type&quot;: &quot;safe&quot;, &quot;rt&quot;: &quot;#Tag&quot;, &quot;title&quot;: &quot;View Tag&quot;, &quot;tag&quot;: &quot;tag&quot;, &quot;descriptor&quot;: [
+      {&quot;id&quot;: &quot;goTagList&quot;, &quot;type&quot;: &quot;safe&quot;, &quot;rt&quot;: &quot;#TagList&quot;, &quot;title&quot;: &quot;View Tag List&quot;, &quot;tag&quot;: &quot;tag flow-browse&quot;, &quot;doc&quot;: {&quot;value&quot;: &quot;Browse all tags.&quot;}},
+      {&quot;id&quot;: &quot;goTag&quot;, &quot;type&quot;: &quot;safe&quot;, &quot;rt&quot;: &quot;#Tag&quot;, &quot;title&quot;: &quot;View Tag&quot;, &quot;tag&quot;: &quot;tag&quot;, &quot;doc&quot;: {&quot;value&quot;: &quot;Retrieve one tag by id.&quot;}, &quot;descriptor&quot;: [
         {&quot;href&quot;: &quot;#id&quot;}
       ]},
-      {&quot;id&quot;: &quot;goAuthor&quot;, &quot;type&quot;: &quot;safe&quot;, &quot;rt&quot;: &quot;#Author&quot;, &quot;title&quot;: &quot;View Author&quot;, &quot;tag&quot;: &quot;author&quot;, &quot;descriptor&quot;: [
+      {&quot;id&quot;: &quot;goAuthor&quot;, &quot;type&quot;: &quot;safe&quot;, &quot;rt&quot;: &quot;#Author&quot;, &quot;title&quot;: &quot;View Author&quot;, &quot;tag&quot;: &quot;author&quot;, &quot;doc&quot;: {&quot;value&quot;: &quot;Retrieve one author by id.&quot;}, &quot;descriptor&quot;: [
         {&quot;href&quot;: &quot;#id&quot;}
       ]},
-      {&quot;id&quot;: &quot;goMedia&quot;, &quot;type&quot;: &quot;safe&quot;, &quot;rt&quot;: &quot;#Media&quot;, &quot;title&quot;: &quot;View Media&quot;, &quot;tag&quot;: &quot;media&quot;, &quot;descriptor&quot;: [
+      {&quot;id&quot;: &quot;goMedia&quot;, &quot;type&quot;: &quot;safe&quot;, &quot;rt&quot;: &quot;#Media&quot;, &quot;title&quot;: &quot;View Media&quot;, &quot;tag&quot;: &quot;media&quot;, &quot;doc&quot;: {&quot;value&quot;: &quot;Retrieve one media asset by id.&quot;}, &quot;descriptor&quot;: [
         {&quot;href&quot;: &quot;#id&quot;}
       ]},
-
       {&quot;id&quot;: &quot;doCreateArticle&quot;, &quot;type&quot;: &quot;unsafe&quot;, &quot;rt&quot;: &quot;#Article&quot;, &quot;title&quot;: &quot;Create Article&quot;, &quot;doc&quot;: {&quot;value&quot;: &quot;Create a new article. Returns the created article detail.&quot;}, &quot;tag&quot;: &quot;article flow-publish&quot;, &quot;descriptor&quot;: [
         {&quot;href&quot;: &quot;#slug&quot;},
         {&quot;href&quot;: &quot;#title&quot;},
@@ -1923,54 +3339,50 @@ const setupModeSwitch = (switchId, graphId, otherGraphId) => {
         {&quot;href&quot;: &quot;#authorId&quot;},
         {&quot;href&quot;: &quot;#categoryId&quot;}
       ]},
-      {&quot;id&quot;: &quot;doUpdateArticle&quot;, &quot;type&quot;: &quot;idempotent&quot;, &quot;rt&quot;: &quot;#Article&quot;, &quot;title&quot;: &quot;Update Article&quot;, &quot;tag&quot;: &quot;article flow-publish&quot;, &quot;descriptor&quot;: [
+      {&quot;id&quot;: &quot;doUpdateArticle&quot;, &quot;type&quot;: &quot;idempotent&quot;, &quot;rt&quot;: &quot;#Article&quot;, &quot;title&quot;: &quot;Update Article&quot;, &quot;tag&quot;: &quot;article flow-publish&quot;, &quot;doc&quot;: {&quot;value&quot;: &quot;Update an existing article representation in the App API.&quot;}, &quot;descriptor&quot;: [
         {&quot;href&quot;: &quot;#id&quot;},
         {&quot;href&quot;: &quot;#title&quot;},
         {&quot;href&quot;: &quot;#body&quot;},
         {&quot;href&quot;: &quot;#excerpt&quot;},
         {&quot;href&quot;: &quot;#status&quot;}
       ]},
-      {&quot;id&quot;: &quot;doDeleteArticle&quot;, &quot;type&quot;: &quot;idempotent&quot;, &quot;rt&quot;: &quot;#ArticleList&quot;, &quot;title&quot;: &quot;Delete Article&quot;, &quot;tag&quot;: &quot;article flow-publish&quot;, &quot;descriptor&quot;: [
+      {&quot;id&quot;: &quot;doDeleteArticle&quot;, &quot;type&quot;: &quot;idempotent&quot;, &quot;rt&quot;: &quot;#ArticleList&quot;, &quot;title&quot;: &quot;Delete Article&quot;, &quot;tag&quot;: &quot;article flow-publish&quot;, &quot;doc&quot;: {&quot;value&quot;: &quot;Delete an existing article and return to the article collection.&quot;}, &quot;descriptor&quot;: [
         {&quot;href&quot;: &quot;#id&quot;}
       ]},
-
-      {&quot;id&quot;: &quot;doCreateCategory&quot;, &quot;type&quot;: &quot;unsafe&quot;, &quot;rt&quot;: &quot;#Category&quot;, &quot;title&quot;: &quot;Create Category&quot;, &quot;tag&quot;: &quot;category&quot;, &quot;descriptor&quot;: [
+      {&quot;id&quot;: &quot;doCreateCategory&quot;, &quot;type&quot;: &quot;unsafe&quot;, &quot;rt&quot;: &quot;#Category&quot;, &quot;title&quot;: &quot;Create Category&quot;, &quot;tag&quot;: &quot;category&quot;, &quot;doc&quot;: {&quot;value&quot;: &quot;Create a category and return the created category detail.&quot;}, &quot;descriptor&quot;: [
         {&quot;href&quot;: &quot;#slug&quot;},
         {&quot;href&quot;: &quot;#name&quot;},
         {&quot;href&quot;: &quot;#description&quot;},
         {&quot;href&quot;: &quot;#parentId&quot;}
       ]},
-      {&quot;id&quot;: &quot;doUpdateCategory&quot;, &quot;type&quot;: &quot;idempotent&quot;, &quot;rt&quot;: &quot;#Category&quot;, &quot;title&quot;: &quot;Update Category&quot;, &quot;tag&quot;: &quot;category&quot;, &quot;descriptor&quot;: [
+      {&quot;id&quot;: &quot;doUpdateCategory&quot;, &quot;type&quot;: &quot;idempotent&quot;, &quot;rt&quot;: &quot;#Category&quot;, &quot;title&quot;: &quot;Update Category&quot;, &quot;tag&quot;: &quot;category&quot;, &quot;doc&quot;: {&quot;value&quot;: &quot;Update an existing category.&quot;}, &quot;descriptor&quot;: [
         {&quot;href&quot;: &quot;#id&quot;},
         {&quot;href&quot;: &quot;#name&quot;},
         {&quot;href&quot;: &quot;#description&quot;},
         {&quot;href&quot;: &quot;#parentId&quot;}
       ]},
-      {&quot;id&quot;: &quot;doDeleteCategory&quot;, &quot;type&quot;: &quot;idempotent&quot;, &quot;rt&quot;: &quot;#CategoryList&quot;, &quot;title&quot;: &quot;Delete Category&quot;, &quot;tag&quot;: &quot;category&quot;, &quot;descriptor&quot;: [
+      {&quot;id&quot;: &quot;doDeleteCategory&quot;, &quot;type&quot;: &quot;idempotent&quot;, &quot;rt&quot;: &quot;#CategoryList&quot;, &quot;title&quot;: &quot;Delete Category&quot;, &quot;tag&quot;: &quot;category&quot;, &quot;doc&quot;: {&quot;value&quot;: &quot;Delete a category and return to the category collection.&quot;}, &quot;descriptor&quot;: [
         {&quot;href&quot;: &quot;#id&quot;}
       ]},
-
-      {&quot;id&quot;: &quot;doCreateTag&quot;, &quot;type&quot;: &quot;unsafe&quot;, &quot;rt&quot;: &quot;#Tag&quot;, &quot;title&quot;: &quot;Create Tag&quot;, &quot;tag&quot;: &quot;tag&quot;, &quot;descriptor&quot;: [
+      {&quot;id&quot;: &quot;doCreateTag&quot;, &quot;type&quot;: &quot;unsafe&quot;, &quot;rt&quot;: &quot;#Tag&quot;, &quot;title&quot;: &quot;Create Tag&quot;, &quot;tag&quot;: &quot;tag&quot;, &quot;doc&quot;: {&quot;value&quot;: &quot;Create a tag and return the created tag detail.&quot;}, &quot;descriptor&quot;: [
         {&quot;href&quot;: &quot;#slug&quot;},
         {&quot;href&quot;: &quot;#name&quot;}
       ]},
-      {&quot;id&quot;: &quot;doDeleteTag&quot;, &quot;type&quot;: &quot;idempotent&quot;, &quot;rt&quot;: &quot;#TagList&quot;, &quot;title&quot;: &quot;Delete Tag&quot;, &quot;tag&quot;: &quot;tag&quot;, &quot;descriptor&quot;: [
+      {&quot;id&quot;: &quot;doDeleteTag&quot;, &quot;type&quot;: &quot;idempotent&quot;, &quot;rt&quot;: &quot;#TagList&quot;, &quot;title&quot;: &quot;Delete Tag&quot;, &quot;tag&quot;: &quot;tag&quot;, &quot;doc&quot;: {&quot;value&quot;: &quot;Delete a tag and return to the tag collection.&quot;}, &quot;descriptor&quot;: [
         {&quot;href&quot;: &quot;#id&quot;}
       ]},
-
-      {&quot;id&quot;: &quot;doCreateAuthor&quot;, &quot;type&quot;: &quot;unsafe&quot;, &quot;rt&quot;: &quot;#Author&quot;, &quot;title&quot;: &quot;Create Author&quot;, &quot;tag&quot;: &quot;author&quot;, &quot;descriptor&quot;: [
+      {&quot;id&quot;: &quot;doCreateAuthor&quot;, &quot;type&quot;: &quot;unsafe&quot;, &quot;rt&quot;: &quot;#Author&quot;, &quot;title&quot;: &quot;Create Author&quot;, &quot;tag&quot;: &quot;author&quot;, &quot;doc&quot;: {&quot;value&quot;: &quot;Create an author and return the created author detail.&quot;}, &quot;descriptor&quot;: [
         {&quot;href&quot;: &quot;#name&quot;},
         {&quot;href&quot;: &quot;#email&quot;},
         {&quot;href&quot;: &quot;#bio&quot;}
       ]},
-      {&quot;id&quot;: &quot;doUpdateAuthor&quot;, &quot;type&quot;: &quot;idempotent&quot;, &quot;rt&quot;: &quot;#Author&quot;, &quot;title&quot;: &quot;Update Author&quot;, &quot;tag&quot;: &quot;author&quot;, &quot;descriptor&quot;: [
+      {&quot;id&quot;: &quot;doUpdateAuthor&quot;, &quot;type&quot;: &quot;idempotent&quot;, &quot;rt&quot;: &quot;#Author&quot;, &quot;title&quot;: &quot;Update Author&quot;, &quot;tag&quot;: &quot;author&quot;, &quot;doc&quot;: {&quot;value&quot;: &quot;Update an existing author.&quot;}, &quot;descriptor&quot;: [
         {&quot;href&quot;: &quot;#id&quot;},
         {&quot;href&quot;: &quot;#name&quot;},
         {&quot;href&quot;: &quot;#email&quot;},
         {&quot;href&quot;: &quot;#bio&quot;}
       ]},
-
-      {&quot;id&quot;: &quot;doCreateMedia&quot;, &quot;type&quot;: &quot;unsafe&quot;, &quot;rt&quot;: &quot;#Media&quot;, &quot;title&quot;: &quot;Upload Media&quot;, &quot;tag&quot;: &quot;media&quot;, &quot;descriptor&quot;: [
+      {&quot;id&quot;: &quot;doCreateMedia&quot;, &quot;type&quot;: &quot;unsafe&quot;, &quot;rt&quot;: &quot;#Media&quot;, &quot;title&quot;: &quot;Upload Media&quot;, &quot;tag&quot;: &quot;media&quot;, &quot;doc&quot;: {&quot;value&quot;: &quot;Register a media asset and return the created media detail.&quot;}, &quot;descriptor&quot;: [
         {&quot;href&quot;: &quot;#filename&quot;},
         {&quot;href&quot;: &quot;#mimeType&quot;},
         {&quot;href&quot;: &quot;#url&quot;},
@@ -1978,7 +3390,59 @@ const setupModeSwitch = (switchId, graphId, otherGraphId) => {
         {&quot;href&quot;: &quot;#width&quot;},
         {&quot;href&quot;: &quot;#height&quot;}
       ]},
-      {&quot;id&quot;: &quot;doDeleteMedia&quot;, &quot;type&quot;: &quot;idempotent&quot;, &quot;rt&quot;: &quot;#Media&quot;, &quot;title&quot;: &quot;Delete Media&quot;, &quot;tag&quot;: &quot;media&quot;, &quot;descriptor&quot;: [
+      {&quot;id&quot;: &quot;doDeleteMedia&quot;, &quot;type&quot;: &quot;idempotent&quot;, &quot;rt&quot;: &quot;#Media&quot;, &quot;title&quot;: &quot;Delete Media&quot;, &quot;tag&quot;: &quot;media&quot;, &quot;doc&quot;: {&quot;value&quot;: &quot;Delete a media asset.&quot;}, &quot;descriptor&quot;: [
+        {&quot;href&quot;: &quot;#id&quot;}
+      ]},
+      {&quot;id&quot;: &quot;goHome&quot;, &quot;title&quot;: &quot;Go Home&quot;, &quot;type&quot;: &quot;safe&quot;, &quot;rt&quot;: &quot;#Home&quot;, &quot;doc&quot;: {&quot;value&quot;: &quot;Return to the public CMS home page.&quot;}, &quot;tag&quot;: &quot;public flow-browse&quot;},
+      {&quot;id&quot;: &quot;goAuthorList&quot;, &quot;title&quot;: &quot;View Author List&quot;, &quot;type&quot;: &quot;safe&quot;, &quot;rt&quot;: &quot;#AuthorList&quot;, &quot;doc&quot;: {&quot;value&quot;: &quot;Browse all public authors.&quot;}, &quot;tag&quot;: &quot;author public flow-browse&quot;},
+      {&quot;id&quot;: &quot;goArticleFeed&quot;, &quot;title&quot;: &quot;View Article Feed&quot;, &quot;type&quot;: &quot;safe&quot;, &quot;rt&quot;: &quot;#ArticleFeed&quot;, &quot;doc&quot;: {&quot;value&quot;: &quot;Retrieve the article feed projection.&quot;}, &quot;tag&quot;: &quot;article public feed&quot;},
+      {&quot;id&quot;: &quot;goAuthStart&quot;, &quot;title&quot;: &quot;Start App Auth&quot;, &quot;type&quot;: &quot;safe&quot;, &quot;rt&quot;: &quot;#AuthStart&quot;, &quot;doc&quot;: {&quot;value&quot;: &quot;Request the App API OAuth authorization URL.&quot;}, &quot;tag&quot;: &quot;auth app&quot;},
+      {&quot;id&quot;: &quot;doExchangeAuthCode&quot;, &quot;title&quot;: &quot;Exchange Auth Code&quot;, &quot;type&quot;: &quot;unsafe&quot;, &quot;rt&quot;: &quot;#AuthenticatedUser&quot;, &quot;doc&quot;: {&quot;value&quot;: &quot;Exchange an OAuth code/state pair for an authenticated user representation.&quot;}, &quot;tag&quot;: &quot;auth app flow-login&quot;, &quot;descriptor&quot;: [
+        {&quot;href&quot;: &quot;#authCode&quot;},
+        {&quot;href&quot;: &quot;#authState&quot;}
+      ]},
+      {&quot;id&quot;: &quot;goAdminLogin&quot;, &quot;title&quot;: &quot;Go to Admin Login&quot;, &quot;type&quot;: &quot;safe&quot;, &quot;rt&quot;: &quot;#AdminLogin&quot;, &quot;doc&quot;: {&quot;value&quot;: &quot;Enter the admin sign-in flow. Unauthenticated admin access redirects here.&quot;}, &quot;tag&quot;: &quot;admin auth flow-login&quot;},
+      {&quot;id&quot;: &quot;goOAuthProvider&quot;, &quot;title&quot;: &quot;Go to OAuth Provider&quot;, &quot;type&quot;: &quot;safe&quot;, &quot;rt&quot;: &quot;#OAuthProvider&quot;, &quot;doc&quot;: {&quot;value&quot;: &quot;Redirect the browser to the configured Google OAuth provider.&quot;}, &quot;tag&quot;: &quot;auth external flow-login&quot;, &quot;descriptor&quot;: [
+        {&quot;href&quot;: &quot;#authState&quot;}
+      ]},
+      {&quot;id&quot;: &quot;goOAuthConfigurationError&quot;, &quot;title&quot;: &quot;Show OAuth Configuration Error&quot;, &quot;type&quot;: &quot;safe&quot;, &quot;rt&quot;: &quot;#OAuthConfigurationError&quot;, &quot;doc&quot;: {&quot;value&quot;: &quot;System branch when OAuth provider settings are missing.&quot;}, &quot;tag&quot;: &quot;admin auth error&quot;},
+      {&quot;id&quot;: &quot;doCompleteLogin&quot;, &quot;title&quot;: &quot;Complete Admin Login&quot;, &quot;type&quot;: &quot;unsafe&quot;, &quot;rt&quot;: &quot;#AdminIndex&quot;, &quot;doc&quot;: {&quot;value&quot;: &quot;Consume OAuth callback code/state, match the Google email to an Author, and create the admin session.&quot;}, &quot;tag&quot;: &quot;admin auth flow-login&quot;, &quot;descriptor&quot;: [
+        {&quot;href&quot;: &quot;#authCode&quot;},
+        {&quot;href&quot;: &quot;#authState&quot;}
+      ]},
+      {&quot;id&quot;: &quot;doLogout&quot;, &quot;title&quot;: &quot;Log Out&quot;, &quot;type&quot;: &quot;unsafe&quot;, &quot;rt&quot;: &quot;#Home&quot;, &quot;doc&quot;: {&quot;value&quot;: &quot;Clear the admin session and return to the public home page.&quot;}, &quot;tag&quot;: &quot;admin auth flow-login&quot;},
+      {&quot;id&quot;: &quot;goAdminIndex&quot;, &quot;title&quot;: &quot;View Admin Home&quot;, &quot;type&quot;: &quot;safe&quot;, &quot;rt&quot;: &quot;#AdminIndex&quot;, &quot;doc&quot;: {&quot;value&quot;: &quot;Open the admin landing page. Requires an admin session; visitors are redirected to AdminLogin.&quot;}, &quot;tag&quot;: &quot;admin flow-admin&quot;},
+      {&quot;id&quot;: &quot;goAdminArticleList&quot;, &quot;title&quot;: &quot;View Admin Article List&quot;, &quot;type&quot;: &quot;safe&quot;, &quot;rt&quot;: &quot;#AdminArticleList&quot;, &quot;doc&quot;: {&quot;value&quot;: &quot;List articles owned by the signed-in admin, with optional status filter and pagination.&quot;}, &quot;tag&quot;: &quot;admin article flow-admin&quot;, &quot;descriptor&quot;: [
+        {&quot;href&quot;: &quot;#status&quot;},
+        {&quot;href&quot;: &quot;#page&quot;},
+        {&quot;href&quot;: &quot;#perPage&quot;}
+      ]},
+      {&quot;id&quot;: &quot;goAdminArticleForm&quot;, &quot;title&quot;: &quot;View Admin Article Form&quot;, &quot;type&quot;: &quot;safe&quot;, &quot;rt&quot;: &quot;#AdminArticleForm&quot;, &quot;doc&quot;: {&quot;value&quot;: &quot;Open the article create form, or edit form when id is provided.&quot;}, &quot;tag&quot;: &quot;admin article flow-publish&quot;, &quot;descriptor&quot;: [
+        {&quot;href&quot;: &quot;#id&quot;}
+      ]},
+      {&quot;id&quot;: &quot;goAdminArticleDeleteConfirm&quot;, &quot;title&quot;: &quot;Confirm Admin Article Delete&quot;, &quot;type&quot;: &quot;safe&quot;, &quot;rt&quot;: &quot;#AdminArticleDeleteConfirm&quot;, &quot;doc&quot;: {&quot;value&quot;: &quot;Open the delete confirmation for an admin-owned article.&quot;}, &quot;tag&quot;: &quot;admin article flow-publish&quot;, &quot;descriptor&quot;: [
+        {&quot;href&quot;: &quot;#id&quot;}
+      ]},
+      {&quot;id&quot;: &quot;doAdminCreateArticle&quot;, &quot;title&quot;: &quot;Create Article in Admin&quot;, &quot;type&quot;: &quot;unsafe&quot;, &quot;rt&quot;: &quot;#AdminArticleForm&quot;, &quot;doc&quot;: {&quot;value&quot;: &quot;Submit the admin create form, create an article for the signed-in author, and return to the edit form with a created notice.&quot;}, &quot;tag&quot;: &quot;admin article flow-publish&quot;, &quot;descriptor&quot;: [
+        {&quot;href&quot;: &quot;#slug&quot;},
+        {&quot;href&quot;: &quot;#title&quot;},
+        {&quot;href&quot;: &quot;#body&quot;},
+        {&quot;href&quot;: &quot;#excerpt&quot;},
+        {&quot;href&quot;: &quot;#status&quot;},
+        {&quot;href&quot;: &quot;#publishedAt&quot;},
+        {&quot;href&quot;: &quot;#categoryId&quot;},
+        {&quot;href&quot;: &quot;#tagIds&quot;}
+      ]},
+      {&quot;id&quot;: &quot;doAdminUpdateArticle&quot;, &quot;title&quot;: &quot;Update Article in Admin&quot;, &quot;type&quot;: &quot;idempotent&quot;, &quot;rt&quot;: &quot;#AdminArticleForm&quot;, &quot;doc&quot;: {&quot;value&quot;: &quot;Submit the admin edit form, update an owned article, and return to the edit form with an updated notice.&quot;}, &quot;tag&quot;: &quot;admin article flow-publish&quot;, &quot;descriptor&quot;: [
+        {&quot;href&quot;: &quot;#id&quot;},
+        {&quot;href&quot;: &quot;#title&quot;},
+        {&quot;href&quot;: &quot;#body&quot;},
+        {&quot;href&quot;: &quot;#excerpt&quot;},
+        {&quot;href&quot;: &quot;#status&quot;},
+        {&quot;href&quot;: &quot;#publishedAt&quot;},
+        {&quot;href&quot;: &quot;#tagIds&quot;}
+      ]},
+      {&quot;id&quot;: &quot;doAdminDeleteArticle&quot;, &quot;title&quot;: &quot;Delete Article in Admin&quot;, &quot;type&quot;: &quot;idempotent&quot;, &quot;rt&quot;: &quot;#AdminArticleList&quot;, &quot;doc&quot;: {&quot;value&quot;: &quot;Delete an admin-owned article and return to the admin article list with a deleted notice.&quot;}, &quot;tag&quot;: &quot;admin article flow-publish&quot;, &quot;descriptor&quot;: [
         {&quot;href&quot;: &quot;#id&quot;}
       ]}
     ]

@@ -5,7 +5,10 @@
 すべての App Resource は HAL+JSON を返します。以下の shape は
 [../../var/json_schema/](../../var/json_schema) にある entity JSON Schema を
 source of truth としています。`page://self/*` の Page Resource は Qiq HTML を
-render し、この App resource map とは意図的に分けています。
+render し、この App resource map とは意図的に分けています。公開 HTML surface
+には `page://self/articlefeed` も含まれます。これは Article SELECT result を
+再利用しつつ、canonical な Article list shape ではなく `ArticleFeedItem`
+query projection を描画します。
 
 ## `app://self/`
 
@@ -57,6 +60,8 @@ Body:
 ```
 
 `201` + `Location: /article?id={new_id}` + `{"id": N, "slug": "…"}`。
+slug が既に存在する場合、application validation が `422` と `slug` field error
+を返します。
 
 ### PUT `{id}`
 Body: `title`、`body`、`status`、optional `excerpt`、`publishedAt`、optional `tagIds`
@@ -95,6 +100,25 @@ GET。Query params: `page`、`perPage` (1..100 にクランプ、デフォルト
 - GET `{id}`。
 - POST — `filename`、`mimeType`、`url`、optional `alt`、`width`、`height`。
 - DELETE `{id}`。
+
+## Page/Admin HTML resource
+
+`page://self/admin/*` resource は Qiq HTML を render し、
+typed `AdminUserInterface` injection で保護されます。visitor が admin page を
+要求した場合、DI / Ray の error page を見せず、`/admin/login` へ `303` redirect
+します。`/admin/login` は `GOOGLE_CLIENT_ID`、`GOOGLE_CLIENT_SECRET`、
+`GOOGLE_REDIRECT_URI` が設定されていれば Google OAuth を開始します。未設定なら
+broken な provider URL へブラウザを出さず、CMS 内で
+`Google OAuth is not configured.` の local `503` page を render します。
+
+article admin flow は server-rendered です:
+
+- `GET /admin/articlelist` — admin-owned article list。status filter あり。
+- `GET /admin/article` / `GET /admin/article?id=N` — create/edit form。
+- `POST /admin/article` — create/update。validation failure は form を再描画し、
+  success は `saved=...` 付きで edit form へ PRG。
+- `GET /admin/articledelete?id=N` / `POST /admin/articledelete` —
+  confirmation と delete。成功後は `deleted=1` 付きで list へ戻ります。
 
 ## HAL links
 

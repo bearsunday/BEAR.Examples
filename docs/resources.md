@@ -5,7 +5,10 @@
 All App resources return HAL+JSON. Shapes below use the entity JSON Schema
 under [../var/json_schema/](../var/json_schema) as the source of truth.
 Page resources under `page://self/*` render Qiq HTML and are intentionally
-separate from this App resource map.
+separate from this App resource map. The public HTML surface includes
+`page://self/articlefeed`, which reuses the Article SELECT result but renders
+`ArticleFeedItem` query projections instead of the canonical Article list
+shape.
 
 ## `app://self/`
 
@@ -57,6 +60,8 @@ Body:
 ```
 
 `201` + `Location: /article?id={new_id}` + `{"id": N, "slug": "…"}`.
+If the slug already exists, application validation returns `422` with a
+field error for `slug`.
 
 ### PUT `{id}`
 Body: `title`, `body`, `status`, optional `excerpt`, `publishedAt`,
@@ -96,6 +101,26 @@ GET. Query params: `page`, `perPage` (clamped 1..100, default 20),
 - GET `{id}`.
 - POST — `filename`, `mimeType`, `url`, optional `alt`, `width`, `height`.
 - DELETE `{id}`.
+
+## Page/Admin HTML resources
+
+`page://self/admin/*` resources render Qiq HTML and are protected by
+typed `AdminUserInterface` injection. A visitor who requests an admin
+page is redirected to `/admin/login` (`303`) rather than seeing a DI or
+Ray error page. `/admin/login` starts Google OAuth when
+`GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, and `GOOGLE_REDIRECT_URI`
+are configured; otherwise it renders a local `503` page with
+`Google OAuth is not configured.` so the browser does not leave the CMS
+for a broken provider URL.
+
+The article admin flow is server-rendered:
+
+- `GET /admin/articlelist` — admin-owned article list with status filter.
+- `GET /admin/article` / `GET /admin/article?id=N` — create/edit form.
+- `POST /admin/article` — create or update; validation failures re-render
+  the form, success uses PRG back to the edit form with `saved=...`.
+- `GET /admin/articledelete?id=N` / `POST /admin/articledelete` —
+  confirmation and delete, returning to the list with `deleted=1`.
 
 ## Cache showcase resources (`app://self/cache/*`)
 

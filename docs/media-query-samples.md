@@ -51,6 +51,36 @@ The `#[DbQuery]` method returns `ArticleSelection`, not an array. MediaQuery
 hydrates rows through `ArticleFactory`, puts the hydrated `Article` rows in
 `PostQueryContext::$rows`, and calls `ArticleSelection::fromContext()`.
 
+`ArticleSelection::published()` is the basic iterator example. It returns a
+`Generator` that yields only published `Article` rows, so callers can choose a
+named traversal instead of putting status checks in a template:
+
+```php
+foreach ($articles->published() as $article) {
+    // render a published Article
+}
+```
+
+`page://self/articlefeed` shows the CQRS projection variation. It uses the same
+SQL-backed `ArticleSelection`, but `ArticleSelection::feed()` yields
+`ArticleFeedItem` read models rather than `Article` entities. The feed item is a
+disposable query-side projection for one presentation concern: it carries the
+article URL, summary, published date label, and a relative `postedAgoLabel` such
+as `5 minutes ago`.
+
+This keeps the template focused on rendering:
+
+```php
+foreach ($articles->feed() as $item) {
+    // $item is ArticleFeedItem, not Article
+}
+```
+
+The point is not to add another `src/Resource/App/Variations/` route. Those
+routes compare Article GET implementation styles. `ArticleFeed` demonstrates a
+different read concern over the same rows: one SQL result can support multiple
+query-side projections.
+
 ## Affected Rows
 
 `ArticleAffectedRowsCommandInterface` demonstrates DML metadata results:

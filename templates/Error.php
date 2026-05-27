@@ -7,7 +7,7 @@
 <body>
   <main>
     <h1>Error {{h $code }}</h1>
-    <p>An unexpected error occurred.</p>
+    <p>{{h $message }}</p>
   </main>
 </body>
 </html>

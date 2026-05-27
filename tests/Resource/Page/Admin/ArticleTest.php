@@ -101,6 +101,23 @@ final class ArticleTest extends AbstractAdminPageTestCase
         $this->assertStringNotContainsString('value="<script>alert(1)</script>"', $html);
     }
 
+    public function testDuplicateSlugReturnsFormError(): void
+    {
+        $ro = $this->resource->post('page://self/admin/article', [
+            'slug' => 'getting-started-with-bear-sunday',
+            'title' => 'Duplicate Slug',
+            'body' => 'Body',
+            'categoryId' => 1,
+            'status' => 'draft',
+        ]);
+
+        $this->assertSame(422, $ro->code);
+        $html = $ro->toString();
+        $this->assertStringContainsString('<section class="ErrorList">', $html);
+        $this->assertStringContainsString('slug: This slug is already in use.', $html);
+        $this->assertStringContainsString('value="Duplicate&#x20;Slug"', $html);
+    }
+
     public function testMissingArticleReturns404(): void
     {
         $ro = $this->resource->get('page://self/admin/article', ['id' => 99999]);

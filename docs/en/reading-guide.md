@@ -48,7 +48,23 @@ the full Article surface:
 - `Media.php` for upload-like data and filename-based lookup.
 - `Auth.php` for an action-style resource that is not CRUD-shaped.
 
-## Pass 4: Runtime Contexts
+## Pass 4: Query Projections
+
+Read the MediaQuery result examples when you want to see CQRS read-side
+projections rather than canonical entity responses:
+
+1. `src/Query/ArticleSelectionQueryInterface.php` — a `#[DbQuery]` method
+   that returns a typed result object instead of an array.
+2. `src/Result/ArticleSelection.php` — wraps hydrated `Article` rows and
+   exposes named `Generator` traversals such as `published()` and `feed()`.
+3. `src/Result/ArticleFeedItem.php` — a disposable read model for the feed
+   presentation concern (`postedAgoLabel`, date label, URL, summary).
+4. `src/Resource/Page/ArticleFeed.php` and `templates/Page/ArticleFeed.php`
+   — a Page template that renders the projection without status/null checks.
+5. `docs/media-query-samples.md` — explanation of the pager, SELECT result,
+   Generator, projection, and AffectedRows samples.
+
+## Pass 5: Runtime Contexts
 
 Then read composition and test support:
 
@@ -65,6 +81,7 @@ Then read composition and test support:
 | Resource layer | `src/Resource/App/*` | HTTP method shape, status codes, body construction, `#[JsonSchema]`, `#[Link]`, and `#[Embed]`. |
 | Entity layer | `src/Entity/*` | Immutable domain data, computed fields, and behavior that should stay near the data. |
 | Query layer | `src/Query/*` | Read/write split, method names, and how attributes map PHP methods to SQL files. |
+| Result layer | `src/Result/*` | Typed MediaQuery results, named Generator traversals, and query-side projections. |
 | SQL layer | `var/db/sql/*` | Column aliases, parameter names, and row shapes consumed by entities/resources. |
 | Composition | `src/Module/*` | Context-specific wiring: production, fake, and test. |
 | Tests and fakes | `tests/*` | The executable contract. Fakes should preserve semantics, not merely return convenient data. |
@@ -77,6 +94,9 @@ Use the focused comparison docs when reading tradeoffs:
   for the Article GET variation set.
 - [`src/Resource/App/Variations/README.ja.md`](../../src/Resource/App/Variations/README.ja.md)
   for the Japanese version.
+- [`docs/media-query-samples.md`](../media-query-samples.md) for
+  MediaQuery pager, typed result, Generator, projection, and DML metadata
+  samples.
 - [`docs/conventions.md`](../conventions.md) when you need the rule behind a
   naming or shape choice.
 

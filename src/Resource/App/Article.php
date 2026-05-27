@@ -13,11 +13,13 @@ use BEAR\Resource\Annotation\JsonSchema;
 use BEAR\Resource\Annotation\Link;
 use BEAR\Resource\Code;
 use BEAR\Resource\ResourceObject;
+use MyVendor\Cms\Attribute\Validate;
 use MyVendor\Cms\Input\ArticleCreateInput;
 use MyVendor\Cms\Input\ArticleUpdateInput;
 use MyVendor\Cms\Query\ArticleCommandInterface;
 use MyVendor\Cms\Query\ArticleQueryInterface;
 use MyVendor\Cms\Query\ArticleTagCommandInterface;
+use MyVendor\Cms\Validation\ArticleValidator;
 use Ray\InputQuery\Attribute\Input;
 
 use function assert;
@@ -73,8 +75,11 @@ class Article extends ResourceObject
     #[Alps('doCreateArticle')]
     #[JsonSchema(schema: 'write_response.json', params: 'article_create.json')]
     #[Purge(uri: 'app://self/articles')]
-    public function onPost(#[Input] ArticleCreateInput $input): static
-    {
+    public function onPost(
+        #[Input]
+        #[Validate(ArticleValidator::class, 'create')]
+        ArticleCreateInput $input,
+    ): static {
         $this->articleCmd->add(
             $input->slug,
             $input->title,
@@ -86,10 +91,11 @@ class Article extends ResourceObject
             $input->categoryId,
         );
 
-        // Per docs/conventions.md §4 "After-INSERT id": bySlug after add is the
-        // canonical id-recovery path and is treated as invariant. Failure here
-        // means a unique-key constraint or replica-lag anomaly — let it surface
-        // as a 5xx rather than silently dropping tagIds.
+        // Per docs/conventions.md §4 "After-INSERT id": slug uniqueness has
+        // already passed ArticleValidator, so bySlug after add remains the
+        // canonical id-recovery path. Failure here means the inserted row did
+        // not become readable — let that surface as a 5xx rather than silently
+        // dropping tagIds.
         $created = $this->article->bySlug($input->slug);
         assert($created !== null);
         if ($input->tagIds !== []) {

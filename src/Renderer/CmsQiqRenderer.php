@@ -117,9 +117,19 @@ final readonly class CmsQiqRenderer implements RenderInterface
     {
         $ro->view = $this->template->render('Error', [
             'code' => $ro->code,
+            'message' => $this->errorMessage($ro),
         ]);
 
         return $ro->view;
+    }
+
+    private function errorMessage(ResourceObject $ro): string
+    {
+        if ($ro->code >= 500 && is_array($ro->body) && isset($ro->body['message'])) {
+            return (string) $ro->body['message'];
+        }
+
+        return 'An unexpected error occurred.';
     }
 
     /** @return array{cssLevel: int, cssLinks: array<int, string>, user: UserInterface} */

@@ -7,6 +7,7 @@ namespace MyVendor\Cms\Resource\App;
 use BEAR\Resource\Exception\JsonSchemaException;
 use BEAR\Resource\Exception\ParameterException;
 use MyVendor\Cms\AbstractAppTestCase;
+use MyVendor\Cms\Exception\ValidationFailedException;
 
 use function array_column;
 use function json_decode;
@@ -137,6 +138,24 @@ final class ArticleTest extends AbstractAppTestCase
             'categoryId' => 1,
             'status' => 'invalid-status-value',
         ]);
+    }
+
+    public function testPostRejectsDuplicateSlug(): void
+    {
+        try {
+            $this->resource->post('app://self/article', [
+                'slug' => 'getting-started-with-bear-sunday',
+                'title' => 'Title',
+                'body' => 'Body',
+                'authorId' => 1,
+                'categoryId' => 1,
+                'status' => 'draft',
+            ]);
+            $this->fail('Expected duplicate slug validation to fail.');
+        } catch (ValidationFailedException $e) {
+            $this->assertSame(422, $e->getCode());
+            $this->assertSame(['slug' => ['This slug is already in use.']], $e->errors());
+        }
     }
 
     /**

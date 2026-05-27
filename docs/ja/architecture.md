@@ -15,6 +15,8 @@ JSON Schema (constraints derived from observation, not decided)
    ↓
 BDR code — readonly entities + #[DbQuery] interfaces
    ↓
+Query result projections — 型付き read-side view / named Generator traversal
+   ↓
 FakeSqlQuery (in-memory) — full Read+Write stack runs without a DB
    ↓
 Doctrine Migrations + seed — real schema + same seed data
@@ -38,11 +40,19 @@ real (DB) でも実行でき、どちらも同じ Resource コードを動かし
 | Domain    | `src/Entity/*`       | Final readonly classes: 不変データ                  |
 | Resource  | `src/Query/*`        | `#[DbQuery]` Read interfaces → entity              |
 |           | `src/Query/*`        | `#[DbQuery]` Write interfaces → `void`             |
+|           | `src/Result/*`       | 型付き MediaQuery result と CQRS read-side projection |
 
 ここでは Factory を使いません。最もシンプルなパスは `FetchNewInstance` 経由の
 PDO::FETCH_FUNC で、SELECT のカラム順から entity を positional に構築します。
 そのため `var/db/sql/` の SQL ファイルは、各 entity の `__construct` が期待する
 順序でカラムを射影しています。
+
+`src/Result/*` は、entity そのものでは caller の関心に合わないときの
+query-specific な read model の置き場です。`ArticleSelection` は hydrate 済み
+Article rows を包み、`published()` は named Generator traversal を公開し、
+`feed()` は `Page/ArticleFeed` 向けに `ArticleFeedItem` projection を yield
+します。これにより、template の条件分岐や「何分前に投稿」のような表示関心を
+SQL と canonical な `Article` entity の両方から外せます。
 
 ## Read と Write のディスパッチ
 

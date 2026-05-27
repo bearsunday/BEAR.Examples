@@ -2,9 +2,7 @@
   "$schema": "https://alps-io.github.io/schemas/alps.json",
   "alps": {
     "title": "BEAR.Cms Reference CMS",
-    "doc": {
-      "value": "ALPS profile for the BEAR.Cms App resource API. Covers articles, categories, tags, authors and media with read and write transitions."
-    },
+    "doc": {"value": "ALPS profile for the BEAR.Cms reference CMS as a whole. Covers the public HTML browsing surface, Page/Admin authentication and article management flow, and the HAL App resource API for articles, categories, tags, authors, media and auth."},
     "descriptor": [
       {"id": "id", "title": "Identifier", "def": "https://schema.org/identifier"},
       {"id": "slug", "title": "URL-safe Slug", "doc": {"value": "Lower-case kebab-case unique identifier used in human-readable URIs."}},
@@ -23,18 +21,22 @@
       {"id": "alt", "title": "Alt Text", "doc": {"value": "Accessibility text describing the media."}},
       {"id": "width", "title": "Width", "def": "https://schema.org/width"},
       {"id": "height", "title": "Height", "def": "https://schema.org/height"},
-
       {"id": "authorId", "title": "Author ID (FK)"},
       {"id": "categoryId", "title": "Category ID (FK)"},
       {"id": "parentId", "title": "Parent Category ID (self-FK)", "doc": {"value": "Nullable reference for hierarchical categories."}},
       {"id": "tagId", "title": "Tag ID (filter)"},
       {"id": "articleId", "title": "Article ID (filter)"},
-
       {"id": "page", "title": "Page Number", "doc": {"value": "1-indexed pagination page."}},
       {"id": "perPage", "title": "Per-Page Count"},
       {"id": "totalCount", "title": "Total Count"},
-
-      {"id": "Article", "title": "Article Detail", "doc": {"value": "Single article with embedded Author, Category and Tags."}, "descriptor": [
+      {"id": "authorizationUrl", "title": "OAuth Authorization URL", "doc": {"value": "URL where the client or browser starts the OAuth authorization step."}},
+      {"id": "authCode", "title": "OAuth Authorization Code", "doc": {"value": "Opaque code returned by the OAuth provider callback."}},
+      {"id": "authState", "title": "OAuth State", "doc": {"value": "CSRF protection state issued before redirecting to the OAuth provider."}},
+      {"id": "message", "title": "User-Facing Message", "doc": {"value": "Human-readable error or status message."}},
+      {"id": "saved", "title": "Save Notice", "doc": {"value": "Page/Admin notice indicating that an article was created or updated."}},
+      {"id": "deleted", "title": "Delete Notice", "doc": {"value": "Page/Admin notice indicating that an article was deleted."}},
+      {"id": "tagIds", "title": "Selected Tag IDs", "doc": {"value": "Set of tag identifiers selected in the article form."}},
+      {"id": "Article", "title": "Article Detail", "doc": {"value": "Single article with embedded Author, Category and Tags."}, "tag": "article", "descriptor": [
         {"href": "#id"},
         {"href": "#slug"},
         {"href": "#title"},
@@ -51,10 +53,10 @@
         {"href": "#goAuthor"},
         {"href": "#goCategory"},
         {"href": "#doUpdateArticle"},
-        {"href": "#doDeleteArticle"}
-      ], "tag": "article"},
-
-      {"id": "ArticleList", "title": "Article List", "doc": {"value": "Paginated list of articles; supports filtering by category, tag, or status."}, "descriptor": [
+        {"href": "#doDeleteArticle"},
+        {"href": "#goHome"}
+      ]},
+      {"id": "ArticleList", "title": "Article List", "doc": {"value": "Paginated list of articles; supports filtering by category, tag, or status."}, "tag": "article flow-browse", "descriptor": [
         {"href": "#id"},
         {"href": "#slug"},
         {"href": "#title"},
@@ -65,10 +67,14 @@
         {"href": "#perPage"},
         {"href": "#totalCount"},
         {"href": "#goArticle"},
-        {"href": "#doCreateArticle"}
-      ], "tag": "article flow-browse"},
-
-      {"id": "Category", "title": "Category Detail", "descriptor": [
+        {"href": "#doCreateArticle"},
+        {"href": "#goHome"},
+        {"href": "#goAuthorList"},
+        {"href": "#goCategoryList"},
+        {"href": "#goTagList"},
+        {"href": "#goArticleFeed"}
+      ]},
+      {"id": "Category", "title": "Category Detail", "tag": "category", "descriptor": [
         {"href": "#id"},
         {"href": "#slug"},
         {"href": "#name"},
@@ -77,45 +83,46 @@
         {"href": "#goCategoryList"},
         {"href": "#goArticleList"},
         {"href": "#doUpdateCategory"},
-        {"href": "#doDeleteCategory"}
-      ], "tag": "category"},
-
-      {"id": "CategoryList", "title": "Category List", "descriptor": [
+        {"href": "#doDeleteCategory"},
+        {"href": "#goHome"}
+      ]},
+      {"id": "CategoryList", "title": "Category List", "tag": "category flow-browse", "descriptor": [
         {"href": "#id"},
         {"href": "#slug"},
         {"href": "#name"},
         {"href": "#parentId"},
         {"href": "#goCategory"},
-        {"href": "#doCreateCategory"}
-      ], "tag": "category flow-browse"},
-
-      {"id": "Tag", "title": "Tag Detail", "descriptor": [
+        {"href": "#doCreateCategory"},
+        {"href": "#goHome"}
+      ]},
+      {"id": "Tag", "title": "Tag Detail", "tag": "tag", "descriptor": [
         {"href": "#id"},
         {"href": "#slug"},
         {"href": "#name"},
         {"href": "#goTagList"},
         {"href": "#goArticleList"},
-        {"href": "#doDeleteTag"}
-      ], "tag": "tag"},
-
-      {"id": "TagList", "title": "Tag List", "descriptor": [
+        {"href": "#doDeleteTag"},
+        {"href": "#goHome"}
+      ]},
+      {"id": "TagList", "title": "Tag List", "tag": "tag flow-browse", "descriptor": [
         {"href": "#id"},
         {"href": "#slug"},
         {"href": "#name"},
         {"href": "#goTag"},
-        {"href": "#doCreateTag"}
-      ], "tag": "tag flow-browse"},
-
-      {"id": "Author", "title": "Author Detail", "descriptor": [
+        {"href": "#doCreateTag"},
+        {"href": "#goHome"}
+      ]},
+      {"id": "Author", "title": "Author Detail", "tag": "author", "descriptor": [
         {"href": "#id"},
         {"href": "#name"},
         {"href": "#email"},
         {"href": "#bio"},
         {"href": "#goArticleList"},
-        {"href": "#doUpdateAuthor"}
-      ], "tag": "author"},
-
-      {"id": "Media", "title": "Media Detail", "descriptor": [
+        {"href": "#doUpdateAuthor"},
+        {"href": "#goHome"},
+        {"href": "#goAuthorList"}
+      ]},
+      {"id": "Media", "title": "Media Detail", "tag": "media", "descriptor": [
         {"href": "#id"},
         {"href": "#filename"},
         {"href": "#mimeType"},
@@ -123,9 +130,120 @@
         {"href": "#alt"},
         {"href": "#width"},
         {"href": "#height"},
-        {"href": "#doDeleteMedia"}
-      ], "tag": "media"},
-
+        {"href": "#doDeleteMedia"},
+        {"href": "#goHome"}
+      ]},
+      {"id": "Home", "title": "Home Page", "doc": {"value": "Public CMS entry point with article teasers and navigation to browse, feed, and admin entry points."}, "tag": "public flow-browse", "descriptor": [
+        {"href": "#goArticleList"},
+        {"href": "#goAuthorList"},
+        {"href": "#goCategoryList"},
+        {"href": "#goTagList"},
+        {"href": "#goArticleFeed"},
+        {"href": "#goAdminLogin"},
+        {"href": "#goAdminIndex"},
+        {"href": "#goAuthStart"}
+      ]},
+      {"id": "AuthorList", "title": "Author List", "doc": {"value": "Public list of authors."}, "tag": "author public flow-browse", "descriptor": [
+        {"href": "#id"},
+        {"href": "#name"},
+        {"href": "#email"},
+        {"href": "#bio"},
+        {"href": "#goAuthor"},
+        {"href": "#goHome"}
+      ]},
+      {"id": "ArticleFeed", "title": "Article Feed", "doc": {"value": "Machine-readable article feed projection for published article selections."}, "tag": "article public feed", "descriptor": [
+        {"href": "#id"},
+        {"href": "#slug"},
+        {"href": "#title"},
+        {"href": "#excerpt"},
+        {"href": "#publishedAt"},
+        {"href": "#goArticle"},
+        {"href": "#goHome"}
+      ]},
+      {"id": "AuthStart", "title": "Auth Start", "doc": {"value": "App API state that exposes the OAuth authorization URL."}, "tag": "auth app", "descriptor": [
+        {"href": "#authorizationUrl"},
+        {"href": "#goOAuthProvider"},
+        {"href": "#doExchangeAuthCode"}
+      ]},
+      {"id": "AuthenticatedUser", "title": "Authenticated User", "doc": {"value": "App API response after exchanging an OAuth code for a user identity."}, "tag": "auth app", "descriptor": [
+        {"href": "#id"},
+        {"href": "#email"},
+        {"href": "#name"}
+      ]},
+      {"id": "AdminLogin", "title": "Admin Login", "doc": {"value": "Page/Admin sign-in entry. With OAuth configured it redirects to the provider; without configuration it yields OAuthConfigurationError."}, "tag": "admin auth flow-login", "descriptor": [
+        {"href": "#authState"},
+        {"href": "#authorizationUrl"},
+        {"href": "#message"},
+        {"href": "#goOAuthProvider"},
+        {"href": "#goOAuthConfigurationError"},
+        {"href": "#goHome"}
+      ]},
+      {"id": "OAuthProvider", "title": "OAuth Provider", "doc": {"value": "External Google OAuth authorization page. The provider returns to the CMS callback with code and state."}, "tag": "auth external flow-login", "descriptor": [
+        {"href": "#authCode"},
+        {"href": "#authState"},
+        {"href": "#doCompleteLogin"},
+        {"href": "#goAdminLogin"}
+      ]},
+      {"id": "OAuthConfigurationError", "title": "OAuth Configuration Error", "doc": {"value": "Local error state shown when Google OAuth settings are missing, preventing a broken redirect to the provider."}, "tag": "admin auth error", "descriptor": [
+        {"href": "#message"},
+        {"href": "#goAdminLogin"},
+        {"href": "#goHome"}
+      ]},
+      {"id": "AdminIndex", "title": "Admin Home", "doc": {"value": "Authenticated admin landing page. Visitors attempting to enter an admin state are redirected to AdminLogin."}, "tag": "admin flow-admin", "descriptor": [
+        {"href": "#name"},
+        {"href": "#email"},
+        {"href": "#authorId"},
+        {"href": "#goAdminArticleList"},
+        {"href": "#goAdminArticleForm"},
+        {"href": "#goHome"},
+        {"href": "#doLogout"}
+      ]},
+      {"id": "AdminArticleList", "title": "Admin Article List", "doc": {"value": "Authenticated article administration list, scoped to the signed-in admin author."}, "tag": "admin article flow-admin", "descriptor": [
+        {"href": "#id"},
+        {"href": "#slug"},
+        {"href": "#title"},
+        {"href": "#status"},
+        {"href": "#page"},
+        {"href": "#perPage"},
+        {"href": "#deleted"},
+        {"href": "#goAdminIndex"},
+        {"href": "#goAdminArticleList"},
+        {"href": "#goAdminArticleForm"},
+        {"href": "#goAdminArticleDeleteConfirm"},
+        {"href": "#goArticle"},
+        {"href": "#goHome"},
+        {"href": "#doLogout"}
+      ]},
+      {"id": "AdminArticleForm", "title": "Admin Article Form", "doc": {"value": "Create/edit article form. Create requires slug/category; edit keeps slug/category immutable and returns here with a saved notice."}, "tag": "admin article flow-publish", "descriptor": [
+        {"href": "#id"},
+        {"href": "#slug"},
+        {"href": "#title"},
+        {"href": "#body"},
+        {"href": "#excerpt"},
+        {"href": "#status"},
+        {"href": "#publishedAt"},
+        {"href": "#categoryId"},
+        {"href": "#tagIds"},
+        {"href": "#saved"},
+        {"href": "#message"},
+        {"href": "#goAdminIndex"},
+        {"href": "#goAdminArticleList"},
+        {"href": "#goArticle"},
+        {"href": "#goAdminArticleDeleteConfirm"},
+        {"href": "#doAdminCreateArticle"},
+        {"href": "#doAdminUpdateArticle"},
+        {"href": "#doLogout"}
+      ]},
+      {"id": "AdminArticleDeleteConfirm", "title": "Admin Article Delete Confirmation", "doc": {"value": "Confirmation state before deleting an admin-owned article."}, "tag": "admin article flow-publish", "descriptor": [
+        {"href": "#id"},
+        {"href": "#slug"},
+        {"href": "#title"},
+        {"href": "#status"},
+        {"href": "#goAdminArticleForm"},
+        {"href": "#goAdminArticleList"},
+        {"href": "#doAdminDeleteArticle"},
+        {"href": "#doLogout"}
+      ]},
       {"id": "goArticleList", "type": "safe", "rt": "#ArticleList", "title": "View Article List", "doc": {"value": "List published articles, filterable by category, tag or status."}, "tag": "article flow-browse", "descriptor": [
         {"href": "#page"},
         {"href": "#perPage"},
@@ -136,21 +254,20 @@
       {"id": "goArticle", "type": "safe", "rt": "#Article", "title": "View Article", "doc": {"value": "Retrieve a single article by id with embedded Author/Category/Tags."}, "tag": "article", "descriptor": [
         {"href": "#id"}
       ]},
-      {"id": "goCategoryList", "type": "safe", "rt": "#CategoryList", "title": "View Category List", "tag": "category flow-browse"},
-      {"id": "goCategory", "type": "safe", "rt": "#Category", "title": "View Category", "tag": "category", "descriptor": [
+      {"id": "goCategoryList", "type": "safe", "rt": "#CategoryList", "title": "View Category List", "tag": "category flow-browse", "doc": {"value": "Browse all categories."}},
+      {"id": "goCategory", "type": "safe", "rt": "#Category", "title": "View Category", "tag": "category", "doc": {"value": "Retrieve one category by id."}, "descriptor": [
         {"href": "#id"}
       ]},
-      {"id": "goTagList", "type": "safe", "rt": "#TagList", "title": "View Tag List", "tag": "tag flow-browse"},
-      {"id": "goTag", "type": "safe", "rt": "#Tag", "title": "View Tag", "tag": "tag", "descriptor": [
+      {"id": "goTagList", "type": "safe", "rt": "#TagList", "title": "View Tag List", "tag": "tag flow-browse", "doc": {"value": "Browse all tags."}},
+      {"id": "goTag", "type": "safe", "rt": "#Tag", "title": "View Tag", "tag": "tag", "doc": {"value": "Retrieve one tag by id."}, "descriptor": [
         {"href": "#id"}
       ]},
-      {"id": "goAuthor", "type": "safe", "rt": "#Author", "title": "View Author", "tag": "author", "descriptor": [
+      {"id": "goAuthor", "type": "safe", "rt": "#Author", "title": "View Author", "tag": "author", "doc": {"value": "Retrieve one author by id."}, "descriptor": [
         {"href": "#id"}
       ]},
-      {"id": "goMedia", "type": "safe", "rt": "#Media", "title": "View Media", "tag": "media", "descriptor": [
+      {"id": "goMedia", "type": "safe", "rt": "#Media", "title": "View Media", "tag": "media", "doc": {"value": "Retrieve one media asset by id."}, "descriptor": [
         {"href": "#id"}
       ]},
-
       {"id": "doCreateArticle", "type": "unsafe", "rt": "#Article", "title": "Create Article", "doc": {"value": "Create a new article. Returns the created article detail."}, "tag": "article flow-publish", "descriptor": [
         {"href": "#slug"},
         {"href": "#title"},
@@ -160,54 +277,50 @@
         {"href": "#authorId"},
         {"href": "#categoryId"}
       ]},
-      {"id": "doUpdateArticle", "type": "idempotent", "rt": "#Article", "title": "Update Article", "tag": "article flow-publish", "descriptor": [
+      {"id": "doUpdateArticle", "type": "idempotent", "rt": "#Article", "title": "Update Article", "tag": "article flow-publish", "doc": {"value": "Update an existing article representation in the App API."}, "descriptor": [
         {"href": "#id"},
         {"href": "#title"},
         {"href": "#body"},
         {"href": "#excerpt"},
         {"href": "#status"}
       ]},
-      {"id": "doDeleteArticle", "type": "idempotent", "rt": "#ArticleList", "title": "Delete Article", "tag": "article flow-publish", "descriptor": [
+      {"id": "doDeleteArticle", "type": "idempotent", "rt": "#ArticleList", "title": "Delete Article", "tag": "article flow-publish", "doc": {"value": "Delete an existing article and return to the article collection."}, "descriptor": [
         {"href": "#id"}
       ]},
-
-      {"id": "doCreateCategory", "type": "unsafe", "rt": "#Category", "title": "Create Category", "tag": "category", "descriptor": [
+      {"id": "doCreateCategory", "type": "unsafe", "rt": "#Category", "title": "Create Category", "tag": "category", "doc": {"value": "Create a category and return the created category detail."}, "descriptor": [
         {"href": "#slug"},
         {"href": "#name"},
         {"href": "#description"},
         {"href": "#parentId"}
       ]},
-      {"id": "doUpdateCategory", "type": "idempotent", "rt": "#Category", "title": "Update Category", "tag": "category", "descriptor": [
+      {"id": "doUpdateCategory", "type": "idempotent", "rt": "#Category", "title": "Update Category", "tag": "category", "doc": {"value": "Update an existing category."}, "descriptor": [
         {"href": "#id"},
         {"href": "#name"},
         {"href": "#description"},
         {"href": "#parentId"}
       ]},
-      {"id": "doDeleteCategory", "type": "idempotent", "rt": "#CategoryList", "title": "Delete Category", "tag": "category", "descriptor": [
+      {"id": "doDeleteCategory", "type": "idempotent", "rt": "#CategoryList", "title": "Delete Category", "tag": "category", "doc": {"value": "Delete a category and return to the category collection."}, "descriptor": [
         {"href": "#id"}
       ]},
-
-      {"id": "doCreateTag", "type": "unsafe", "rt": "#Tag", "title": "Create Tag", "tag": "tag", "descriptor": [
+      {"id": "doCreateTag", "type": "unsafe", "rt": "#Tag", "title": "Create Tag", "tag": "tag", "doc": {"value": "Create a tag and return the created tag detail."}, "descriptor": [
         {"href": "#slug"},
         {"href": "#name"}
       ]},
-      {"id": "doDeleteTag", "type": "idempotent", "rt": "#TagList", "title": "Delete Tag", "tag": "tag", "descriptor": [
+      {"id": "doDeleteTag", "type": "idempotent", "rt": "#TagList", "title": "Delete Tag", "tag": "tag", "doc": {"value": "Delete a tag and return to the tag collection."}, "descriptor": [
         {"href": "#id"}
       ]},
-
-      {"id": "doCreateAuthor", "type": "unsafe", "rt": "#Author", "title": "Create Author", "tag": "author", "descriptor": [
+      {"id": "doCreateAuthor", "type": "unsafe", "rt": "#Author", "title": "Create Author", "tag": "author", "doc": {"value": "Create an author and return the created author detail."}, "descriptor": [
         {"href": "#name"},
         {"href": "#email"},
         {"href": "#bio"}
       ]},
-      {"id": "doUpdateAuthor", "type": "idempotent", "rt": "#Author", "title": "Update Author", "tag": "author", "descriptor": [
+      {"id": "doUpdateAuthor", "type": "idempotent", "rt": "#Author", "title": "Update Author", "tag": "author", "doc": {"value": "Update an existing author."}, "descriptor": [
         {"href": "#id"},
         {"href": "#name"},
         {"href": "#email"},
         {"href": "#bio"}
       ]},
-
-      {"id": "doCreateMedia", "type": "unsafe", "rt": "#Media", "title": "Upload Media", "tag": "media", "descriptor": [
+      {"id": "doCreateMedia", "type": "unsafe", "rt": "#Media", "title": "Upload Media", "tag": "media", "doc": {"value": "Register a media asset and return the created media detail."}, "descriptor": [
         {"href": "#filename"},
         {"href": "#mimeType"},
         {"href": "#url"},
@@ -215,7 +328,59 @@
         {"href": "#width"},
         {"href": "#height"}
       ]},
-      {"id": "doDeleteMedia", "type": "idempotent", "rt": "#Media", "title": "Delete Media", "tag": "media", "descriptor": [
+      {"id": "doDeleteMedia", "type": "idempotent", "rt": "#Media", "title": "Delete Media", "tag": "media", "doc": {"value": "Delete a media asset."}, "descriptor": [
+        {"href": "#id"}
+      ]},
+      {"id": "goHome", "title": "Go Home", "type": "safe", "rt": "#Home", "doc": {"value": "Return to the public CMS home page."}, "tag": "public flow-browse"},
+      {"id": "goAuthorList", "title": "View Author List", "type": "safe", "rt": "#AuthorList", "doc": {"value": "Browse all public authors."}, "tag": "author public flow-browse"},
+      {"id": "goArticleFeed", "title": "View Article Feed", "type": "safe", "rt": "#ArticleFeed", "doc": {"value": "Retrieve the article feed projection."}, "tag": "article public feed"},
+      {"id": "goAuthStart", "title": "Start App Auth", "type": "safe", "rt": "#AuthStart", "doc": {"value": "Request the App API OAuth authorization URL."}, "tag": "auth app"},
+      {"id": "doExchangeAuthCode", "title": "Exchange Auth Code", "type": "unsafe", "rt": "#AuthenticatedUser", "doc": {"value": "Exchange an OAuth code/state pair for an authenticated user representation."}, "tag": "auth app flow-login", "descriptor": [
+        {"href": "#authCode"},
+        {"href": "#authState"}
+      ]},
+      {"id": "goAdminLogin", "title": "Go to Admin Login", "type": "safe", "rt": "#AdminLogin", "doc": {"value": "Enter the admin sign-in flow. Unauthenticated admin access redirects here."}, "tag": "admin auth flow-login"},
+      {"id": "goOAuthProvider", "title": "Go to OAuth Provider", "type": "safe", "rt": "#OAuthProvider", "doc": {"value": "Redirect the browser to the configured Google OAuth provider."}, "tag": "auth external flow-login", "descriptor": [
+        {"href": "#authState"}
+      ]},
+      {"id": "goOAuthConfigurationError", "title": "Show OAuth Configuration Error", "type": "safe", "rt": "#OAuthConfigurationError", "doc": {"value": "System branch when OAuth provider settings are missing."}, "tag": "admin auth error"},
+      {"id": "doCompleteLogin", "title": "Complete Admin Login", "type": "unsafe", "rt": "#AdminIndex", "doc": {"value": "Consume OAuth callback code/state, match the Google email to an Author, and create the admin session."}, "tag": "admin auth flow-login", "descriptor": [
+        {"href": "#authCode"},
+        {"href": "#authState"}
+      ]},
+      {"id": "doLogout", "title": "Log Out", "type": "unsafe", "rt": "#Home", "doc": {"value": "Clear the admin session and return to the public home page."}, "tag": "admin auth flow-login"},
+      {"id": "goAdminIndex", "title": "View Admin Home", "type": "safe", "rt": "#AdminIndex", "doc": {"value": "Open the admin landing page. Requires an admin session; visitors are redirected to AdminLogin."}, "tag": "admin flow-admin"},
+      {"id": "goAdminArticleList", "title": "View Admin Article List", "type": "safe", "rt": "#AdminArticleList", "doc": {"value": "List articles owned by the signed-in admin, with optional status filter and pagination."}, "tag": "admin article flow-admin", "descriptor": [
+        {"href": "#status"},
+        {"href": "#page"},
+        {"href": "#perPage"}
+      ]},
+      {"id": "goAdminArticleForm", "title": "View Admin Article Form", "type": "safe", "rt": "#AdminArticleForm", "doc": {"value": "Open the article create form, or edit form when id is provided."}, "tag": "admin article flow-publish", "descriptor": [
+        {"href": "#id"}
+      ]},
+      {"id": "goAdminArticleDeleteConfirm", "title": "Confirm Admin Article Delete", "type": "safe", "rt": "#AdminArticleDeleteConfirm", "doc": {"value": "Open the delete confirmation for an admin-owned article."}, "tag": "admin article flow-publish", "descriptor": [
+        {"href": "#id"}
+      ]},
+      {"id": "doAdminCreateArticle", "title": "Create Article in Admin", "type": "unsafe", "rt": "#AdminArticleForm", "doc": {"value": "Submit the admin create form, create an article for the signed-in author, and return to the edit form with a created notice."}, "tag": "admin article flow-publish", "descriptor": [
+        {"href": "#slug"},
+        {"href": "#title"},
+        {"href": "#body"},
+        {"href": "#excerpt"},
+        {"href": "#status"},
+        {"href": "#publishedAt"},
+        {"href": "#categoryId"},
+        {"href": "#tagIds"}
+      ]},
+      {"id": "doAdminUpdateArticle", "title": "Update Article in Admin", "type": "idempotent", "rt": "#AdminArticleForm", "doc": {"value": "Submit the admin edit form, update an owned article, and return to the edit form with an updated notice."}, "tag": "admin article flow-publish", "descriptor": [
+        {"href": "#id"},
+        {"href": "#title"},
+        {"href": "#body"},
+        {"href": "#excerpt"},
+        {"href": "#status"},
+        {"href": "#publishedAt"},
+        {"href": "#tagIds"}
+      ]},
+      {"id": "doAdminDeleteArticle", "title": "Delete Article in Admin", "type": "idempotent", "rt": "#AdminArticleList", "doc": {"value": "Delete an admin-owned article and return to the admin article list with a deleted notice."}, "tag": "admin article flow-publish", "descriptor": [
         {"href": "#id"}
       ]}
     ]
