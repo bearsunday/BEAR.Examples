@@ -49,7 +49,7 @@ return [
     'article_publish.sql' => [
         'status' => 'published',
         'publishedAt' => '2026-01-01 00:00:00',
-        'id' => 1,
+        'id' => 6,
     ],
     'article_update.sql' => [
         'title' => 'Updated',

@@ -231,6 +231,7 @@ Every Page test for such a resource includes
 `testNotFoundRendersErrorTemplate` so the warning regression is caught.
 
 ### Status codes
+
 | Method | Success | Not found | Validation fail (App layer) | Validation fail (Page layer) |
 |--------|---------|-----------|-----------------------------|-------------------------------|
 | GET | 200 | 404 | n/a | n/a |

@@ -13,7 +13,6 @@ use MyVendor\Cms\Exception\ValidationException;
 use Override;
 use stdClass;
 
-use function assert;
 use function explode;
 use function file_get_contents;
 use function is_object;
@@ -88,8 +87,6 @@ final readonly class JsonSchemaRequestExceptionHandler implements JsonSchemaRequ
         } catch (JsonException) {
             return null;
         }
-
-        assert($schema instanceof stdClass || $schema === null);
 
         return $schema instanceof stdClass ? $schema : null;
     }

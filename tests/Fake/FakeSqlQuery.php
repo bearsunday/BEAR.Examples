@@ -387,16 +387,22 @@ final class FakeSqlQuery implements SqlQueryInterface
                 ];
 
             case 'article_publish':
-                return [
-                    'affectedRows' => $this->updateRow(
-                        'article',
-                        (int) $values['id'],
-                        [
-                            'status' => $values['status'],
-                            'publishedAt' => $values['publishedAt'],
-                        ],
-                    ),
-                ];
+                $id = (int) $values['id'];
+                foreach ($this->tables['article'] as $idx => $row) {
+                    if ((int) $row['id'] !== $id || $row['status'] !== 'draft') {
+                        continue;
+                    }
+
+                    $this->tables['article'][$idx] = [
+                        ...$row,
+                        'status' => $values['status'],
+                        'publishedAt' => $values['publishedAt'],
+                    ];
+
+                    return ['affectedRows' => 1];
+                }
+
+                return ['affectedRows' => 0];
 
             case 'article_delete':
                 return ['affectedRows' => $this->deleteRow('article', (int) $values['id'])];

@@ -68,7 +68,10 @@ class ArticlePublish extends ResourceObject
         }
 
         $effectiveAt = $publishedAt ?? gmdate('Y-m-d\\TH:i:s\\Z');
-        $this->articleCmd->publish($id, ArticleStatus::Published->value, $effectiveAt);
+        $affectedRows = $this->articleCmd->publish($id, ArticleStatus::Published->value, $effectiveAt);
+        if (! $affectedRows->isAffected()) {
+            return $this->publishConflict($id);
+        }
 
         $this->code = Code::OK;
         $this->body = [
@@ -76,6 +79,26 @@ class ArticlePublish extends ResourceObject
             'slug' => $article->slug,
             'status' => ArticleStatus::Published->value,
             'publishedAt' => $effectiveAt,
+        ];
+
+        return $this;
+    }
+
+    private function publishConflict(int $id): static
+    {
+        $article = $this->article->item($id);
+        if ($article === null) {
+            $this->code = Code::NOT_FOUND;
+            $this->body = ['message' => 'Article not found', 'id' => $id];
+
+            return $this;
+        }
+
+        $this->code = 409;
+        $this->body = [
+            'message' => 'Article is already published',
+            'id' => $id,
+            'status' => $article->status->value,
         ];
 
         return $this;
