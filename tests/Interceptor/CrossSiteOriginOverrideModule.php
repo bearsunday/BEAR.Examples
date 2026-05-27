@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace MyVendor\Cms\Interceptor;
 
 use MyVendor\Cms\Fake\FakeRequestOrigin;
-use MyVendor\Cms\Http\AllowedOrigin;
-use MyVendor\Cms\Http\RequestOriginInterface;
 use Override;
+use Ray\Csrf\Http\AllowedOrigin;
+use Ray\Csrf\Http\RequestOriginInterface;
 use Ray\Di\AbstractModule;
 
 /**

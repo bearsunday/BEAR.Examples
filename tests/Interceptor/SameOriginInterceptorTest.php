@@ -5,11 +5,12 @@ declare(strict_types=1);
 namespace MyVendor\Cms\Interceptor;
 
 use BEAR\Resource\Exception\BadRequestException;
-use MyVendor\Cms\Exception\ForbiddenException;
 use MyVendor\Cms\Fake\FakeRequestOrigin;
-use MyVendor\Cms\Http\AllowedOrigin;
 use PHPUnit\Framework\TestCase;
 use Ray\Aop\ReflectiveMethodInvocation;
+use Ray\Csrf\Exception\ForbiddenException;
+use Ray\Csrf\Http\AllowedOrigin;
+use Ray\Csrf\Interceptor\SameOriginInterceptor;
 
 /**
  * Unit tests for `SameOriginInterceptor` — exercises the validation

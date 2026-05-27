@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms\Auth;
+namespace Ray\Csrf;
 
 use Override;
 
@@ -18,7 +18,7 @@ use const PHP_SESSION_ACTIVE;
 /** @SuppressWarnings("PHPMD.Superglobals") Session adapter boundary. */
 final class SessionCsrfToken implements CsrfTokenInterface
 {
-    private const string SESSION_KEY = 'cms_csrf_token';
+    private const string SESSION_KEY = 'ray_csrf_token';
 
     #[Override]
     public function issue(): string

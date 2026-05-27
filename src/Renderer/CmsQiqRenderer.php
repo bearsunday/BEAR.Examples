@@ -8,13 +8,13 @@ use BEAR\Resource\RenderInterface;
 use BEAR\Resource\ResourceObject;
 use ErrorException;
 use MyVendor\Cms\Auth\AuthSessionInterface;
-use MyVendor\Cms\Auth\CsrfTokenInterface;
 use MyVendor\Cms\Auth\UserInterface;
-use MyVendor\Cms\Http\CsrfTokenField;
 use MyVendor\Cms\Renderer\Exception\InvalidResourcePathException;
 use Override;
 use Qiq\Template;
 use Ray\Aop\WeavedInterface;
+use Ray\Csrf\CsrfTokenInterface;
+use Ray\Csrf\Http\CsrfTokenField;
 use ReflectionClass;
 use Throwable;
 

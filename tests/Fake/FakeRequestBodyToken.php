@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace MyVendor\Cms\Fake;
 
-use MyVendor\Cms\Http\RequestBodyTokenInterface;
 use Override;
+use Ray\Csrf\Http\RequestBodyTokenInterface;
 
 final readonly class FakeRequestBodyToken implements RequestBodyTokenInterface
 {

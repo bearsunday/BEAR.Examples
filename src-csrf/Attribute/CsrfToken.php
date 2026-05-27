@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms\Attribute;
+namespace Ray\Csrf\Attribute;
 
 use Attribute;
 

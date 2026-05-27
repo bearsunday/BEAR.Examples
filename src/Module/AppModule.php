@@ -26,6 +26,7 @@ use MyVendor\Cms\Service\CommonMarkRenderer;
 use MyVendor\Cms\Service\MarkdownRendererInterface;
 use MyVendor\Cms\Validation\JsonSchemaRequestExceptionHandler;
 use Ray\AuraSqlModule\AuraSqlModule;
+use Ray\Csrf\CsrfModule;
 use Ray\Di\Scope;
 use Ray\MediaQuery\MediaQuerySqlModule;
 

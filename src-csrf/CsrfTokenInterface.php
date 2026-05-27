@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms\Auth;
+namespace Ray\Csrf;
 
 interface CsrfTokenInterface
 {
@@ -12,6 +12,6 @@ interface CsrfTokenInterface
     /** Constant-time compare. Returns `false` when no token has been issued yet. */
     public function verify(string $candidate): bool;
 
-    /** Discards the stored token; called by `AuthSessionInterface::logout()`. */
+    /** Discards the stored token; consumers call this on logout. */
     public function clear(): void;
 }

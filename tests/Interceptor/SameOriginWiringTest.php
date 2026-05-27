@@ -6,10 +6,10 @@ namespace MyVendor\Cms\Interceptor;
 
 use BEAR\Resource\ResourceInterface;
 use MyVendor\Cms\Auth\Visitor;
-use MyVendor\Cms\Exception\ForbiddenException;
 use MyVendor\Cms\Fake\FakeUserModule;
 use MyVendor\Cms\Injector;
 use PHPUnit\Framework\TestCase;
+use Ray\Csrf\Exception\ForbiddenException;
 
 /**
  * One end-to-end wiring check that `#[SameOrigin]` actually fires when the

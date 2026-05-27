@@ -43,12 +43,14 @@
     },
     "autoload": {
         "psr-4": {
-            "MyVendor\\Cms\\": "src/"
+            "MyVendor\\Cms\\": "src/",
+            "Ray\\Csrf\\": "src-csrf/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "MyVendor\\Cms\\": "tests/"
+            "MyVendor\\Cms\\": "tests/",
+            "Ray\\Csrf\\": "tests-csrf/"
         }
     },
     "scripts": {
@@ -119,7 +121,7 @@
             "./vendor/bin/psalm --show-info=true",
             "./vendor/bin/phpstan analyse -c phpstan.neon --memory-limit=512M"
         ],
-        "phpmd": "php -d error_reporting=22527 ./vendor/bin/phpmd src,bin text ./phpmd.xml --exclude \"bin/semantic-ex/*\"",
+        "phpmd": "php -d error_reporting=22527 ./vendor/bin/phpmd src,src-csrf,bin text ./phpmd.xml --exclude \"bin/semantic-ex/*\"",
         "security": "./vendor/bin/bear.security-scan src",
         "tests": [
             "@cs",

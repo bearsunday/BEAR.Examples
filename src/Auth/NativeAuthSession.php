@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace MyVendor\Cms\Auth;
 
+use Ray\Csrf\CsrfTokenInterface;
+
 use function bin2hex;
 use function hash_equals;
 use function is_array;
