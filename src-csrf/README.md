@@ -58,7 +58,8 @@ test layout.
 When `ray/csrf-module` is published:
 
 1. Delete `src-csrf/` and `tests-csrf/`.
-2. Remove the `Ray\\Csrf\\` entry from `composer.json` `autoload`.
+2. Remove the `Ray\\Csrf\\` entries from `composer.json` `autoload`
+   and `autoload-dev`.
 3. Remove `src-csrf` / `tests-csrf` from `phpcs.xml`, `phpstan.neon`,
    `psalm.xml`, the `phpmd` composer script paths, and the PHPUnit
    `<source>` section.
