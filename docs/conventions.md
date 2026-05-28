@@ -266,9 +266,12 @@ the transition; the entity resource keeps verb-rich CRUD. See
 Never `lastInsertId` (driver-dependent, awkward to fake). Always
 re-SELECT via `by<NaturalKey>` using the natural key the client
 supplied (slug / email / filename). The canonical Resource-facing
-`Command` side returns `void`. If a non-Resource caller needs DML
-metadata, keep that as an explicit sample/read-model command and return
-MediaQuery's `AffectedRows`; see [MediaQuery samples](media-query-samples.md).
+`Command` side usually returns `void`. State-transition commands may return
+MediaQuery's `AffectedRows` when the resource must distinguish a successful
+move from a concurrent conflict; `ArticleCommandInterface::publish()` is the
+canonical example. If a non-Resource caller needs DML metadata, keep that as
+an explicit sample/read-model command; see
+[MediaQuery samples](media-query-samples.md).
 
 ### Pagination
 Article collection reads use Ray.MediaQuery's `#[Pager]` and return
