@@ -2,11 +2,12 @@
 
 API Document
 
-## Routes (17)
+## Routes (18)
 
 | HTTP Route | Methods | Resource |
 |------------|---------|----------|
 | /article | GET, POST, PUT, DELETE | App/Article |
+| /article-publish | POST | App/ArticlePublish |
 | /articles | GET | App/Articles |
 | /auth | GET, POST | App/Auth |
 | /author | GET, POST, PUT | App/Author |
@@ -24,7 +25,7 @@ API Document
 | /variations/article-sql-query | GET | App/Variations/ArticleSqlQuery |
 | /variations/media-stream | GET | App/Variations/MediaStream |
 
-## ResourceObjects (17)
+## ResourceObjects (18)
 
 ### App/Article
 `/article`
@@ -35,6 +36,13 @@ API Document
 | POST | slug*, title*, body*, authorId*, categoryId*, excerpt, status, publishedAt, tagIds | - |
 | PUT | id*, title*, body*, status*, excerpt, publishedAt, tagIds | - |
 | DELETE | id* | - |
+
+### App/ArticlePublish
+`/article-publish`
+
+| Method | Parameters | Links |
+|--------|------------|-------|
+| POST | id*, publishedAt | - |
 
 ### App/Articles
 `/articles`
@@ -166,7 +174,7 @@ API Document
 | Response | Schema | Properties |
 |----------|--------|------------|
 | Article | article.json | id, slug, title, body, excerpt, status, publishedAt, authorId, categoryId |
-| Write_response | write_response.json | id, slug, email, filename, message |
+| Write_response | write_response.json | id, slug, email, filename, status, publishedAt, message |
 | ArticleList | articleList.json | items, page, perPage, count, totalCount |
 | Auth_response | auth_response.json | id, email, name, message, reason |
 | Author | author.json | id, name, email, bio |
@@ -182,7 +190,7 @@ API Document
 
 | Interface | Methods |
 |-----------|---------|
-| ArticleCommandInterface | add(slug, title, body, excerpt, status, publishedAt, authorId, categoryId):void, update(id, title, body, excerpt, status, publishedAt):void, delete(id):void |
+| ArticleCommandInterface | add(slug, title, body, excerpt, status, publishedAt, authorId, categoryId):void, update(id, title, body, excerpt, status, publishedAt):void, publish(id, status, publishedAt):AffectedRows, delete(id):void |
 | ArticleQueryInterface | item(id):Article, bySlug(slug):Article, list(categoryId, tagId, authorId, status, perPage):PagesInterface |
 | ArticleSelectionQueryInterface | list(status):ArticleSelection |
 | ArticleTagCommandInterface | clear(articleId):void, link(articleId, tagId):void |
@@ -195,7 +203,7 @@ API Document
 | TagCommandInterface | add(slug, name):void, update(id, slug, name):void, delete(id):void |
 | TagQueryInterface | item(id):Tag, bySlug(slug):Tag, list():array, listByArticle(articleId):array |
 
-## SQL (35)
+## SQL (36)
 
 | File | Query |
 |------|-------|
@@ -232,6 +240,10 @@ API Document
     a.body,
     a.excerpt,
     a.st...` |
+| article_publish.sql | `UPDATE articles
+SET status = :status,
+    published_at = :publishedAt
+WHERE i...` |
 | article_selection_list.sql | `SELECT
     a.id,
     a.slug,

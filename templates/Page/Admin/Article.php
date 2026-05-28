@@ -3,12 +3,14 @@
  * @var 'create'|'edit' $mode
  * @var \MyVendor\Cms\Entity\Article|null $article
  * @var array<string, mixed> $values
- * @var list<string> $errors
+ * @var array<string, list<string>> $errors
  * @var list<\MyVendor\Cms\Entity\Author> $authors
  * @var list<\MyVendor\Cms\Entity\Category> $categories
  * @var list<\MyVendor\Cms\Entity\Tag> $tags
  * @var list<int> $selectedTagIds
  * @var string|null $saved
+ * @var string $csrfToken
+ * @var string $csrfTokenField
  */
 $isEdit = $mode === 'edit' && $article !== null;
 $title = (string) ($values['title'] ?? '');
@@ -46,14 +48,17 @@ $nameFor = static function (array $entities, int $id): string {
     <section class="ErrorList">
       <h2>Could not save article</h2>
       <ul>
-        <?php foreach ($errors as $error): ?>
-          <li>{{h $error }}</li>
+        <?php foreach ($errors as $field => $messages): ?>
+          <?php foreach ($messages as $message): ?>
+            <li><?php if ($field !== '_global'): ?><strong>{{h $field }}</strong>: <?php endif ?>{{h $message }}</li>
+          <?php endforeach ?>
         <?php endforeach ?>
       </ul>
     </section>
   <?php endif ?>
 
   <form class="ArticleForm" method="post" action="{{h $formAction }}">
+    <input type="hidden" name="{{h $csrfTokenField }}" value="{{h $csrfToken }}">
     <?php if ($isEdit): ?>
       <input type="hidden" name="id" value="{{h $article->id }}">
       <p class="slug">Slug: <code>{{h $article->slug }}</code></p>
@@ -106,6 +111,9 @@ $nameFor = static function (array $entities, int $id): string {
     <li><a href="/admin/index" class="goAdminIndex">Admin home</a></li>
     <li><a href="/admin/articlelist" class="goAdminArticleList">Back to article administration</a></li>
     <?php if ($isEdit): ?>
+      <?php if ($article->isDraft()): ?>
+        <li><a href="/admin/articleconfirm?id={{h $article->id }}" class="doPublishArticle">Publish article…</a></li>
+      <?php endif ?>
       <li><a href="/article?id={{h $article->id }}" class="goArticle">View public article</a></li>
       <li><a href="/admin/articledelete?id={{h $article->id }}" class="doDeleteArticle">Delete article</a></li>
     <?php endif ?>

@@ -38,7 +38,14 @@ class IndexTest extends AbstractPageTestCase
         $ro = $resource->get('page://self/index');
 
         $this->assertSame(200, $ro->code);
-        $this->assertStringContainsString('<a class="goAdminIndex" href="/admin/index">Admin</a>', $ro->toString());
-        $this->assertStringContainsString('<form class="doLogout" method="post" action="/admin/logout"><button type="submit">Sign out</button></form>', $ro->toString());
+        $html = $ro->toString();
+        $this->assertStringContainsString('<a class="goAdminIndex" href="/admin/index">Admin</a>', $html);
+        // The logout form embeds the per-session CSRF token. Tests run
+        // under FakeModule, which binds FakeCsrfToken with the fixed
+        // default token, so we can pin the exact rendered value here.
+        $this->assertStringContainsString(
+            '<form class="doLogout" method="post" action="/admin/logout"><input type="hidden" name="_csrf_token" value="fake-csrf-token"><button type="submit">Sign out</button></form>',
+            $html,
+        );
     }
 }

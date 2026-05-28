@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ArticlePublishInput",
+  "description": "Input for POST app://self/article-publish. Performs the draft → published state transition.",
+  "type": "object",
+  "required": ["id"],
+  "errorMessage": {
+    "required": {
+      "id": "Article id is required."
+    }
+  },
+  "properties": {
+    "id": {
+      "type": "integer",
+      "minimum": 1,
+      "errorMessage": {
+        "type": "Article id must be a number.",
+        "minimum": "Article id must be at least 1."
+      }
+    },
+    "publishedAt": {
+      "type": ["string", "null"],
+      "format": "date-time",
+      "errorMessage": {
+        "type": "Published date must be a valid ISO 8601 date-time.",
+        "format": "Published date must be a valid ISO 8601 date-time."
+      }
+    }
+  }
+}

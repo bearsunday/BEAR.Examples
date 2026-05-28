@@ -51,7 +51,8 @@
         {"href": "#goAuthor"},
         {"href": "#goCategory"},
         {"href": "#doUpdateArticle"},
-        {"href": "#doDeleteArticle"}
+        {"href": "#doDeleteArticle"},
+        {"href": "#doPublishArticle"}
       ], "tag": "article"},
 
       {"id": "ArticleList", "title": "Article List", "doc": {"value": "Paginated list of articles; supports filtering by category, tag, or status."}, "descriptor": [
@@ -169,6 +170,10 @@
       ]},
       {"id": "doDeleteArticle", "type": "idempotent", "rt": "#ArticleList", "title": "Delete Article", "tag": "article flow-publish", "descriptor": [
         {"href": "#id"}
+      ]},
+      {"id": "doPublishArticle", "type": "unsafe", "rt": "#Article", "title": "Publish Article", "doc": {"value": "Move a draft article to published. Non-idempotent: a second call on an already-published article returns 409 Conflict (the state machine guards against re-publishing)."}, "tag": "article flow-publish", "descriptor": [
+        {"href": "#id"},
+        {"href": "#publishedAt"}
       ]},
 
       {"id": "doCreateCategory", "type": "unsafe", "rt": "#Category", "title": "Create Category", "tag": "category", "descriptor": [

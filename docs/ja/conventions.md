@@ -215,14 +215,23 @@ if (! isset($article) || $article === null) {
 警告のリグレッションを検出します。
 
 ### Status code
-| Method | 成功 | 見つからない | 検証失敗 |
-|--------|------|-------------|---------|
-| GET | 200 | 404 | n/a |
-| POST (リソースを作成する) | 201 + `Location` ヘッダ | n/a | 422 (`#[JsonSchema(params:)]` 経由) |
-| POST (アクション / 非作成) | 200 + body | n/a | 422 (`#[JsonSchema(params:)]` 経由) |
-| PUT | 200 | 404 | 422 |
-| DELETE | 204 | 404 | n/a |
-| 重複 `slug` (または他の unique key) | — | — | 409 (DB の `UniqueConstraintViolation` 経由、手動 catch なし) |
+
+| Method | 成功 | 見つからない | 検証失敗 (App 層) | 検証失敗 (Page 層) |
+|--------|------|-------------|--------------------|--------------------|
+| GET | 200 | 404 | n/a | n/a |
+| POST (リソースを作成する) | 201 + `Location` ヘッダ | n/a | `ValidationException` を throw | 422 + form 再描画 |
+| POST (アクション / 非作成) | 200 + body | n/a | `ValidationException` を throw | 422 + form 再描画 |
+| PUT | 200 | 404 | `ValidationException` を throw | 422 + form 再描画 |
+| DELETE | 204 | 404 | n/a | n/a |
+| 重複 `slug` (または他の unique key) | — | — | — | 409 (DB の `UniqueConstraintViolation` 経由、手動 catch なし) |
+| POST (状態遷移、すでに目的状態) | — | — | 409 + `{message, id, status}` (例: `ArticlePublish` を public 済み article に対して) | — |
+
+App リソースは検証失敗を `ValidationException` (`field => list<string>`
+を保持) として throw します。422 body にはなりません — `app://` には
+thrown error を HTTP status に変換する transfer layer が存在しないためです。
+Page リソースは catch して 422 form を描画します。配線の詳細は
+[validation-layer-design.md](../journal/validation-layer-design.md)
+を参照してください。
 
 **POST は常に作成ではありません。** `201 + Location` は POST が新しい
 addressable resource を追加する場合に限ります (例: `Article::onPost` が
@@ -230,6 +239,12 @@ addressable resource を追加する場合に限ります (例: `Article::onPost
 code-for-session 交換、パスワードリセット確定、「このイベントを記録する」
 endpoint — は結果 body と一緒に `200` を返し、`Location` ヘッダは付けません。
 `#[JsonSchema(params:)]` の input 検証ルールはどちらの場合でも適用されます。
+
+**状態遷移リソース** (例: `ArticlePublish`) はエンティティリソースの
+メソッドではなく、別リソースとして並べます。URI が遷移を表現し、
+エンティティリソースは verb-rich な CRUD に集中させます。詳細は
+[`article-publish-flow-design.md`](../journal/article-publish-flow-design.md)
+を参照してください。
 
 ### INSERT 後の id
 `lastInsertId` を使ってはいけません (driver 依存で fake しにくい)。client が
@@ -282,22 +297,18 @@ endpoint は Resource 境界で DTO、別の endpoint は名前付き scalar par
 [`../journal/decisions-to-consult.md`](../journal/decisions-to-consult.md) P8-#45
 を参照してください。
 
-#### Pitfall: typed array DTO フィールドと validation の順序
+#### Native array DTO input
 
-Validation は DTO hydration の *後* に走るので、typed property に対する
-不正な値 (例: `public array $tagIds` に対する scalar `tagIds=1`) は
-constructor に先に到達して `TypeError` → 5xx になり、
-`JsonSchemaInterceptor` には届きません。BEAR.Resource が params validation を
-hydration の前に動かすまで、DTO 内部で typed フィールドを防衛してください:
-parameter を `mixed` で宣言し、明示的に型チェックし、不正な shape に対して
-`BEAR\Resource\Exception\ParameterException` を throw (400 にマップ) します。
-`ArticleCreateInput::tagIds` と `ArticleUpdateInput::tagIds` がこのパターン
-を踏襲しています。runtime チェックは最小限に — `is_array` だけ — JSON Schema
-の `items` / `minimum` には element ごとの検証を任せます。なお `mixed` は
-`Ray\InputQuery` のデフォルト値解決で常に null を許容します: 省略された
-`tagIds` は constructor で宣言したデフォルトではなく `null` で来るので、
-`is_array` ゲートの前に意図したデフォルトに coalesce してください
-(create では `[]`、tri-state な update では `null`)。
+BEAR.Resource 1.x-dev (Ray.InputQuery 1.1 経由) は Resource 境界の
+`#[Input]` DTO で native な `array` / `array|null` constructor parameter
+を扱えます。collection field には実際の型を使います:
+`ArticleCreateInput::tagIds` は `array $tagIds = []`、tri-state update の
+`ArticleUpdateInput::tagIds` は `array|null $tagIds = null` です。非 array の
+不正な shape は Ray.InputQuery が拒否し、BEAR.Resource が
+`ParameterException` (400 系) として wrap するため、DTO constructor には
+到達しません。DTO 側は妥当な配列を `array_values()` で正規化するだけです。
+`items` や `minimum` のような element ごとの制約は引き続き JSON Schema が
+担当します。
 
 `Auth::onPost` は共有の `write_response.json` (整数 DB id) ではなく専用の
 `auth_response.json` (OAuth provider 由来の string subject id) を使います —
@@ -360,6 +371,47 @@ Ray.MediaQuery の DTO サポートは、Resource-to-Command 境界が本当に 
 - 汎用の `LogicException` / `RuntimeException` は使いません。`src/` 由来で
   throw する例外は `MyVendor\Cms\Exception\<DomainName>Exception` を定義します。
 - Read のエラー (見つからない) は throw せず、`$this->code` 経由で 404 を返します。
+- リクエスト検証失敗は `MyVendor\Cms\Exception\ValidationException`
+  (フレームワークの `JsonSchemaRequestException` ではない) を throw し、
+  `field => list<string>` の map を保持します。
+  `JsonSchemaRequestExceptionHandler` は BEAR.Resource の構造化された
+  request schema error を field ごとに束ね、Page リソースが catch して
+  422 form 再描画として surface します。Response schema の失敗は
+  `JsonSchemaResponseException` (5xx 系) のままで、ユーザー入力エラーには
+  変換しません。詳細は
+  [validation-layer-design.md](../journal/validation-layer-design.md)
+  を参照してください。
+
+#### JSON Schema の `errorMessage` キー (ajv-errors 慣習)
+
+`var/json_validate/*.json` の schema は constraint の隣に
+`errorMessage` キーワードを置けます。constraint そのものは残ります —
+`pattern: "^[a-z]+$"` は引き続き検証を行い、`errorMessage.pattern` は
+ワイヤー上のコピーだけを所有します。
+
+```json
+"slug": {
+  "type": "string",
+  "pattern": "^[a-z0-9][a-z0-9-]*$",
+  "errorMessage": {
+    "pattern": "Slug must contain only lowercase letters, digits and hyphens."
+  }
+}
+```
+
+required フィールドのコピーは親側で
+`errorMessage.required.<field>` に置きます。`errorMessage` は
+プレーン文字列でも書けて、その場合はそのプロパティの任意の失敗に対する
+fallback になります。
+
+BEAR.Resource は validator row を `JsonSchemaError` に変換する時点で
+これらの `errorMessage` template を解決します。このアプリ側の handler は
+すでに描画済みの `$error->message` を使い、field ごとに group するだけです。
+
+`errorMessage` は default validator メッセージが不自然な場合や、
+管理画面の語彙に合わせる必要があるときにだけ追加してください — override
+がない schema もそのまま動き、validator の default メッセージに
+fall through します。
 
 ### 呼び出し側での名前付き引数
 **positional がデフォルトです。** positional だと読み手が呼び出しを decode

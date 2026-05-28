@@ -1,17 +1,38 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "ArticleCreateInput",
-  "description": "Input for POST app://self/article. Validates the named arguments of onPost.",
+  "description": "Input for POST app://self/article. Validates the named arguments of onPost. Per-field `errorMessage` keys follow the ajv-errors convention (https://ajv.js.org/packages/ajv-errors.html) and are read by MyVendor\\Cms\\Validation\\JsonSchemaRequestExceptionHandler.",
   "type": "object",
   "required": ["slug", "title", "body", "authorId", "categoryId"],
+  "errorMessage": {
+    "required": {
+      "slug": "Slug is required.",
+      "title": "Title is required.",
+      "body": "Body is required.",
+      "authorId": "Author is required.",
+      "categoryId": "Category is required."
+    }
+  },
   "properties": {
-    "slug":        {"type": "string", "minLength": 3, "maxLength": 100, "pattern": "^[a-z0-9][a-z0-9-]*$"},
+    "slug": {
+      "type": "string", "minLength": 3, "maxLength": 100, "pattern": "^[a-z0-9][a-z0-9-]*$",
+      "errorMessage": {
+        "pattern": "Slug must contain only lowercase letters, digits and hyphens.",
+        "minLength": "Slug must be at least 3 characters.",
+        "maxLength": "Slug must be at most 100 characters."
+      }
+    },
     "title":       {"type": "string", "minLength": 1, "maxLength": 255},
     "body":        {"type": "string", "minLength": 1},
     "authorId":    {"type": "integer", "minimum": 1},
     "categoryId":  {"type": "integer", "minimum": 1},
     "excerpt":     {"type": ["string", "null"]},
-    "status":      {"type": "string", "enum": ["draft", "published"]},
+    "status": {
+      "type": "string", "enum": ["draft", "published"],
+      "errorMessage": {
+        "enum": "Status must be either 'draft' or 'published'."
+      }
+    },
     "publishedAt": {"type": ["string", "null"], "format": "date-time"},
     "tagIds":      {"type": "array", "items": {"type": "integer", "minimum": 1}}
   }

@@ -7,6 +7,8 @@ namespace MyVendor\Cms\Resource\Page\Admin;
 use BEAR\Resource\Code;
 use BEAR\Resource\ResourceInterface;
 use BEAR\Resource\ResourceObject;
+use MyVendor\Cms\Attribute\CsrfToken;
+use MyVendor\Cms\Attribute\SameOrigin;
 use MyVendor\Cms\Auth\AdminUserInterface;
 use MyVendor\Cms\Entity\Article;
 use MyVendor\Cms\Query\ArticleQueryInterface;
@@ -42,6 +44,8 @@ class ArticleDelete extends ResourceObject
         return $this;
     }
 
+    #[SameOrigin]
+    #[CsrfToken]
     public function onPost(int $id): static
     {
         $article = $this->article->item($id);

@@ -4,11 +4,9 @@ declare(strict_types=1);
 
 namespace MyVendor\Cms\Input;
 
-use BEAR\Resource\Exception\ParameterException;
 use Ray\InputQuery\Attribute\Input;
 
 use function array_values;
-use function is_array;
 
 /**
  * Input DTO for `PUT app://self/article`.
@@ -20,9 +18,10 @@ use function is_array;
  * attached via `#[JsonSchema(params:)]` on `Article::onPut`; see
  * `ArticleCreateInput` for the broader DTO rationale.
  *
- * `tagIds` is declared `mixed` and gated through an `is_array` check
- * because `JsonSchemaInterceptor` validates after DTO hydration; see
- * `ArticleCreateInput` for the rationale.
+ * `tagIds` is a native `array|null` input. BEAR.Resource 1.x-dev uses
+ * Ray.InputQuery 1.1 at the resource parameter boundary, so malformed
+ * non-array shapes are rejected as `ParameterException` before this
+ * constructor runs.
  *
  * @psalm-suppress PossiblyUnusedProperty resolved at the resource layer
  */
@@ -31,6 +30,7 @@ final readonly class ArticleUpdateInput
     /** @var list<int>|null null = leave existing links, [] = clear, non-empty list = replace. */
     public array|null $tagIds;
 
+    /** @param array<array-key, int>|null $tagIds */
     public function __construct(
         #[Input]
         public int $id,
@@ -45,12 +45,8 @@ final readonly class ArticleUpdateInput
         #[Input]
         public string|null $publishedAt = null,
         #[Input]
-        mixed $tagIds = null,
+        array|null $tagIds = null,
     ) {
-        if ($tagIds !== null && ! is_array($tagIds)) {
-            throw new ParameterException('tagIds must be an array of integers or null');
-        }
-
         if ($tagIds === null) {
             $this->tagIds = null;
 

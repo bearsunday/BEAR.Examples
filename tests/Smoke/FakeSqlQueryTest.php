@@ -53,6 +53,29 @@ final class FakeSqlQueryTest extends TestCase
         $this->assertFalse($missing->isAffected());
     }
 
+    public function testArticlePublishAffectsDraftOnly(): void
+    {
+        $query = new FakeSqlQuery();
+
+        $published = $query->execPostQuery(
+            'article_publish',
+            ['id' => 6, 'status' => 'published', 'publishedAt' => '2026-01-01T00:00:00Z'],
+            AffectedRows::class,
+        );
+        $alreadyPublished = $query->execPostQuery(
+            'article_publish',
+            ['id' => 1, 'status' => 'published', 'publishedAt' => '2026-01-01T00:00:00Z'],
+            AffectedRows::class,
+        );
+
+        $this->assertInstanceOf(AffectedRows::class, $published);
+        $this->assertInstanceOf(AffectedRows::class, $alreadyPublished);
+        $this->assertSame(1, $published->count);
+        $this->assertTrue($published->isAffected());
+        $this->assertSame(0, $alreadyPublished->count);
+        $this->assertFalse($alreadyPublished->isAffected());
+    }
+
     public function testExecPostQueryWrapsSelectAssocRows(): void
     {
         $query = new FakeSqlQuery();

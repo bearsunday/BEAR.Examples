@@ -71,7 +71,7 @@ variation that demonstrates `BEAR.Streamer` without changing canonical
 | Response body | `#[JsonSchema(schema: '...')]` | All read resources (GET on `Article`, `Articles`, `Author`, `Category`, `Categories`, `Tag`, `Tags`, `Media`); `Auth::onPost` (separate `auth_response.json` for string subject id). `Auth::onGet` and DELETE methods return without body validation |
 | Request params | `#[JsonSchema(params: '...')]` | POST and PUT on the resources above (DELETE takes only `int $id`, no params schema) |
 | Input DTO | `#[Input]` + `Ray\InputQuery` | `ArticleCreateInput`, `ArticleUpdateInput`, `AuthExchangeInput`. Author / Category / Tag / Media remain scalar by intentional contrast — see "By design" |
-| Typed-array DTO field defence | `mixed` + `is_array` gate → `ParameterException` (→ 400) | See `conventions.md` §4 "Input DTO pitfalls" |
+| Native array DTO inputs | `array` / `array|null` via Ray.InputQuery 1.1 → malformed shapes become `ParameterException` (→ 400) | See `conventions.md` §4 "Native array DTO inputs" |
 
 ### Auth
 
@@ -164,7 +164,7 @@ These were once blockers that prevented the canonical pattern from being shown; 
 | R1 | DTO recognition by `JsonSchemaInterceptor` ([BEAR.Resource#356](https://github.com/bearsunday/BEAR.Resource/issues/356)) | BEAR.Resource 1.31.1 — `Article` / `Auth` re-attached `#[JsonSchema]` |
 | R2 | OpenAPI generator skipped DTO methods ([BEAR.ApiDoc#81](https://github.com/bearsunday/BEAR.ApiDoc/issues/81)) | BEAR.ApiDoc 1.9.1 |
 | R3 | `JsonSchema` body validation on cache hit ([BEAR.Resource#355](https://github.com/bearsunday/BEAR.Resource/issues/355)) | BEAR.Resource 1.31.1 — unblocked the cache showcase under `src/Resource/App/Cache/*` (`composer demo:cache`); main-resource rollout remains D1 |
-| R4 | Typed-array DTO field × validation order pitfall ([decisions P8 #46](journal/decisions-to-consult.md)) | Defensive `mixed` + `is_array` guard documented in `conventions.md` §4 |
+| R4 | Typed-array DTO field × validation order pitfall ([decisions P8 #46](journal/decisions-to-consult.md)) | BEAR.Resource 1.x-dev / Ray.InputQuery 1.1 native `array` / `array|null` DTO inputs; `conventions.md` §4 |
 | R7 | Admin write/delete failure propagation (CodeRabbit feedback on PR #18) | Commit `0d7f98d` — `Page/Admin/Article` and `Page/Admin/ArticleDelete` propagate 4xx codes back instead of redirecting |
 
 ---

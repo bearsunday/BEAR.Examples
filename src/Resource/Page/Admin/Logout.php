@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace MyVendor\Cms\Resource\Page\Admin;
 
 use BEAR\Resource\ResourceObject;
+use MyVendor\Cms\Attribute\CsrfToken;
+use MyVendor\Cms\Attribute\SameOrigin;
 use MyVendor\Cms\Auth\AuthSessionInterface;
 
 /** @property array{message?: string} $body */
@@ -23,6 +25,8 @@ class Logout extends ResourceObject
         return $this;
     }
 
+    #[SameOrigin]
+    #[CsrfToken]
     public function onPost(): static
     {
         $this->session->logout();

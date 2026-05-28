@@ -1,14 +1,27 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "ArticleUpdateInput",
-  "description": "Input for PUT app://self/article. Validates the named arguments of onPut. tagIds is tri-state: omitted/null = leave existing tag links untouched, [] = clear all tag links, non-empty list = replace the tag set with the given ids.",
+  "description": "Input for PUT app://self/article. Validates the named arguments of onPut. tagIds is tri-state: omitted/null = leave existing tag links untouched, [] = clear all tag links, non-empty list = replace the tag set with the given ids. Per-field `errorMessage` keys follow the ajv-errors convention.",
   "type": "object",
   "required": ["id", "title", "body", "status"],
+  "errorMessage": {
+    "required": {
+      "id": "Article id is required.",
+      "title": "Title is required.",
+      "body": "Body is required.",
+      "status": "Status is required."
+    }
+  },
   "properties": {
     "id":          {"type": "integer", "minimum": 1},
     "title":       {"type": "string", "minLength": 1, "maxLength": 255},
     "body":        {"type": "string", "minLength": 1},
-    "status":      {"type": "string", "enum": ["draft", "published"]},
+    "status": {
+      "type": "string", "enum": ["draft", "published"],
+      "errorMessage": {
+        "enum": "Status must be either 'draft' or 'published'."
+      }
+    },
     "excerpt":     {"type": ["string", "null"]},
     "publishedAt": {"type": ["string", "null"], "format": "date-time"},
     "tagIds":      {"type": ["array", "null"], "items": {"type": "integer", "minimum": 1}}

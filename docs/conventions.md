@@ -231,14 +231,23 @@ Every Page test for such a resource includes
 `testNotFoundRendersErrorTemplate` so the warning regression is caught.
 
 ### Status codes
-| Method | Success | Not found | Validation fail |
-|--------|---------|-----------|-----------------|
-| GET | 200 | 404 | n/a |
-| POST (creates a resource) | 201 + `Location` header | n/a | 422 (via `#[JsonSchema(params:)]`) |
-| POST (action / non-creating) | 200 + body | n/a | 422 (via `#[JsonSchema(params:)]`) |
-| PUT | 200 | 404 | 422 |
-| DELETE | 204 | 404 | n/a |
-| Duplicate `slug` (or other unique key) | — | — | 409 (via DB `UniqueConstraintViolation`, no manual catch) |
+
+| Method | Success | Not found | Validation fail (App layer) | Validation fail (Page layer) |
+|--------|---------|-----------|-----------------------------|-------------------------------|
+| GET | 200 | 404 | n/a | n/a |
+| POST (creates a resource) | 201 + `Location` header | n/a | `ValidationException` thrown | 422 + form re-render |
+| POST (action / non-creating) | 200 + body | n/a | `ValidationException` thrown | 422 + form re-render |
+| PUT | 200 | 404 | `ValidationException` thrown | 422 + form re-render |
+| DELETE | 204 | 404 | n/a | n/a |
+| Duplicate `slug` (or other unique key) | — | — | — | 409 (via DB `UniqueConstraintViolation`, no manual catch) |
+| POST (state transition, already in target state) | — | — | 409 + `{message, id, status}` (e.g. `ArticlePublish` on an already-published article) | — |
+
+App resources surface validation failure as a thrown
+`ValidationException` (carrying `field => list<string>`), not a 422
+body — there is no `app://` transfer layer to convert thrown errors
+to HTTP status codes. Page resources catch and render the 422 form.
+See [validation-layer-design.md](journal/validation-layer-design.md)
+for the wiring.
 
 **POST is not always creation.** `201 + Location` only applies when the
 POST adds a new addressable resource (e.g. `Article::onPost` creates
@@ -247,6 +256,11 @@ auth code-for-session exchange, password reset confirm, "log this
 event" endpoints — return `200` with the result body and no `Location`
 header. The `#[JsonSchema(params:)]` input-validation rule still
 applies.
+
+**State-transition resources** (e.g. `ArticlePublish`) live alongside
+the entity resource rather than as a method on it. The URI carries
+the transition; the entity resource keeps verb-rich CRUD. See
+[`article-publish-flow-design.md`](journal/article-publish-flow-design.md).
 
 ### After-INSERT id
 Never `lastInsertId` (driver-dependent, awkward to fake). Always
@@ -299,24 +313,18 @@ shape. See
 [`docs/journal/decisions-to-consult.md`](journal/decisions-to-consult.md)
 P8-#45 for the diagnosis history.
 
-#### Pitfall: typed-array DTO fields and the validation order
+#### Native array DTO inputs
 
-Validation runs *after* DTO hydration, so a malformed value for a
-typed property (e.g. a scalar `tagIds=1` against `public array
-$tagIds`) reaches the constructor first and raises `TypeError` →
-5xx, never reaching `JsonSchemaInterceptor`. Until BEAR.Resource
-moves params validation in front of hydration, defend the typed
-fields inside the DTO: declare the parameter `mixed`, type-check it
-explicitly, and throw `BEAR\Resource\Exception\ParameterException`
-(maps to 400) for bad shapes. `ArticleCreateInput::tagIds` and
-`ArticleUpdateInput::tagIds` follow this pattern. Keep the runtime
-check minimal — `is_array` only — and let the JSON Schema's
-`items` / `minimum` keep doing the per-element validation it
-already does. Note that `mixed` always allows null in
-`Ray\InputQuery`'s default-value resolution: an omitted `tagIds`
-arrives as `null`, not as the constructor's declared default, so
-coalesce `null` to your intended default (`[]` for create-style,
-`null` for tri-state update) before the `is_array` gate.
+BEAR.Resource 1.x-dev (via Ray.InputQuery 1.1) supports native
+`array` and `array|null` constructor parameters for `#[Input]` DTOs at
+the resource boundary. Use the real type on collection fields:
+`ArticleCreateInput::tagIds` is `array $tagIds = []`, and
+`ArticleUpdateInput::tagIds` is `array|null $tagIds = null` for the
+tri-state update contract. Malformed non-array shapes are rejected by
+Ray.InputQuery and wrapped by BEAR.Resource as `ParameterException`
+(400-class) before the DTO constructor runs; the DTO only normalises
+valid arrays with `array_values()`. JSON Schema still owns per-element
+constraints such as `items` and `minimum`.
 
 `Auth::onPost` uses a dedicated `auth_response.json` (string subject
 id from the OAuth provider) rather than the shared
@@ -406,6 +414,45 @@ middle.
   `MyVendor\Cms\Exception\<DomainName>Exception` for any thrown
   exception originating in `src/`.
 - Read errors (not found) return 404 via `$this->code` — do not throw.
+- Request-validation failure throws
+  `MyVendor\Cms\Exception\ValidationException` (not the framework's
+  `JsonSchemaRequestException`) carrying a `field => list<string>` map.
+  `JsonSchemaRequestExceptionHandler` groups BEAR.Resource's structured
+  request-schema errors; Page resources catch and surface it as a 422 form
+  re-render. Response-schema failures remain framework
+  `JsonSchemaResponseException` failures (5xx-class), not user input errors.
+  See
+  [validation-layer-design.md](journal/validation-layer-design.md).
+
+#### `errorMessage` keys in JSON Schema (ajv-errors convention)
+
+Schemas under `var/json_validate/*.json` may carry an
+`errorMessage` keyword next to the constraint it overrides. The
+constraint itself stays — `pattern: "^[a-z]+$"` still does the
+validating; `errorMessage.pattern` only owns the wire copy.
+
+```json
+"slug": {
+  "type": "string",
+  "pattern": "^[a-z0-9][a-z0-9-]*$",
+  "errorMessage": {
+    "pattern": "Slug must contain only lowercase letters, digits and hyphens."
+  }
+}
+```
+
+Required-field copy lives at the parent under
+`errorMessage.required.<field>`. `errorMessage` can also be a plain
+string, used as a fallback for any failure on the property.
+
+BEAR.Resource resolves these `errorMessage` templates while mapping validator
+rows into `JsonSchemaError` objects, before this app's request handler sees
+them. The app handler should therefore use `$error->message` as already
+rendered and only group messages by field.
+
+Add `errorMessage` only when the default validator message reads
+awkwardly or the admin vocabulary needs to land — schemas without
+overrides still work, falling through to the validator's default.
 
 ### Named arguments at call sites
 **Positional is the default.** Use named arguments only where

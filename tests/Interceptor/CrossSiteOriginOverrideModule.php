@@ -1,0 +1,32 @@
+<?php
+
+declare(strict_types=1);
+
+namespace MyVendor\Cms\Interceptor;
+
+use MyVendor\Cms\Fake\FakeRequestOrigin;
+use MyVendor\Cms\Http\AllowedOrigin;
+use MyVendor\Cms\Http\RequestOriginInterface;
+use Override;
+use Ray\Di\AbstractModule;
+
+/**
+ * Forces `SameOriginInterceptor` to actually evaluate rather than the
+ * usual short-circuit. Scoped to `SameOriginWiringTest`.
+ */
+final class CrossSiteOriginOverrideModule extends AbstractModule
+{
+    public function __construct(AbstractModule|null $module = null)
+    {
+        parent::__construct($module);
+    }
+
+    #[Override]
+    protected function configure(): void
+    {
+        $this->bind(AllowedOrigin::class)
+            ->toInstance(new AllowedOrigin('https://cms.example.com'));
+        $this->bind(RequestOriginInterface::class)
+            ->toInstance(new FakeRequestOrigin(fetchSite: 'cross-site'));
+    }
+}

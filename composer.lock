@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9e22ecc0a46d5b141db9eca9aac2dd42",
+    "content-hash": "cc64eb4ab86455202d626e2f5fe86461",
     "packages": [
         {
             "name": "aura/cli",
@@ -525,19 +525,20 @@
         },
         {
             "name": "bear/resource",
-            "version": "1.32.0",
+            "version": "1.x-dev",
             "source": {
                 "type": "git",
                 "url": "https://github.com/bearsunday/BEAR.Resource.git",
-                "reference": "8a407db8fb54b4a99dadeed1d2c686b66af579b3"
+                "reference": "be624b64e6df904719d4d86a06ce0173941b3bce"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/bearsunday/BEAR.Resource/zipball/8a407db8fb54b4a99dadeed1d2c686b66af579b3",
-                "reference": "8a407db8fb54b4a99dadeed1d2c686b66af579b3",
+                "url": "https://api.github.com/repos/bearsunday/BEAR.Resource/zipball/be624b64e6df904719d4d86a06ce0173941b3bce",
+                "reference": "be624b64e6df904719d4d86a06ce0173941b3bce",
                 "shasum": ""
             },
             "require": {
+                "ext-ctype": "*",
                 "ext-curl": "*",
                 "ext-fileinfo": "*",
                 "ext-filter": "*",
@@ -551,7 +552,7 @@
                 "ray/aop": "^2.18.0",
                 "ray/di": "^2.18.0",
                 "ray/input-query": "^1.1",
-                "rize/uri-template": "^0.4"
+                "rize/uri-template": "^0.4.1"
             },
             "require-dev": {
                 "bamarni/composer-bin-plugin": "^1.4",
@@ -560,6 +561,7 @@
                 "phpunit/phpunit": "^11.0",
                 "ray/compiler": "^1.12"
             },
+            "default-branch": true,
             "type": "library",
             "extra": {
                 "bamarni-bin": {
@@ -568,9 +570,6 @@
                 }
             },
             "autoload": {
-                "files": [
-                    "src-files/uri_template.php"
-                ],
                 "psr-4": {
                     "BEAR\\Resource\\": [
                         "src/",
@@ -579,11 +578,75 @@
                     ],
                     "Ray\\WebContextParam\\": "src-web-context"
                 },
+                "files": [
+                    "src-files/uri_template.php"
+                ],
                 "exclude-from-classmap": [
                     "/src-deprecated/"
                 ]
             },
-            "notification-url": "https://packagist.org/downloads/",
+            "autoload-dev": {
+                "psr-4": {
+                    "BEAR\\Resource\\": [
+                        "tests/",
+                        "tests/Fake/",
+                        "tests-deprecated"
+                    ],
+                    "FakeVendor\\Sandbox\\": "tests/Fake/FakeVendor/Sandbox/",
+                    "FakeVendor\\Blog\\": "tests/Fake/FakeVendor/Blog/src",
+                    "FakeVendor\\News\\": "tests/Fake/FakeVendor/News/src"
+                },
+                "files": [
+                    "tests/Fake/AppInjector.php"
+                ]
+            },
+            "scripts": {
+                "test": [
+                    "phpunit"
+                ],
+                "tests": [
+                    "@cs",
+                    "@test",
+                    "@sa"
+                ],
+                "coverage": [
+                    "php -dzend_extension=xdebug.so -dxdebug.mode=coverage ./vendor/bin/phpunit --coverage-text --coverage-html=build/coverage"
+                ],
+                "pcov": [
+                    "php -dextension=pcov.so -d pcov.enabled=1 ./vendor/bin/phpunit --coverage-text --coverage-html=build/coverage  --coverage-clover=coverage.xml"
+                ],
+                "cs": [
+                    "phpcs --standard=phpcs.xml src tests"
+                ],
+                "cs-fix": [
+                    "phpcbf src tests"
+                ],
+                "clean": [
+                    "phpstan clear-result-cache",
+                    "psalm --clear-cache",
+                    "rm -rf tests/tmp/*.php"
+                ],
+                "sa": [
+                    "psalm --monochrome --show-info=true",
+                    "phpstan --memory-limit=-1 analyse -c phpstan.neon"
+                ],
+                "metrics": [
+                    "phpmetrics --report-html=build/metrics --exclude=Exception --log-junit=build/junit.xml --junit=build/junit.xml src"
+                ],
+                "phpmd": [
+                    "phpmd --exclude src/Annotation src text ./phpmd.xml"
+                ],
+                "build": [
+                    "@cs",
+                    "@sa",
+                    "@pcov",
+                    "@metrics"
+                ],
+                "baseline": [
+                    "phpstan analyse -c phpstan.neon --generate-baseline",
+                    "psalm --set-baseline=psalm-baseline.xml"
+                ]
+            },
             "license": [
                 "MIT"
             ],
@@ -595,15 +658,15 @@
             ],
             "description": "Hypermedia framework for object as a service",
             "keywords": [
+                "Hypermedia",
                 "Object as a service",
-                "hypermedia",
-                "rest"
+                "REST"
             ],
             "support": {
-                "issues": "https://github.com/bearsunday/BEAR.Resource/issues",
-                "source": "https://github.com/bearsunday/BEAR.Resource/tree/1.32.0"
+                "source": "https://github.com/bearsunday/BEAR.Resource/tree/1.x",
+                "issues": "https://github.com/bearsunday/BEAR.Resource/issues"
             },
-            "time": "2026-05-12T14:03:17+00:00"
+            "time": "2026-05-28T05:37:27+00:00"
         },
         {
             "name": "bear/streamer",
@@ -3689,16 +3752,16 @@
         },
         {
             "name": "rize/uri-template",
-            "version": "0.4.1",
+            "version": "0.4.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/rize/UriTemplate.git",
-                "reference": "abb53c8b73a5b6c24e11f49036ab842f560cad33"
+                "reference": "7ad22944daede547b4542e1c977ec4a81aa20832"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/rize/UriTemplate/zipball/abb53c8b73a5b6c24e11f49036ab842f560cad33",
-                "reference": "abb53c8b73a5b6c24e11f49036ab842f560cad33",
+                "url": "https://api.github.com/repos/rize/UriTemplate/zipball/7ad22944daede547b4542e1c977ec4a81aa20832",
+                "reference": "7ad22944daede547b4542e1c977ec4a81aa20832",
                 "shasum": ""
             },
             "require": {
@@ -3733,7 +3796,7 @@
             ],
             "support": {
                 "issues": "https://github.com/rize/UriTemplate/issues",
-                "source": "https://github.com/rize/UriTemplate/tree/0.4.1"
+                "source": "https://github.com/rize/UriTemplate/tree/0.4.2"
             },
             "funding": [
                 {
@@ -3749,7 +3812,7 @@
                     "type": "open_collective"
                 }
             ],
-            "time": "2025-12-02T15:19:04+00:00"
+            "time": "2026-05-07T15:30:40+00:00"
         },
         {
             "name": "symfony/cache",
@@ -4339,16 +4402,16 @@
         },
         {
             "name": "webmozart/assert",
-            "version": "2.3.0",
+            "version": "2.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/webmozarts/assert.git",
-                "reference": "eb0d790f735ba6cff25c683a85a1da0eadeff9e4"
+                "reference": "9007ea6f45ecf352a9422b36644e4bfc039b9155"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/webmozarts/assert/zipball/eb0d790f735ba6cff25c683a85a1da0eadeff9e4",
-                "reference": "eb0d790f735ba6cff25c683a85a1da0eadeff9e4",
+                "url": "https://api.github.com/repos/webmozarts/assert/zipball/9007ea6f45ecf352a9422b36644e4bfc039b9155",
+                "reference": "9007ea6f45ecf352a9422b36644e4bfc039b9155",
                 "shasum": ""
             },
             "require": {
@@ -4364,7 +4427,11 @@
             },
             "type": "library",
             "extra": {
+                "psalm": {
+                    "pluginClass": "Webmozart\\Assert\\PsalmPlugin"
+                },
                 "branch-alias": {
+                    "dev-master": "2.0-dev",
                     "dev-feature/2-0": "2.0-dev"
                 }
             },
@@ -4395,9 +4462,9 @@
             ],
             "support": {
                 "issues": "https://github.com/webmozarts/assert/issues",
-                "source": "https://github.com/webmozarts/assert/tree/2.3.0"
+                "source": "https://github.com/webmozarts/assert/tree/2.4.0"
             },
-            "time": "2026-04-11T10:33:05+00:00"
+            "time": "2026-05-20T13:07:01+00:00"
         }
     ],
     "packages-dev": [
@@ -8683,6 +8750,7 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
+        "bear/resource": 20,
         "roave/security-advisories": 20
     },
     "prefer-stable": false,

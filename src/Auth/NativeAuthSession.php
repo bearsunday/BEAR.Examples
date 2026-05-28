@@ -21,6 +21,10 @@ final class NativeAuthSession implements AuthSessionInterface
     private const string USER = 'cms_user';
     private const string STATE = 'cms_oauth_state';
 
+    public function __construct(private readonly CsrfTokenInterface $csrf)
+    {
+    }
+
     public function currentUser(): UserInterface
     {
         $this->start();
@@ -74,6 +78,7 @@ final class NativeAuthSession implements AuthSessionInterface
     {
         $this->start();
         unset($_SESSION[self::USER], $_SESSION[self::STATE]);
+        $this->csrf->clear();
     }
 
     private function start(): void

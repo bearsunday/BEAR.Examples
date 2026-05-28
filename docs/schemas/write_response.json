@@ -2,13 +2,15 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/bear-cms/writeResponse",
   "title": "WriteResponse",
-  "description": "Permissive shape covering POST/PUT/DELETE response bodies across all write resources. PUT returns {id}, POST returns {id, slug|email|filename}, error paths return {message, id}. Each write method points its #[JsonSchema(schema:)] at this file.",
+  "description": "Permissive shape covering POST/PUT/DELETE response bodies across all write resources. PUT returns {id}, POST returns {id, slug|email|filename}, state transitions return {id, slug, status, publishedAt}, error paths return {message, id}. Each write method points its #[JsonSchema(schema:)] at this file.",
   "type": "object",
   "properties": {
-    "id":       {"type": "integer", "minimum": 1},
-    "slug":     {"type": "string"},
-    "email":    {"type": "string"},
-    "filename": {"type": "string"},
-    "message":  {"type": "string"}
+    "id":          {"type": "integer", "minimum": 1},
+    "slug":        {"type": "string"},
+    "email":       {"type": "string"},
+    "filename":    {"type": "string"},
+    "status":      {"type": "string"},
+    "publishedAt": {"type": ["string", "null"]},
+    "message":     {"type": "string"}
   }
 }
