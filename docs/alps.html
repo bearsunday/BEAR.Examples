@@ -14,7 +14,7 @@
             margin: 0 auto;
             padding: 25px;
         }
-    
+
         @media (max-width: 767px) {
             .markdown-body {
                 padding: 15px;
@@ -59,7 +59,7 @@
             margin-right: 2px;
             vertical-align: middle;
         }
-        
+
         /* Sematic Descriptor List */
         .descriptor-list {
             max-width: 100%;
@@ -84,22 +84,22 @@
             margin-right: 8px;
             border: 1px solid #000;
         }
-        .descriptor-list .semantic { 
-            background-color: #FFFFFF; 
+        .descriptor-list .semantic {
+            background-color: #FFFFFF;
         }
-        .descriptor-list .safe { 
+        .descriptor-list .safe {
             background-color: #00A86B;
-            background-image: linear-gradient(45deg, #008000 25%, transparent 25%, transparent 75%, #008000 75%, #008000), 
+            background-image: linear-gradient(45deg, #008000 25%, transparent 25%, transparent 75%, #008000 75%, #008000),
                               linear-gradient(45deg, #008000 25%, transparent 25%, transparent 75%, #008000 75%, #008000);
             background-size: 8px 8px;
             background-position: 0 0, 4px 4px;
         }
-        .descriptor-list .unsafe { 
+        .descriptor-list .unsafe {
             background-color: #FF4136;
             background-image: repeating-linear-gradient(45deg, #FF4136, #FF4136 4px, #FF725C 4px, #FF725C 8px);
         }
-        
-        .descriptor-list .idempotent { 
+
+        .descriptor-list .idempotent {
             background-color: #FFDC00;
             background-image: radial-gradient(#FFB700 20%, transparent 20%),
                               radial-gradient(#FFB700 20%, transparent 20%);
@@ -110,7 +110,7 @@
             color: #000;
             text-decoration: none;
         }
-        
+
         .legend {
             background-color: #ffffff;
             border-radius: 8px;
@@ -133,18 +133,18 @@
             margin-right: 8px;
         }
         .legend .semantic { background-color: #FFFFFF; }
-        .legend .safe { 
+        .legend .safe {
             background-color: #00A86B;
-            background-image: linear-gradient(45deg, #008000 25%, transparent 25%, transparent 75%, #008000 75%, #008000), 
+            background-image: linear-gradient(45deg, #008000 25%, transparent 25%, transparent 75%, #008000 75%, #008000),
                               linear-gradient(45deg, #008000 25%, transparent 25%, transparent 75%, #008000 75%, #008000);
             background-size: 8px 8px;
             background-position: 0 0, 4px 4px;
         }
-        .legend .unsafe { 
+        .legend .unsafe {
             background-color: #FF4136;
             background-image: repeating-linear-gradient(45deg, #FF4136, #FF4136 4px, #FF725C 4px, #FF725C 8px);
         }
-        .legend .idempotent { 
+        .legend .idempotent {
             background-color: #FFDC00;
             background-image: radial-gradient(#FFB700 20%, transparent 20%),
                               radial-gradient(#FFB700 20%, transparent 20%);
@@ -281,14 +281,14 @@ const setupModeSwitch = (switchId, graphId, otherGraphId) => {
     document.addEventListener('DOMContentLoaded', async function() {
         try {
             await Promise.all([
-                    renderGraph("#asd-graph-id", 'digraph application_state_diagram {  graph [    labelloc="t";    fontname="Helvetica"    label="BEAR.Cms Reference CMS";    URL="index.html" target="_parent"  ];  node [shape = box, style = "bold,filled" fillcolor="lightgray"];    Article [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>Article<br />(id)<br />(slug)<br />(title)<br />(body)<br />(excerpt)<br />(status)<br />(publishedAt)<br />(authorId)<br />(categoryId)<br />(Author)<br />(Category)<br />(Tag)<br /></td></tr></table>>,shape=box URL="#Article" target="_parent"]    ArticleList [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>ArticleList<br />(id)<br />(slug)<br />(title)<br />(excerpt)<br />(status)<br />(publishedAt)<br />(page)<br />(perPage)<br />(totalCount)<br /></td></tr></table>>,shape=box URL="#ArticleList" target="_parent"]    Author [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>Author<br />(id)<br />(name)<br />(email)<br />(bio)<br /></td></tr></table>>,shape=box URL="#Author" target="_parent"]    Category [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>Category<br />(id)<br />(slug)<br />(name)<br />(description)<br />(parentId)<br /></td></tr></table>>,shape=box URL="#Category" target="_parent"]    CategoryList [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>CategoryList<br />(id)<br />(slug)<br />(name)<br />(parentId)<br /></td></tr></table>>,shape=box URL="#CategoryList" target="_parent"]    Media [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>Media<br />(id)<br />(filename)<br />(mimeType)<br />(url)<br />(alt)<br />(width)<br />(height)<br /></td></tr></table>>,shape=box URL="#Media" target="_parent"]    Tag [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>Tag<br />(id)<br />(slug)<br />(name)<br /></td></tr></table>>,shape=box URL="#Tag" target="_parent"]    TagList [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>TagList<br />(id)<br />(slug)<br />(name)<br /></td></tr></table>>,shape=box URL="#TagList" target="_parent"]    Article -> Article [label = <doUpdateArticle (idempotent)> URL="#doUpdateArticle" target="_parent" fontsize=13 class="doUpdateArticle" penwidth=1.5];    Article -> ArticleList [label=<<table border="0"><tr><td align="left" href="#doDeleteArticle" tooltip="doDeleteArticle (idempotent)" >doDeleteArticle (idempotent)</td></tr><tr><td align="left" href="#goArticleList" tooltip="goArticleList (safe)" >goArticleList (safe)</td></tr></table>> fontsize=13];    Article -> Author [label = <goAuthor (safe)> URL="#goAuthor" target="_parent" fontsize=13 class="goAuthor" penwidth=1.5];    Article -> Category [label = <goCategory (safe)> URL="#goCategory" target="_parent" fontsize=13 class="goCategory" penwidth=1.5];    ArticleList -> Article [label=<<table border="0"><tr><td align="left" href="#doCreateArticle" tooltip="doCreateArticle (unsafe)" >doCreateArticle (unsafe)</td></tr><tr><td align="left" href="#goArticle" tooltip="goArticle (safe)" >goArticle (safe)</td></tr></table>> fontsize=13];    Author -> ArticleList [label = <goArticleList (safe)> URL="#goArticleList" target="_parent" fontsize=13 class="goArticleList" penwidth=1.5];    Author -> Author [label = <doUpdateAuthor (idempotent)> URL="#doUpdateAuthor" target="_parent" fontsize=13 class="doUpdateAuthor" penwidth=1.5];    Category -> ArticleList [label = <goArticleList (safe)> URL="#goArticleList" target="_parent" fontsize=13 class="goArticleList" penwidth=1.5];    Category -> Category [label = <doUpdateCategory (idempotent)> URL="#doUpdateCategory" target="_parent" fontsize=13 class="doUpdateCategory" penwidth=1.5];    Category -> CategoryList [label=<<table border="0"><tr><td align="left" href="#doDeleteCategory" tooltip="doDeleteCategory (idempotent)" >doDeleteCategory (idempotent)</td></tr><tr><td align="left" href="#goCategoryList" tooltip="goCategoryList (safe)" >goCategoryList (safe)</td></tr></table>> fontsize=13];    CategoryList -> Category [label=<<table border="0"><tr><td align="left" href="#doCreateCategory" tooltip="doCreateCategory (unsafe)" >doCreateCategory (unsafe)</td></tr><tr><td align="left" href="#goCategory" tooltip="goCategory (safe)" >goCategory (safe)</td></tr></table>> fontsize=13];    Media -> Media [label = <doDeleteMedia (idempotent)> URL="#doDeleteMedia" target="_parent" fontsize=13 class="doDeleteMedia" penwidth=1.5];    Tag -> ArticleList [label = <goArticleList (safe)> URL="#goArticleList" target="_parent" fontsize=13 class="goArticleList" penwidth=1.5];    Tag -> TagList [label=<<table border="0"><tr><td align="left" href="#doDeleteTag" tooltip="doDeleteTag (idempotent)" >doDeleteTag (idempotent)</td></tr><tr><td align="left" href="#goTagList" tooltip="goTagList (safe)" >goTagList (safe)</td></tr></table>> fontsize=13];    TagList -> Tag [label=<<table border="0"><tr><td align="left" href="#doCreateTag" tooltip="doCreateTag (unsafe)" >doCreateTag (unsafe)</td></tr><tr><td align="left" href="#goTag" tooltip="goTag (safe)" >goTag (safe)</td></tr></table>> fontsize=13];    Article [label = <Article> URL="#Article" target="_parent"]    ArticleList [label = <ArticleList> URL="#ArticleList" target="_parent"]    Author [label = <Author> URL="#Author" target="_parent"]    Category [label = <Category> URL="#Category" target="_parent"]    CategoryList [label = <CategoryList> URL="#CategoryList" target="_parent"]    Media [label = <Media> URL="#Media" target="_parent"]    Tag [label = <Tag> URL="#Tag" target="_parent"]    TagList [label = <TagList> URL="#TagList" target="_parent"]}'),
-                    renderGraph("#asd-graph-name", 'digraph application_state_diagram {  graph [    labelloc="t";    fontname="Helvetica"    label="BEAR.Cms Reference CMS";    URL="index.html" target="_parent"  ];  node [shape = box, style = "bold,filled" fillcolor="lightgray"];    Article [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>Article Detail<br />(Identifier)<br />(URL-safe Slug)<br />(Title)<br />(Article Body)<br />(Excerpt)<br />(Lifecycle Status)<br />(Published At)<br />(Author ID (FK))<br />(Category ID (FK))<br />(Author Detail)<br />(Category Detail)<br />(Tag Detail)<br /></td></tr></table>>,shape=box URL="#Article" target="_parent"]    ArticleList [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>Article List<br />(Identifier)<br />(URL-safe Slug)<br />(Title)<br />(Excerpt)<br />(Lifecycle Status)<br />(Published At)<br />(Page Number)<br />(Per-Page Count)<br />(Total Count)<br /></td></tr></table>>,shape=box URL="#ArticleList" target="_parent"]    Author [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>Author Detail<br />(Identifier)<br />(Name)<br />(Email)<br />(Biography)<br /></td></tr></table>>,shape=box URL="#Author" target="_parent"]    Category [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>Category Detail<br />(Identifier)<br />(URL-safe Slug)<br />(Name)<br />(Description)<br />(Parent Category ID (self-FK))<br /></td></tr></table>>,shape=box URL="#Category" target="_parent"]    CategoryList [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>Category List<br />(Identifier)<br />(URL-safe Slug)<br />(Name)<br />(Parent Category ID (self-FK))<br /></td></tr></table>>,shape=box URL="#CategoryList" target="_parent"]    Media [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>Media Detail<br />(Identifier)<br />(Filename)<br />(MIME Type)<br />(URL)<br />(Alt Text)<br />(Width)<br />(Height)<br /></td></tr></table>>,shape=box URL="#Media" target="_parent"]    Tag [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>Tag Detail<br />(Identifier)<br />(URL-safe Slug)<br />(Name)<br /></td></tr></table>>,shape=box URL="#Tag" target="_parent"]    TagList [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>Tag List<br />(Identifier)<br />(URL-safe Slug)<br />(Name)<br /></td></tr></table>>,shape=box URL="#TagList" target="_parent"]    Article -> Article [label = <<u>Update Article</u>> URL="#doUpdateArticle" target="_parent" fontsize=13 class="doUpdateArticle" penwidth=1.5];    Article -> ArticleList [label=<<table border="0"><tr><td align="left" href="#doDeleteArticle" tooltip="doDeleteArticle (idempotent)" ><u>Delete Article</u></td></tr><tr><td align="left" href="#goArticleList" tooltip="goArticleList (safe)" >View Article List</td></tr></table>> fontsize=13];    Article -> Author [label = <View Author> URL="#goAuthor" target="_parent" fontsize=13 class="goAuthor" penwidth=1.5];    Article -> Category [label = <View Category> URL="#goCategory" target="_parent" fontsize=13 class="goCategory" penwidth=1.5];    ArticleList -> Article [label=<<table border="0"><tr><td align="left" href="#doCreateArticle" tooltip="doCreateArticle (unsafe)" ><b><u>Create Article</u></b></td></tr><tr><td align="left" href="#goArticle" tooltip="goArticle (safe)" >View Article</td></tr></table>> fontsize=13];    Author -> ArticleList [label = <View Article List> URL="#goArticleList" target="_parent" fontsize=13 class="goArticleList" penwidth=1.5];    Author -> Author [label = <<u>Update Author</u>> URL="#doUpdateAuthor" target="_parent" fontsize=13 class="doUpdateAuthor" penwidth=1.5];    Category -> ArticleList [label = <View Article List> URL="#goArticleList" target="_parent" fontsize=13 class="goArticleList" penwidth=1.5];    Category -> Category [label = <<u>Update Category</u>> URL="#doUpdateCategory" target="_parent" fontsize=13 class="doUpdateCategory" penwidth=1.5];    Category -> CategoryList [label=<<table border="0"><tr><td align="left" href="#doDeleteCategory" tooltip="doDeleteCategory (idempotent)" ><u>Delete Category</u></td></tr><tr><td align="left" href="#goCategoryList" tooltip="goCategoryList (safe)" >View Category List</td></tr></table>> fontsize=13];    CategoryList -> Category [label=<<table border="0"><tr><td align="left" href="#doCreateCategory" tooltip="doCreateCategory (unsafe)" ><b><u>Create Category</u></b></td></tr><tr><td align="left" href="#goCategory" tooltip="goCategory (safe)" >View Category</td></tr></table>> fontsize=13];    Media -> Media [label = <<u>Delete Media</u>> URL="#doDeleteMedia" target="_parent" fontsize=13 class="doDeleteMedia" penwidth=1.5];    Tag -> ArticleList [label = <View Article List> URL="#goArticleList" target="_parent" fontsize=13 class="goArticleList" penwidth=1.5];    Tag -> TagList [label=<<table border="0"><tr><td align="left" href="#doDeleteTag" tooltip="doDeleteTag (idempotent)" ><u>Delete Tag</u></td></tr><tr><td align="left" href="#goTagList" tooltip="goTagList (safe)" >View Tag List</td></tr></table>> fontsize=13];    TagList -> Tag [label=<<table border="0"><tr><td align="left" href="#doCreateTag" tooltip="doCreateTag (unsafe)" ><b><u>Create Tag</u></b></td></tr><tr><td align="left" href="#goTag" tooltip="goTag (safe)" >View Tag</td></tr></table>> fontsize=13];    Article [label = <Article Detail> URL="#Article" target="_parent"]    ArticleList [label = <Article List> URL="#ArticleList" target="_parent"]    Author [label = <Author Detail> URL="#Author" target="_parent"]    Category [label = <Category Detail> URL="#Category" target="_parent"]    CategoryList [label = <Category List> URL="#CategoryList" target="_parent"]    Media [label = <Media Detail> URL="#Media" target="_parent"]    Tag [label = <Tag Detail> URL="#Tag" target="_parent"]    TagList [label = <Tag List> URL="#TagList" target="_parent"]}')
+                    renderGraph("#asd-graph-id", 'digraph application_state_diagram {  graph [    labelloc="t";    fontname="Helvetica"    label="BEAR.Cms Reference CMS";    URL="index.html" target="_parent"  ];  node [shape = box, style = "bold,filled" fillcolor="lightgray"];    Article [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>Article<br />(id)<br />(slug)<br />(title)<br />(body)<br />(excerpt)<br />(status)<br />(publishedAt)<br />(authorId)<br />(categoryId)<br />(Author)<br />(Category)<br />(Tag)<br /></td></tr></table>>,shape=box URL="#Article" target="_parent"]    ArticleList [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>ArticleList<br />(id)<br />(slug)<br />(title)<br />(excerpt)<br />(status)<br />(publishedAt)<br />(page)<br />(perPage)<br />(totalCount)<br /></td></tr></table>>,shape=box URL="#ArticleList" target="_parent"]    Author [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>Author<br />(id)<br />(name)<br />(email)<br />(bio)<br /></td></tr></table>>,shape=box URL="#Author" target="_parent"]    Category [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>Category<br />(id)<br />(slug)<br />(name)<br />(description)<br />(parentId)<br /></td></tr></table>>,shape=box URL="#Category" target="_parent"]    CategoryList [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>CategoryList<br />(id)<br />(slug)<br />(name)<br />(parentId)<br /></td></tr></table>>,shape=box URL="#CategoryList" target="_parent"]    Media [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>Media<br />(id)<br />(filename)<br />(mimeType)<br />(url)<br />(alt)<br />(width)<br />(height)<br /></td></tr></table>>,shape=box URL="#Media" target="_parent"]    Tag [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>Tag<br />(id)<br />(slug)<br />(name)<br /></td></tr></table>>,shape=box URL="#Tag" target="_parent"]    TagList [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>TagList<br />(id)<br />(slug)<br />(name)<br /></td></tr></table>>,shape=box URL="#TagList" target="_parent"]    Article -> Article [label=<<table border="0"><tr><td align="left" href="#doPublishArticle" tooltip="doPublishArticle (unsafe)" >doPublishArticle (unsafe)</td></tr><tr><td align="left" href="#doUpdateArticle" tooltip="doUpdateArticle (idempotent)" >doUpdateArticle (idempotent)</td></tr></table>> fontsize=13];    Article -> ArticleList [label=<<table border="0"><tr><td align="left" href="#doDeleteArticle" tooltip="doDeleteArticle (idempotent)" >doDeleteArticle (idempotent)</td></tr><tr><td align="left" href="#goArticleList" tooltip="goArticleList (safe)" >goArticleList (safe)</td></tr></table>> fontsize=13];    Article -> Author [label = <goAuthor (safe)> URL="#goAuthor" target="_parent" fontsize=13 class="goAuthor" penwidth=1.5];    Article -> Category [label = <goCategory (safe)> URL="#goCategory" target="_parent" fontsize=13 class="goCategory" penwidth=1.5];    ArticleList -> Article [label=<<table border="0"><tr><td align="left" href="#doCreateArticle" tooltip="doCreateArticle (unsafe)" >doCreateArticle (unsafe)</td></tr><tr><td align="left" href="#goArticle" tooltip="goArticle (safe)" >goArticle (safe)</td></tr></table>> fontsize=13];    Author -> ArticleList [label = <goArticleList (safe)> URL="#goArticleList" target="_parent" fontsize=13 class="goArticleList" penwidth=1.5];    Author -> Author [label = <doUpdateAuthor (idempotent)> URL="#doUpdateAuthor" target="_parent" fontsize=13 class="doUpdateAuthor" penwidth=1.5];    Category -> ArticleList [label = <goArticleList (safe)> URL="#goArticleList" target="_parent" fontsize=13 class="goArticleList" penwidth=1.5];    Category -> Category [label = <doUpdateCategory (idempotent)> URL="#doUpdateCategory" target="_parent" fontsize=13 class="doUpdateCategory" penwidth=1.5];    Category -> CategoryList [label=<<table border="0"><tr><td align="left" href="#doDeleteCategory" tooltip="doDeleteCategory (idempotent)" >doDeleteCategory (idempotent)</td></tr><tr><td align="left" href="#goCategoryList" tooltip="goCategoryList (safe)" >goCategoryList (safe)</td></tr></table>> fontsize=13];    CategoryList -> Category [label=<<table border="0"><tr><td align="left" href="#doCreateCategory" tooltip="doCreateCategory (unsafe)" >doCreateCategory (unsafe)</td></tr><tr><td align="left" href="#goCategory" tooltip="goCategory (safe)" >goCategory (safe)</td></tr></table>> fontsize=13];    Media -> Media [label = <doDeleteMedia (idempotent)> URL="#doDeleteMedia" target="_parent" fontsize=13 class="doDeleteMedia" penwidth=1.5];    Tag -> ArticleList [label = <goArticleList (safe)> URL="#goArticleList" target="_parent" fontsize=13 class="goArticleList" penwidth=1.5];    Tag -> TagList [label=<<table border="0"><tr><td align="left" href="#doDeleteTag" tooltip="doDeleteTag (idempotent)" >doDeleteTag (idempotent)</td></tr><tr><td align="left" href="#goTagList" tooltip="goTagList (safe)" >goTagList (safe)</td></tr></table>> fontsize=13];    TagList -> Tag [label=<<table border="0"><tr><td align="left" href="#doCreateTag" tooltip="doCreateTag (unsafe)" >doCreateTag (unsafe)</td></tr><tr><td align="left" href="#goTag" tooltip="goTag (safe)" >goTag (safe)</td></tr></table>> fontsize=13];    Article [label = <Article> URL="#Article" target="_parent"]    ArticleList [label = <ArticleList> URL="#ArticleList" target="_parent"]    Author [label = <Author> URL="#Author" target="_parent"]    Category [label = <Category> URL="#Category" target="_parent"]    CategoryList [label = <CategoryList> URL="#CategoryList" target="_parent"]    Media [label = <Media> URL="#Media" target="_parent"]    Tag [label = <Tag> URL="#Tag" target="_parent"]    TagList [label = <TagList> URL="#TagList" target="_parent"]}'),
+                    renderGraph("#asd-graph-name", 'digraph application_state_diagram {  graph [    labelloc="t";    fontname="Helvetica"    label="BEAR.Cms Reference CMS";    URL="index.html" target="_parent"  ];  node [shape = box, style = "bold,filled" fillcolor="lightgray"];    Article [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>Article Detail<br />(Identifier)<br />(URL-safe Slug)<br />(Title)<br />(Article Body)<br />(Excerpt)<br />(Lifecycle Status)<br />(Published At)<br />(Author ID (FK))<br />(Category ID (FK))<br />(Author Detail)<br />(Category Detail)<br />(Tag Detail)<br /></td></tr></table>>,shape=box URL="#Article" target="_parent"]    ArticleList [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>Article List<br />(Identifier)<br />(URL-safe Slug)<br />(Title)<br />(Excerpt)<br />(Lifecycle Status)<br />(Published At)<br />(Page Number)<br />(Per-Page Count)<br />(Total Count)<br /></td></tr></table>>,shape=box URL="#ArticleList" target="_parent"]    Author [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>Author Detail<br />(Identifier)<br />(Name)<br />(Email)<br />(Biography)<br /></td></tr></table>>,shape=box URL="#Author" target="_parent"]    Category [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>Category Detail<br />(Identifier)<br />(URL-safe Slug)<br />(Name)<br />(Description)<br />(Parent Category ID (self-FK))<br /></td></tr></table>>,shape=box URL="#Category" target="_parent"]    CategoryList [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>Category List<br />(Identifier)<br />(URL-safe Slug)<br />(Name)<br />(Parent Category ID (self-FK))<br /></td></tr></table>>,shape=box URL="#CategoryList" target="_parent"]    Media [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>Media Detail<br />(Identifier)<br />(Filename)<br />(MIME Type)<br />(URL)<br />(Alt Text)<br />(Width)<br />(Height)<br /></td></tr></table>>,shape=box URL="#Media" target="_parent"]    Tag [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>Tag Detail<br />(Identifier)<br />(URL-safe Slug)<br />(Name)<br /></td></tr></table>>,shape=box URL="#Tag" target="_parent"]    TagList [margin=0.02, label=<<table cellspacing="0" cellpadding="5" border="0"><tr><td>Tag List<br />(Identifier)<br />(URL-safe Slug)<br />(Name)<br /></td></tr></table>>,shape=box URL="#TagList" target="_parent"]    Article -> Article [label=<<table border="0"><tr><td align="left" href="#doPublishArticle" tooltip="doPublishArticle (unsafe)" ><b><u>Publish Article</u></b></td></tr><tr><td align="left" href="#doUpdateArticle" tooltip="doUpdateArticle (idempotent)" ><u>Update Article</u></td></tr></table>> fontsize=13];    Article -> ArticleList [label=<<table border="0"><tr><td align="left" href="#doDeleteArticle" tooltip="doDeleteArticle (idempotent)" ><u>Delete Article</u></td></tr><tr><td align="left" href="#goArticleList" tooltip="goArticleList (safe)" >View Article List</td></tr></table>> fontsize=13];    Article -> Author [label = <View Author> URL="#goAuthor" target="_parent" fontsize=13 class="goAuthor" penwidth=1.5];    Article -> Category [label = <View Category> URL="#goCategory" target="_parent" fontsize=13 class="goCategory" penwidth=1.5];    ArticleList -> Article [label=<<table border="0"><tr><td align="left" href="#doCreateArticle" tooltip="doCreateArticle (unsafe)" ><b><u>Create Article</u></b></td></tr><tr><td align="left" href="#goArticle" tooltip="goArticle (safe)" >View Article</td></tr></table>> fontsize=13];    Author -> ArticleList [label = <View Article List> URL="#goArticleList" target="_parent" fontsize=13 class="goArticleList" penwidth=1.5];    Author -> Author [label = <<u>Update Author</u>> URL="#doUpdateAuthor" target="_parent" fontsize=13 class="doUpdateAuthor" penwidth=1.5];    Category -> ArticleList [label = <View Article List> URL="#goArticleList" target="_parent" fontsize=13 class="goArticleList" penwidth=1.5];    Category -> Category [label = <<u>Update Category</u>> URL="#doUpdateCategory" target="_parent" fontsize=13 class="doUpdateCategory" penwidth=1.5];    Category -> CategoryList [label=<<table border="0"><tr><td align="left" href="#doDeleteCategory" tooltip="doDeleteCategory (idempotent)" ><u>Delete Category</u></td></tr><tr><td align="left" href="#goCategoryList" tooltip="goCategoryList (safe)" >View Category List</td></tr></table>> fontsize=13];    CategoryList -> Category [label=<<table border="0"><tr><td align="left" href="#doCreateCategory" tooltip="doCreateCategory (unsafe)" ><b><u>Create Category</u></b></td></tr><tr><td align="left" href="#goCategory" tooltip="goCategory (safe)" >View Category</td></tr></table>> fontsize=13];    Media -> Media [label = <<u>Delete Media</u>> URL="#doDeleteMedia" target="_parent" fontsize=13 class="doDeleteMedia" penwidth=1.5];    Tag -> ArticleList [label = <View Article List> URL="#goArticleList" target="_parent" fontsize=13 class="goArticleList" penwidth=1.5];    Tag -> TagList [label=<<table border="0"><tr><td align="left" href="#doDeleteTag" tooltip="doDeleteTag (idempotent)" ><u>Delete Tag</u></td></tr><tr><td align="left" href="#goTagList" tooltip="goTagList (safe)" >View Tag List</td></tr></table>> fontsize=13];    TagList -> Tag [label=<<table border="0"><tr><td align="left" href="#doCreateTag" tooltip="doCreateTag (unsafe)" ><b><u>Create Tag</u></b></td></tr><tr><td align="left" href="#goTag" tooltip="goTag (safe)" >View Tag</td></tr></table>> fontsize=13];    Article [label = <Article Detail> URL="#Article" target="_parent"]    ArticleList [label = <Article List> URL="#ArticleList" target="_parent"]    Author [label = <Author Detail> URL="#Author" target="_parent"]    Category [label = <Category Detail> URL="#Category" target="_parent"]    CategoryList [label = <Category List> URL="#CategoryList" target="_parent"]    Media [label = <Media Detail> URL="#Media" target="_parent"]    Tag [label = <Tag Detail> URL="#Tag" target="_parent"]    TagList [label = <Tag List> URL="#TagList" target="_parent"]}')
             ]);
             setupTagTrigger();
             setupModeSwitch('asd-show-id', 'asd-graph-id', 'asd-graph-name');
             setupModeSwitch('asd-show-name', 'asd-graph-name', 'asd-graph-id');
             applySmoothScrollToLinks(document.querySelectorAll('a[href^="#"]'));
-            setupTagEventListener('article', ['Article', 'ArticleList', 'doCreateArticle', 'doDeleteArticle', 'doUpdateArticle', 'goArticle', 'goArticleList'], 'LightGreen'); setupTagEventListener('author', ['Author', 'doCreateAuthor', 'doUpdateAuthor', 'goAuthor'], 'SkyBlue'); setupTagEventListener('category', ['Category', 'CategoryList', 'doCreateCategory', 'doDeleteCategory', 'doUpdateCategory', 'goCategory', 'goCategoryList'], 'LightCoral'); setupTagEventListener('flow-browse', ['ArticleList', 'CategoryList', 'TagList', 'goArticleList', 'goCategoryList', 'goTagList'], 'LightSalmon'); setupTagEventListener('flow-publish', ['doCreateArticle', 'doDeleteArticle', 'doUpdateArticle'], 'Khaki'); setupTagEventListener('media', ['Media', 'doCreateMedia', 'doDeleteMedia', 'goMedia'], 'Plum'); setupTagEventListener('tag', ['Tag', 'TagList', 'doCreateTag', 'doDeleteTag', 'goTag', 'goTagList'], 'Wheat'); 
+            setupTagEventListener('article', ['Article', 'ArticleList', 'doCreateArticle', 'doDeleteArticle', 'doPublishArticle', 'doUpdateArticle', 'goArticle', 'goArticleList'], 'LightGreen'); setupTagEventListener('author', ['Author', 'doCreateAuthor', 'doUpdateAuthor', 'goAuthor'], 'SkyBlue'); setupTagEventListener('category', ['Category', 'CategoryList', 'doCreateCategory', 'doDeleteCategory', 'doUpdateCategory', 'goCategory', 'goCategoryList'], 'LightCoral'); setupTagEventListener('flow-browse', ['ArticleList', 'CategoryList', 'TagList', 'goArticleList', 'goCategoryList', 'goTagList'], 'LightSalmon'); setupTagEventListener('flow-publish', ['doCreateArticle', 'doDeleteArticle', 'doPublishArticle', 'doUpdateArticle'], 'Khaki'); setupTagEventListener('media', ['Media', 'doCreateMedia', 'doDeleteMedia', 'goMedia'], 'Plum'); setupTagEventListener('tag', ['Tag', 'TagList', 'doCreateTag', 'doDeleteTag', 'goTag', 'goTagList'], 'Wheat');
         } catch (error) {
                console.error("Error in main process:", error);
         }});
@@ -337,6 +337,7 @@ const setupModeSwitch = (switchId, graphId, otherGraphId) => {
 <li><span class="indicator idempotent" data-tooltip="idempotent"> </span> <a href="#doDeleteCategory">doDeleteCategory</a></li>
 <li><span class="indicator idempotent" data-tooltip="idempotent"> </span> <a href="#doDeleteMedia">doDeleteMedia</a></li>
 <li><span class="indicator idempotent" data-tooltip="idempotent"> </span> <a href="#doDeleteTag">doDeleteTag</a></li>
+<li><span class="indicator unsafe" data-tooltip="unsafe"> </span> <a href="#doPublishArticle">doPublishArticle</a></li>
 <li><span class="indicator idempotent" data-tooltip="idempotent"> </span> <a href="#doUpdateArticle">doUpdateArticle</a></li>
 <li><span class="indicator idempotent" data-tooltip="idempotent"> </span> <a href="#doUpdateAuthor">doUpdateAuthor</a></li>
 <li><span class="indicator idempotent" data-tooltip="idempotent"> </span> <a href="#doUpdateCategory">doUpdateCategory</a></li>
@@ -493,6 +494,11 @@ const setupModeSwitch = (switchId, graphId, otherGraphId) => {
   <td><a href="#goCategory">goCategory</a></td>
   <td>safe</td>
   <td>View Category</td>
+</tr>
+<tr>
+  <td><a href="#doPublishArticle">doPublishArticle</a></td>
+  <td>unsafe</td>
+  <td>Publish Article</td>
 </tr>
 <tr>
   <td><a href="#doUpdateArticle">doUpdateArticle</a></td>
@@ -1122,6 +1128,39 @@ const setupModeSwitch = (switchId, graphId, otherGraphId) => {
   <td><a href="#id">id</a></td>
   <td>semantic</td>
   <td>Identifier</td>
+</tr>
+</tbody>
+</table>
+
+<h3><a id="doPublishArticle">doPublishArticle</a></h3>
+
+<ul>
+<li>type: unsafe</li>
+<li>title: Publish Article</li>
+<li>doc: Move a draft article to published. Non-idempotent: a second call on an already-published article returns 409 Conflict (the state machine guards against re-publishing).</li>
+<li>tag: <a href="#tag-article">article</a>, <a href="#tag-flow-publish">flow-publish</a></li>
+<li>rt: <a href="#Article">Article</a></li>
+<li>descriptor</li>
+</ul>
+
+<table>
+<thead>
+<tr>
+  <th>id</th>
+  <th>type</th>
+  <th>title</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><a href="#id">id</a></td>
+  <td>semantic</td>
+  <td>Identifier</td>
+</tr>
+<tr>
+  <td><a href="#publishedAt">publishedAt</a></td>
+  <td>semantic</td>
+  <td>Published At</td>
 </tr>
 </tbody>
 </table>
@@ -1814,7 +1853,8 @@ const setupModeSwitch = (switchId, graphId, otherGraphId) => {
         {&quot;href&quot;: &quot;#goAuthor&quot;},
         {&quot;href&quot;: &quot;#goCategory&quot;},
         {&quot;href&quot;: &quot;#doUpdateArticle&quot;},
-        {&quot;href&quot;: &quot;#doDeleteArticle&quot;}
+        {&quot;href&quot;: &quot;#doDeleteArticle&quot;},
+        {&quot;href&quot;: &quot;#doPublishArticle&quot;}
       ], &quot;tag&quot;: &quot;article&quot;},
 
       {&quot;id&quot;: &quot;ArticleList&quot;, &quot;title&quot;: &quot;Article List&quot;, &quot;doc&quot;: {&quot;value&quot;: &quot;Paginated list of articles; supports filtering by category, tag, or status.&quot;}, &quot;descriptor&quot;: [
@@ -1932,6 +1972,10 @@ const setupModeSwitch = (switchId, graphId, otherGraphId) => {
       ]},
       {&quot;id&quot;: &quot;doDeleteArticle&quot;, &quot;type&quot;: &quot;idempotent&quot;, &quot;rt&quot;: &quot;#ArticleList&quot;, &quot;title&quot;: &quot;Delete Article&quot;, &quot;tag&quot;: &quot;article flow-publish&quot;, &quot;descriptor&quot;: [
         {&quot;href&quot;: &quot;#id&quot;}
+      ]},
+      {&quot;id&quot;: &quot;doPublishArticle&quot;, &quot;type&quot;: &quot;unsafe&quot;, &quot;rt&quot;: &quot;#Article&quot;, &quot;title&quot;: &quot;Publish Article&quot;, &quot;doc&quot;: {&quot;value&quot;: &quot;Move a draft article to published. Non-idempotent: a second call on an already-published article returns 409 Conflict (the state machine guards against re-publishing).&quot;}, &quot;tag&quot;: &quot;article flow-publish&quot;, &quot;descriptor&quot;: [
+        {&quot;href&quot;: &quot;#id&quot;},
+        {&quot;href&quot;: &quot;#publishedAt&quot;}
       ]},
 
       {&quot;id&quot;: &quot;doCreateCategory&quot;, &quot;type&quot;: &quot;unsafe&quot;, &quot;rt&quot;: &quot;#Category&quot;, &quot;title&quot;: &quot;Create Category&quot;, &quot;tag&quot;: &quot;category&quot;, &quot;descriptor&quot;: [

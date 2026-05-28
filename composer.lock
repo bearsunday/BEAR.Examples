@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0d456f40156ab94cce6d38e70795ae40",
+    "content-hash": "cc64eb4ab86455202d626e2f5fe86461",
     "packages": [
         {
             "name": "aura/cli",
@@ -525,19 +525,20 @@
         },
         {
             "name": "bear/resource",
-            "version": "dev-claude/sad-gagarin-71d751",
+            "version": "1.x-dev",
             "source": {
                 "type": "git",
-                "url": "https://github.com/koriym/BEAR.Resource.git",
-                "reference": "37ab2e26fb4d2e8f76f85f5add71c5468df25d54"
+                "url": "https://github.com/bearsunday/BEAR.Resource.git",
+                "reference": "be624b64e6df904719d4d86a06ce0173941b3bce"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/koriym/BEAR.Resource/zipball/37ab2e26fb4d2e8f76f85f5add71c5468df25d54",
-                "reference": "37ab2e26fb4d2e8f76f85f5add71c5468df25d54",
+                "url": "https://api.github.com/repos/bearsunday/BEAR.Resource/zipball/be624b64e6df904719d4d86a06ce0173941b3bce",
+                "reference": "be624b64e6df904719d4d86a06ce0173941b3bce",
                 "shasum": ""
             },
             "require": {
+                "ext-ctype": "*",
                 "ext-curl": "*",
                 "ext-fileinfo": "*",
                 "ext-filter": "*",
@@ -560,6 +561,7 @@
                 "phpunit/phpunit": "^11.0",
                 "ray/compiler": "^1.12"
             },
+            "default-branch": true,
             "type": "library",
             "extra": {
                 "bamarni-bin": {
@@ -661,9 +663,10 @@
                 "REST"
             ],
             "support": {
-                "source": "https://github.com/koriym/BEAR.Resource/tree/claude/sad-gagarin-71d751"
+                "source": "https://github.com/bearsunday/BEAR.Resource/tree/1.x",
+                "issues": "https://github.com/bearsunday/BEAR.Resource/issues"
             },
-            "time": "2026-05-24T12:04:18+00:00"
+            "time": "2026-05-28T05:37:27+00:00"
         },
         {
             "name": "bear/streamer",
@@ -8744,14 +8747,7 @@
             "time": "2025-11-17T20:03:58+00:00"
         }
     ],
-    "aliases": [
-        {
-            "package": "bear/resource",
-            "version": "dev-claude/sad-gagarin-71d751",
-            "alias": "1.99.x-dev",
-            "alias_normalized": "1.99.9999999.9999999-dev"
-        }
-    ],
+    "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
         "bear/resource": 20,

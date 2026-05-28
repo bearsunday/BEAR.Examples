@@ -313,24 +313,18 @@ shape. See
 [`docs/journal/decisions-to-consult.md`](journal/decisions-to-consult.md)
 P8-#45 for the diagnosis history.
 
-#### Pitfall: typed-array DTO fields and the validation order
+#### Native array DTO inputs
 
-Validation runs *after* DTO hydration, so a malformed value for a
-typed property (e.g. a scalar `tagIds=1` against `public array
-$tagIds`) reaches the constructor first and raises `TypeError` →
-5xx, never reaching `JsonSchemaInterceptor`. Until BEAR.Resource
-moves params validation in front of hydration, defend the typed
-fields inside the DTO: declare the parameter `mixed`, type-check it
-explicitly, and throw `BEAR\Resource\Exception\ParameterException`
-(maps to 400) for bad shapes. `ArticleCreateInput::tagIds` and
-`ArticleUpdateInput::tagIds` follow this pattern. Keep the runtime
-check minimal — `is_array` only — and let the JSON Schema's
-`items` / `minimum` keep doing the per-element validation it
-already does. Note that `mixed` always allows null in
-`Ray\InputQuery`'s default-value resolution: an omitted `tagIds`
-arrives as `null`, not as the constructor's declared default, so
-coalesce `null` to your intended default (`[]` for create-style,
-`null` for tri-state update) before the `is_array` gate.
+BEAR.Resource 1.x-dev (via Ray.InputQuery 1.1) supports native
+`array` and `array|null` constructor parameters for `#[Input]` DTOs at
+the resource boundary. Use the real type on collection fields:
+`ArticleCreateInput::tagIds` is `array $tagIds = []`, and
+`ArticleUpdateInput::tagIds` is `array|null $tagIds = null` for the
+tri-state update contract. Malformed non-array shapes are rejected by
+Ray.InputQuery and wrapped by BEAR.Resource as `ParameterException`
+(400-class) before the DTO constructor runs; the DTO only normalises
+valid arrays with `array_values()`. JSON Schema still owns per-element
+constraints such as `items` and `minimum`.
 
 `Auth::onPost` uses a dedicated `auth_response.json` (string subject
 id from the OAuth provider) rather than the shared
@@ -422,10 +416,12 @@ middle.
 - Read errors (not found) return 404 via `$this->code` — do not throw.
 - Request-validation failure throws
   `MyVendor\Cms\Exception\ValidationException` (not the framework's
-  `JsonSchemaException`) carrying a `field => list<string>` map.
-  `JsonSchemaRequestExceptionHandler` builds it from the validator's
-  errors plus `errorMessage` lookups; Page resources catch and
-  surface it as a 422 form re-render. See
+  `JsonSchemaRequestException`) carrying a `field => list<string>` map.
+  `JsonSchemaRequestExceptionHandler` groups BEAR.Resource's structured
+  request-schema errors; Page resources catch and surface it as a 422 form
+  re-render. Response-schema failures remain framework
+  `JsonSchemaResponseException` failures (5xx-class), not user input errors.
+  See
   [validation-layer-design.md](journal/validation-layer-design.md).
 
 #### `errorMessage` keys in JSON Schema (ajv-errors convention)
@@ -448,6 +444,11 @@ validating; `errorMessage.pattern` only owns the wire copy.
 Required-field copy lives at the parent under
 `errorMessage.required.<field>`. `errorMessage` can also be a plain
 string, used as a fallback for any failure on the property.
+
+BEAR.Resource resolves these `errorMessage` templates while mapping validator
+rows into `JsonSchemaError` objects, before this app's request handler sees
+them. The app handler should therefore use `$error->message` as already
+rendered and only group messages by field.
 
 Add `errorMessage` only when the default validator message reads
 awkwardly or the admin vocabulary needs to land — schemas without

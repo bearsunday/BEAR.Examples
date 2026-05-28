@@ -156,13 +156,14 @@ DTO を使うか scalar のままにするかは **fit-driven** で、`docs/conv
 
 **見るファイル**: `src/Input/ArticleCreateInput.php`、`src/Resource/App/Article.php:74-105`
 
-### 落とし穴 (Resource 1.31.1 / ApiDoc 1.9.1 時点)
+### Native array DTO input (Resource 1.x-dev)
 
-`JsonSchemaInterceptor` の検証は **DTO hydration の後** に走るため、
-typed array プロパティ (`public array $tagIds`) に scalar が来ると
-コンストラクタで `TypeError` (5xx)。回避は DTO 側で `mixed` で受けて
-`is_array` ガード → `ParameterException` (400)。`ArticleCreateInput::tagIds`
-の構造はその回避パターンの実例。
+BEAR.Resource 1.x-dev / Ray.InputQuery 1.1 では `#[Input]` DTO の
+`array` / `array|null` constructor parameter をそのまま使えます。scalar が
+`tagIds` に来た場合は Resource 境界で `ParameterException` (400) になり、
+DTO constructor の `TypeError` として漏れません。`ArticleCreateInput::tagIds`
+と `ArticleUpdateInput::tagIds` は実際の型で宣言し、DTO 側では
+`array_values()` による正規化だけを行います。
 
 ---
 

@@ -14,11 +14,11 @@ use function sprintf;
 /**
  * Carries per-field validation errors as a structured map.
  *
- * Thrown by `JsonSchemaRequestExceptionHandler` after re-running the
- * validator with `errorMessage` (ajv-errors convention) lookup. The Page
- * layer catches this and surfaces the errors to the form template; HAL+JSON
- * callers receive the same shape via `getErrors()` so the wire body stays
- * consistent across origins.
+ * Thrown by `JsonSchemaRequestExceptionHandler` after grouping
+ * BEAR.Resource's structured request-schema errors. The Page layer catches
+ * this and surfaces the errors to the form template; HAL+JSON callers receive
+ * the same shape via `getErrors()` so the wire body stays consistent across
+ * origins.
  *
  * @see docs/journal/validation-layer-design.md
  */

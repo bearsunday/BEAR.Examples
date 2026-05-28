@@ -67,8 +67,8 @@ final class AppModule extends AbstractAppModule
             $this->appMeta->appDir . '/var/json_schema',
             $this->appMeta->appDir . '/var/json_validate',
         ));
-        // Replace the null request handler with one that re-runs the validator
-        // to surface field-level errors. See src/Validation/JsonSchemaRequestExceptionHandler.
+        // Replace the null request handler with one that groups BEAR.Resource's
+        // structured request-schema errors. See src/Validation/JsonSchemaRequestExceptionHandler.
         $this->bind(JsonSchemaRequestExceptionHandlerInterface::class)
             ->to(JsonSchemaRequestExceptionHandler::class)
             ->in(Scope::SINGLETON);

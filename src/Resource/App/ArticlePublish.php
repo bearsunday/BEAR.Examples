@@ -33,7 +33,6 @@ use function gmdate;
  * `publishedAt` defaults to the current UTC time when omitted. Callers can
  * supply an explicit ISO-8601 timestamp for backdated publication.
  */
-#[Alps('doPublishArticle')]
 class ArticlePublish extends ResourceObject
 {
     public function __construct(

@@ -65,7 +65,7 @@
                                         "type": "string"
                                     },
                                     "tagIds": {
-                                        "type": "string"
+                                        "type": "array"
                                     }
                                 },
                                 "required": [
@@ -123,7 +123,7 @@
                                         "type": "string"
                                     },
                                     "tagIds": {
-                                        "type": "string"
+                                        "type": "array"
                                     }
                                 },
                                 "required": [
@@ -168,6 +168,49 @@
                 "responses": {
                     "200": {
                         "description": "Successful response"
+                    }
+                }
+            }
+        },
+        "/article-publish": {
+            "post": {
+                "operationId": "doPublishArticle",
+                "summary": "State-transition resource: `draft \u2192 published` for a single article.",
+                "description": "Modelled as a separate resource (rather than a method on `Article`) for two\nreasons. First, the meeting decision in Issue #37 sets confirmation /\npublication apart as its own resource so the confirm-then-commit flow has a\nURI to point at. Second, the `Article` resource is verb-rich (POST/PUT/DELETE\nfor full CRUD plus field edits); folding a state transition into `onPut`\nwould lose the distinction between \"edit fields\" and \"move state\".\n\nIdempotent within a state: publishing an already-published article returns\n409 with `{message, status}` and leaves the row untouched. This makes the\nroute safe to retry under network failures yet honest about the state\nmachine \u2014 repeating the transition is not the same as moving the state\ntwice.\n\n`publishedAt` defaults to the current UTC time when omitted. Callers can\nsupply an explicit ISO-8601 timestamp for backdated publication.",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "id": {
+                                        "type": "integer"
+                                    },
+                                    "publishedAt": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "id"
+                                ]
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/WriteResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
                     }
                 }
             }
@@ -1210,7 +1253,7 @@
             },
             "WriteResponse": {
                 "title": "WriteResponse",
-                "description": "Permissive shape covering POST/PUT/DELETE response bodies across all write resources. PUT returns {id}, POST returns {id, slug|email|filename}, error paths return {message, id}. Each write method points its #[JsonSchema(schema:)] at this file.",
+                "description": "Permissive shape covering POST/PUT/DELETE response bodies across all write resources. PUT returns {id}, POST returns {id, slug|email|filename}, state transitions return {id, slug, status, publishedAt}, error paths return {message, id}. Each write method points its #[JsonSchema(schema:)] at this file.",
                 "type": "object",
                 "properties": {
                     "id": {
@@ -1225,6 +1268,15 @@
                     },
                     "filename": {
                         "type": "string"
+                    },
+                    "status": {
+                        "type": "string"
+                    },
+                    "publishedAt": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     },
                     "message": {
                         "type": "string"

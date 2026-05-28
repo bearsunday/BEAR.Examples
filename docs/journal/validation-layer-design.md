@@ -15,9 +15,9 @@ layer detected the failure:
 
 1. Structural failure — JSON Schema (string length, regex, enum,
    required, type, format, …).
-2. Type-shape failure that runs before the schema — DTO constructor
-   (e.g. `tagIds` scalar against `array` typed property), surfacing
-   as `BEAR\Resource\Exception\ParameterException`.
+2. Type-shape failure that runs before the schema — resource parameter /
+   DTO input hydration (e.g. scalar `tagIds` against an `array` DTO
+   parameter), surfacing as `BEAR\Resource\Exception\ParameterException`.
 3. Domain failure (deferred) — DB-dependent checks such as slug
    uniqueness, FK existence, state-transition guards.
 
@@ -39,24 +39,36 @@ Implements
 `BEAR\Resource\JsonSchemaRequestExceptionHandlerInterface` — the
 hook `JsonSchemaInterceptor` calls when `params:` validation fails.
 The default `JsonSchemaRequestExceptionNullHandler` rethrows the
-original `JsonSchemaException`, which carries only a flattened
-`"[prop] message; …"` string.
+original exception.
 
-Our handler reads `$e->getErrors()` — a `list<JsonSchemaError>`
-populated upstream by `JsonSchemaErrorMapper` from the validator's
-structured rows — and walks each error to build a
-`field => list<string>` map. Per-message lookup follows the
-**ajv-errors** convention:
+BEAR.Resource now distinguishes JSON Schema failure source before app
+code sees the exception:
 
+- `JsonSchemaRequestException` — request/`params:` validation, 4xx-class.
+- `JsonSchemaResponseException` — response body validation, 5xx-class.
+
+That source split landed via
+[bearsunday/BEAR.Resource#369](https://github.com/bearsunday/BEAR.Resource/issues/369).
 The structured-error carrier on `JsonSchemaException` landed via
 [bearsunday/BEAR.Resource#364](https://github.com/bearsunday/BEAR.Resource/issues/364);
-the handler no longer re-runs the validator.
+`getErrors()` now returns a `JsonSchemaErrors` collection.
 
-If `$e->getErrors()` is empty (manual throws, future paths that bypass
-the upstream mapper) the handler rethrows the original
-`JsonSchemaException` rather than surfacing a content-free
-`ValidationException` — an empty error shape would silently swallow
-the signal.
+This handler is bound only to the request hook. It iterates the delivered
+request exception's `JsonSchemaErrors` collection and groups the
+already-rendered `JsonSchemaError::$message` values into a
+`field => list<string>` map. Response schema failures are delivered to the
+separate response handler and are deliberately not translated into
+`ValidationException`: they are server-side contract bugs, not user input
+errors.
+
+If `getErrors()->hasErrors()` is false (manual throws, future paths that
+bypass the upstream mapper) the handler rethrows the original exception
+rather than surfacing a content-free `ValidationException` — an empty error
+shape would silently swallow the signal.
+
+Per-message lookup follows the **ajv-errors** convention, but it is now
+performed upstream by BEAR.Resource's `JsonSchemaErrorMapper` before this app
+handler runs:
 
 - `properties.<field>.errorMessage.<constraint>` — per-constraint
   override on a field. `<constraint>` matches `ConstraintError`
@@ -118,6 +130,12 @@ itself is the call site, and the body would otherwise need a global
 exception-to-status mapping that the framework deliberately leaves
 to the transfer layer.
 
+Response schema failures do not enter this contract. BEAR.Resource delivers
+them to `JsonSchemaExceptionHandlerInterface` as
+`JsonSchemaResponseException`; this application leaves the default response
+handler in place so invalid response bodies surface as framework/server
+errors rather than as form-validation messages.
+
 Page resources (`Resource/Page/Admin/Article`, etc.) catch
 `ValidationException` from the inner `app://` call and rewrite the
 form body to surface field-keyed errors:
@@ -132,9 +150,10 @@ try {
 }
 ```
 
-`ParameterException` (DTO-shape failures) is caught separately and
-funnelled into the same 422 body under the `_global` field, so the
-form template renders both paths through a single error-list block.
+`ParameterException` (resource parameter / DTO input shape failures) is
+caught separately and funnelled into the same 422 body under the `_global`
+field, so the form template renders both paths through a single error-list
+block.
 
 ---
 
@@ -203,15 +222,12 @@ so no resource-layer change is needed for the domain path.
   behaviour: `ValidationException` with a field key matching the
   failing input.
 - `tests/Validation/JsonSchemaRequestExceptionHandlerTest` exercises
-  the handler against hand-constructed `JsonSchemaError` DTOs paired
-  with synthetic schemas to cover the `errorMessage.required.<field>`,
-  per-keyword, string-fallback, missing-`errorMessage`, and
-  empty-errors-rethrow paths. Hand-constructed because the unit test
-  is intentionally hermetic from `justinrainbow/json-schema`; the
-  DTO shapes mirror what the upstream `JsonSchemaErrorMapper`
-  produces. Synthetic schemas because, through the App boundary,
-  schema-required failures cannot reach the interceptor — Article's
-  DTO and Author's typed parameters reject missing values first.
+  the handler against hand-constructed `JsonSchemaRequestException`
+  instances to cover field grouping, repeated messages for one field, root
+  errors, and empty-errors rethrow.
+  Hand-constructed because the unit test is intentionally hermetic from
+  `justinrainbow/json-schema`; upstream owns the mapper and
+  `errorMessage` resolution tests.
 - `tests/Resource/Page/Admin/ArticleTest::testInvalidCreateReturnsFormWithEscapedValues`
   pins the Page-side 422 rendering: `<section class="ErrorList">`
   appears and unsafe input is escaped.

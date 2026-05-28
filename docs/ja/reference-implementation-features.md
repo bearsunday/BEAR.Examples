@@ -183,9 +183,9 @@ Psalm のテイント解析がオンになっている点は見落としやす�
 - 全 Entity が `final readonly`（`Article`, `Author`, `Category`, `Media`, `Tag`）
 - ステータスは **typed enum**（`ArticleStatus = 'draft' | 'published'`）で文字列を排除
 - Command は **`void` を返す**（id 取得経路を `bySlug` 等の自然キーに強制）
-- Input DTO のコンストラクタが境界正規化を担い、`mixed` で受けて
-  `is_array()` で判定 → `ParameterException` で 400 化（`TypeError` を 5xx に
-  漏らさない）
+- Input DTO のコンストラクタは境界正規化を担います。collection は
+  `array` / `array|null` として宣言し、非 array shape は Ray.InputQuery /
+  BEAR.Resource が `ParameterException` で 400 化します。
 
 ### バリデーションの二段構え
 

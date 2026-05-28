@@ -159,11 +159,10 @@ final class ArticleTest extends AbstractAppTestCase
     }
 
     /**
-     * `JsonSchemaInterceptor` validates params *after* DTO hydration
-     * (BEAR.Resource 1.31.1). A scalar `tagIds` would therefore hit the
-     * typed `array` property in `ArticleCreateInput` as a TypeError → 5xx
-     * unless the DTO rejects non-array shapes up front. Pin the
-     * 400-class behaviour so the failure path stays a client error.
+     * BEAR.Resource 1.x-dev delegates native array DTO inputs to
+     * Ray.InputQuery 1.1, so malformed `tagIds` shapes are wrapped as
+     * ParameterException at the resource boundary rather than leaking as
+     * constructor TypeError.
      */
     public function testPostRejectsScalarTagIds(): void
     {

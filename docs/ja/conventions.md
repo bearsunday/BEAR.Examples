@@ -297,22 +297,18 @@ endpoint は Resource 境界で DTO、別の endpoint は名前付き scalar par
 [`../journal/decisions-to-consult.md`](../journal/decisions-to-consult.md) P8-#45
 を参照してください。
 
-#### Pitfall: typed array DTO フィールドと validation の順序
+#### Native array DTO input
 
-Validation は DTO hydration の *後* に走るので、typed property に対する
-不正な値 (例: `public array $tagIds` に対する scalar `tagIds=1`) は
-constructor に先に到達して `TypeError` → 5xx になり、
-`JsonSchemaInterceptor` には届きません。BEAR.Resource が params validation を
-hydration の前に動かすまで、DTO 内部で typed フィールドを防衛してください:
-parameter を `mixed` で宣言し、明示的に型チェックし、不正な shape に対して
-`BEAR\Resource\Exception\ParameterException` を throw (400 にマップ) します。
-`ArticleCreateInput::tagIds` と `ArticleUpdateInput::tagIds` がこのパターン
-を踏襲しています。runtime チェックは最小限に — `is_array` だけ — JSON Schema
-の `items` / `minimum` には element ごとの検証を任せます。なお `mixed` は
-`Ray\InputQuery` のデフォルト値解決で常に null を許容します: 省略された
-`tagIds` は constructor で宣言したデフォルトではなく `null` で来るので、
-`is_array` ゲートの前に意図したデフォルトに coalesce してください
-(create では `[]`、tri-state な update では `null`)。
+BEAR.Resource 1.x-dev (Ray.InputQuery 1.1 経由) は Resource 境界の
+`#[Input]` DTO で native な `array` / `array|null` constructor parameter
+を扱えます。collection field には実際の型を使います:
+`ArticleCreateInput::tagIds` は `array $tagIds = []`、tri-state update の
+`ArticleUpdateInput::tagIds` は `array|null $tagIds = null` です。非 array の
+不正な shape は Ray.InputQuery が拒否し、BEAR.Resource が
+`ParameterException` (400 系) として wrap するため、DTO constructor には
+到達しません。DTO 側は妥当な配列を `array_values()` で正規化するだけです。
+`items` や `minimum` のような element ごとの制約は引き続き JSON Schema が
+担当します。
 
 `Auth::onPost` は共有の `write_response.json` (整数 DB id) ではなく専用の
 `auth_response.json` (OAuth provider 由来の string subject id) を使います —
@@ -376,11 +372,13 @@ Ray.MediaQuery の DTO サポートは、Resource-to-Command 境界が本当に 
   throw する例外は `MyVendor\Cms\Exception\<DomainName>Exception` を定義します。
 - Read のエラー (見つからない) は throw せず、`$this->code` 経由で 404 を返します。
 - リクエスト検証失敗は `MyVendor\Cms\Exception\ValidationException`
-  (フレームワークの `JsonSchemaException` ではない) を throw し、
+  (フレームワークの `JsonSchemaRequestException` ではない) を throw し、
   `field => list<string>` の map を保持します。
-  `JsonSchemaRequestExceptionHandler` が validator のエラーと
-  `errorMessage` の lookup から組み立て、Page リソースが catch して
-  422 form 再描画として surface します。詳細は
+  `JsonSchemaRequestExceptionHandler` は BEAR.Resource の構造化された
+  request schema error を field ごとに束ね、Page リソースが catch して
+  422 form 再描画として surface します。Response schema の失敗は
+  `JsonSchemaResponseException` (5xx 系) のままで、ユーザー入力エラーには
+  変換しません。詳細は
   [validation-layer-design.md](../journal/validation-layer-design.md)
   を参照してください。
 
@@ -405,6 +403,10 @@ required フィールドのコピーは親側で
 `errorMessage.required.<field>` に置きます。`errorMessage` は
 プレーン文字列でも書けて、その場合はそのプロパティの任意の失敗に対する
 fallback になります。
+
+BEAR.Resource は validator row を `JsonSchemaError` に変換する時点で
+これらの `errorMessage` template を解決します。このアプリ側の handler は
+すでに描画済みの `$error->message` を使い、field ごとに group するだけです。
 
 `errorMessage` は default validator メッセージが不自然な場合や、
 管理画面の語彙に合わせる必要があるときにだけ追加してください — override

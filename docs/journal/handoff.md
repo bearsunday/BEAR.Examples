@@ -70,13 +70,11 @@ defeats the reference value.
   `#[JsonSchema('<entity>.json')]`. Input schemas in
   `var/json_validate/` validate request params via
   `#[JsonSchema(schema: 'write_response.json', params: '<entity>_<verb>.json')]`.
-  Validation runs *after* DTO hydration in BEAR.Resource 1.31.1, so
-  typed-array DTO fields (e.g. `public array $tagIds`) must defend
-  themselves against malformed shapes — declare them `mixed`, gate
-  with `is_array`, and throw `ParameterException` (→ 400). See
-  `conventions.md` §4 "Pitfall: typed-array DTO fields and the
-  validation order" and `src/Input/ArticleCreateInput.php` for the
-  canonical pattern.
+  BEAR.Resource 1.x-dev / Ray.InputQuery 1.1 supports native `array`
+  and `array|null` Input DTO fields; malformed non-array shapes are
+  wrapped as `ParameterException` (→ 400) before the DTO constructor
+  runs. See `conventions.md` §4 "Native array DTO inputs" and
+  `src/Input/ArticleCreateInput.php` for the canonical pattern.
 - App contexts:
   - `hal-api-app` — production HTTP
   - `html-hal-app` — Qiq/Page HTML HTTP
