@@ -145,7 +145,7 @@ try {
     return $this->resource->post('app://self/article', $values);
 } catch (ValidationException $e) {
     $this->code = 422;
-    $this->body = $this->formBody($article, $values, $e->getErrors(), null);
+    $this->body = $this->formBody($article, $values, $e->errors, null);
     return $this;
 }
 ```

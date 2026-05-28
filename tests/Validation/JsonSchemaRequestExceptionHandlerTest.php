@@ -36,7 +36,7 @@ final class JsonSchemaRequestExceptionHandlerTest extends TestCase
         } catch (ValidationException $e) {
             $this->assertSame(
                 ['slug' => ['Slug must contain only lowercase letters, digits and hyphens.']],
-                $e->getErrors(),
+                $e->errors,
             );
         }
     }
@@ -64,7 +64,7 @@ final class JsonSchemaRequestExceptionHandlerTest extends TestCase
         } catch (ValidationException $e) {
             $this->assertSame(
                 ['Title is required.', 'Title must be at least 1 character long.'],
-                $e->getErrors()['title'],
+                $e->errors['title'],
             );
         }
     }
@@ -82,7 +82,7 @@ final class JsonSchemaRequestExceptionHandlerTest extends TestCase
             $this->dispatch([$error]);
             $this->fail('Expected ValidationException');
         } catch (ValidationException $e) {
-            $this->assertSame(['_root' => ['Value must be an object.']], $e->getErrors());
+            $this->assertSame(['_root' => ['Value must be an object.']], $e->errors);
         }
     }
 

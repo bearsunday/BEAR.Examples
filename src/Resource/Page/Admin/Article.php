@@ -123,7 +123,7 @@ class Article extends ResourceObject
                 : $this->updateArticle($articleId, $values);
         } catch (ValidationException | ParameterException $e) {
             $errors = $e instanceof ValidationException
-                ? $e->getErrors()
+                ? $e->errors
                 : ['_global' => [$e->getMessage()]];
             $this->code = 422;
             $this->body = $this->formBody($article, $values, $errors, null);

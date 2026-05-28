@@ -126,7 +126,7 @@ final class ArticleTest extends AbstractAppTestCase
             ]);
             $this->fail('Expected ValidationException');
         } catch (ValidationException $e) {
-            $errors = $e->getErrors();
+            $errors = $e->errors;
             $this->assertArrayHasKey('slug', $errors);
             // The pattern message in article_create.json is the source of truth for the wire copy.
             $this->assertSame(
@@ -149,7 +149,7 @@ final class ArticleTest extends AbstractAppTestCase
             ]);
             $this->fail('Expected ValidationException');
         } catch (ValidationException $e) {
-            $errors = $e->getErrors();
+            $errors = $e->errors;
             $this->assertArrayHasKey('status', $errors);
             $this->assertSame(
                 "Status must be either 'draft' or 'published'.",

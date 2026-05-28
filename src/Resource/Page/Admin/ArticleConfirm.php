@@ -109,7 +109,7 @@ class ArticleConfirm extends ResourceObject
                 ? (string) $result->body['message']
                 : 'Publish failed';
             $this->code = $result->code;
-            $this->body = $this->previewBody($article, [$message], false);
+            $this->body = $this->previewBody($article, [$message], $article->isPublished());
 
             return $this;
         }
