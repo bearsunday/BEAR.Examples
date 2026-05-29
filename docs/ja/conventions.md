@@ -249,10 +249,12 @@ endpoint — は結果 body と一緒に `200` を返し、`Location` ヘッダ�
 ### INSERT 後の id
 `lastInsertId` を使ってはいけません (driver 依存で fake しにくい)。client が
 渡した自然キー (slug / email / filename) を使い、`by<NaturalKey>` で再 SELECT
-します。canonical な Resource 向け `Command` 側は `void` を返します。Resource
-以外の caller が DML metadata を必要とする場合は、明示的な sample/read-model
-command として分け、MediaQuery の `AffectedRows` を返します。例は
-[MediaQuery サンプル](media-query-samples.md) を参照してください。
+します。canonical な Resource 向け `Command` 側は通常 `void` を返します。
+ただし状態遷移 command では、resource が成功した遷移と concurrent conflict を
+区別する必要がある場合に MediaQuery の `AffectedRows` を返して構いません。
+`ArticleCommandInterface::publish()` がその標準例です。Resource 以外の caller が
+DML metadata を必要とする場合は、明示的な sample/read-model command として
+分けます。例は [MediaQuery サンプル](media-query-samples.md) を参照してください。
 
 ### ページネーション
 Article collection read は Ray.MediaQuery の `#[Pager]` を使い、

@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "ArticlePublishInput",
-  "description": "Input for POST app://self/article-publish. Performs the draft → published state transition.",
+  "description": "Input for POST app://self/article-publish. Performs the draft → published state transition. The public request carries only the article id plus an optional timestamp override; status is derived server-side as \"published\" before calling the command.",
   "type": "object",
   "required": ["id"],
   "errorMessage": {
@@ -19,6 +19,7 @@
       }
     },
     "publishedAt": {
+      "description": "Optional override. When omitted or null, ArticlePublish supplies the current UTC timestamp before invoking ArticleCommandInterface::publish().",
       "type": ["string", "null"],
       "format": "date-time",
       "errorMessage": {
