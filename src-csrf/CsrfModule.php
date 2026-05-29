@@ -2,22 +2,20 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms\Module;
+namespace Ray\Csrf;
 
 use BEAR\Resource\ResourceObject;
-use MyVendor\Cms\Attribute\CsrfToken;
-use MyVendor\Cms\Attribute\SameOrigin;
-use MyVendor\Cms\Auth\CsrfTokenInterface;
-use MyVendor\Cms\Auth\SessionCsrfToken;
-use MyVendor\Cms\Http\AllowedOrigin;
-use MyVendor\Cms\Http\CsrfTokenField;
-use MyVendor\Cms\Http\RequestBodyTokenInterface;
-use MyVendor\Cms\Http\RequestOriginInterface;
-use MyVendor\Cms\Http\ServerRequestBodyToken;
-use MyVendor\Cms\Http\ServerRequestOrigin;
-use MyVendor\Cms\Interceptor\CsrfTokenInterceptor;
-use MyVendor\Cms\Interceptor\SameOriginInterceptor;
 use Override;
+use Ray\Csrf\Attribute\CsrfToken;
+use Ray\Csrf\Attribute\SameOrigin;
+use Ray\Csrf\Http\AllowedOrigin;
+use Ray\Csrf\Http\CsrfTokenField;
+use Ray\Csrf\Http\RequestBodyTokenInterface;
+use Ray\Csrf\Http\RequestOriginInterface;
+use Ray\Csrf\Http\ServerRequestBodyToken;
+use Ray\Csrf\Http\ServerRequestOrigin;
+use Ray\Csrf\Interceptor\CsrfTokenInterceptor;
+use Ray\Csrf\Interceptor\SameOriginInterceptor;
 use Ray\Di\AbstractModule;
 use Ray\Di\Scope;
 

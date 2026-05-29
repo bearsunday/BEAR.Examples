@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms\Http;
+namespace Ray\Csrf\Http;
 
 interface RequestBodyTokenInterface
 {

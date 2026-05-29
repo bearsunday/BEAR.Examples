@@ -37,7 +37,7 @@ Two attributes layer the defence:
 | Attribute | What it requires | Where |
 |---|---|---|
 | `#[SameOrigin]` | Browser-emitted same-origin signals (`Sec-Fetch-Site`, `Origin`, `Referer`) match the configured allowed origin. | All Page/Admin `onPost` methods. |
-| `#[CsrfToken]` | A per-session token, submitted in the configured form-body field (`CsrfTokenField`, default `_csrf_token`), matches the one stored in session. | Destructive / session-changing onPost methods: `Article`, `ArticleDelete`, `ArticleConfirm`, `Logout`. |
+| `#[CsrfToken]` | A per-session token submitted as `_csrf_token` in the form body matches the one stored in session. | Destructive / session-changing onPost methods: `Article`, `ArticleDelete`, `ArticleConfirm`, `Logout`. |
 
 The two layers stack — `#[SameOrigin]` defends the bulk of cookie-driven
 CSRF cheaply; `#[CsrfToken]` adds belt-and-braces protection on the
@@ -52,194 +52,174 @@ read as a defence implementation detail.
 
 ---
 
-## Wiring
-
-`CsrfModule` (`src/Module/CsrfModule.php`) binds both interceptor
-pointcuts and the values they depend on. `AppModule` installs the
-module after the auth bindings, passing the operator-controlled
-configuration through the constructor:
-
-```php
-$allowedOrigin = ((string) getenv('CMS_ALLOWED_ORIGIN')) ?: null;
-$this->install(new CsrfModule($allowedOrigin));
-```
-
-The two configuration values flow as typed value classes, bound via
-`toInstance`:
-
-- **`AllowedOrigin`** — the canonical origin browsers must match. `null`
-  short-circuits both gates (see "Short-circuit mode").
-- **`CsrfTokenField`** — the form-body field the token is read from
-  and rendered into (defaults to `_csrf_token`). Single source of
-  truth for `ServerRequestBodyToken` and the four Qiq templates that
-  render `<input name="…">`.
-
-Inbound HTTP state goes through interfaces so tests can override
-without scripting `$_SERVER` / `$_POST`:
-
-- **`RequestOriginInterface`** — wraps the request headers
-  (`Sec-Fetch-Site`, `Origin`, `Referer`).
-- **`RequestBodyTokenInterface`** — wraps the submitted token field.
-
-`FakeModule` rebinds both interfaces to fakes and pins
-`AllowedOrigin` to `null`, so the test / CLI / fake-app contexts
-short-circuit by default. Tests that want to exercise the gates
-rebind `AllowedOrigin` (and the relevant header / body fake)
-locally via `Injector::getOverrideInstance()`.
-
----
-
 ## `#[SameOrigin]` runtime
 
-`SameOriginInterceptor` walks three signals in priority order:
+### Wiring
 
-1. **`Sec-Fetch-Site`** (Fetch Metadata). A forbidden request header —
-   browser-generated, not settable from JS — so `same-origin` is
-   authoritative. Anything else (`same-site`, `cross-site`, `none`,
-   or an unknown literal) → `ForbiddenException` (403). Unknown
-   values are rejected rather than fallthrough: a surprising value
-   is more likely an attack than a new browser literal.
+`CsrfModule` (`src-csrf/CsrfModule.php`, namespace `Ray\Csrf`) binds
+both interceptor pointcuts and the typed value classes they depend
+on (`AllowedOrigin`, `CsrfTokenField`). `AppModule` installs the
+module after the auth bindings, passing the operator-controlled
+`CMS_ALLOWED_ORIGIN` env value through the constructor.
+`FakeModule` rebinds the interfaces to in-memory fakes
+(`MyVendor\Cms\Fake\Fake*`) so tests / CLI / fake-app don't have to
+script HTTP headers.
+
+`RequestOriginInterface` and `AllowedOrigin` are deliberately
+separate. The first models inbound HTTP headers (untrusted, client-
+controlled); the second is server configuration (trusted, set by
+the operator). Conflating them would let one fake script both
+sides and obscure that they're different concerns.
+
+The library lives in `src-csrf/` as an upstream-candidate package —
+see `src-csrf/README.md` for the donation plan. Consumer `use`
+statements already address `Ray\Csrf\` so the namespace is the
+migration contract.
+
+### Detection algorithm
+
+In priority order:
+
+1. **`Sec-Fetch-Site`** (Fetch Metadata, RFC-adjacent). It's a
+   forbidden request header — browser-generated, not settable from
+   JS — so a `same-origin` value is authoritative. Anything else
+   (`same-site`, `cross-site`, `none`, or an unknown literal) is
+   rejected as `ForbiddenException` (403). Unknown values are
+   treated as cross-site rather than fallthrough; a surprising
+   value is more likely an attack than a new browser literal we
+   should trust.
+
 2. **`Origin`**. Compared as a *canonical origin* (scheme + host
-   lowercased per RFC 3986, default ports collapsed, no path / query
-   / fragment / userinfo). Mismatch → 403. Malformed (parse failure,
-   `Origin: null`, anything with a path beyond `/`) →
-   `BadRequestException` (400). 400 means "your request is wrong";
-   403 means "we won't process this request".
+   lowercased per RFC 3986, default ports for the scheme collapsed,
+   no path / query / fragment / userinfo). Mismatch → 403.
+   Malformed (parse failure, `Origin: null`, anything with a path
+   beyond `/`) → `BadRequestException` (400). The 400/403 split
+   reflects RFC semantics: 400 is "your request is wrong", 403 is
+   "we won't process this request".
+
 3. **`Referer`**. Same canonical comparison after extracting the URL's
    origin component. Used only when both `Sec-Fetch-Site` and
    `Origin` are absent.
 
-All three absent (with `AllowedOrigin->value` non-null) → 403
-(fail-closed). `AllowedOrigin->value === null` short-circuits at the
-top of `invoke()` — see "Short-circuit mode".
+4. **All three absent**. With `AllowedOrigin->value` non-null, the
+   request is rejected as 403 (fail-closed). With `value === null`
+   the gate short-circuits at the top of the interceptor and never
+   reaches this branch.
 
----
+### Short-circuit mode
 
-## `#[CsrfToken]` runtime
+`AllowedOrigin->value === null` disables **both** gates
+(`SameOriginInterceptor` and `CsrfTokenInterceptor`). That's the
+test / CLI / fake-app shape — none of those have a browser on the
+other side, so neither origin signals nor `_csrf_token` would be
+populated; both checks would always fail-closed, which would block
+legitimate CLI invocations of admin Page resources for no security
+benefit. Tying both gates to the same on/off knob keeps the mental
+model "production HTTP enforces, everywhere else skips" in one
+config value.
 
-`CsrfTokenInterceptor` is the second layer, applied only to
-destructive / session-changing POSTs:
+**Production gotcha.** Because `null` means "skip", a production HTTP
+deployment that forgets to set `CMS_ALLOWED_ORIGIN` silently disables
+both gates. The fail-closed path belongs in a `ProdModule` that aborts
+at boot if the env var is missing — out of scope for this PR. Tracked
+under [docs/scope.md](../scope.md) Tier 2 "Production tuning notes".
 
-1. Read the submitted token from `RequestBodyTokenInterface::submitted()`
-   (production: `$_POST[CsrfTokenField->name]`). Missing →
-   `ForbiddenException` "CSRF token missing.".
-2. Constant-time compare via `CsrfTokenInterface::verify($submitted)`.
-   Mismatch (or no token ever issued — fresh session, post-logout) →
-   `ForbiddenException` "CSRF token invalid.".
-
-Both branches surface as 403; the distinct messages help debugging
-but are not differentiated to the client. `AllowedOrigin->value === null`
-short-circuits the same way as `#[SameOrigin]`.
-
-Token lifecycle:
-
-- `CsrfTokenInterface::issue()` is idempotent within a session —
-  generates 256-bit hex on first call, returns the stored value
-  thereafter. Per-request rotation is intentionally not done so a
-  form rendered at GET and submitted at POST sees the same value.
-- `AuthSessionInterface::logout()` calls `CsrfTokenInterface::clear()`,
-  so a fresh session (re-login as a different admin, repeat login
-  as the same admin) starts with a new token.
-- `CmsQiqRenderer::commonVars()` exposes both `csrfToken` (the
-  value) and `csrfTokenField` (the field name) to every template,
-  so layout-level forms (sign-out in the nav) embed the hidden
-  field without each Page resource pushing them into `$this->body`.
-
----
-
-## Short-circuit mode
-
-`AllowedOrigin->value === null` disables **both** gates. The
-test / CLI / fake-app shape — no browser on the other side, so
-no origin signals or `_csrf_token` would be populated; enforcing
-the checks would always fail-closed and block legitimate CLI
-invocations of admin Page resources for no security benefit. Tying
-both gates to the same on/off knob keeps the mental model
-"production HTTP enforces, everywhere else skips" in one config
-value.
-
-**Production gotcha.** Because `null` means "skip", a production
-HTTP deployment that forgets to set `CMS_ALLOWED_ORIGIN` silently
-disables both gates. The fail-closed path belongs in a `ProdModule`
-that aborts at boot if the env var is missing — out of scope for
-this PR. Tracked under [docs/scope.md](../scope.md) Tier 2.
-
----
-
-## What this layer doesn't do
+### What this layer doesn't do
 
 - **Session cookie flags** (`SameSite=Lax`, `Secure`, `HttpOnly`)
-  belong on the cookie issuer, not on the request gate.
-  Complementary defences — neither replaces the other.
-- **Per-request token rotation.** The synchroniser token persists
-  for the session's lifetime (cleared on logout). Rotating per
-  request would break the round-trip between GET form render and
-  POST submit.
-- **Session id rotation on login / logout.** Belongs with the auth
-  session layer; the CSRF clear is a separate concern from session
-  fixation hardening.
+  belong on the cookie issuer, not on the request gate. The
+  interceptor reads inbound headers; cookie flags are an outbound
+  concern, set by the auth session layer. They're complementary
+  defences — neither replaces the other.
+- **`X-CSRF-Token` header support** for JavaScript-driven writes.
+  The current surface is server-rendered forms, so synchroniser tokens
+  are submitted as hidden fields.
 
 ---
 
 ## Why on Page/Admin, not on App
 
-Both attributes are attached only to `Page/Admin/*::onPost`. The App
-resources (`app://self/article` etc.) stay unguarded:
+`#[SameOrigin]` is attached only to `Page/Admin/*::onPost`. The App
+resources (`app://self/article` etc.) deliberately stay unguarded:
 
 - App resources are routinely invoked from the CLI, from seeds, from
   Page-layer composition — contexts where there is no HTTP request
-  and no headers to check. A gate that assumed HTTP would break
-  those callers.
-- The Page layer is the public surface for browsers. A CSRF attack
-  reaches the server through a browser submitting to a Page
-  resource, not through a process calling
-  `$resource->post('app://self/article')` directly.
+  and no headers to check. An interceptor that assumed an HTTP
+  request would break those callers.
+- The Page layer is the public surface for browsers. Putting the gate
+  there matches the threat: a CSRF attack reaches the server through
+  a browser submitting to a Page resource, not through a process
+  calling `$resource->post('app://self/article')` directly.
 
-`AdminPageCsrfAttributeCoverageTest` fails CI if a new admin
-`onPost` ships without both attributes — closes the "you added a
-new admin POST and forgot the attribute" gap.
+This is the Codex review's most important pre-implementation
+correction — the original sketch put `#[SameOrigin]` on the App
+methods and would have broken every internal use of those resources.
 
 ---
 
 ## Test coverage
 
-- **`tests/Interceptor/SameOriginInterceptorTest`** — 18 unit cases
-  over the algorithm: allowed-origin null short-circuit, every
-  `Sec-Fetch-Site` literal (including unknown reject), `Origin`
-  match / mismatch / canonicalisation (default port, case), malformed
-  / `null`-literal / with-path, `Referer` match / mismatch /
-  malformed, all-signals-missing fail-closed, malformed-allowed-
-  origin configuration fail-closed.
-- **`tests/Interceptor/CsrfTokenInterceptorTest`** — 5 unit cases:
-  allowed-origin-null short-circuit, matching / missing / mismatched
-  token, empty-stored-empty-submitted does not collapse to equality.
-- **`tests/Interceptor/SameOriginWiringTest`,
-  `CsrfTokenWiringTest`** — one end-to-end case each. A cross-site
-  POST (or missing-token POST) through the DI container to
-  `page://self/admin/logout` raises `ForbiddenException`. Proves
-  the attribute matches, the interceptor is bound, and the fake
-  overrides reach the runtime. Other annotated `onPost` methods
-  share the wiring path.
-- **`tests/Interceptor/AdminPageCsrfAttributeCoverageTest`** —
-  reflection-based; walks `Page/Admin/*` for unsafe verbs and
-  asserts both attributes are present. Dynamic data provider, so
-  new admin POSTs are picked up automatically.
+- **`tests-csrf/Http/AllowedOriginTest`,
+  `tests-csrf/Http/CsrfTokenFieldTest`,
+  `tests-csrf/Exception/ForbiddenExceptionTest`** — pure value-class
+  / exception unit tests on the library surface. Migrate alongside
+  the source when `ray/csrf-module` ships.
+- **`tests/Interceptor/SameOriginInterceptorTest`** — 18 cases over
+  the algorithm: allowed-origin null short-circuit, every
+  `Sec-Fetch-Site` literal (including the explicit reject for
+  unknown values), `Origin` match / mismatch / canonicalisation
+  (default port, case), `Origin` malformed / `null`-literal /
+  with-path, `Referer` match / mismatch / malformed,
+  all-signals-missing fail-closed, malformed-allowed-origin
+  configuration fail-closed.
+- **`tests/Interceptor/SameOriginWiringTest`** — one end-to-end
+  case: a cross-site POST through the DI container (with
+  `#[SameOrigin]`-annotated `Page/Admin/Logout::onPost`) raises
+  `ForbiddenException`. Proves the attribute matches, the
+  interceptor is bound, and the fake overrides reach the runtime.
+  Other annotated `onPost` methods share the wiring path, so one
+  case is enough.
 
-The unit / wiring split is intentional: unit tests are hermetic and
-fast; the wiring tests are the safety net that catches a stale
-module binding before CI does.
+The unit and wiring split is intentional: unit tests are hermetic and
+fast; the wiring test is the safety net that catches a stale module
+binding before CI does.
+
+---
+
+## Library packaging
+
+`src-csrf/` (namespace `Ray\Csrf`) and its companion `tests-csrf/`
+hold the CSRF stack as a self-contained upstream candidate. Nothing
+in `src-csrf/` references `MyVendor\Cms` — the library depends only
+on `ray/aop`, `ray/di`, and `bear/resource`.
+
+When `ray/csrf-module` is published (target: koriym/ray.csrf or
+similar Ray.* vendor), migration is:
+
+1. Delete `src-csrf/` and `tests-csrf/`.
+2. Remove `Ray\\Csrf\\` from `composer.json` `autoload` and
+   `autoload-dev`.
+3. Remove `src-csrf` / `tests-csrf` from `phpcs.xml`, `phpstan.neon`,
+   `psalm.xml`, the `phpmd` composer script, and the PHPUnit
+   `<source>` section. Drop the `csrf` testsuite from
+   `phpunit.xml.dist`.
+4. Add `ray/csrf-module` to `composer.json` `require`.
+5. Clear the DI cache: `rm -rf var/tmp/*-hal-app var/tmp/*-hal-api-app`.
+
+Consumer `use` statements (already addressing `Ray\Csrf\…`) stay
+unchanged. See `src-csrf/README.md` for the surface and rationale.
 
 ---
 
 ## Out of scope
 
-- `X-CSRF-Token` request header support — no JS-driven write surface
-  yet; the body-only path is sufficient for the four annotated POSTs.
 - `ProdModule` boot-time fail-closed when `CMS_ALLOWED_ORIGIN` is
-  unset — see [docs/scope.md](../scope.md) Tier 2.
+  unset — see `docs/scope.md` Tier 2.
+- `X-CSRF-Token` header support for future JavaScript-driven writes.
 - Rendering 403 as a styled HTML error page through `HtmlModule`'s
-  error pipeline. The interceptors throw `ForbiddenException`; the
+  error pipeline. The interceptor throws `ForbiddenException`; the
   default error pipeline turns that into a 4xx response. A polished
   HTML 403 page belongs with the broader Page-layer error UX work.
-- Extracting the interceptors into a `ray/csrf-module` package —
-  waits until the in-app shape settles.
+- Extracting the interceptor into a `ray/csrf-module` package. Per
+  the Codex review, package extraction waits until the in-app
+  shape settles.

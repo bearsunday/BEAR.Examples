@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms\Interceptor;
+namespace Ray\Csrf\Interceptor;
 
 use BEAR\Resource\Exception\BadRequestException;
-use MyVendor\Cms\Exception\ForbiddenException;
-use MyVendor\Cms\Http\AllowedOrigin;
-use MyVendor\Cms\Http\RequestOriginInterface;
 use Override;
 use Ray\Aop\MethodInterceptor;
 use Ray\Aop\MethodInvocation;
+use Ray\Csrf\Exception\ForbiddenException;
+use Ray\Csrf\Http\AllowedOrigin;
+use Ray\Csrf\Http\RequestOriginInterface;
 
 use function array_intersect_key;
 use function array_key_exists;
@@ -19,7 +19,7 @@ use function parse_url;
 use function sprintf;
 use function strtolower;
 
-/** Same-origin gate. See `docs/journal/csrf-design.md` for the algorithm. */
+/** Same-origin gate. See the consumer's CSRF design notes for the algorithm. */
 final readonly class SameOriginInterceptor implements MethodInterceptor
 {
     private const array UNSAFE_FETCH_SITES = ['cross-site', 'same-site', 'none'];

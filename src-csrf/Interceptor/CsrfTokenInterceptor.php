@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms\Interceptor;
+namespace Ray\Csrf\Interceptor;
 
-use MyVendor\Cms\Auth\CsrfTokenInterface;
-use MyVendor\Cms\Exception\ForbiddenException;
-use MyVendor\Cms\Http\AllowedOrigin;
-use MyVendor\Cms\Http\RequestBodyTokenInterface;
 use Override;
 use Ray\Aop\MethodInterceptor;
 use Ray\Aop\MethodInvocation;
+use Ray\Csrf\CsrfTokenInterface;
+use Ray\Csrf\Exception\ForbiddenException;
+use Ray\Csrf\Http\AllowedOrigin;
+use Ray\Csrf\Http\RequestBodyTokenInterface;
 
-/** Synchroniser-token gate. See `docs/journal/csrf-design.md`. */
+/** Synchroniser-token gate. See the consumer's CSRF design notes. */
 final readonly class CsrfTokenInterceptor implements MethodInterceptor
 {
     public function __construct(

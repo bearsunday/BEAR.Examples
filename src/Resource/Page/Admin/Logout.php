@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace MyVendor\Cms\Resource\Page\Admin;
 
 use BEAR\Resource\ResourceObject;
-use MyVendor\Cms\Attribute\CsrfToken;
-use MyVendor\Cms\Attribute\SameOrigin;
 use MyVendor\Cms\Auth\AuthSessionInterface;
+use Ray\Csrf\Attribute\CsrfToken;
+use Ray\Csrf\Attribute\SameOrigin;
 
 /** @property array{message?: string} $body */
 class Logout extends ResourceObject

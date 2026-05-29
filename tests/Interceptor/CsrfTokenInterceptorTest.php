@@ -4,12 +4,13 @@ declare(strict_types=1);
 
 namespace MyVendor\Cms\Interceptor;
 
-use MyVendor\Cms\Exception\ForbiddenException;
 use MyVendor\Cms\Fake\FakeCsrfToken;
 use MyVendor\Cms\Fake\FakeRequestBodyToken;
-use MyVendor\Cms\Http\AllowedOrigin;
 use PHPUnit\Framework\TestCase;
 use Ray\Aop\ReflectiveMethodInvocation;
+use Ray\Csrf\Exception\ForbiddenException;
+use Ray\Csrf\Http\AllowedOrigin;
+use Ray\Csrf\Interceptor\CsrfTokenInterceptor;
 
 /**
  * Unit tests for `CsrfTokenInterceptor` — covers the verification

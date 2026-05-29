@@ -23,10 +23,14 @@
     <testsuite name="interceptor">
       <directory>tests/Interceptor</directory>
     </testsuite>
+    <testsuite name="csrf">
+      <directory>tests-csrf</directory>
+    </testsuite>
   </testsuites>
   <source>
     <include>
       <directory suffix=".php">src</directory>
+      <directory suffix=".php">src-csrf</directory>
     </include>
     <exclude>
       <file>src/Bootstrap.php</file>

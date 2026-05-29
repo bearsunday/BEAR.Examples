@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace MyVendor\Cms\Fake;
 
-use MyVendor\Cms\Auth\CsrfTokenInterface;
 use Override;
+use Ray\Csrf\CsrfTokenInterface;
 
 use function hash_equals;
 
