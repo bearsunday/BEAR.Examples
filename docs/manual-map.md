@@ -128,7 +128,7 @@ implemented, deferred, and by-design items.
 
 | Manual | Concept | Status | Code or doc anchor |
 |---|---|---|---|
-| [cli.md](https://bearsunday.github.io/manuals/1.0/en/cli.html) | CLI runner via `#[Cli]` | Partial | [bin/cli/article-show](../bin/cli/article-show), [bin/cli/article-list](../bin/cli/article-list); write-side CLI is deferred as D4 |
+| [cli.md](https://bearsunday.github.io/manuals/1.0/en/cli.html) | CLI runner via `#[Cli]` | Partial | [bin/cli/article-show](../bin/cli/article-show), [bin/cli/article-list](../bin/cli/article-list); wider CLI generation is intentionally out of scope (see scope.md "By design") |
 | [coding-guide.md](https://bearsunday.github.io/manuals/1.0/en/coding-guide.html) | Coding standards | Done | [docs/conventions.md](conventions.md), `composer cs`, `composer sa` |
 | [types.md](https://bearsunday.github.io/manuals/1.0/en/types.html) | Strict resource and DI types | Done | `final readonly` entities in [src/Entity](../src/Entity), typed inputs in [src/Input](../src/Input) |
 | [types-utility.md](https://bearsunday.github.io/manuals/1.0/en/types-utility.html) | PHPDoc utility types | Done | `array{...}` shapes in [src/Resource/App/Variations](../src/Resource/App/Variations) and query interfaces |
@@ -173,10 +173,9 @@ highest-value gaps are:
 
 1. Auth boundary for `Page/Admin/*`: typed `UserInterface` /
    `AdminUserInterface`, per-record authorization, and CSRF.
-2. Write-side `#[Cli]` commands for create/update/delete flows.
-3. PSR-7 `ServerRequestInterface` injection example.
-4. Production `ProdModule` and deployment tuning notes.
-5. Redis cache adapter binding for the existing cache showcase.
-6. Real-CMS patterns not deeply covered by the manual: file upload, resource
+2. PSR-7 `ServerRequestInterface` injection example.
+3. Production `ProdModule` and deployment tuning notes.
+4. Redis cache adapter binding for the existing cache showcase.
+5. Real-CMS patterns not deeply covered by the manual: file upload, resource
    crawl, N+1 resolution, transaction wrapping, exception-to-HTTP mapping,
    search, and structured logging.
