@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/bear-cms/authAuthorization",
+  "title": "AuthAuthorization",
+  "description": "GET /auth response. URL where the client or browser starts the OAuth authorization step.",
+  "type": "object",
+  "required": ["authorizationUrl"],
+  "properties": {
+    "authorizationUrl": {
+      "type": "string",
+      "format": "uri"
+    }
+  }
+}

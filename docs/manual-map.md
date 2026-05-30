@@ -5,9 +5,8 @@ written for humans and AI agents that start from a manual chapter and need to
 find the executable example, or confirm that the topic is intentionally outside
 this repository's scope.
 
-GitHub issue [#33](https://github.com/bearsunday/MyVendor.Cms/issues/33)
-tracks the live roadmap. `docs/scope.md` remains the source of truth for
-implemented, deferred, and by-design items.
+This document maps the manual chapter-by-chapter. `docs/scope.md` remains the
+source of truth for implemented, deferred, and by-design items.
 
 ## Status Legend
 
@@ -27,7 +26,7 @@ implemented, deferred, and by-design items.
 | [1page.md](https://bearsunday.github.io/manuals/1.0/en/1page.html) | Complete manual in one page | N/A | Aggregates the manual; use this map for repository anchors |
 | [quick-start.md](https://bearsunday.github.io/manuals/1.0/en/quick-start.html) | First application setup | Partial | [README.md](../README.md#quick-start), [README.md](../README.md#setup) |
 | [tutorial.md](https://bearsunday.github.io/manuals/1.0/en/tutorial.html) | Resource application tutorial | Done | [src/Resource/App/Article.php](../src/Resource/App/Article.php), [tests/Resource/App/ArticleTest.php](../tests/Resource/App/ArticleTest.php) |
-| [tutorial2.md](https://bearsunday.github.io/manuals/1.0/en/tutorial2.html) | Hypermedia, forms, DI | Partial | Hypermedia is done; auth/CSRF form boundary is deferred in [scope.md](scope.md#deferred--not-built) |
+| [tutorial2.md](https://bearsunday.github.io/manuals/1.0/en/tutorial2.html) | Hypermedia, forms, DI | Partial | Hypermedia plus admin auth/CSRF form handling are demonstrated; remaining gaps are tracked in [scope.md](scope.md#deferred--not-built) |
 | [tutorial3.md](https://bearsunday.github.io/manuals/1.0/en/tutorial3.html) | CLI application tutorial | Partial | [bin/cli/article-show](../bin/cli/article-show), [bin/cli/article-list](../bin/cli/article-list) |
 | [setup.md](https://bearsunday.github.io/manuals/1.0/en/setup.html) | Environment setup | Done | [README.md](../README.md#requirements), [README.md](../README.md#setup) |
 | [setup-reference.md](https://bearsunday.github.io/manuals/1.0/en/setup-reference.html) | Detailed setup reference | Partial | Local project setup only; no full framework setup mirror |
@@ -122,7 +121,7 @@ implemented, deferred, and by-design items.
 
 | Manual | Concept | Status | Code or doc anchor |
 |---|---|---|---|
-| [test.md](https://bearsunday.github.io/manuals/1.0/en/test.html) | Resource testing and DI contexts | Done | [tests/AbstractAppTestCase.php](../tests/AbstractAppTestCase.php), [tests/Fake/FakeSqlQuery.php](../tests/Fake/FakeSqlQuery.php), [tests/Hypermedia](../tests/Hypermedia), [tests/Smoke](../tests/Smoke), [tests/Integration](../tests/Integration) |
+| [test.md](https://bearsunday.github.io/manuals/1.0/en/test.html) | Resource testing and DI contexts | Done | [tests/AbstractAppTestCase.php](../tests/AbstractAppTestCase.php), [tests/Fake/FakeSqlQuery.php](../tests/Fake/FakeSqlQuery.php), [tests/Smoke/ResourceSmokeTest.php](../tests/Smoke/ResourceSmokeTest.php), [tests/Hypermedia](../tests/Hypermedia), [tests/Integration](../tests/Integration) |
 
 ## Tooling and Developer Experience
 
@@ -167,15 +166,12 @@ single manual chapter.
 
 ## Roadmap Summary
 
-The detailed roadmap lives in [scope.md](scope.md#deferred--not-built) and
-issue [#33](https://github.com/bearsunday/MyVendor.Cms/issues/33). The next
+The detailed roadmap lives in [scope.md](scope.md#deferred--not-built). The next
 highest-value gaps are:
 
-1. Auth boundary for `Page/Admin/*`: typed `UserInterface` /
-   `AdminUserInterface`, per-record authorization, and CSRF.
-2. PSR-7 `ServerRequestInterface` injection example.
-3. Production `ProdModule` and deployment tuning notes.
-4. Redis cache adapter binding for the existing cache showcase.
-5. Real-CMS patterns not deeply covered by the manual: file upload, resource
+1. PSR-7 `ServerRequestInterface` injection example.
+2. Production `ProdModule` and deployment tuning notes.
+3. Redis cache adapter binding for the existing cache showcase.
+4. Real-CMS patterns not deeply covered by the manual: file upload, resource
    crawl, N+1 resolution, transaction wrapping, exception-to-HTTP mapping,
    search, and structured logging.

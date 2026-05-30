@@ -248,7 +248,7 @@
 
   <td><a href="alps.html#publishedAt" class="param alps-param" title="Published At">publishedAt</a></td>
   <td><span class="badge type-string">string</span></td>
-  <td class="param-desc">Published At</td>
+  <td class="param-desc">Optional override. When omitted or null, ArticlePublish supplies the current UTC timestamp before invoking ArticleCommandInterface::publish().</td>
   <td><div class="extra-info">
       <span class="badge format">format: date-time</span>
       <span class="badge constraint">errorMessage: {&quot;type&quot;:&quot;Published date must be a valid ISO 8601 date-time.&quot;,&quot;format&quot;:&quot;Published date must be a valid ISO 8601 date-time.&quot;}</span>
@@ -327,7 +327,7 @@
   <td></td>
   <td></td>
   <td></td>
-  <td></td>
+  <td><a href="#AuthAuthorization" class="schema-link">AuthAuthorization</a></td>
 </tr>
 <tr>
 
@@ -1187,6 +1187,25 @@ on completion, so the next GET re-renders against the updated relation.</div><di
       <span class="badge href">href: app://self/article{?id}</span>
     </div>
   </td>
+</tr>
+
+</tbody>
+</table>
+</div>
+<div class="object-section" id="AuthAuthorization">
+<h3 class="object-name"><a href="schemas/auth_authorization.json" class="schema-file-link" title="JSON Schema">📄</a>AuthAuthorization</h3>
+<table>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Description</th><th>Meta</th></tr>
+</thead>
+<tbody>
+<tr>
+  <td><span class="prop-name">authorizationUrl</span></td>
+  <td><span class="badge type-string">string</span></td>
+  <td class="param-desc"></td>
+  <td><div class="extra-info">
+      <span class="badge format">format: uri</span>
+    </div></td>
 </tr>
 
 </tbody>
