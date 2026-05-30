@@ -187,7 +187,8 @@
                                         "type": "integer"
                                     },
                                     "publishedAt": {
-                                        "type": "string"
+                                        "type": "string",
+                                        "description": "Optional override. When omitted or null, ArticlePublish supplies the current UTC timestamp before invoking ArticleCommandInterface::publish()."
                                     }
                                 },
                                 "required": [
@@ -288,7 +289,14 @@
                 "description": "GET  app://self/auth        \u2192 returns the authorization URL the client should redirect to\nPOST app://self/auth        \u2192 exchanges {code, state} for an AuthenticatedUser\n\nThe bound AuthInterface decides the backend (Google in production,\nFakeAuthProvider in test / fake-hal-api-app).",
                 "responses": {
                     "200": {
-                        "description": "Successful response"
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AuthAuthorization"
+                                }
+                            }
+                        }
                     }
                 }
             },
@@ -1363,6 +1371,20 @@
                     "totalCount": {
                         "type": "integer",
                         "minimum": 0
+                    }
+                }
+            },
+            "AuthAuthorization": {
+                "title": "AuthAuthorization",
+                "description": "GET /auth response. URL where the client or browser starts the OAuth authorization step.",
+                "type": "object",
+                "required": [
+                    "authorizationUrl"
+                ],
+                "properties": {
+                    "authorizationUrl": {
+                        "type": "string",
+                        "format": "uri"
                     }
                 }
             },

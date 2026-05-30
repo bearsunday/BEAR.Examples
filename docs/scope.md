@@ -68,7 +68,7 @@ variation that demonstrates `BEAR.Streamer` without changing canonical
 
 | Layer | Mechanism | Coverage |
 |-------|-----------|----------|
-| Response body | `#[JsonSchema(schema: '...')]` | All read resources (GET on `Article`, `Articles`, `Author`, `Category`, `Categories`, `Tag`, `Tags`, `Media`); `Auth::onPost` (separate `auth_response.json` for string subject id). `Auth::onGet` and DELETE methods return without body validation |
+| Response body | `#[JsonSchema(schema: '...')]` | Canonical App GET resources (`Article`, `Articles`, `Auth`, `Author`, `Category`, `Categories`, `Tag`, `Tags`, `Media`, and the cache showcase) plus `Auth::onPost` (separate `auth_response.json` for string subject id). DELETE methods return without body validation |
 | Request params | `#[JsonSchema(params: '...')]` | POST and PUT on the resources above (DELETE takes only `int $id`, no params schema) |
 | Input DTO | `#[Input]` + `Ray\InputQuery` | `ArticleCreateInput`, `ArticleUpdateInput`, `AuthExchangeInput`. Author / Category / Tag / Media remain scalar by intentional contrast — see "By design" |
 | Native array DTO inputs | `array` / `array|null` via Ray.InputQuery 1.1 → malformed shapes become `ParameterException` (→ 400) | See `conventions.md` §4 "Native array DTO inputs" |
@@ -104,12 +104,12 @@ Note: `Page/Admin/*` is now behind typed `AdminUserInterface` injection, with CS
 | `tests/Resource/App` | App API | `FakeSqlQuery` (no DB) |
 | `tests/Resource/Page` | Page HTML | `FakeSqlQuery` via `html-test-hal-api-app` |
 | `tests/Hypermedia` | HAL link/embed contract | Fake |
-| `tests/Smoke` | Lifecycle smoke | Fake |
+| `tests/Smoke` | Lifecycle, SQL, MediaQuery, and Resource GET/schema smoke | Fake |
 | `tests/Entity` | Entity invariants | n/a |
 | `tests/Integration/<Entity>MySQLTest.php` | 4 entities (Article, Author, Category, Tag) | Real MySQL (auto-skips when unreachable) |
-| `tests/params` | JSON-Schema params validation | n/a |
+| `tests/params` | SQL, query, resource, and JSON-Schema params validation | n/a |
 
-`composer test` runs the full suite. `composer demo` is a 7-section walkthrough that auto-detects malt → docker → sqlite for the real-DB section.
+`composer test` runs the full suite. `tests/Smoke/ResourceSmokeTest.php` walks canonical GET-able App resources and validates their rendered output against the declared JSON Schema using fake fixture arguments from `tests/params/resource_args.php`. `composer demo` is a 7-section walkthrough that auto-detects malt → docker → sqlite for the real-DB section.
 
 ### CLI & tooling
 

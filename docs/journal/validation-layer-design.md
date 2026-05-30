@@ -168,8 +168,8 @@ block.
    on the parent; we keep the schema true to the validator's model.
 3. `errorMessage` is non-normative JSON Schema (sourced from
    `ajv-errors`); other validators ignore it. That's the intended
-   trade-off — schemas are still portable, and only this codebase's
-   handler reads the overrides.
+   trade-off — schemas are still portable, and BEAR.Resource resolves
+   the overrides before this app handler receives rendered messages.
 4. Don't put `errorMessage` everywhere preemptively. Add it when the
    default message reads awkwardly to a user or when the wording
    needs to match the admin's vocabulary (e.g. "Status must be

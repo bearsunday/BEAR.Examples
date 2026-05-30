@@ -28,6 +28,7 @@ class Auth extends ResourceObject
     ) {
     }
 
+    #[JsonSchema('auth_authorization.json')]
     public function onGet(): static
     {
         $this->body = [

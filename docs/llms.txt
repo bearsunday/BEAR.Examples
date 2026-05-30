@@ -169,13 +169,14 @@ API Document
 |--------|------------|-------|
 | GET | id* | - |
 
-## Responses (12)
+## Responses (13)
 
 | Response | Schema | Properties |
 |----------|--------|------------|
 | Article | article.json | id, slug, title, body, excerpt, status, publishedAt, authorId, categoryId |
 | Write_response | write_response.json | id, slug, email, filename, status, publishedAt, message |
 | ArticleList | articleList.json | items, page, perPage, count, totalCount |
+| Auth_authorization | auth_authorization.json | authorizationUrl |
 | Auth_response | auth_response.json | id, email, name, message, reason |
 | Author | author.json | id, name, email, bio |
 | CategoryList | categoryList.json | items, totalCount |
