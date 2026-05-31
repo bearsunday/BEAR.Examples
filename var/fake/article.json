@@ -552,9 +552,9 @@
     {
         "id": 51,
         "slug": "xss-regression",
-        "title": "<script>alert(\"xss\")</script>Bad",
+        "title": "<script>alert(\"xss\")<\/script>Bad",
         "body": "Plain text body for XSS regression test.",
-        "excerpt": "Excerpt with <em>html</em> and & ampersand.",
+        "excerpt": "Excerpt with <em>html<\/em> and & ampersand.",
         "status": "draft",
         "publishedAt": "2020-01-01T00:00:00Z",
         "authorId": 1,

@@ -7,6 +7,7 @@ namespace MyVendor\Cms\Resource\Page\Admin;
 use BEAR\Resource\Code;
 use BEAR\Resource\ResourceInterface;
 use BEAR\Resource\ResourceObject;
+use MyVendor\Cms\Auth\AdminGuard;
 use MyVendor\Cms\Auth\AdminUserInterface;
 use MyVendor\Cms\Entity\Article;
 use MyVendor\Cms\Query\ArticleQueryInterface;
@@ -46,7 +47,7 @@ class ArticleConfirm extends ResourceObject
 {
     public function __construct(
         private readonly ResourceInterface $resource,
-        private readonly AdminUserInterface $admin,
+        private readonly AdminGuard $admin,
         private readonly ArticleQueryInterface $article,
         private readonly AuthorQueryInterface $author,
         private readonly CategoryQueryInterface $category,
@@ -56,6 +57,7 @@ class ArticleConfirm extends ResourceObject
 
     public function onGet(int $id): static
     {
+        $admin = $this->admin->user();
         $article = $this->article->item($id);
         if ($article === null) {
             $this->code = 404;
@@ -64,7 +66,7 @@ class ArticleConfirm extends ResourceObject
             return $this;
         }
 
-        if (! $this->owns($article)) {
+        if (! $this->owns($article, $admin)) {
             return $this->forbidden();
         }
 
@@ -77,6 +79,7 @@ class ArticleConfirm extends ResourceObject
     #[CsrfToken]
     public function onPost(int $id): static
     {
+        $admin = $this->admin->user();
         $article = $this->article->item($id);
         if ($article === null) {
             $this->code = 404;
@@ -85,7 +88,7 @@ class ArticleConfirm extends ResourceObject
             return $this;
         }
 
-        if (! $this->owns($article)) {
+        if (! $this->owns($article, $admin)) {
             return $this->forbidden();
         }
 
@@ -121,9 +124,9 @@ class ArticleConfirm extends ResourceObject
         return $this;
     }
 
-    private function owns(Article $article): bool
+    private function owns(Article $article, AdminUserInterface $admin): bool
     {
-        return $article->authorId === $this->admin->authorId();
+        return $article->authorId === $admin->authorId();
     }
 
     private function forbidden(): static

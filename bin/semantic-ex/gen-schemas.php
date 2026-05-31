@@ -98,6 +98,10 @@ function intFieldSchema(array $records, string $key, string $description, bool $
 }
 
 $articles = json_decode(file_get_contents($fake . '/article.json'), true);
+$articles = array_values(array_filter(
+    $articles,
+    static fn (array $article): bool => ($article['slug'] ?? null) !== 'xss-regression',
+));
 $categories = json_decode(file_get_contents($fake . '/category.json'), true);
 $tags = json_decode(file_get_contents($fake . '/tag.json'), true);
 $authors = json_decode(file_get_contents($fake . '/author.json'), true);
@@ -129,7 +133,7 @@ $articleListSchema = [
     'title' => 'ArticleList',
     'description' => 'Paginated list of article summaries',
     'type' => 'object',
-    'required' => ['items', 'page', 'perPage', 'count'],
+    'required' => ['items', 'page', 'perPage', 'count', 'totalCount'],
     'properties' => [
         'items' => [
             'type' => 'array',
