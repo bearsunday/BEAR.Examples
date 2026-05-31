@@ -8,6 +8,7 @@ use BEAR\Resource\Code;
 use BEAR\Resource\Exception\ParameterException;
 use BEAR\Resource\ResourceInterface;
 use BEAR\Resource\ResourceObject;
+use MyVendor\Cms\Auth\AdminGuard;
 use MyVendor\Cms\Auth\AdminUserInterface;
 use MyVendor\Cms\Entity\Article as ArticleEntity;
 use MyVendor\Cms\Entity\Author;
@@ -43,7 +44,7 @@ class Article extends ResourceObject
 {
     public function __construct(
         private readonly ResourceInterface $resource,
-        private readonly AdminUserInterface $admin,
+        private readonly AdminGuard $admin,
         private readonly ArticleQueryInterface $article,
         private readonly AuthorQueryInterface $author,
         private readonly CategoryQueryInterface $category,
@@ -53,6 +54,7 @@ class Article extends ResourceObject
 
     public function onGet(int|null $id = null, string|null $saved = null): static
     {
+        $admin = $this->admin->user();
         $article = $id === null ? null : $this->article->item($id);
         if ($id !== null && $article === null) {
             $this->code = 404;
@@ -61,7 +63,7 @@ class Article extends ResourceObject
             return $this;
         }
 
-        if ($article !== null && ! $this->owns($article)) {
+        if ($article !== null && ! $this->owns($article, $admin)) {
             return $this->forbidden();
         }
 
@@ -85,10 +87,11 @@ class Article extends ResourceObject
         mixed $publishedAt = null,
         mixed $tagIds = [],
     ): static {
+        $admin = $this->admin->user();
         $articleId = $this->intOrNull($id);
         $article = null;
         if ($articleId === null) {
-            $authorId = $this->admin->authorId();
+            $authorId = $admin->authorId();
         }
 
         if ($articleId !== null) {
@@ -100,7 +103,7 @@ class Article extends ResourceObject
                 return $this;
             }
 
-            if (! $this->owns($article)) {
+            if (! $this->owns($article, $admin)) {
                 return $this->forbidden();
             }
         }
@@ -309,9 +312,9 @@ class Article extends ResourceObject
         $this->body = [];
     }
 
-    private function owns(ArticleEntity $article): bool
+    private function owns(ArticleEntity $article, AdminUserInterface $admin): bool
     {
-        return $article->authorId === $this->admin->authorId();
+        return $article->authorId === $admin->authorId();
     }
 
     private function forbidden(): static

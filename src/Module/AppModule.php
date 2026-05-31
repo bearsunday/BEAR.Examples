@@ -11,6 +11,7 @@ use BEAR\Resource\Module\JsonSchemaModule;
 use Koriym\EnvJson\EnvJson;
 use League\CommonMark\CommonMarkConverter;
 use League\OAuth2\Client\Provider\Google;
+use MyVendor\Cms\Auth\AdminGuard;
 use MyVendor\Cms\Auth\AdminUserInterface;
 use MyVendor\Cms\Auth\AuthInterface;
 use MyVendor\Cms\Auth\AuthSessionInterface;
@@ -89,6 +90,7 @@ final class AppModule extends AbstractAppModule
         $this->bind(AuthSessionInterface::class)->to(NativeAuthSession::class)->in(Scope::SINGLETON);
         $this->bind(UserInterface::class)->toProvider(CurrentUserProvider::class);
         $this->bind(AdminUserInterface::class)->toProvider(AdminUserProvider::class);
+        $this->bind(AdminGuard::class);
 
         // Cross-origin defence for unsafe Page/Admin verbs: same-origin
         // gate (#[SameOrigin]) and synchroniser-token gate (#[CsrfToken]).

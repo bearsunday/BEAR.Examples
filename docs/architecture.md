@@ -77,8 +77,8 @@ as-is. The additions:
 ## What was intentionally *not* built
 
 - A full production admin security model. `Page/Admin/*` is protected by
-  typed `UserInterface` / `AdminUserInterface` injection and session-backed
-  OAuth login, but CSRF protection and richer roles beyond author-scoped
+  `AdminGuard`, `UserInterface` / `AdminUserInterface`, session-backed OAuth
+  login, and CSRF form protection, but richer roles beyond author-scoped
   ownership are outside this reference slice.
 - JavaScript-enhanced admin interactions.
 - Per-query-string cache invalidation. `#[CacheableResponse]` +

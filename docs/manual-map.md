@@ -81,7 +81,7 @@ source of truth for implemented, deferred, and by-design items.
 | [html-twig-v1.md](https://bearsunday.github.io/manuals/1.0/en/html-twig-v1.html) | Twig v1 | By design | Qiq is the chosen renderer; see [scope.md](scope.md#by-design-intentional-omissions) |
 | [html-twig-v2.md](https://bearsunday.github.io/manuals/1.0/en/html-twig-v2.html) | Twig v2 | By design | Same as above |
 | [js-ui.md](https://bearsunday.github.io/manuals/1.0/en/js-ui.html) | JavaScript SSR | By design | JS-enhanced admin is out of scope; see [scope.md](scope.md#by-design-intentional-omissions) |
-| [form.md](https://bearsunday.github.io/manuals/1.0/en/form.html) | Form validation and CSRF | Partial | Form POST/PRG exists in [src/Resource/Page/Admin/Article.php](../src/Resource/Page/Admin/Article.php), but `Ray\WebFormModule` / `#[FormValidation]` and CSRF are deferred |
+| [form.md](https://bearsunday.github.io/manuals/1.0/en/form.html) | Form validation and CSRF | Partial | Form POST/PRG and CSRF are implemented for admin forms; `Ray\WebFormModule` / `#[FormValidation]` remain deferred |
 
 ## Database
 

@@ -76,10 +76,10 @@ BEAR.Sunday の `prod-hal-api-app` / `test-hal-api-app` 規約はそのまま使
 
 ## 意図的に *作らなかった* もの
 
-- 本番向けの完全な admin security model。`Page/Admin/*` は型付きの
-  `UserInterface` / `AdminUserInterface` 注入と session-backed OAuth login で
-  保護済みですが、CSRF protection や author-scoped ownership を超える role model は
-  この reference slice の外です。
+- 本番向けの完全な admin security model。`Page/Admin/*` は `AdminGuard`、
+  `UserInterface` / `AdminUserInterface`、session-backed OAuth login、
+  CSRF form protection で保護済みですが、author-scoped ownership を超える
+  role model はこの reference slice の外です。
 - JavaScript で拡張した管理操作
 - query-string 別のキャッシュ無効化。`#[CacheableResponse]` + `#[Purge]` は
   list 系の read/write に配線済み（scope.md D1 参照）。`articles?categoryId=3`

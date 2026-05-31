@@ -238,6 +238,20 @@ foreach ($articles as $a) {
     }
 }
 
+$articleListArticles = $articles;
+// Supplemental Page/Qiq escaping fixture; not part of the 50-record semantic corpus.
+$articles[] = [
+    'id' => 51,
+    'slug' => 'xss-regression',
+    'title' => '<script>alert("xss")</script>Bad',
+    'body' => 'Plain text body for XSS regression test.',
+    'excerpt' => 'Excerpt with <em>html</em> and & ampersand.',
+    'status' => 'draft',
+    'publishedAt' => '2020-01-01T00:00:00Z',
+    'authorId' => 1,
+    'categoryId' => 1,
+];
+
 // -------- Media --------
 $mimeTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/svg+xml'];
 $altSamples = [
@@ -288,10 +302,10 @@ $write('category.json', $categories);
 $write('tag.json', $tags);
 $write('article.json', $articles);
 $write('articleList.json', [
-    'items' => array_map(static fn ($a) => array_diff_key($a, ['body' => true]), array_slice($articles, 0, 20)),
+    'items' => array_map(static fn ($a) => array_diff_key($a, ['body' => true]), array_slice($articleListArticles, 0, 20)),
     'page' => 1,
     'perPage' => 20,
-    'totalCount' => count($articles),
+    'totalCount' => count($articleListArticles),
 ]);
 $write('articleTag.json', $articleTags);
 $write('categoryList.json', [
@@ -305,5 +319,5 @@ $write('media.json', $media);
 
 printf(
     "authors=%d categories=%d tags=%d articles=%d articleTags=%d media=%d\n",
-    count($authors), count($categories), count($tags), count($articles), count($articleTags), count($media),
+    count($authors), count($categories), count($tags), count($articleListArticles), count($articleTags), count($media),
 );
