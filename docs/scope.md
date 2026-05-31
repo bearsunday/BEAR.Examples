@@ -106,7 +106,7 @@ Note: `Page/Admin/*` is now behind an `AdminGuard` check backed by `UserInterfac
 | `tests/Hypermedia` | HAL link/embed contract | Fake |
 | `tests/Smoke` | Lifecycle, SQL, MediaQuery, and Resource GET/schema smoke | Fake |
 | `tests/Entity` | Entity invariants | n/a |
-| `tests/Integration/<Entity>MySQLTest.php` | 4 entities (Article, Author, Category, Tag) | Real MySQL (auto-skips when unreachable) |
+| `tests/Integration/<Entity>MySQLTest.php` | 5 entities (Article, Author, Category, Tag, Media) | Real MySQL (auto-skips when unreachable) |
 | `tests/params` | SQL, query, resource, and JSON-Schema params validation | n/a |
 
 `composer test` runs the full suite. `tests/Smoke/ResourceSmokeTest.php` walks canonical GET-able App resources and validates their rendered output against the declared JSON Schema using fake fixture arguments from `tests/params/resource_args.php`. `composer demo` is a 7-section walkthrough that auto-detects malt → docker → sqlite for the real-DB section.
@@ -192,7 +192,6 @@ Drawn from `architecture.md` "What was intentionally not built", `journal/handof
 | D2 | ~~Auth boundary for `Page/Admin/*`~~ | Implemented with `UserInterface` / `AdminUserInterface` providers, `AdminGuard`, session-backed OAuth login, and author-scoped admin ownership | CSRF protection now landed via the `Ray\Csrf` `#[SameOrigin]` + `#[CsrfToken]` interceptors on admin posts |
 | D3 | Async Docker CI smoke | Runtime containers exist, but CI does not yet build ext-parallel and run `composer parallel:demo` | Add a focused GitHub Actions job once image build time and caching are acceptable |
 | D5 | Real Google OAuth integration test | Needs creds + callback URL | env-gated test that skips unless `GOOGLE_CLIENT_ID` is set |
-| D6 | MySQL integration coverage for `Media` | 4 of 5 entities covered (`tests/Integration/`) | Add `MediaMySQLTest` mirroring the existing pattern |
 | D7 | `Articles` collection `totalCount` | Implemented via MediaQuery Page `total` | Keep schema/docs in sync when list shape changes |
 | D8 | `#[Pager]` / `PagesInterface` adoption decision | Adopted for Article collection reads; fake uses Pagerfanta `ArrayAdapter` | Extend the same pattern if other collections need paging |
 | D9 | phpstan baseline (2 entries) | Upstream `SqlQueryInterface` return-type narrows; OAuth provider arg-type widening | Wait for upstream relaxation, then drop entries |
