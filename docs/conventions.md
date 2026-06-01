@@ -281,6 +281,20 @@ Page object's associative `data` rows through `ArticleFactory`, and uses
 the same contract with Pagerfanta's `ArrayAdapter`, so tests exercise the
 same pagination shape without requiring PDO-backed pages.
 
+### Article visibility and status filters
+
+Keep the App resource and Page resources deliberately different:
+
+- `app://self/articles` is an API collection. Its `status` query parameter is
+  optional; omitting it returns all lifecycle states, while `status=draft` and
+  `status=published` are explicit API filters.
+- Public `page://self/articlelist` is reader-facing HTML. It always queries
+  with `status=published`; caller-supplied `status=draft` must not expose draft
+  rows.
+- `page://self/admin/articlelist` is editor-facing HTML. It may expose all,
+  draft, or published rows, but only within the authenticated author's ownership
+  boundary.
+
 ### Input shape & validation
 
 The codebase deliberately mixes two input shapes — DTO at the Resource

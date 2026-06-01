@@ -30,4 +30,9 @@ final class SqlDateTimeTest extends TestCase
     {
         $this->assertSame('2026-06-01 04:43:50', $this->sqlDateTime->fromRfc3339('2026-06-01T13:43:50+09:00'));
     }
+
+    public function testToRfc3339UtcNormalisesOffsetTimestampToUtc(): void
+    {
+        $this->assertSame('2026-06-01T04:43:50Z', $this->sqlDateTime->toRfc3339Utc('2026-06-01T13:43:50+09:00'));
+    }
 }

@@ -36,6 +36,8 @@ final class ArticleListTest extends AbstractAdminPageTestCase
         $this->assertStringContainsString('<option value="draft" selected>Draft</option>', $html);
         $this->assertStringNotContainsString('class="goNext"', $html);
         $this->assertStringContainsString('<span class="perPage">5</span>', $html);
+        $this->assertStringNotContainsString('<script>alert("xss")</script>Bad', $html);
+        $this->assertStringContainsString('&lt;script&gt;', $html);
     }
 
     public function testAdminArticleListShowsDeletedNotice(): void

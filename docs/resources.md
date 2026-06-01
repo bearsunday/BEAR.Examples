@@ -79,9 +79,9 @@ layer returns all lifecycle states. Response:
 {"items": [...article summaries...], "page": 1, "perPage": 20, "count": 20, "totalCount": 50}
 ```
 
-Reader-facing Page lists are stricter: `/articlelist` defaults to published
-articles when `status` is omitted, while the admin list can show all, draft,
-or published author-owned articles.
+Reader-facing Page lists are stricter: `/articlelist` always restricts results
+to published articles, while the admin list can show all, draft, or published
+author-owned articles.
 
 ## `app://self/category` / `categories`
 

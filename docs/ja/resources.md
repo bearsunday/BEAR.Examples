@@ -78,9 +78,8 @@ GET。Query params: `page`、`perPage` (1..100 にクランプ、デフォルト
 {"items": [...article summaries...], "page": 1, "perPage": 20, "count": 20, "totalCount": 50}
 ```
 
-Reader-facing Page list の `/articlelist` はより厳しく、`status` 省略時は published
-article をデフォルトで表示します。Admin list は author-owned article の all / draft /
-published を表示できます。
+Reader-facing Page list の `/articlelist` はより厳しく、常に published article に
+制限します。Admin list は author-owned article の all / draft / published を表示できます。
 
 ## `app://self/category` / `categories`
 

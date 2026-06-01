@@ -69,10 +69,12 @@ class ArticlePublish extends ResourceObject
         }
 
         $effectiveAt = $publishedAt ?? gmdate('Y-m-d\\TH:i:s\\Z');
+        $publishedAtSql = (string) $this->sqlDateTime->fromRfc3339($effectiveAt);
+        $publishedAtUtc = (string) $this->sqlDateTime->toRfc3339Utc($effectiveAt);
         $affectedRows = $this->articleCmd->publish(
             $id,
             ArticleStatus::Published->value,
-            (string) $this->sqlDateTime->fromRfc3339($effectiveAt),
+            $publishedAtSql,
         );
         if (! $affectedRows->isAffected()) {
             return $this->publishConflict($id);
@@ -83,7 +85,7 @@ class ArticlePublish extends ResourceObject
             'id' => $id,
             'slug' => $article->slug,
             'status' => ArticleStatus::Published->value,
-            'publishedAt' => $effectiveAt,
+            'publishedAt' => $publishedAtUtc,
         ];
 
         return $this;

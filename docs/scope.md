@@ -41,7 +41,7 @@ demonstrated from each top-level resource.)
 
 | Surface | Resources | Verbs |
 |---------|-----------|-------|
-| Public read-only | `Index`, `Article`, `ArticleList`, `Author`, `AuthorList`, `Category`, `CategoryList`, `Tag`, `TagList` | GET only; `ArticleList` defaults to published articles when `status` is omitted |
+| Public read-only | `Index`, `Article`, `ArticleList`, `Author`, `AuthorList`, `Category`, `CategoryList`, `Tag`, `TagList` | GET only; `ArticleList` always restricts results to published articles |
 | Admin write | `Page/Admin/Article` (create / edit form) | GET, POST |
 | Admin write | `Page/Admin/ArticleConfirm` (publish preview / confirm form) | GET, POST |
 | Admin write | `Page/Admin/ArticleDelete` (confirm form) | GET, POST |
@@ -151,7 +151,7 @@ Patterns the codebase deliberately demonstrates (each appears in at least one pl
 | QueryRepository cache — user-zero-code leaf | `Cache\Author`, `Cache\Tag` (`#[Cacheable]` only; reflection-pinned) |
 | QueryRepository cache — `#[Embed]`-only parent (single-child, auto-merged) | `Cache\AuthorProfile`; reflection-pinned to zero manual cache code (since `bear/query-repository` 1.16.0) |
 | QueryRepository cache — one-line `fromAssoc` parent (N-child, body-derived) | `Cache\ArticleTags`; reflection-pinned to exactly one `fromAssoc` call |
-| Reader/admin article visibility split | Public `Page/ArticleList` defaults to `published`; admin `Page/Admin/ArticleList` can show all, draft, or published author-owned articles |
+| Reader/admin article visibility split | Public `Page/ArticleList` enforces `published`; admin `Page/Admin/ArticleList` can show all, draft, or published author-owned articles |
 | PRG redirect on admin write | `Page/Admin/Article`, `Page/Admin/ArticleConfirm`, and `Page/Admin/ArticleDelete` redirect 303 after successful writes |
 
 ### Documentation surface
