@@ -25,6 +25,7 @@ use MyVendor\Cms\Provider\CurrentUserProvider;
 use MyVendor\Cms\Provider\GoogleProvider;
 use MyVendor\Cms\Service\CommonMarkRenderer;
 use MyVendor\Cms\Service\MarkdownRendererInterface;
+use MyVendor\Cms\Service\SqlDateTime;
 use MyVendor\Cms\Validation\JsonSchemaRequestExceptionHandler;
 use Ray\AuraSqlModule\AuraSqlModule;
 use Ray\Csrf\CsrfModule;
@@ -83,6 +84,7 @@ final class AppModule extends AbstractAppModule
         // Explicit untargeted binding so Ray.Compiler (prod-app) can resolve the
         // factory referenced by #[DbQuery(factory: ArticleFactory::class)].
         $this->bind(ArticleFactory::class)->in(Scope::SINGLETON);
+        $this->bind(SqlDateTime::class)->in(Scope::SINGLETON);
 
         // Authentication: Google OAuth in production. FakeAuthProvider in test/fake.
         $this->bind(Google::class)->toProvider(GoogleProvider::class)->in(Scope::SINGLETON);

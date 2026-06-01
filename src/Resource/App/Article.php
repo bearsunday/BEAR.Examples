@@ -18,6 +18,7 @@ use MyVendor\Cms\Input\ArticleUpdateInput;
 use MyVendor\Cms\Query\ArticleCommandInterface;
 use MyVendor\Cms\Query\ArticleQueryInterface;
 use MyVendor\Cms\Query\ArticleTagCommandInterface;
+use MyVendor\Cms\Service\SqlDateTime;
 use Ray\InputQuery\Attribute\Input;
 
 use function assert;
@@ -29,6 +30,7 @@ class Article extends ResourceObject
         private readonly ArticleQueryInterface $article,
         private readonly ArticleCommandInterface $articleCmd,
         private readonly ArticleTagCommandInterface $articleTagCmd,
+        private readonly SqlDateTime $sqlDateTime,
     ) {
     }
 
@@ -81,7 +83,7 @@ class Article extends ResourceObject
             $input->body,
             $input->excerpt,
             $input->status,
-            $input->publishedAt,
+            $this->sqlDateTime->fromRfc3339($input->publishedAt),
             $input->authorId,
             $input->categoryId,
         );
@@ -124,7 +126,7 @@ class Article extends ResourceObject
             $input->body,
             $input->excerpt,
             $input->status,
-            $input->publishedAt,
+            $this->sqlDateTime->fromRfc3339($input->publishedAt),
         );
 
         if ($input->tagIds !== null) {

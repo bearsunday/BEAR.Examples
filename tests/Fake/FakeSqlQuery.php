@@ -29,6 +29,8 @@ use function dirname;
 use function file_get_contents;
 use function in_array;
 use function json_decode;
+use function str_contains;
+use function str_replace;
 use function strcmp;
 use function usort;
 
@@ -934,10 +936,24 @@ final class FakeSqlQuery implements SqlQueryInterface
             body: (string) $r['body'],
             excerpt: isset($r['excerpt']) ? (string) $r['excerpt'] : null,
             status: ArticleStatus::from((string) $r['status']),
-            publishedAt: $r['publishedAt'] ?? null,
+            publishedAt: $this->normaliseDateTime($r['publishedAt'] ?? null),
             authorId: (int) $r['authorId'],
             categoryId: (int) $r['categoryId'],
         );
+    }
+
+    private function normaliseDateTime(mixed $value): string|null
+    {
+        if ($value === null || $value === '') {
+            return null;
+        }
+
+        $string = (string) $value;
+        if (str_contains($string, 'T')) {
+            return $string;
+        }
+
+        return str_replace(' ', 'T', $string) . 'Z';
     }
 
     /** @param array<string, mixed> $r */

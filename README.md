@@ -67,7 +67,8 @@ Intentionally not the focus:
 
 - A full production admin UI.
 - JavaScript-enhanced editing flows.
-- CSRF protection and role policy beyond the author-scoped demo admin.
+- Production role policy beyond the author-scoped, CSRF-protected demo
+  admin.
 - Exhaustive CRUD symmetry where it would only repeat an already-shown
   pattern.
 
@@ -228,6 +229,11 @@ The HAL JSON API is served by `composer serve:api` on
 `http://127.0.0.1:8081/`. Public pages include `/`, `/articlelist`, and
 `/article?id=1`; the local admin sign-in starts at `/admin/login` and lands
 on `/admin/index`.
+
+Public Page article lists default to published articles when no `status`
+query parameter is supplied. The App-layer `app://self/articles` resource
+keeps `status` as an explicit API filter and returns all lifecycle states
+when the filter is omitted.
 
 ## Runtime Contexts
 

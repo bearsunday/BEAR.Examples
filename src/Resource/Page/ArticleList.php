@@ -6,6 +6,7 @@ namespace MyVendor\Cms\Resource\Page;
 
 use BEAR\Resource\ResourceObject;
 use MyVendor\Cms\Entity\Article;
+use MyVendor\Cms\Entity\ArticleStatus;
 use MyVendor\Cms\Entity\Author;
 use MyVendor\Cms\Entity\Category;
 use MyVendor\Cms\Entity\Tag;
@@ -62,7 +63,7 @@ class ArticleList extends ResourceObject
             categoryId: $categoryId,
             tagId: $tagId,
             authorId: $authorId,
-            status: $status,
+            status: $status ?? ArticleStatus::Published->value,
             perPage: $perPage,
         );
         $totalPages = max(1, (int) ceil(count($pages) / $perPage));
