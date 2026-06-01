@@ -7,9 +7,11 @@
 source of truth としています。`page://self/*` の Page Resource は Qiq HTML を
 render し、この App resource map とは意図的に分けています。
 
-## `app://self/`
+## App entry point
 
-Entry point。主要な collection へのリンクを返します。
+`app://self/` の App resource は意図的にありません。public HTML entry は
+`Page/Index` です。HAL discoverability は `article`、`articles`、
+`categories`、`tags` など具体的な top-level resource から示します。
 
 ## `app://self/article`
 
@@ -69,6 +71,25 @@ Body: `title`、`body`、`status`、optional `excerpt`、`publishedAt`、optiona
 ### DELETE `{id}`
 `204` / `404`。
 
+## `app://self/article-publish`
+
+POST。1 件の article を `draft` から `published` へ移す state-transition
+resource です。
+
+Body:
+```json
+{"id": 1, "publishedAt": "RFC3339 string|null"}
+```
+
+`publishedAt` は任意です。省略時は resource が現在の UTC timestamp を補ってから
+command layer を呼びます。
+
+Response codes:
+
+- `200` + `{"id": N, "slug": "...", "status": "published", "publishedAt": "..."}`
+- article が存在しないとき `404`
+- すでに published のとき `409`
+
 ## `app://self/articles`
 
 GET。Query params: `page`、`perPage` (1..100 にクランプ、デフォルト 20)、
@@ -102,6 +123,40 @@ Reader-facing Page list の `/articlelist` はより厳しく、常に published
 - GET `{id}`。
 - POST — `filename`、`mimeType`、`url`、optional `alt`、`width`、`height`。
 - DELETE `{id}`。
+
+## Cache showcase resources (`app://self/cache/*`)
+
+`src/Resource/App/Cache/*` 配下の 4 resource は、QueryRepository cache の
+canonical pattern を示すための hermetic な showcase です。`composer demo:cache`
+は `CacheShowcaseModule` が bind する in-memory `ArrayAdapter` 上で動きます。
+詳しい規約は `docs/conventions.md` §4 "Cache" と
+`tests/Resource/App/Cache/` の reflection tests を参照してください。
+
+### Pattern A — `#[Cacheable]` だけの leaf
+
+- `app://self/cache/author`
+- `app://self/cache/tag`
+
+どちらも GET `{id}` / PUT `{id}` を持ちます。Resource 側の cache surface は
+`#[Cacheable]` だけです。`Header::SURROGATE_KEY`、`UriTagInterface`、
+`DonutRepositoryInterface` を class に持ち込みません。
+
+### Pattern B — `#[Embed]` だけの parent
+
+- `app://self/cache/authorprofile`
+
+`Cache\Author` を `#[Embed(rel: 'author', src: 'app://self/cache/author')]` で
+合成します。`bear/query-repository` 1.16 以降では、HAL rendering 前に
+`QueryRepository::setCacheDependency` が child の URI tag を parent の
+Surrogate-Key に自動 merge します。Resource class に手書き cache code はありません。
+
+### Pattern C — body-derived dependency の `fromAssoc`
+
+- `app://self/cache/articletags`
+
+DB から読んだ N 件の tag row から variable-length な dependency set を宣言します:
+`$this->headers[SURROGATE_KEY] = $uriTag->fromAssoc('app://self/cache/tag{?id}', $items)`。
+body から決まる依存なので、static な `#[Embed]` では表現しません。
 
 ## HAL links
 

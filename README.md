@@ -47,6 +47,10 @@ pipeline:
 See [docs/architecture.md](docs/architecture.md) for the BDR layout and
 design rationale.
 
+For the current project status — what this reference implementation taught,
+what is implemented, and what remains deliberately absent or deferred — read
+[docs/status.md](docs/status.md).
+
 ## Scope
 
 This project demonstrates BEAR.Sunday application-resource and page-resource
@@ -182,14 +186,17 @@ Read the repository in this order:
    New code patterns land here first.
 6. **[docs/scope.md](docs/scope.md)** — what the reference includes,
    omits, and defers.
-7. **[docs/alps.md](docs/alps.md)** and
+7. **[docs/status.md](docs/status.md)** — concise current-state map:
+   lessons learned, implemented scope, deferred gaps, and by-design
+   omissions.
+8. **[docs/alps.md](docs/alps.md)** and
    **[var/alps/profile.json](var/alps/profile.json)** — semantic source of
    truth: Choreography names and Taxonomy nouns.
-8. **[docs/journal/build-log.md](docs/journal/build-log.md)** — phase-by-phase
+9. **[docs/journal/build-log.md](docs/journal/build-log.md)** — phase-by-phase
    construction history.
-9. **[docs/journal/decisions-to-consult.md](docs/journal/decisions-to-consult.md)**
+10. **[docs/journal/decisions-to-consult.md](docs/journal/decisions-to-consult.md)**
    — every decision with the discussion that shaped it.
-10. **[tests/Fake/FakeSqlQuery.php](tests/Fake/FakeSqlQuery.php)** — the fake
+11. **[tests/Fake/FakeSqlQuery.php](tests/Fake/FakeSqlQuery.php)** — the fake
    dispatch contract in executable form.
 
 Index by question:
@@ -204,6 +211,7 @@ Index by question:
 | Scalar params or Input DTO? | [conventions.md §4 Input shape & validation](docs/conventions.md#4-resource-patterns) |
 | How do Read and Write share an entity? | [conventions.md §5 Read/Write SQL contract](docs/conventions.md#5-readwrite-sql-contract) |
 | What is intentionally not built? | [docs/scope.md](docs/scope.md) |
+| What did the project teach, complete, and leave undone? | [docs/status.md](docs/status.md) |
 | Why was this decision made? | [journal/decisions-to-consult.md](docs/journal/decisions-to-consult.md) |
 | What changed phase-by-phase? | [journal/build-log.md](docs/journal/build-log.md) |
 | What is the next session expected to know? | [journal/handoff.md](docs/journal/handoff.md) |
