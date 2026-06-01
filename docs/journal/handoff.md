@@ -9,9 +9,10 @@ the project up. It is intentionally short — pointers, not narrative.
 
 A reference implementation of a CMS built on **BEAR.Sunday + ALPS +
 semantic-ex + Ray.MediaQuery + BDR pattern**. HAL+JSON App resources are
-paired with Qiq Page resources for public HTML and a minimal
-unauthenticated Article admin. Designed so that an AI (or human) reading
-the codebase can learn the canonical naming, structure, and flow.
+paired with Qiq Page resources for public HTML and a minimal Article
+admin protected by Google OAuth, session auth, author ownership, and CSRF
+form guards. Designed so that an AI (or human) reading the codebase can
+learn the canonical naming, structure, and flow.
 
 Five entities: Article, Category, Tag, Author, Media. Read + Write
 across each, plus an Auth resource (Google OAuth via league/oauth2-google,
@@ -84,9 +85,9 @@ defeats the reference value.
   - `test-hal-api-app` — PHPUnit (unit suites)
   - `html-test-hal-api-app` — PHPUnit Page/Qiq suites against FakeSqlQuery
 - `composer demo` is the entry point for verifying any change end-to-end.
-- **Async embed (Step 5.5)**: `bin/async.php` + `composer async` opt
-  into parallel `#[Embed]` execution via `bear/async` 0.3.x. AppModule
-  is unchanged — the library bootstrap overlays
+- **Async embed (Step 4.5 in `composer demo`)**: `bin/async.php` +
+  `composer async` opt into parallel `#[Embed]` execution via `bear/async`
+  0.3.x. AppModule is unchanged — the library bootstrap overlays
   `ParallelRuntimeModule` on the standard injector. The reference
   parallelisation site is `src/Resource/App/Article.php:38-40`
   (`author` / `category` / `tagList` — three independent embeds). The
@@ -100,16 +101,14 @@ defeats the reference value.
 
 ## Open upstream issues (might land between sessions)
 
-Both filed during the build:
+Still open as of 2026-06-01:
 
 | Issue | Repository | Topic |
 |-------|-----------|-------|
 | [#76](https://github.com/bearsunday/BEAR.ApiDoc/issues/76) | BEAR.ApiDoc | Pull data from semantic-ex artifacts (ALPS, JSON Schema, fake data) into generated docs |
-| [#355](https://github.com/bearsunday/BEAR.Resource/issues/355) | BEAR.Resource | JsonSchemaInterceptor should skip body validation on cache hit (CacheableResponse interaction) |
 
-If either lands, BEAR.Cms can adopt the fix:
-- ApiDoc#76 → richer `composer doc` output (no project-side change needed beyond bumping version)
-- Resource#355 → reattach `#[CacheableResponse]` across all read resources. **Update (PR-C2):** the showcase now carries class-level `#[CacheableResponse]` on `Articles` / `Categories` plus `#[Purge]` on the matching writes. See scope.md D1 for the two exclusions (entity resources + embedded `Tags`).
+If it lands, BEAR.Cms can adopt richer `composer doc` output; likely no
+project-side change is needed beyond bumping the package version.
 
 ---
 
@@ -174,10 +173,6 @@ this file.
 
 ## Local state on this machine (will not transfer)
 
-- malt MySQL is running on 127.0.0.1:3306 (database `bear_cms`, root,
-  no password). `composer malt:up` recreates if you need it.
-- A separate AI failure-narrative archive lives in
-  `~/Documents/bear-cms-archive/` (5 files: `framework-critique.md`,
-  `critique-self-review.md`, `critique-second-pass.md`,
-  `session-review.md`, `verified.md`). Useful for studying review
-  failure modes; not part of the public repo.
+- MySQL is listening on 127.0.0.1:3306 as root with no password, but the
+  `bear_cms` database is not currently present. `composer malt:up`
+  recreates it if you need it.
