@@ -56,6 +56,9 @@ Body:
 }
 ```
 
+`publishedAt` は RFC3339 入力として受け付けます。SQL backend では database
+`DATETIME` として保存し、read response では RFC3339 UTC に正規化して返します。
+
 `201` + `Location: /article?id={new_id}` + `{"id": N, "slug": "…"}`。
 
 ### PUT `{id}`
@@ -69,10 +72,14 @@ Body: `title`、`body`、`status`、optional `excerpt`、`publishedAt`、optiona
 ## `app://self/articles`
 
 GET。Query params: `page`、`perPage` (1..100 にクランプ、デフォルト 20)、
-`categoryId`、`tagId`、`authorId`、`status`。Response:
+`categoryId`、`tagId`、`authorId`、`status`。App layer では `status` を省略すると
+すべての lifecycle state を返します。Response:
 ```json
-{"items": [...article summaries...], "page": 1, "perPage": 20, "count": 20}
+{"items": [...article summaries...], "page": 1, "perPage": 20, "count": 20, "totalCount": 50}
 ```
+
+Reader-facing Page list の `/articlelist` はより厳しく、常に published article に
+制限します。Admin list は author-owned article の all / draft / published を表示できます。
 
 ## `app://self/category` / `categories`
 

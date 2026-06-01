@@ -48,14 +48,13 @@ final class ArticlePublishTest extends AbstractAppTestCase
         ]);
         $id = (int) $created->body['id'];
 
-        $stamp = '2020-01-02T03:04:05Z';
         $published = $this->resource->post('app://self/article-publish', [
             'id' => $id,
-            'publishedAt' => $stamp,
+            'publishedAt' => '2020-01-02T12:04:05+09:00',
         ]);
 
         $this->assertSame(200, $published->code);
-        $this->assertSame($stamp, $published->body['publishedAt']);
+        $this->assertSame('2020-01-02T03:04:05Z', $published->body['publishedAt']);
 
         $this->resource->delete('app://self/article', ['id' => $id]);
     }

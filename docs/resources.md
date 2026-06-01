@@ -56,6 +56,9 @@ Body:
 }
 ```
 
+`publishedAt` is accepted as RFC3339 input. The SQL backend stores it as a
+database `DATETIME`, and read responses normalise it back to RFC3339 UTC.
+
 `201` + `Location: /article?id={new_id}` + `{"id": N, "slug": "…"}`.
 
 ### PUT `{id}`
@@ -70,10 +73,15 @@ set with the given ids). `200` / `404`.
 ## `app://self/articles`
 
 GET. Query params: `page`, `perPage` (clamped 1..100, default 20),
-`categoryId`, `tagId`, `authorId`, `status`. Response:
+`categoryId`, `tagId`, `authorId`, `status`. Omitting `status` at the App
+layer returns all lifecycle states. Response:
 ```json
 {"items": [...article summaries...], "page": 1, "perPage": 20, "count": 20, "totalCount": 50}
 ```
+
+Reader-facing Page lists are stricter: `/articlelist` always restricts results
+to published articles, while the admin list can show all, draft, or published
+author-owned articles.
 
 ## `app://self/category` / `categories`
 

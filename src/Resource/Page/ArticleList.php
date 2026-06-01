@@ -6,6 +6,7 @@ namespace MyVendor\Cms\Resource\Page;
 
 use BEAR\Resource\ResourceObject;
 use MyVendor\Cms\Entity\Article;
+use MyVendor\Cms\Entity\ArticleStatus;
 use MyVendor\Cms\Entity\Author;
 use MyVendor\Cms\Entity\Category;
 use MyVendor\Cms\Entity\Tag;
@@ -58,11 +59,12 @@ class ArticleList extends ResourceObject
     ): static {
         $page = max(1, $page);
         $perPage = max(1, min(self::MAX_PER_PAGE, $perPage));
+        $publicStatus = ArticleStatus::Published->value;
         $pages = $this->article->list(
             categoryId: $categoryId,
             tagId: $tagId,
             authorId: $authorId,
-            status: $status,
+            status: $publicStatus,
             perPage: $perPage,
         );
         $totalPages = max(1, (int) ceil(count($pages) / $perPage));
@@ -79,7 +81,7 @@ class ArticleList extends ResourceObject
                 'categoryId' => $categoryId,
                 'tagId' => $tagId,
                 'authorId' => $authorId,
-                'status' => $status,
+                'status' => $status === $publicStatus ? $publicStatus : null,
             ],
             'category' => $categoryId === null ? null : $this->category->item($categoryId),
             'tag' => $tagId === null ? null : $this->tag->item($tagId),

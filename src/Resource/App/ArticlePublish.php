@@ -11,6 +11,7 @@ use BEAR\Resource\ResourceObject;
 use MyVendor\Cms\Entity\ArticleStatus;
 use MyVendor\Cms\Query\ArticleCommandInterface;
 use MyVendor\Cms\Query\ArticleQueryInterface;
+use MyVendor\Cms\Service\SqlDateTime;
 
 use function gmdate;
 
@@ -38,6 +39,7 @@ class ArticlePublish extends ResourceObject
     public function __construct(
         private readonly ArticleQueryInterface $article,
         private readonly ArticleCommandInterface $articleCmd,
+        private readonly SqlDateTime $sqlDateTime,
     ) {
     }
 
@@ -67,7 +69,13 @@ class ArticlePublish extends ResourceObject
         }
 
         $effectiveAt = $publishedAt ?? gmdate('Y-m-d\\TH:i:s\\Z');
-        $affectedRows = $this->articleCmd->publish($id, ArticleStatus::Published->value, $effectiveAt);
+        $publishedAtSql = (string) $this->sqlDateTime->fromRfc3339($effectiveAt);
+        $publishedAtUtc = (string) $this->sqlDateTime->toRfc3339Utc($effectiveAt);
+        $affectedRows = $this->articleCmd->publish(
+            $id,
+            ArticleStatus::Published->value,
+            $publishedAtSql,
+        );
         if (! $affectedRows->isAffected()) {
             return $this->publishConflict($id);
         }
@@ -77,7 +85,7 @@ class ArticlePublish extends ResourceObject
             'id' => $id,
             'slug' => $article->slug,
             'status' => ArticleStatus::Published->value,
-            'publishedAt' => $effectiveAt,
+            'publishedAt' => $publishedAtUtc,
         ];
 
         return $this;

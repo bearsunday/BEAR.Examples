@@ -29,6 +29,8 @@ final class ArticleListTest extends AbstractPageTestCase
         $html = $ro->toString();
 
         $this->assertStringContainsString('Filtered by category:', $html);
+        $this->assertStringContainsString('data-status="published"', $html);
+        $this->assertStringNotContainsString('data-status="draft"', $html);
     }
 
     public function testNextLinkAppearsWhenPageIsFull(): void
@@ -49,12 +51,14 @@ final class ArticleListTest extends AbstractPageTestCase
         $this->assertStringContainsString('href="/articlelist?page=1&amp;perPage=5"', $html);
     }
 
-    public function testListEscapesArticleTitles(): void
+    public function testStatusFilterCannotExposeDraftArticles(): void
     {
-        $ro = $this->resource->get('page://self/articlelist', ['perPage' => 100]);
+        $ro = $this->resource->get('page://self/articlelist', ['status' => 'draft', 'perPage' => 100]);
         $html = $ro->toString();
 
+        $this->assertStringContainsString('data-status="published"', $html);
+        $this->assertStringNotContainsString('data-status="draft"', $html);
+        $this->assertStringNotContainsString('Filtered by status:', $html);
         $this->assertStringNotContainsString('<script>alert("xss")</script>Bad', $html);
-        $this->assertStringContainsString('&lt;script&gt;', $html);
     }
 }

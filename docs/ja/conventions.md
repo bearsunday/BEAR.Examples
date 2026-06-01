@@ -264,6 +264,19 @@ Page object の associative `data` rows を `ArticleFactory` に通し、`total`
 `ArrayAdapter` で同じ contract を実装し、PDO-backed Pages がなくても同じ
 pagination shape をテストします。
 
+### Article visibility と status filter
+
+App resource と Page resource は意図的に違う扱いにします:
+
+- `app://self/articles` は API collection です。`status` query parameter は任意で、
+  省略時はすべての lifecycle state を返します。`status=draft` と
+  `status=published` は明示的な API filter です。
+- Public `page://self/articlelist` は reader-facing HTML です。常に
+  `status=published` で query し、caller が `status=draft` を送っても draft row を
+  露出させてはいけません。
+- `page://self/admin/articlelist` は editor-facing HTML です。認証済み author の
+  ownership boundary 内に限って、all / draft / published を表示できます。
+
 ### Input shape & validation
 
 このコードベースは意図的に 2 種類の入力 shape を混在させています — 一部の

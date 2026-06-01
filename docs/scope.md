@@ -22,7 +22,7 @@ in the current `1.x` HEAD — if you find a discrepancy, that's a doc bug.
 | Resource | Verbs | Notes |
 |----------|-------|-------|
 | `app://self/article` | GET / POST / PUT / DELETE | Full CRUD; POST/PUT accept `tagIds` (tri-state `null` / `[]` / list) |
-| `app://self/articles` | GET | Filter (`status`, `categoryId`, `tagId`, `authorId`) + page/perPage |
+| `app://self/articles` | GET | Filter (`status`, `categoryId`, `tagId`, `authorId`) + page/perPage; omitted `status` returns all lifecycle states |
 | `app://self/author` | GET / POST / PUT | No DELETE; no `authors` collection (asymmetric — see "By design") |
 | `app://self/category` / `categories` | GET / POST / PUT / DELETE | |
 | `app://self/tag` / `tags` | GET / POST / DELETE | |
@@ -41,12 +41,16 @@ demonstrated from each top-level resource.)
 
 | Surface | Resources | Verbs |
 |---------|-----------|-------|
-| Public read-only | `Index`, `Article`, `ArticleList`, `Author`, `AuthorList`, `Category`, `CategoryList`, `Tag`, `TagList` | GET only |
+| Public read-only | `Index`, `Article`, `ArticleList`, `Author`, `AuthorList`, `Category`, `CategoryList`, `Tag`, `TagList` | GET only; `ArticleList` always restricts results to published articles |
 | Admin write | `Page/Admin/Article` (create / edit form) | GET, POST |
+| Admin write | `Page/Admin/ArticleConfirm` (publish preview / confirm form) | GET, POST |
 | Admin write | `Page/Admin/ArticleDelete` (confirm form) | GET, POST |
 | Admin read | `Page/Admin/ArticleList` | GET only |
 
-Admin pages wrap the App resources via `$this->resource->post/put/delete(...)`. PRG: success → 303 redirect with `?saved=created|updated|deleted`.
+Admin pages wrap the App resources via `$this->resource->post/put/delete(...)`.
+PRG: create/update success redirects with `?saved=created|updated`, delete
+success redirects with `?deleted=1`, and publish success redirects to the
+public article URL.
 
 ### Resource variations (reading material, not API)
 
@@ -147,7 +151,8 @@ Patterns the codebase deliberately demonstrates (each appears in at least one pl
 | QueryRepository cache — user-zero-code leaf | `Cache\Author`, `Cache\Tag` (`#[Cacheable]` only; reflection-pinned) |
 | QueryRepository cache — `#[Embed]`-only parent (single-child, auto-merged) | `Cache\AuthorProfile`; reflection-pinned to zero manual cache code (since `bear/query-repository` 1.16.0) |
 | QueryRepository cache — one-line `fromAssoc` parent (N-child, body-derived) | `Cache\ArticleTags`; reflection-pinned to exactly one `fromAssoc` call |
-| PRG redirect on admin write | `Page/Admin/Article` and `Page/Admin/ArticleDelete` redirect 303 with `?saved=…` |
+| Reader/admin article visibility split | Public `Page/ArticleList` enforces `published`; admin `Page/Admin/ArticleList` can show all, draft, or published author-owned articles |
+| PRG redirect on admin write | `Page/Admin/Article`, `Page/Admin/ArticleConfirm`, and `Page/Admin/ArticleDelete` redirect 303 after successful writes |
 
 ### Documentation surface
 
