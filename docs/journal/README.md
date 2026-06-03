@@ -1,9 +1,13 @@
 # Journal
 
-Six documents accumulated during the construction of BEAR.Cms. They are
-not API documentation — those live one level up in `docs/`. These are
-the *narrative*: how decisions were made, what was tried, what to do
-next.
+Documents accumulated during the construction of BEAR.Cms. They are not
+API documentation — those live one level up in `docs/`. These are the
+*narrative*: how decisions were made, what was tried, what was once
+deferred, and what to do next.
+
+For the current status snapshot, read [`../status.md`](../status.md) and
+[`../scope.md`](../scope.md) first. Journal entries are historical and may
+describe gaps that later closed.
 
 | File | Read when |
 |------|-----------|

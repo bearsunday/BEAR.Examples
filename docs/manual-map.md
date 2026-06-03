@@ -99,7 +99,7 @@ source of truth for implemented, deferred, and by-design items.
 | Manual | Concept | Status | Code or doc anchor |
 |---|---|---|---|
 | [validation.md](https://bearsunday.github.io/manuals/1.0/en/validation.html) | JSON Schema validation | Done | `#[JsonSchema]` on resources, [var/json_validate](../var/json_validate), [var/json_schema](../var/json_schema) |
-| [security.md](https://bearsunday.github.io/manuals/1.0/en/security.html) | Authentication and authorization | Partial | OAuth flow exists in [src/Resource/App/Auth.php](../src/Resource/App/Auth.php); admin auth/authz is designed in [docs/journal/auth-boundary-plan.md](journal/auth-boundary-plan.md) and deferred as D2 |
+| [security.md](https://bearsunday.github.io/manuals/1.0/en/security.html) | Authentication and authorization | Partial | OAuth flow exists in [src/Resource/App/Auth.php](../src/Resource/App/Auth.php); Page admin auth/authz is implemented with session-backed Google OAuth, `AdminGuard`, author ownership, and CSRF form guards. Broader production roles remain outside this reference slice |
 
 ## Caching
 

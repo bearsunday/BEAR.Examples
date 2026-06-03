@@ -7,9 +7,12 @@ under [../var/json_schema/](../var/json_schema) as the source of truth.
 Page resources under `page://self/*` render Qiq HTML and are intentionally
 separate from this App resource map.
 
-## `app://self/`
+## App entry point
 
-Entry point. Links to the main collections.
+There is intentionally no `app://self/` App resource. `Page/Index` is the
+public HTML entry point, and HAL discoverability is demonstrated from
+concrete top-level resources such as `article`, `articles`, `categories`,
+and `tags`.
 
 ## `app://self/article`
 
@@ -69,6 +72,25 @@ set with the given ids). `200` / `404`.
 
 ### DELETE `{id}`
 `204` / `404`.
+
+## `app://self/article-publish`
+
+POST. State-transition resource for moving one article from `draft` to
+`published`.
+
+Body:
+```json
+{"id": 1, "publishedAt": "RFC3339 string|null"}
+```
+
+`publishedAt` is optional. When omitted, the resource supplies the current
+UTC timestamp before calling the command layer.
+
+Response codes:
+
+- `200` + `{"id": N, "slug": "...", "status": "published", "publishedAt": "..."}`
+- `404` when the article does not exist
+- `409` when the article is already published
 
 ## `app://self/articles`
 

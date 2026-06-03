@@ -61,7 +61,7 @@ JSON Schema は **規定** ではなく **観測** から生成されるため�
 | `cli-hal-api-app` | bin/app.php | 本物 |
 | `fake-hal-api-app` | DB なし起動 | `SqlQueryInterface` → FakeSqlQuery |
 | `test-hal-api-app` | PHPUnit | 上記 + `AuthInterface` → FakeAuthProvider |
-| `html-hal-app` / `html-test-hal-app` | Qiq HTML | Resource 層は同じ、表現だけ追加 |
+| `html-hal-app` / `html-test-hal-api-app` | Qiq HTML | Resource 層は同じ、表現だけ追加 |
 
 ビジネスコードに `if ($context === 'test')` が **一箇所も無い**。コンテキスト切替の
 模範例として、規模の割に学べることが多い。

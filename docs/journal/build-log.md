@@ -3,6 +3,10 @@
 BEAR.Cms を ALPS → Fake → 実SQL の順に解像度を上げながら構築した記録。
 各フェーズの作業内容、判断、躓いたポイントを残す。
 
+> このファイルは履歴ログです。後続 PR で解消された gap や変更された判断も
+> 当時の記録として残しています。現在の status は `docs/status.md` と
+> `docs/scope.md` を参照してください。
+
 ## 前提
 
 - プロジェクトディレクトリ: `/Users/akihito/git/BEAR.Cms`
@@ -254,6 +258,8 @@ Step 5.5 を取り込んだ。0.3.0 は `bear/resource ^1.32` を要求するが
    ランタイムコンテキストでも使うため、`tests/Fake/` から `src/Fake/` に移動。
 3. **`#[Pager]` を使わない** — Pagerfanta+PDO依存の Pages を Fake化するコストを
    避け、Resource層で pagination メタを手動生成。
+   現在は Article collection read に Ray.MediaQuery `#[Pager]` を採用し、
+   Fake は Pagerfanta `ArrayAdapter` で同じ contract を実装している。
 4. **Factory 不使用** — `FetchNewInstance` + 列順合わせで十分。Factory を
    入れるのは Entity に依存注入が必要になったタイミング。
 5. **新ID 取得は `getBy{naturalKey}`** — driver依存の lastInsertId を回避。
@@ -388,11 +394,16 @@ INSERT 後 SELECT のロジックが Resource にむき出し、エラーハン�
 409 化など) 未実装、`#[Cacheable]` 未配線。これらは「次に拡張するとしたら」に
 書いた通りで、参照実装としてのスコープは越えている。
 
+現在は totalCount、`#[Pager]`、Article admin の auth boundary、CSRF、cache
+showcase は後続 PR で実装済み。残っている gap は `docs/status.md` と
+`docs/scope.md` に整理している。
+
 ## 次に拡張するとしたら
 
 - `#[Cacheable]` + QueryRepository (`bear/query-repository`) でHTTPキャッシュ
 - `#[Pager]` に戻し、PagesInterface ベースのページング
 - ArticleTag の関連付け API (タグ一括更新)
 - `ray/input-query` を使った `#[Input]` 階層入力オブジェクト
-- 認可レイヤ (Admin コンテキスト追加)
+- 認可レイヤ (Admin コンテキスト追加) — 現在は session auth / author ownership /
+  CSRF まで実装済み
 - トランザクション (ArticleTag 同期など)

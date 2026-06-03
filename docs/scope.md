@@ -22,6 +22,7 @@ in the current `1.x` HEAD — if you find a discrepancy, that's a doc bug.
 | Resource | Verbs | Notes |
 |----------|-------|-------|
 | `app://self/article` | GET / POST / PUT / DELETE | Full CRUD; POST/PUT accept `tagIds` (tri-state `null` / `[]` / list) |
+| `app://self/article-publish` | POST | State-transition resource for draft → published; optional `publishedAt`, 404 on missing article, 409 when already published |
 | `app://self/articles` | GET | Filter (`status`, `categoryId`, `tagId`, `authorId`) + page/perPage; omitted `status` returns all lifecycle states |
 | `app://self/author` | GET / POST / PUT | No DELETE; no `authors` collection (asymmetric — see "By design") |
 | `app://self/category` / `categories` | GET / POST / PUT / DELETE | |
@@ -174,6 +175,19 @@ These were once blockers that prevented the canonical pattern from being shown; 
 
 ---
 
+## Historical: resolved project gaps
+
+These were once listed as deferred project work. They are now implemented,
+and remain here only so older journal entries make sense.
+
+| # | Item | Closed by |
+|---|------|-----------|
+| D2 | Auth boundary for `Page/Admin/*` | `UserInterface` / `AdminUserInterface`, providers, `AdminGuard`, Google OAuth session login, author-scoped ownership, and CSRF form protection |
+| D7 | `Articles` collection `totalCount` | MediaQuery `PagesInterface::total` is exposed as `totalCount` in the collection body |
+| D8 | `#[Pager]` / `PagesInterface` adoption decision | Article collection reads use Ray.MediaQuery `#[Pager]`; fake uses Pagerfanta `ArrayAdapter` |
+
+---
+
 ## By design (intentional omissions)
 
 These aren't bugs or backlog — they're deliberate choices that keep the reference focused.
@@ -194,11 +208,8 @@ Drawn from `architecture.md` "What was intentionally not built", `journal/handof
 | # | Item | Why deferred | Recovery / next step |
 |---|------|--------------|----------------------|
 | D1 | `#[CacheableResponse]` on list reads + `#[Purge]` on writes (PR-C2) | **Partial — landed for non-embedded list reads.** `Articles` / `Categories` carry class-level `#[CacheableResponse]`; `Article` / `Category` writes carry `#[Purge(uri: 'app://self/{collection}')]`. Two intentional exclusions: (1) entity resources skip class-level caching because `DonutCommandInterceptor` re-runs `onGet` on deleted entities and mutates `204 → 404`; (2) `Tags` skips caching because it is embedded in `Article` via `#[Embed(rel: 'tagList')]` — when the html context materialises the embed, the donut pipeline calls `(string) $ro` and `CmsQiqRenderer` has no App-template, throws, and breaks the ETag chain. Note: `#[Purge(uri)]` invalidates the canonical URI only, not query-string variants (e.g. `?categoryId=3`) | Pipeline verified in `tests/Resource/App/CacheTest.php` (asserts `try-donut-view` / `put-donut` / `save-etag` / `purge-query-repository` in `RepositoryLogger`). Future follow-ups: per-query-string purge keys and entity-level caching once the delete-mutation upstream behavior is clarified |
-| D2 | ~~Auth boundary for `Page/Admin/*`~~ | Implemented with `UserInterface` / `AdminUserInterface` providers, `AdminGuard`, session-backed OAuth login, and author-scoped admin ownership | CSRF protection now landed via the `Ray\Csrf` `#[SameOrigin]` + `#[CsrfToken]` interceptors on admin posts |
 | D3 | Async Docker CI smoke | Runtime containers exist, but CI does not yet build ext-parallel and run `composer parallel:demo` | Add a focused GitHub Actions job once image build time and caching are acceptable |
 | D5 | Real Google OAuth integration test | Needs creds + callback URL | env-gated test that skips unless `GOOGLE_CLIENT_ID` is set |
-| D7 | `Articles` collection `totalCount` | Implemented via MediaQuery Page `total` | Keep schema/docs in sync when list shape changes |
-| D8 | `#[Pager]` / `PagesInterface` adoption decision | Adopted for Article collection reads; fake uses Pagerfanta `ArrayAdapter` | Extend the same pattern if other collections need paging |
 | D9 | phpstan baseline (2 entries) | Upstream `SqlQueryInterface` return-type narrows; OAuth provider arg-type widening | Wait for upstream relaxation, then drop entries |
 | D10 | Migration to `bearsunday/coding-standard` | Drafted as [coding-standard-roadmap/003](journal/coding-standard-roadmap/003-myvendor-cms-adopts-bearsunday-cs.md); blocked on the package's v0.1 + 001 (`@input-param` expansion) landing | After upstream lands, swap composer dependency and run the migration playbook in 003 |
 
