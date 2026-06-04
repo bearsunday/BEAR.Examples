@@ -127,7 +127,7 @@ Reader-facing Page list の `/articlelist` はより厳しく、常に published
 ## `app://self/media-upload`
 
 - POST — `#[InputFile] FileUpload|ErrorFileUpload $file`、optional `alt`。
-- `image/jpeg`、`image/png`、`image/webp`、`image/svg+xml` を 5 MiB まで受け付けます。
+- `image/jpeg`、`image/png`、`image/webp` を 5 MiB まで受け付けます。
 - ファイル本体は `CMS_UPLOAD_DIR` (default `var/tmp/uploads`) に保存し、既存の
   `MediaCommandInterface` で metadata を登録します。
 - `app://self/media` は scalar metadata write の対比例として残します。

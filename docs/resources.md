@@ -130,7 +130,7 @@ author-owned articles.
 ## `app://self/media-upload`
 
 - POST — `#[InputFile] FileUpload|ErrorFileUpload $file`, optional `alt`.
-- Accepts `image/jpeg`, `image/png`, `image/webp`, and `image/svg+xml` up to 5 MiB.
+- Accepts `image/jpeg`, `image/png`, and `image/webp` up to 5 MiB.
 - Stores files under `CMS_UPLOAD_DIR` (default `var/tmp/uploads`) and records the
   resulting Media metadata with the existing `MediaCommandInterface`.
 - This is the canonical file-upload example; `app://self/media` remains the

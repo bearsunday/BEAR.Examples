@@ -13,6 +13,7 @@ use Koriym\FileUpload\FileUpload;
 use MyVendor\Cms\Query\MediaCommandInterface;
 use MyVendor\Cms\Query\MediaQueryInterface;
 use Ray\InputQuery\Attribute\InputFile;
+use Throwable;
 
 use function basename;
 use function bin2hex;
@@ -20,17 +21,19 @@ use function dirname;
 use function getenv;
 use function in_array;
 use function is_dir;
+use function is_file;
 use function mkdir;
 use function preg_replace;
 use function random_bytes;
 use function rtrim;
+use function unlink;
 
 #[Alps('MediaUpload')]
 class MediaUpload extends ResourceObject
 {
     private const int MAX_UPLOAD_BYTES = 5_242_880;
-    private const array ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/svg+xml'];
-    private const array ALLOWED_EXTENSIONS = ['jpg', 'jpeg', 'png', 'webp', 'svg'];
+    private const array ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
+    private const array ALLOWED_EXTENSIONS = ['jpg', 'jpeg', 'png', 'webp'];
 
     public function __construct(
         private readonly MediaQueryInterface $media,
@@ -64,11 +67,12 @@ class MediaUpload extends ResourceObject
         }
 
         $filename = $this->storedFilename($file);
-        if (! $file->move($uploadDir . '/' . $filename)) {
+        $path = $uploadDir . '/' . $filename;
+        if (! $file->move($path)) {
             return $this->serverError('Uploaded file could not be stored');
         }
 
-        return $this->registerMedia($file, $filename, $alt);
+        return $this->registerMedia($file, $filename, $path, $alt);
     }
 
     private function invalidFileMessage(FileUpload $file): string|null
@@ -97,18 +101,27 @@ class MediaUpload extends ResourceObject
         return is_dir($uploadDir) || mkdir($uploadDir, 0775, true);
     }
 
-    private function registerMedia(FileUpload $file, string $filename, string|null $alt): static
+    private function registerMedia(FileUpload $file, string $filename, string $path, string|null $alt): static
     {
-        $this->mediaCmd->add(
-            $filename,
-            $file->type,
-            $this->baseUrl() . '/' . $filename,
-            $alt,
-            0,
-            0,
-        );
-        $created = $this->media->byFilename($filename);
+        try {
+            $this->mediaCmd->add(
+                $filename,
+                $file->type,
+                $this->baseUrl() . '/' . $filename,
+                $alt,
+                0,
+                0,
+            );
+            $created = $this->media->byFilename($filename);
+        } catch (Throwable) {
+            $this->removeStoredFile($path);
+
+            return $this->serverError('Uploaded media metadata could not be stored');
+        }
+
         if ($created === null) {
+            $this->removeStoredFile($path);
+
             return $this->serverError('Uploaded media metadata was not found');
         }
 
@@ -121,6 +134,15 @@ class MediaUpload extends ResourceObject
         ];
 
         return $this;
+    }
+
+    private function removeStoredFile(string $path): void
+    {
+        if (! is_file($path)) {
+            return;
+        }
+
+        unlink($path);
     }
 
     private function serverError(string $message): static

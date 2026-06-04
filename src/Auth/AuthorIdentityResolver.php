@@ -7,7 +7,10 @@ namespace MyVendor\Cms\Auth;
 use MyVendor\Cms\Query\AuthIdentityCommandInterface;
 use MyVendor\Cms\Query\AuthIdentityQueryInterface;
 use MyVendor\Cms\Query\AuthorQueryInterface;
-use Throwable;
+use Ray\MediaQuery\Exception\PdoPerformException;
+
+use function str_contains;
+use function strtolower;
 
 final readonly class AuthorIdentityResolver
 {
@@ -32,7 +35,11 @@ final readonly class AuthorIdentityResolver
 
         try {
             $this->identityCmd->add($user->provider, $user->subject, $author->id, $user->email, $user->name);
-        } catch (Throwable $e) {
+        } catch (PdoPerformException $e) {
+            if (! $this->isUniqueIdentityViolation($e)) {
+                throw $e;
+            }
+
             $identity = $this->identity->byProviderSubject($user->provider, $user->subject);
             if ($identity !== null) {
                 return $identity->authorId;
@@ -42,5 +49,15 @@ final readonly class AuthorIdentityResolver
         }
 
         return $author->id;
+    }
+
+    private function isUniqueIdentityViolation(PdoPerformException $e): bool
+    {
+        $message = strtolower($e->getMessage());
+
+        return str_contains($message, 'uq_auth_identities_provider_subject')
+            || str_contains($message, 'duplicate')
+            || str_contains($message, 'unique constraint')
+            || str_contains($message, 'unique violation');
     }
 }

@@ -7,6 +7,10 @@ namespace MyVendor\Cms\Resource\App;
 use Koriym\FileUpload\ErrorFileUpload;
 use Koriym\FileUpload\FileUpload;
 use MyVendor\Cms\AbstractAppTestCase;
+use MyVendor\Cms\Entity\Media;
+use MyVendor\Cms\Query\MediaCommandInterface;
+use MyVendor\Cms\Query\MediaQueryInterface;
+use RuntimeException;
 
 use function base64_decode;
 use function file_put_contents;
@@ -112,6 +116,65 @@ final class MediaUploadTest extends AbstractAppTestCase
 
         $this->assertSame(400, $ro->code);
         $this->assertSame('Uploaded file MIME type is not allowed', $ro->body['message']);
+    }
+
+    public function testSvgUploadReturnsBadRequest(): void
+    {
+        $file = FileUpload::create([
+            'name' => 'vector.svg',
+            'type' => 'image/svg+xml',
+            'size' => 64,
+            'tmp_name' => '/tmp/does-not-need-to-exist',
+            'error' => UPLOAD_ERR_OK,
+        ]);
+        $this->assertInstanceOf(FileUpload::class, $file);
+
+        $ro = $this->resource->post('app://self/media-upload', ['file' => $file]);
+
+        $this->assertSame(400, $ro->code);
+        $this->assertSame('Uploaded file MIME type is not allowed', $ro->body['message']);
+    }
+
+    public function testMovedFileIsRemovedWhenMetadataRegistrationFails(): void
+    {
+        $file = FileUpload::fromFile($this->pngFixture());
+        $this->assertInstanceOf(FileUpload::class, $file);
+
+        $resource = new MediaUpload(
+            new class implements MediaQueryInterface {
+                public function item(int $id): Media|null
+                {
+                    return null;
+                }
+
+                public function byFilename(string $filename): Media|null
+                {
+                    return null;
+                }
+            },
+            new class implements MediaCommandInterface {
+                public function add(
+                    string $filename,
+                    string $mimeType,
+                    string $url,
+                    string|null $alt,
+                    int $width,
+                    int $height,
+                ): void {
+                    throw new RuntimeException('metadata write failed');
+                }
+
+                public function delete(int $id): void
+                {
+                }
+            },
+        );
+
+        $ro = $resource->onPost($file);
+
+        $this->assertSame(500, $ro->code);
+        $this->assertSame('Uploaded media metadata could not be stored', $ro->body['message']);
+        $this->assertSame([], (array) glob($this->uploadDir . '/*-upload.png'));
     }
 
     public function testOversizedFileReturnsBadRequestBeforeMove(): void

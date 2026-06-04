@@ -124,7 +124,10 @@
             "./vendor/bin/phpstan analyse -c phpstan.neon --memory-limit=512M"
         ],
         "phpmd": "php -d error_reporting=22527 ./vendor/bin/phpmd src,src-csrf,bin text ./phpmd.xml --exclude \"bin/semantic-ex/*\"",
-        "security": "@security:sast",
+        "security": [
+            "@security:sast",
+            "@security:taint"
+        ],
         "security:sast": [
             "./vendor/bin/bear.security-scan src",
             "./vendor/bin/bear.security-scan src-csrf"

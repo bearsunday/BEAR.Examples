@@ -58,7 +58,7 @@ final class CacheTest extends TestCase
     public function testArticlePreviewUsesExplicitDonutCache(): void
     {
         $reflection = new ReflectionClass(ArticlePreview::class);
-        $this->assertNotSame([], $reflection->getAttributes(DonutCache::class));
+        $this->assertNotEmpty($reflection->getAttributes(DonutCache::class));
 
         $ro = $this->resource->get('app://self/cache/articlepreview', ['id' => 1]);
         $this->assertSame(200, $ro->code);
