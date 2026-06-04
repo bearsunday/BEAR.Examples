@@ -7,6 +7,9 @@
 - Operations with request schema: 14
 - Operations with ALPS attributes: 30
 
+## Audit Scope
+This report checks the metadata fields used by the BEAR.ApiDoc audit pass. OpenAPI summaries can be derived separately, so a `Missing operation summary` finding can remain even when `docs/openapi.json` has a non-empty `summary`. Treat it as a prompt to add explicit source summaries for the audit pass.
+
 ## Findings
 ### DELETE /article
 - Missing response schema.
