@@ -238,6 +238,9 @@ Generated API documentation lives under `docs/`:
   `_links` / `_embedded` map.
 - [docs/openapi.json](docs/openapi.json) — OpenAPI contract.
 - [docs/llms.txt](docs/llms.txt) — LLM-oriented API summary.
+- [docs/terms.html](docs/terms.html) / [docs/terms.md](docs/terms.md) —
+  term usage index for the API vocabulary.
+- [docs/audit.md](docs/audit.md) — generated documentation coverage report.
 - [docs/resources.md](docs/resources.md) — hand-written resource overview.
 
 Regenerate it with:
@@ -281,7 +284,7 @@ composer tests      # cs + static analysis + PHPMD + PHPUnit
 composer fake       # regenerate var/fake/*.json
 composer schema     # regenerate var/json_schema/*.json from fake
 composer semantic   # fake then schema (the full semantic-ex pass)
-composer doc        # regenerate docs/index.html, docs/openapi.json, docs/llms.txt
+composer doc        # regenerate ApiDoc, OpenAPI, llms.txt, terms, audit, ALPS HTML
 composer cli        # regenerate bin/cli/* from #[Cli] attributes
 composer serve      # Qiq/Page HTML server on :8081
 composer serve:api  # HAL JSON API server on :8080

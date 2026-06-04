@@ -7,4 +7,5 @@ jobs:
   apidoc:
     uses: bearsunday/BEAR.ApiDoc/.github/workflows/apidoc.yml@1.x
     with:
-      format: 'html,openapi,llms'
+      format: 'html,openapi,llms,audit,terms'
+      docs-path: 'docs'

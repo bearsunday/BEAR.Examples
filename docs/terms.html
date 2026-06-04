@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Term Usage Index</title>
+<link rel="profile" href="https://bearsunday.github.io/BEAR.ApiDoc/alps/apidoc.xml">
+<style>
+body {
+    margin: 0;
+    padding: 32px;
+    color: #1f2328;
+    background: #fff;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    line-height: 1.5;
+}
+main {
+    max-width: 980px;
+}
+a {
+    color: #0969da;
+    text-decoration: none;
+}
+a:hover {
+    text-decoration: underline;
+}
+code {
+    padding: 0.15em 0.35em;
+    border-radius: 4px;
+    background: #f6f8fa;
+    font-family: ui-monospace, SFMono-Regular, SFMono, Menlo, Consolas, monospace;
+}
+dl {
+    margin: 0;
+}
+dt {
+    margin-top: 16px;
+    border-top: 1px solid #d8dee4;
+    padding-top: 16px;
+}
+dt code {
+    font-size: 1.2em;
+    font-weight: 600;
+}
+.alps {
+    margin-left: 6px;
+    color: #1a7f37;
+}
+dd {
+    margin: 4px 0 0 16px;
+}
+dd p {
+    margin: 0 0 4px;
+    color: #57606a;
+}
+dd ul {
+    margin: 4px 0;
+    padding-left: 1.2em;
+}
+.index-list {
+    column-width: 220px;
+    column-gap: 24px;
+    list-style-type: none;
+    padding: 0;
+    margin: 16px 0 32px;
+}
+.index-list li {
+    padding: 4px 0;
+    font-family: ui-monospace, SFMono-Regular, SFMono, Menlo, Consolas, monospace;
+    font-size: 0.95em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+</style>
+</head>
+<body>
+<main>
+<p><a href="index.html">API Documentation</a></p>
+<h1>Term Usage Index</h1>
+<p>This index reports lexical identifier matches only; it does not prove semantic equivalence. A term backed by an ALPS descriptor carries that descriptor as its class, per the profile linked above.</p>
+
+<h2>Summary</h2>
+<ul>
+  <li>Terms used in API: 40</li>
+  <li>Terms with same-name ALPS descriptor: 26</li>
+  <li>Lexical ALPS coverage: 65%</li>
+  <li>Reserved representation fields: 0</li>
+</ul>
+
+<h2>Index</h2>
+<ul class="index-list"><li><a href="#term-alt">alt</a></li><li><a href="#term-articleId">articleId</a></li><li><a href="#term-articleList">articleList</a></li><li><a href="#term-authorId">authorId</a></li><li><a href="#term-authorizationUrl">authorizationUrl</a></li><li><a href="#term-bio">bio</a></li><li><a href="#term-body">body</a></li><li><a href="#term-cachePattern">cachePattern</a></li><li><a href="#term-categoryId">categoryId</a></li><li><a href="#term-code">code</a></li><li><a href="#term-count">count</a></li><li><a href="#term-dependencyUri">dependencyUri</a></li><li><a href="#term-description">description</a></li><li><a href="#term-email">email</a></li><li><a href="#term-excerpt">excerpt</a></li><li><a href="#term-file">file</a></li><li><a href="#term-filename">filename</a></li><li><a href="#term-height">height</a></li><li><a href="#term-id">id</a></li><li><a href="#term-items">items</a></li><li><a href="#term-message">message</a></li><li><a href="#term-mimeType">mimeType</a></li><li><a href="#term-name">name</a></li><li><a href="#term-page">page</a></li><li><a href="#term-parentId">parentId</a></li><li><a href="#term-perPage">perPage</a></li><li><a href="#term-provider">provider</a></li><li><a href="#term-publishedAt">publishedAt</a></li><li><a href="#term-reason">reason</a></li><li><a href="#term-slug">slug</a></li><li><a href="#term-state">state</a></li><li><a href="#term-status">status</a></li><li><a href="#term-subject">subject</a></li><li><a href="#term-tagId">tagId</a></li><li><a href="#term-tagIds">tagIds</a></li><li><a href="#term-tagList">tagList</a></li><li><a href="#term-title">title</a></li><li><a href="#term-totalCount">totalCount</a></li><li><a href="#term-url">url</a></li><li><a href="#term-width">width</a></li></ul>
+<h2>Terms</h2>
+<dl>
+<dt id="term-alt" class="alt"><code>alt</code><span class="alps" title="defined in ALPS">&#x2611;</span></dt>
+<dd><p>title: Alt Text</p><p>doc: Accessibility text describing the media.</p><ul><li>parameter: POST /media {alt}</li><li>parameter: POST /media-upload {alt}</li><li>schema property: media_create.json#/properties/alt</li><li>schema property: media_upload.json#/properties/alt</li><li>schema property: media.json#/properties/alt</li></ul></dd>
+<dt id="term-articleId" class="articleId"><code>articleId</code><span class="alps" title="defined in ALPS">&#x2611;</span></dt>
+<dd><p>title: Article ID (filter)</p><ul><li>parameter: GET /cache/article-tags {articleId}</li><li>parameter: PUT /cache/article-tags {articleId}</li><li>parameter: GET /crawl/tags {articleId}</li><li>parameter: GET /tags {articleId}</li><li>schema property: cache_article_tags_update.json#/properties/articleId</li><li>schema property: cache_article_tags.json#/properties/articleId</li><li>schema property: crawl_tag_list.json#/items/properties/articleId</li></ul></dd>
+<dt id="term-articleList"><code>articleList</code></dt>
+<dd><ul><li>schema property: crawl_author.json#/properties/articleList</li></ul></dd>
+<dt id="term-authorId" class="authorId"><code>authorId</code><span class="alps" title="defined in ALPS">&#x2611;</span></dt>
+<dd><p>title: Author ID (FK)</p><ul><li>parameter: POST /article {authorId}</li><li>parameter: GET /articles {authorId}</li><li>parameter: GET /cache/author-profile {authorId}</li><li>parameter: GET /crawl/articles {authorId}</li><li>schema property: article_create.json#/properties/authorId</li><li>schema property: article.json#/properties/authorId</li><li>schema property: articleList.json#/properties/items/items/properties/authorId</li><li>schema property: author_profile.json#/properties/authorId</li><li>schema property: cache_article_preview.json#/properties/authorId</li><li>schema property: crawl_article_list.json#/items/properties/authorId</li></ul></dd>
+<dt id="term-authorizationUrl"><code>authorizationUrl</code></dt>
+<dd><ul><li>schema property: auth_authorization.json#/properties/authorizationUrl</li></ul></dd>
+<dt id="term-bio" class="bio"><code>bio</code><span class="alps" title="defined in ALPS">&#x2611;</span></dt>
+<dd><p>title: Biography</p><p>def: <a href="https://schema.org/description">https://schema.org/description</a></p><ul><li>parameter: POST /author {bio}</li><li>parameter: PUT /author {bio}</li><li>parameter: PUT /cache/author {bio}</li><li>schema property: author_create.json#/properties/bio</li><li>schema property: author_update.json#/properties/bio</li><li>schema property: author.json#/properties/bio</li><li>schema property: crawl_author.json#/properties/bio</li></ul></dd>
+<dt id="term-body" class="body"><code>body</code><span class="alps" title="defined in ALPS">&#x2611;</span></dt>
+<dd><p>title: Article Body</p><p>def: <a href="https://schema.org/articleBody">https://schema.org/articleBody</a></p><ul><li>parameter: POST /article {body}</li><li>parameter: PUT /article {body}</li><li>schema property: article_create.json#/properties/body</li><li>schema property: article_update.json#/properties/body</li><li>schema property: article.json#/properties/body</li></ul></dd>
+<dt id="term-cachePattern"><code>cachePattern</code></dt>
+<dd><ul><li>schema property: author_profile.json#/properties/cachePattern</li><li>schema property: cache_article_preview.json#/properties/cachePattern</li><li>schema property: cache_article_tags.json#/properties/cachePattern</li></ul></dd>
+<dt id="term-categoryId" class="categoryId"><code>categoryId</code><span class="alps" title="defined in ALPS">&#x2611;</span></dt>
+<dd><p>title: Category ID (FK)</p><ul><li>parameter: POST /article {categoryId}</li><li>parameter: GET /articles {categoryId}</li><li>schema property: article_create.json#/properties/categoryId</li><li>schema property: article.json#/properties/categoryId</li><li>schema property: articleList.json#/properties/items/items/properties/categoryId</li><li>schema property: crawl_article_list.json#/items/properties/categoryId</li></ul></dd>
+<dt id="term-code"><code>code</code></dt>
+<dd><ul><li>parameter: POST /auth {code}</li><li>schema property: auth_exchange.json#/properties/code</li></ul></dd>
+<dt id="term-count"><code>count</code></dt>
+<dd><ul><li>schema property: articleList.json#/properties/count</li><li>schema property: cache_article_tags.json#/properties/count</li></ul></dd>
+<dt id="term-dependencyUri"><code>dependencyUri</code></dt>
+<dd><ul><li>schema property: author_profile.json#/properties/dependencyUri</li></ul></dd>
+<dt id="term-description" class="description"><code>description</code><span class="alps" title="defined in ALPS">&#x2611;</span></dt>
+<dd><p>title: Description</p><p>def: <a href="https://schema.org/description">https://schema.org/description</a></p><ul><li>parameter: POST /category {description}</li><li>parameter: PUT /category {description}</li><li>schema property: category_create.json#/properties/description</li><li>schema property: category_update.json#/properties/description</li><li>schema property: category.json#/properties/description</li></ul></dd>
+<dt id="term-email" class="email"><code>email</code><span class="alps" title="defined in ALPS">&#x2611;</span></dt>
+<dd><p>title: Email</p><p>def: <a href="https://schema.org/email">https://schema.org/email</a></p><ul><li>parameter: POST /author {email}</li><li>parameter: PUT /author {email}</li><li>parameter: PUT /cache/author {email}</li><li>schema property: author_create.json#/properties/email</li><li>schema property: author_update.json#/properties/email</li><li>schema property: auth_response.json#/properties/email</li><li>schema property: author.json#/properties/email</li><li>schema property: crawl_author.json#/properties/email</li><li>schema property: write_response.json#/properties/email</li></ul></dd>
+<dt id="term-excerpt" class="excerpt"><code>excerpt</code><span class="alps" title="defined in ALPS">&#x2611;</span></dt>
+<dd><p>title: Excerpt</p><p>doc: Short summary used in list views.</p><ul><li>parameter: POST /article {excerpt}</li><li>parameter: PUT /article {excerpt}</li><li>schema property: article_create.json#/properties/excerpt</li><li>schema property: article_update.json#/properties/excerpt</li><li>schema property: article.json#/properties/excerpt</li><li>schema property: articleList.json#/properties/items/items/properties/excerpt</li><li>schema property: crawl_article_list.json#/items/properties/excerpt</li></ul></dd>
+<dt id="term-file" class="file"><code>file</code><span class="alps" title="defined in ALPS">&#x2611;</span></dt>
+<dd><p>title: Uploaded File</p><p>doc: Binary file body resolved by Ray.InputQuery #[InputFile].</p><ul><li>parameter: POST /media-upload {file}</li><li>schema property: media_upload.json#/properties/file</li></ul></dd>
+<dt id="term-filename" class="filename"><code>filename</code><span class="alps" title="defined in ALPS">&#x2611;</span></dt>
+<dd><p>title: Filename</p><ul><li>parameter: POST /media {filename}</li><li>schema property: media_create.json#/properties/filename</li><li>schema property: media.json#/properties/filename</li><li>schema property: write_response.json#/properties/filename</li></ul></dd>
+<dt id="term-height" class="height"><code>height</code><span class="alps" title="defined in ALPS">&#x2611;</span></dt>
+<dd><p>title: Height</p><p>def: <a href="https://schema.org/height">https://schema.org/height</a></p><ul><li>parameter: POST /media {height}</li><li>schema property: media_create.json#/properties/height</li><li>schema property: media.json#/properties/height</li></ul></dd>
+<dt id="term-id" class="id"><code>id</code><span class="alps" title="defined in ALPS">&#x2611;</span></dt>
+<dd><p>title: Identifier</p><p>def: <a href="https://schema.org/identifier">https://schema.org/identifier</a></p><ul><li>parameter: GET /article {id}</li><li>parameter: PUT /article {id}</li><li>parameter: DELETE /article {id}</li><li>parameter: POST /article-publish {id}</li><li>parameter: GET /author {id}</li><li>parameter: PUT /author {id}</li><li>parameter: GET /cache/article-preview {id}</li><li>parameter: GET /cache/author {id}</li><li>parameter: PUT /cache/author {id}</li><li>parameter: GET /cache/tag {id}</li><li>parameter: PUT /cache/tag {id}</li><li>parameter: GET /category {id}</li><li>parameter: PUT /category {id}</li><li>parameter: DELETE /category {id}</li><li>parameter: GET /crawl/author {id}</li><li>parameter: GET /media {id}</li><li>parameter: DELETE /media {id}</li><li>parameter: GET /tag {id}</li><li>parameter: DELETE /tag {id}</li><li>parameter: GET /variations/article-as-array {id}</li><li>parameter: GET /variations/article-raw-pdo {id}</li><li>parameter: GET /variations/article-sql-query {id}</li><li>parameter: GET /variations/media-stream {id}</li><li>schema property: article_publish.json#/properties/id</li><li>schema property: article_update.json#/properties/id</li><li>schema property: author_update.json#/properties/id</li><li>schema property: category_update.json#/properties/id</li><li>schema property: tag_update.json#/properties/id</li><li>schema property: article.json#/properties/id</li><li>schema property: articleList.json#/properties/items/items/properties/id</li><li>schema property: auth_response.json#/properties/id</li><li>schema property: author.json#/properties/id</li><li>schema property: cache_article_preview.json#/properties/id</li><li>schema property: category.json#/properties/id</li><li>schema property: crawl_article_list.json#/items/properties/id</li><li>schema property: crawl_author.json#/properties/id</li><li>schema property: crawl_tag_list.json#/items/properties/id</li><li>schema property: media.json#/properties/id</li><li>schema property: tag.json#/properties/id</li><li>schema property: write_response.json#/properties/id</li></ul></dd>
+<dt id="term-items"><code>items</code></dt>
+<dd><ul><li>schema property: articleList.json#/properties/items</li><li>schema property: cache_article_tags.json#/properties/items</li><li>schema property: categoryList.json#/properties/items</li><li>schema property: tagList.json#/properties/items</li></ul></dd>
+<dt id="term-message"><code>message</code></dt>
+<dd><ul><li>schema property: auth_response.json#/properties/message</li><li>schema property: write_response.json#/properties/message</li></ul></dd>
+<dt id="term-mimeType" class="mimeType"><code>mimeType</code><span class="alps" title="defined in ALPS">&#x2611;</span></dt>
+<dd><p>title: MIME Type</p><p>def: <a href="https://schema.org/encodingFormat">https://schema.org/encodingFormat</a></p><ul><li>parameter: POST /media {mimeType}</li><li>schema property: media_create.json#/properties/mimeType</li><li>schema property: media.json#/properties/mimeType</li></ul></dd>
+<dt id="term-name" class="name"><code>name</code><span class="alps" title="defined in ALPS">&#x2611;</span></dt>
+<dd><p>title: Name</p><p>def: <a href="https://schema.org/name">https://schema.org/name</a></p><ul><li>parameter: POST /author {name}</li><li>parameter: PUT /author {name}</li><li>parameter: PUT /cache/author {name}</li><li>parameter: PUT /cache/tag {name}</li><li>parameter: POST /category {name}</li><li>parameter: PUT /category {name}</li><li>parameter: POST /tag {name}</li><li>schema property: author_create.json#/properties/name</li><li>schema property: author_update.json#/properties/name</li><li>schema property: category_create.json#/properties/name</li><li>schema property: category_update.json#/properties/name</li><li>schema property: tag_create.json#/properties/name</li><li>schema property: tag_update.json#/properties/name</li><li>schema property: auth_response.json#/properties/name</li><li>schema property: author.json#/properties/name</li><li>schema property: category.json#/properties/name</li><li>schema property: crawl_author.json#/properties/name</li><li>schema property: crawl_tag_list.json#/items/properties/name</li><li>schema property: tag.json#/properties/name</li></ul></dd>
+<dt id="term-page" class="page"><code>page</code><span class="alps" title="defined in ALPS">&#x2611;</span></dt>
+<dd><p>title: Page Number</p><p>doc: 1-indexed pagination page.</p><ul><li>parameter: GET /articles {page}</li><li>schema property: articleList.json#/properties/page</li></ul></dd>
+<dt id="term-parentId" class="parentId"><code>parentId</code><span class="alps" title="defined in ALPS">&#x2611;</span></dt>
+<dd><p>title: Parent Category ID (self-FK)</p><p>doc: Nullable reference for hierarchical categories.</p><ul><li>parameter: POST /category {parentId}</li><li>parameter: PUT /category {parentId}</li><li>schema property: category_create.json#/properties/parentId</li><li>schema property: category_update.json#/properties/parentId</li><li>schema property: category.json#/properties/parentId</li></ul></dd>
+<dt id="term-perPage" class="perPage"><code>perPage</code><span class="alps" title="defined in ALPS">&#x2611;</span></dt>
+<dd><p>title: Per-Page Count</p><ul><li>parameter: GET /articles {perPage}</li><li>parameter: GET /crawl/articles {perPage}</li><li>schema property: articleList.json#/properties/perPage</li></ul></dd>
+<dt id="term-provider"><code>provider</code></dt>
+<dd><ul><li>schema property: auth_response.json#/properties/provider</li></ul></dd>
+<dt id="term-publishedAt" class="publishedAt"><code>publishedAt</code><span class="alps" title="defined in ALPS">&#x2611;</span></dt>
+<dd><p>title: Published At</p><p>def: <a href="https://schema.org/datePublished">https://schema.org/datePublished</a></p><ul><li>parameter: POST /article {publishedAt}</li><li>parameter: PUT /article {publishedAt}</li><li>parameter: POST /article-publish {publishedAt}</li><li>schema property: article_create.json#/properties/publishedAt</li><li>schema property: article_publish.json#/properties/publishedAt</li><li>schema property: article_update.json#/properties/publishedAt</li><li>schema property: article.json#/properties/publishedAt</li><li>schema property: articleList.json#/properties/items/items/properties/publishedAt</li><li>schema property: crawl_article_list.json#/items/properties/publishedAt</li><li>schema property: write_response.json#/properties/publishedAt</li></ul></dd>
+<dt id="term-reason"><code>reason</code></dt>
+<dd><ul><li>schema property: auth_response.json#/properties/reason</li></ul></dd>
+<dt id="term-slug" class="slug"><code>slug</code><span class="alps" title="defined in ALPS">&#x2611;</span></dt>
+<dd><p>title: URL-safe Slug</p><p>doc: Lower-case kebab-case unique identifier used in human-readable URIs.</p><ul><li>parameter: POST /article {slug}</li><li>parameter: PUT /cache/tag {slug}</li><li>parameter: POST /category {slug}</li><li>parameter: POST /tag {slug}</li><li>schema property: article_create.json#/properties/slug</li><li>schema property: category_create.json#/properties/slug</li><li>schema property: tag_create.json#/properties/slug</li><li>schema property: tag_update.json#/properties/slug</li><li>schema property: article.json#/properties/slug</li><li>schema property: articleList.json#/properties/items/items/properties/slug</li><li>schema property: category.json#/properties/slug</li><li>schema property: crawl_article_list.json#/items/properties/slug</li><li>schema property: crawl_tag_list.json#/items/properties/slug</li><li>schema property: tag.json#/properties/slug</li><li>schema property: write_response.json#/properties/slug</li></ul></dd>
+<dt id="term-state"><code>state</code></dt>
+<dd><ul><li>parameter: POST /auth {state}</li><li>schema property: auth_exchange.json#/properties/state</li></ul></dd>
+<dt id="term-status" class="status"><code>status</code><span class="alps" title="defined in ALPS">&#x2611;</span></dt>
+<dd><p>title: Lifecycle Status</p><p>doc: draft or published.</p><ul><li>parameter: POST /article {status}</li><li>parameter: PUT /article {status}</li><li>parameter: GET /articles {status}</li><li>schema property: article_create.json#/properties/status</li><li>schema property: article_update.json#/properties/status</li><li>schema property: article.json#/properties/status</li><li>schema property: articleList.json#/properties/items/items/properties/status</li><li>schema property: cache_article_preview.json#/properties/status</li><li>schema property: crawl_article_list.json#/items/properties/status</li><li>schema property: write_response.json#/properties/status</li></ul></dd>
+<dt id="term-subject"><code>subject</code></dt>
+<dd><ul><li>schema property: auth_response.json#/properties/subject</li></ul></dd>
+<dt id="term-tagId" class="tagId"><code>tagId</code><span class="alps" title="defined in ALPS">&#x2611;</span></dt>
+<dd><p>title: Tag ID (filter)</p><ul><li>parameter: GET /articles {tagId}</li></ul></dd>
+<dt id="term-tagIds"><code>tagIds</code></dt>
+<dd><ul><li>parameter: POST /article {tagIds}</li><li>parameter: PUT /article {tagIds}</li><li>parameter: PUT /cache/article-tags {tagIds}</li><li>schema property: article_create.json#/properties/tagIds</li><li>schema property: article_update.json#/properties/tagIds</li><li>schema property: cache_article_tags_update.json#/properties/tagIds</li></ul></dd>
+<dt id="term-tagList"><code>tagList</code></dt>
+<dd><ul><li>schema property: crawl_article_list.json#/items/properties/tagList</li></ul></dd>
+<dt id="term-title" class="title"><code>title</code><span class="alps" title="defined in ALPS">&#x2611;</span></dt>
+<dd><p>title: Title</p><p>def: <a href="https://schema.org/headline">https://schema.org/headline</a></p><ul><li>parameter: POST /article {title}</li><li>parameter: PUT /article {title}</li><li>schema property: article_create.json#/properties/title</li><li>schema property: article_update.json#/properties/title</li><li>schema property: article.json#/properties/title</li><li>schema property: articleList.json#/properties/items/items/properties/title</li><li>schema property: cache_article_preview.json#/properties/title</li><li>schema property: crawl_article_list.json#/items/properties/title</li></ul></dd>
+<dt id="term-totalCount" class="totalCount"><code>totalCount</code><span class="alps" title="defined in ALPS">&#x2611;</span></dt>
+<dd><p>title: Total Count</p><ul><li>schema property: articleList.json#/properties/totalCount</li><li>schema property: categoryList.json#/properties/totalCount</li><li>schema property: tagList.json#/properties/totalCount</li></ul></dd>
+<dt id="term-url" class="url"><code>url</code><span class="alps" title="defined in ALPS">&#x2611;</span></dt>
+<dd><p>title: URL</p><p>def: <a href="https://schema.org/contentUrl">https://schema.org/contentUrl</a></p><ul><li>parameter: POST /media {url}</li><li>schema property: media_create.json#/properties/url</li><li>schema property: media.json#/properties/url</li></ul></dd>
+<dt id="term-width" class="width"><code>width</code><span class="alps" title="defined in ALPS">&#x2611;</span></dt>
+<dd><p>title: Width</p><p>def: <a href="https://schema.org/width">https://schema.org/width</a></p><ul><li>parameter: POST /media {width}</li><li>schema property: media_create.json#/properties/width</li><li>schema property: media.json#/properties/width</li></ul></dd>
+</dl>
+
+</main>
+</body>
+</html>

@@ -69,7 +69,7 @@ source of truth for implemented, deferred, and by-design items.
 |---|---|---|---|
 | [hypermedia-api.md](https://bearsunday.github.io/manuals/1.0/en/hypermedia-api.html) | HAL and ALPS | Done | [var/alps/profile.json](../var/alps/profile.json), [docs/alps.md](alps.md), [tests/Hypermedia/HalEnvelopeContractTest.php](../tests/Hypermedia/HalEnvelopeContractTest.php) |
 | [content-negotiation.md](https://bearsunday.github.io/manuals/1.0/en/content-negotiation.html) | Multiple media surfaces | Partial | `hal-api-app` for HAL JSON, `html-hal-app` for Qiq/Page HTML; no resource-level `#[Produces]` example |
-| [apidoc.md](https://bearsunday.github.io/manuals/1.0/en/apidoc.html) | Generated API documentation | Done | [docs/index.html](index.html), [docs/openapi.json](openapi.json), `composer doc` |
+| [apidoc.md](https://bearsunday.github.io/manuals/1.0/en/apidoc.html) | Generated API documentation | Done | [docs/index.html](index.html), [docs/openapi.json](openapi.json), [docs/terms.html](terms.html), [docs/audit.md](audit.md), `composer doc` |
 | [psr7.md](https://bearsunday.github.io/manuals/1.0/en/psr7.html) | PSR-7 `ServerRequestInterface` injection | By design | Deprioritized unless a real CMS request-context use appears; diagnostics-only resource is intentionally not built |
 
 ## HTML and Templating
