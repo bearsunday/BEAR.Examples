@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c41b8959c095d3c5bc61aa4b7cb8ec1c",
+    "content-hash": "cb210b675e1cb4ac9cd40b53192de3f3",
     "packages": [
         {
             "name": "aura/cli",
@@ -542,16 +542,16 @@
         },
         {
             "name": "bear/query-repository",
-            "version": "1.16.0",
+            "version": "1.16.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/bearsunday/BEAR.QueryRepository.git",
-                "reference": "41a9b84f3b6e427f024647fa13c03eba5e801c04"
+                "reference": "a4cd9e8a0bd14008077fce1c198e71b755797628"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/bearsunday/BEAR.QueryRepository/zipball/41a9b84f3b6e427f024647fa13c03eba5e801c04",
-                "reference": "41a9b84f3b6e427f024647fa13c03eba5e801c04",
+                "url": "https://api.github.com/repos/bearsunday/BEAR.QueryRepository/zipball/a4cd9e8a0bd14008077fce1c198e71b755797628",
+                "reference": "a4cd9e8a0bd14008077fce1c198e71b755797628",
                 "shasum": ""
             },
             "require": {
@@ -618,9 +618,9 @@
             ],
             "support": {
                 "issues": "https://github.com/bearsunday/BEAR.QueryRepository/issues",
-                "source": "https://github.com/bearsunday/BEAR.QueryRepository/tree/1.16.0"
+                "source": "https://github.com/bearsunday/BEAR.QueryRepository/tree/1.16.1"
             },
-            "time": "2026-05-16T08:19:45+00:00"
+            "time": "2026-05-31T16:54:10+00:00"
         },
         {
             "name": "bear/resource",
@@ -628,12 +628,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/bearsunday/BEAR.Resource.git",
-                "reference": "be624b64e6df904719d4d86a06ce0173941b3bce"
+                "reference": "9cbee483e4e1673aae929044202a3dd2308feb93"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/bearsunday/BEAR.Resource/zipball/be624b64e6df904719d4d86a06ce0173941b3bce",
-                "reference": "be624b64e6df904719d4d86a06ce0173941b3bce",
+                "url": "https://api.github.com/repos/bearsunday/BEAR.Resource/zipball/9cbee483e4e1673aae929044202a3dd2308feb93",
+                "reference": "9cbee483e4e1673aae929044202a3dd2308feb93",
                 "shasum": ""
             },
             "require": {
@@ -709,10 +709,10 @@
                     "@sa"
                 ],
                 "coverage": [
-                    "php -dzend_extension=xdebug.so -dxdebug.mode=coverage ./vendor/bin/phpunit --coverage-text --coverage-html=build/coverage"
+                    "XDEBUG_MODE=coverage php -dmemory_limit=-1 -dpcov.enabled=0 ./vendor/bin/phpunit --coverage-text --show-uncovered-for-coverage-text --coverage-html=build/coverage --coverage-xml=build/coverage-xml --coverage-clover=coverage.xml --path-coverage"
                 ],
                 "pcov": [
-                    "php -dextension=pcov.so -d pcov.enabled=1 ./vendor/bin/phpunit --coverage-text --coverage-html=build/coverage  --coverage-clover=coverage.xml"
+                    "php -dpcov.enabled=1 ./vendor/bin/phpunit --coverage-text --coverage-html=build/coverage-pcov --coverage-clover=coverage-pcov.xml"
                 ],
                 "cs": [
                     "phpcs --standard=phpcs.xml src tests"
@@ -726,7 +726,7 @@
                     "rm -rf tests/tmp/*.php"
                 ],
                 "sa": [
-                    "psalm --monochrome --show-info=true",
+                    "psalm --memory-limit=-1 --monochrome --show-info=true",
                     "phpstan --memory-limit=-1 analyse -c phpstan.neon"
                 ],
                 "metrics": [
@@ -765,7 +765,7 @@
                 "source": "https://github.com/bearsunday/BEAR.Resource/tree/1.x",
                 "issues": "https://github.com/bearsunday/BEAR.Resource/issues"
             },
-            "time": "2026-05-28T05:37:27+00:00"
+            "time": "2026-05-31T06:59:43+00:00"
         },
         {
             "name": "bear/streamer",
@@ -5143,16 +5143,16 @@
         },
         {
             "name": "symfony/polyfill-php83",
-            "version": "v1.37.0",
+            "version": "v1.38.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-php83.git",
-                "reference": "3600c2cb22399e25bb226e4a135ce91eeb2a6149"
+                "reference": "8339098cae28673c15cce00d80734af0453054e2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-php83/zipball/3600c2cb22399e25bb226e4a135ce91eeb2a6149",
-                "reference": "3600c2cb22399e25bb226e4a135ce91eeb2a6149",
+                "url": "https://api.github.com/repos/symfony/polyfill-php83/zipball/8339098cae28673c15cce00d80734af0453054e2",
+                "reference": "8339098cae28673c15cce00d80734af0453054e2",
                 "shasum": ""
             },
             "require": {
@@ -5199,7 +5199,7 @@
                 "shim"
             ],
             "support": {
-                "source": "https://github.com/symfony/polyfill-php83/tree/v1.37.0"
+                "source": "https://github.com/symfony/polyfill-php83/tree/v1.38.1"
             },
             "funding": [
                 {
@@ -5219,7 +5219,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-04-10T17:25:58+00:00"
+            "time": "2026-05-26T12:51:13+00:00"
         },
         {
             "name": "symfony/service-contracts",
@@ -5518,16 +5518,16 @@
         },
         {
             "name": "bear/api-doc",
-            "version": "1.9.1",
+            "version": "1.11.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/bearsunday/BEAR.ApiDoc.git",
-                "reference": "dab77969a1a242c6c011432290aaef89b5be8291"
+                "reference": "f8d737aa40181b1b9f0644720239b7b8c66fd75f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/bearsunday/BEAR.ApiDoc/zipball/dab77969a1a242c6c011432290aaef89b5be8291",
-                "reference": "dab77969a1a242c6c011432290aaef89b5be8291",
+                "url": "https://api.github.com/repos/bearsunday/BEAR.ApiDoc/zipball/f8d737aa40181b1b9f0644720239b7b8c66fd75f",
+                "reference": "f8d737aa40181b1b9f0644720239b7b8c66fd75f",
                 "shasum": ""
             },
             "require": {
@@ -5584,9 +5584,9 @@
             ],
             "support": {
                 "issues": "https://github.com/bearsunday/BEAR.ApiDoc/issues",
-                "source": "https://github.com/bearsunday/BEAR.ApiDoc/tree/1.9.1"
+                "source": "https://github.com/bearsunday/BEAR.ApiDoc/tree/1.11.0"
             },
-            "time": "2026-04-29T10:49:08+00:00"
+            "time": "2026-06-03T02:59:18+00:00"
         },
         {
             "name": "bear/cli",

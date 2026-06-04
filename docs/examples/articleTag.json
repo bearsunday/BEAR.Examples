@@ -1,0 +1,506 @@
+[
+    {
+        "articleId": 1,
+        "tagId": 40
+    },
+    {
+        "articleId": 2,
+        "tagId": 11
+    },
+    {
+        "articleId": 2,
+        "tagId": 23
+    },
+    {
+        "articleId": 2,
+        "tagId": 39
+    },
+    {
+        "articleId": 2,
+        "tagId": 45
+    },
+    {
+        "articleId": 3,
+        "tagId": 14
+    },
+    {
+        "articleId": 3,
+        "tagId": 47
+    },
+    {
+        "articleId": 3,
+        "tagId": 20
+    },
+    {
+        "articleId": 3,
+        "tagId": 18
+    },
+    {
+        "articleId": 4,
+        "tagId": 17
+    },
+    {
+        "articleId": 4,
+        "tagId": 22
+    },
+    {
+        "articleId": 4,
+        "tagId": 13
+    },
+    {
+        "articleId": 5,
+        "tagId": 41
+    },
+    {
+        "articleId": 5,
+        "tagId": 34
+    },
+    {
+        "articleId": 6,
+        "tagId": 19
+    },
+    {
+        "articleId": 7,
+        "tagId": 42
+    },
+    {
+        "articleId": 7,
+        "tagId": 29
+    },
+    {
+        "articleId": 7,
+        "tagId": 1
+    },
+    {
+        "articleId": 7,
+        "tagId": 15
+    },
+    {
+        "articleId": 8,
+        "tagId": 14
+    },
+    {
+        "articleId": 9,
+        "tagId": 48
+    },
+    {
+        "articleId": 9,
+        "tagId": 9
+    },
+    {
+        "articleId": 9,
+        "tagId": 46
+    },
+    {
+        "articleId": 9,
+        "tagId": 32
+    },
+    {
+        "articleId": 10,
+        "tagId": 31
+    },
+    {
+        "articleId": 10,
+        "tagId": 45
+    },
+    {
+        "articleId": 10,
+        "tagId": 4
+    },
+    {
+        "articleId": 11,
+        "tagId": 46
+    },
+    {
+        "articleId": 11,
+        "tagId": 6
+    },
+    {
+        "articleId": 11,
+        "tagId": 26
+    },
+    {
+        "articleId": 11,
+        "tagId": 27
+    },
+    {
+        "articleId": 12,
+        "tagId": 26
+    },
+    {
+        "articleId": 12,
+        "tagId": 14
+    },
+    {
+        "articleId": 12,
+        "tagId": 37
+    },
+    {
+        "articleId": 13,
+        "tagId": 31
+    },
+    {
+        "articleId": 13,
+        "tagId": 44
+    },
+    {
+        "articleId": 13,
+        "tagId": 1
+    },
+    {
+        "articleId": 13,
+        "tagId": 25
+    },
+    {
+        "articleId": 14,
+        "tagId": 32
+    },
+    {
+        "articleId": 14,
+        "tagId": 19
+    },
+    {
+        "articleId": 14,
+        "tagId": 48
+    },
+    {
+        "articleId": 15,
+        "tagId": 48
+    },
+    {
+        "articleId": 16,
+        "tagId": 29
+    },
+    {
+        "articleId": 17,
+        "tagId": 45
+    },
+    {
+        "articleId": 18,
+        "tagId": 27
+    },
+    {
+        "articleId": 19,
+        "tagId": 26
+    },
+    {
+        "articleId": 19,
+        "tagId": 22
+    },
+    {
+        "articleId": 19,
+        "tagId": 3
+    },
+    {
+        "articleId": 19,
+        "tagId": 37
+    },
+    {
+        "articleId": 20,
+        "tagId": 40
+    },
+    {
+        "articleId": 21,
+        "tagId": 11
+    },
+    {
+        "articleId": 21,
+        "tagId": 44
+    },
+    {
+        "articleId": 21,
+        "tagId": 16
+    },
+    {
+        "articleId": 22,
+        "tagId": 2
+    },
+    {
+        "articleId": 22,
+        "tagId": 39
+    },
+    {
+        "articleId": 22,
+        "tagId": 14
+    },
+    {
+        "articleId": 23,
+        "tagId": 11
+    },
+    {
+        "articleId": 23,
+        "tagId": 48
+    },
+    {
+        "articleId": 24,
+        "tagId": 27
+    },
+    {
+        "articleId": 24,
+        "tagId": 20
+    },
+    {
+        "articleId": 24,
+        "tagId": 36
+    },
+    {
+        "articleId": 24,
+        "tagId": 10
+    },
+    {
+        "articleId": 25,
+        "tagId": 13
+    },
+    {
+        "articleId": 26,
+        "tagId": 44
+    },
+    {
+        "articleId": 26,
+        "tagId": 6
+    },
+    {
+        "articleId": 26,
+        "tagId": 31
+    },
+    {
+        "articleId": 27,
+        "tagId": 25
+    },
+    {
+        "articleId": 27,
+        "tagId": 3
+    },
+    {
+        "articleId": 27,
+        "tagId": 46
+    },
+    {
+        "articleId": 28,
+        "tagId": 37
+    },
+    {
+        "articleId": 29,
+        "tagId": 5
+    },
+    {
+        "articleId": 29,
+        "tagId": 20
+    },
+    {
+        "articleId": 29,
+        "tagId": 32
+    },
+    {
+        "articleId": 30,
+        "tagId": 42
+    },
+    {
+        "articleId": 31,
+        "tagId": 14
+    },
+    {
+        "articleId": 31,
+        "tagId": 29
+    },
+    {
+        "articleId": 31,
+        "tagId": 43
+    },
+    {
+        "articleId": 31,
+        "tagId": 6
+    },
+    {
+        "articleId": 32,
+        "tagId": 3
+    },
+    {
+        "articleId": 32,
+        "tagId": 4
+    },
+    {
+        "articleId": 33,
+        "tagId": 23
+    },
+    {
+        "articleId": 33,
+        "tagId": 47
+    },
+    {
+        "articleId": 34,
+        "tagId": 26
+    },
+    {
+        "articleId": 34,
+        "tagId": 34
+    },
+    {
+        "articleId": 34,
+        "tagId": 1
+    },
+    {
+        "articleId": 34,
+        "tagId": 21
+    },
+    {
+        "articleId": 35,
+        "tagId": 48
+    },
+    {
+        "articleId": 35,
+        "tagId": 25
+    },
+    {
+        "articleId": 36,
+        "tagId": 20
+    },
+    {
+        "articleId": 36,
+        "tagId": 17
+    },
+    {
+        "articleId": 36,
+        "tagId": 23
+    },
+    {
+        "articleId": 37,
+        "tagId": 32
+    },
+    {
+        "articleId": 38,
+        "tagId": 32
+    },
+    {
+        "articleId": 38,
+        "tagId": 46
+    },
+    {
+        "articleId": 38,
+        "tagId": 6
+    },
+    {
+        "articleId": 38,
+        "tagId": 29
+    },
+    {
+        "articleId": 39,
+        "tagId": 33
+    },
+    {
+        "articleId": 40,
+        "tagId": 21
+    },
+    {
+        "articleId": 41,
+        "tagId": 48
+    },
+    {
+        "articleId": 42,
+        "tagId": 17
+    },
+    {
+        "articleId": 42,
+        "tagId": 34
+    },
+    {
+        "articleId": 43,
+        "tagId": 6
+    },
+    {
+        "articleId": 43,
+        "tagId": 21
+    },
+    {
+        "articleId": 43,
+        "tagId": 39
+    },
+    {
+        "articleId": 43,
+        "tagId": 3
+    },
+    {
+        "articleId": 44,
+        "tagId": 45
+    },
+    {
+        "articleId": 44,
+        "tagId": 24
+    },
+    {
+        "articleId": 44,
+        "tagId": 4
+    },
+    {
+        "articleId": 45,
+        "tagId": 50
+    },
+    {
+        "articleId": 45,
+        "tagId": 28
+    },
+    {
+        "articleId": 45,
+        "tagId": 16
+    },
+    {
+        "articleId": 45,
+        "tagId": 46
+    },
+    {
+        "articleId": 46,
+        "tagId": 8
+    },
+    {
+        "articleId": 46,
+        "tagId": 37
+    },
+    {
+        "articleId": 46,
+        "tagId": 34
+    },
+    {
+        "articleId": 46,
+        "tagId": 15
+    },
+    {
+        "articleId": 47,
+        "tagId": 29
+    },
+    {
+        "articleId": 47,
+        "tagId": 3
+    },
+    {
+        "articleId": 48,
+        "tagId": 6
+    },
+    {
+        "articleId": 48,
+        "tagId": 15
+    },
+    {
+        "articleId": 48,
+        "tagId": 50
+    },
+    {
+        "articleId": 48,
+        "tagId": 18
+    },
+    {
+        "articleId": 49,
+        "tagId": 42
+    },
+    {
+        "articleId": 49,
+        "tagId": 7
+    },
+    {
+        "articleId": 50,
+        "tagId": 42
+    },
+    {
+        "articleId": 50,
+        "tagId": 10
+    }
+]

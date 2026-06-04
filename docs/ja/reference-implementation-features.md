@@ -130,7 +130,7 @@ AGENTS.md は明示的に「これ以上 variation を増やすな」と釘を�
 | `composer fake` | `var/fake/*.json` (50 件 × 各エンティティ) | `mt_srand(42)` |
 | `composer schema` | `var/json_schema/*.json` | fake から観測 |
 | `composer semantic` | 上記両方 | 同上 |
-| `composer doc` | `docs/openapi.json`, `docs/alps.html`, `docs/llms.txt` | 属性から派生 |
+| `composer doc` | `docs/openapi.json`, `docs/alps.html`, `docs/llms.txt`, `docs/terms.html`, `docs/audit.md` | 属性から派生 |
 | `composer cli` | `bin/cli/*` | `#[Cli]` から生成 |
 
 差分レビューが意味を持つ。生成物が壊れたら属性側を直す。
@@ -279,12 +279,16 @@ Layer 1 と Layer 2 の双方向 assert で固定される。AI がコードを�
 
 両者を分けることで「全 AI 向けの永続規約」と「セッション運用 tips」を区別している。
 
-### `docs/llms.txt` — フラット化された API 表面
+### `docs/llms.txt` / `docs/terms.html` / `docs/audit.md` — AI と人間の巡回面
 
 `composer doc` が ALPS / 属性 / SQL から **AI 巡回用に flatten した** テキストを
 1 ファイル生成する。ルート、Resource、レスポンス形、SQL クエリが一読で取れる。
 これがあるおかげで AI は「存在しないエンドポイントを発明する」ハルシネーションを
 避けやすい。
+
+BEAR.ApiDoc の term usage index は API 語彙が ALPS にどれだけ anchored されて
+いるかを示し、documentation audit は resource summary / operation summary /
+schema / ALPS attribute の不足を作業リストとして可視化する。
 
 ### Single Source of Truth による drift 防止
 

@@ -544,7 +544,7 @@ PHP-CS-Fixer) を検討してください。
 | Input JSON Schema | `var/json_validate/<entity>_<verb>.json` |
 | Fake data | `var/fake/<entity>.json` (deterministic, `mt_srand(42)`) |
 | ALPS profile | `var/alps/profile.json` (semantics の single source of truth) |
-| 生成された apidoc | `docs/index.html`、`docs/openapi.json`、`docs/llms.txt`、`docs/schemas/*` |
+| 生成された apidoc | `docs/index.html`、`docs/openapi.json`、`docs/llms.txt`、`docs/terms.html`、`docs/terms.md`、`docs/audit.md`、`docs/examples/*`、`docs/schemas/*` |
 
 ## 7. テスト
 
