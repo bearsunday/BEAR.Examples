@@ -56,6 +56,8 @@ class Auth extends ResourceObject
 
         $this->body = [
             'id' => $user->id,
+            'provider' => $user->provider,
+            'subject' => $user->subject,
             'email' => $user->email,
             'name' => $user->name,
         ];

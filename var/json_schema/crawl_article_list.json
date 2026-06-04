@@ -1,0 +1,61 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://example.com/bear-cms/crawl_article_list",
+    "title": "CrawlArticleList",
+    "description": "Article summaries used by the crawl/DataLoader companion.",
+    "type": "array",
+    "items": {
+        "type": "object",
+        "required": [
+            "id",
+            "slug",
+            "title",
+            "status",
+            "authorId",
+            "categoryId"
+        ],
+        "properties": {
+            "id": {
+                "type": "integer",
+                "minimum": 1
+            },
+            "slug": {
+                "type": "string"
+            },
+            "title": {
+                "type": "string"
+            },
+            "excerpt": {
+                "type": [
+                    "string",
+                    "null"
+                ]
+            },
+            "status": {
+                "type": "string",
+                "enum": [
+                    "draft",
+                    "published"
+                ]
+            },
+            "publishedAt": {
+                "type": [
+                    "string",
+                    "null"
+                ],
+                "format": "date-time"
+            },
+            "authorId": {
+                "type": "integer",
+                "minimum": 1
+            },
+            "categoryId": {
+                "type": "integer",
+                "minimum": 1
+            },
+            "tagList": {
+                "$ref": "crawl_tag_list.json"
+            }
+        }
+    }
+}

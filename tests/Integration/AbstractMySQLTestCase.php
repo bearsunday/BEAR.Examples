@@ -86,7 +86,7 @@ abstract class AbstractMySQLTestCase extends TestCase
     {
         // Drop and recreate all tables to start clean.
         $this->pdo->exec('SET FOREIGN_KEY_CHECKS = 0');
-        foreach (['article_tags', 'articles', 'tags', 'categories', 'authors', 'media', 'doctrine_migration_versions'] as $t) {
+        foreach (['article_tags', 'articles', 'tags', 'categories', 'auth_identities', 'authors', 'media', 'doctrine_migration_versions'] as $t) {
             $this->pdo->exec(sprintf('DROP TABLE IF EXISTS `%s`', $t));
         }
 

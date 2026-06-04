@@ -8,6 +8,9 @@
     <testsuite name="entity">
       <directory>tests/Entity</directory>
     </testsuite>
+    <testsuite name="example">
+      <directory>tests/Example</directory>
+    </testsuite>
     <testsuite name="integration">
       <directory>tests/Integration</directory>
     </testsuite>
@@ -22,6 +25,9 @@
     </testsuite>
     <testsuite name="interceptor">
       <directory>tests/Interceptor</directory>
+    </testsuite>
+    <testsuite name="service">
+      <directory>tests/Service</directory>
     </testsuite>
     <testsuite name="csrf">
       <directory>tests-csrf</directory>

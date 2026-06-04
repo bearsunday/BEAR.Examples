@@ -9,9 +9,9 @@
 
 | Layer        | Example                                                        |
 |--------------|----------------------------------------------------------------|
-| Ontology     | `articleTitle`、`articleStatus`、`categoryParentId`、`mediaAlt` |
+| Ontology     | `articleTitle`、`articleStatus`、`categoryParentId`、`mediaAlt`、`file` |
 | Taxonomy     | `Article`、`ArticleList`、`Category`、`Tag`、`Author`、`Media` |
-| Choreography | `goArticleList`、`goArticle`、`doCreateArticle`、`doDeleteTag` |
+| Choreography | `goArticleList`、`goArticle`、`doCreateArticle`、`doUploadMediaFile` |
 
 - Safe (`go*`): GET 遷移。
 - Unsafe (`do*`、`unsafe`): POST。idempotent な書き込みは `idempotent` を使います。
@@ -28,6 +28,10 @@ profile.json → semantic-ex Phase 1 (Experience)   → var/fake/*.json
 ALPS の transition 名は HAL `_links` rel / Resource URI 規約と 1:1 で対応します。
 たとえば `goArticle` → `app://self/article`、`doCreateArticle` →
 `POST app://self/article` のように。
+
+Media には意図的に 2 種類の write transition があります。`doCreateMedia` は
+既存 URL の metadata 登録、`doUploadMediaFile` は `app://self/media-upload`
+で `#[InputFile]` による binary upload を示します。
 
 ## profile の検証
 

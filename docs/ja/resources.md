@@ -124,9 +124,42 @@ Reader-facing Page list の `/articlelist` はより厳しく、常に published
 - POST — `filename`、`mimeType`、`url`、optional `alt`、`width`、`height`。
 - DELETE `{id}`。
 
+## `app://self/media-upload`
+
+- POST — `#[InputFile] FileUpload|ErrorFileUpload $file`、optional `alt`。
+- `image/jpeg`、`image/png`、`image/webp` を 5 MiB まで受け付けます。
+- ファイル本体は `CMS_UPLOAD_DIR` (default `var/tmp/uploads`) に保存し、既存の
+  `MediaCommandInterface` で metadata を登録します。
+- `app://self/media` は scalar metadata write の対比例として残します。
+
+## Crawl/DataLoader companion resources (`app://self/crawl/*`)
+
+これらは通常の public API family ではなく、BEAR.Resource の `linkCrawl` を読むための
+focused companion です。author → articles → tags の traversal を、resource class
+内の手動 fetch ではなく crawl graph と DataLoader で表現します。
+
+- `app://self/crawl/author?id=1` — crawl root。
+- `app://self/crawl/articles?authorId=1` — article summary list。
+- `app://self/crawl/tags?articleId=1` — standalone read と DataLoader row contract
+  の両方で使う tag list shape。
+
+実行は resource client の `crawl()` で行います。
+
+```php
+$ro = $resource->crawl('app://self/crawl/author', 'author-tree', ['id' => 1]);
+```
+
+`Crawl\Author::onGet()` が `articleList` crawl link を宣言し、
+`Crawl\Articles::onGet()` が nested `tagList` crawl link と
+`ArticleTagsDataLoader` を宣言します。DataLoader は article id 群をまとめて
+`TagQueryInterface::listByArticles()` へ渡します。
+`tests/Resource/App/Crawl/CrawlDataLoaderTest.php` は
+`tag_list_by_articles` が 1 回だけ呼ばれ、article ごとの `tag_list_by_article` が
+呼ばれないことを固定しています。
+
 ## Cache showcase resources (`app://self/cache/*`)
 
-`src/Resource/App/Cache/*` 配下の 4 resource は、QueryRepository cache の
+`src/Resource/App/Cache/*` 配下の 5 resource は、QueryRepository cache の
 canonical pattern を示すための hermetic な showcase です。`composer demo:cache`
 は `CacheShowcaseModule` が bind する in-memory `ArrayAdapter` 上で動きます。
 詳しい規約は `docs/conventions.md` §4 "Cache" と
@@ -157,6 +190,23 @@ Surrogate-Key に自動 merge します。Resource class に手書き cache code
 DB から読んだ N 件の tag row から variable-length な dependency set を宣言します:
 `$this->headers[SURROGATE_KEY] = $uriTag->fromAssoc('app://self/cache/tag{?id}', $items)`。
 body から決まる依存なので、static な `#[Embed]` では表現しません。
+
+### Pattern D — 明示的な `#[DonutCache]`
+
+- `app://self/cache/articlepreview`
+
+公式マニュアルの `#[DonutCache]` attribute を、CMS の article preview として示します。
+HAL API では scalar-only にしています。donut-hole placeholder は string renderer 向けで、
+HAL embed の依存表現は Pattern B の `#[Embed]` + `#[Cacheable]` で示します。
+
+### Boundary — query-string variant purge policy
+
+- `#[Purge(uri: 'app://self/articles')]` は canonical URI の例です。
+  `app://self/articles?categoryId=3` のような query-string variant は別 cache
+  entry で、この annotation だけでは purge されません。
+- この project では article list variant 用の custom invalidator は持ちません。
+  production CMS では妥当な service になり得ますが、BEAR.Sunday の再利用可能な
+  feature というより application policy なので、実 workflow が必要とする時だけ追加します。
 
 ## HAL links
 

@@ -57,8 +57,8 @@ source of truth for implemented, deferred, and by-design items.
 | Manual | Concept | Status | Code or doc anchor |
 |---|---|---|---|
 | [resource.md](https://bearsunday.github.io/manuals/1.0/en/resource.html) | Resource class | Done | [src/Resource/App/Article.php](../src/Resource/App/Article.php) |
-| [resource_param.md](https://bearsunday.github.io/manuals/1.0/en/resource_param.html) | Method parameter injection | Done | [src/Input/ArticleCreateInput.php](../src/Input/ArticleCreateInput.php), [src/Input/ArticleUpdateInput.php](../src/Input/ArticleUpdateInput.php) |
-| [resource_link.md](https://bearsunday.github.io/manuals/1.0/en/resource_link.html) | `#[Link]` and `#[Embed]` | Done | [src/Resource/App/Article.php](../src/Resource/App/Article.php), [tests/Hypermedia](../tests/Hypermedia) |
+| [resource_param.md](https://bearsunday.github.io/manuals/1.0/en/resource_param.html) | Method parameter injection, `#[Input]`, `#[InputFile]` | Done | [src/Input/ArticleCreateInput.php](../src/Input/ArticleCreateInput.php), [src/Input/ArticleUpdateInput.php](../src/Input/ArticleUpdateInput.php), [src/Resource/App/MediaUpload.php](../src/Resource/App/MediaUpload.php) |
+| [resource_link.md](https://bearsunday.github.io/manuals/1.0/en/resource_link.html) | `#[Link]`, `#[Embed]`, `linkCrawl`, and DataLoader | Done | [src/Resource/App/Article.php](../src/Resource/App/Article.php), [src/Resource/App/Crawl](../src/Resource/App/Crawl), [src/DataLoader/ArticleTagsDataLoader.php](../src/DataLoader/ArticleTagsDataLoader.php), [tests/Hypermedia](../tests/Hypermedia), [tests/Resource/App/Crawl/CrawlDataLoaderTest.php](../tests/Resource/App/Crawl/CrawlDataLoaderTest.php) |
 | [resource_renderer.md](https://bearsunday.github.io/manuals/1.0/en/resource_renderer.html) | Body rendering | Done | HAL through the API context; Qiq through [src/Module/HtmlModule.php](../src/Module/HtmlModule.php) and [src/Resource/Page](../src/Resource/Page) |
 | [resource_bp.md](https://bearsunday.github.io/manuals/1.0/en/resource_bp.html) | Resource best practices | Done | [docs/conventions.md](conventions.md) |
 | [router.md](https://bearsunday.github.io/manuals/1.0/en/router.html) | URI to resource mapping | Done | BEAR.Package `WebRouterModule` default plus the App/Page context split |
@@ -68,9 +68,9 @@ source of truth for implemented, deferred, and by-design items.
 | Manual | Concept | Status | Code or doc anchor |
 |---|---|---|---|
 | [hypermedia-api.md](https://bearsunday.github.io/manuals/1.0/en/hypermedia-api.html) | HAL and ALPS | Done | [var/alps/profile.json](../var/alps/profile.json), [docs/alps.md](alps.md), [tests/Hypermedia/HalEnvelopeContractTest.php](../tests/Hypermedia/HalEnvelopeContractTest.php) |
-| [content-negotiation.md](https://bearsunday.github.io/manuals/1.0/en/content-negotiation.html) | Multiple media surfaces | Done | `hal-api-app` for HAL JSON, `html-hal-app` for Qiq/Page HTML |
+| [content-negotiation.md](https://bearsunday.github.io/manuals/1.0/en/content-negotiation.html) | Multiple media surfaces | Partial | `hal-api-app` for HAL JSON, `html-hal-app` for Qiq/Page HTML; no resource-level `#[Produces]` example |
 | [apidoc.md](https://bearsunday.github.io/manuals/1.0/en/apidoc.html) | Generated API documentation | Done | [docs/index.html](index.html), [docs/openapi.json](openapi.json), `composer doc` |
-| [psr7.md](https://bearsunday.github.io/manuals/1.0/en/psr7.html) | PSR-7 `ServerRequestInterface` injection | Missing | Candidate small demo: cookies, headers, or client IP injection |
+| [psr7.md](https://bearsunday.github.io/manuals/1.0/en/psr7.html) | PSR-7 `ServerRequestInterface` injection | By design | Deprioritized unless a real CMS request-context use appears; diagnostics-only resource is intentionally not built |
 
 ## HTML and Templating
 
@@ -99,20 +99,20 @@ source of truth for implemented, deferred, and by-design items.
 | Manual | Concept | Status | Code or doc anchor |
 |---|---|---|---|
 | [validation.md](https://bearsunday.github.io/manuals/1.0/en/validation.html) | JSON Schema validation | Done | `#[JsonSchema]` on resources, [var/json_validate](../var/json_validate), [var/json_schema](../var/json_schema) |
-| [security.md](https://bearsunday.github.io/manuals/1.0/en/security.html) | Authentication and authorization | Partial | OAuth flow exists in [src/Resource/App/Auth.php](../src/Resource/App/Auth.php); Page admin auth/authz is implemented with session-backed Google OAuth, `AdminGuard`, author ownership, and CSRF form guards. Broader production roles remain outside this reference slice |
+| [security.md](https://bearsunday.github.io/manuals/1.0/en/security.html) | Authentication, authorization, and security tooling | Partial | OAuth flow exists in [src/Resource/App/Auth.php](../src/Resource/App/Auth.php); Page admin auth/authz is implemented with session-backed Google/Auth0 provider adapters, `(provider, subject)` identity mapping, `AdminGuard`, author ownership, and CSRF form guards. Google is the practical setup path in [docs/auth-google.md](auth-google.md). SAST/taint commands are documented in [docs/production.md](production.md); broader production roles, DAST, and AI Auditor remain opt-in |
 
 ## Caching
 
 | Manual | Concept | Status | Code or doc anchor |
 |---|---|---|---|
-| [cache.md](https://bearsunday.github.io/manuals/1.0/en/cache.html) | QueryRepository cache, `#[Cacheable]`, dependency tags | Done | [src/Resource/App/Cache/Author.php](../src/Resource/App/Cache/Author.php), [src/Resource/App/Cache/AuthorProfile.php](../src/Resource/App/Cache/AuthorProfile.php), [src/Resource/App/Cache/ArticleTags.php](../src/Resource/App/Cache/ArticleTags.php), `composer demo:cache` |
-| [redis-dns.md](https://bearsunday.github.io/manuals/1.0/en/redis-dns.html) | Redis cache adapter | Missing | Cache showcase uses in-memory `ArrayAdapter`; Redis binding remains a future demo |
+| [cache.md](https://bearsunday.github.io/manuals/1.0/en/cache.html) | QueryRepository cache, `#[Cacheable]`, `#[CacheableResponse]`, `#[DonutCache]`, dependency tags | Done | [src/Resource/App/Cache/Author.php](../src/Resource/App/Cache/Author.php), [src/Resource/App/Cache/AuthorProfile.php](../src/Resource/App/Cache/AuthorProfile.php), [src/Resource/App/Cache/ArticleTags.php](../src/Resource/App/Cache/ArticleTags.php), [src/Resource/App/Cache/ArticlePreview.php](../src/Resource/App/Cache/ArticlePreview.php), `composer demo:cache` |
+| [redis-dns.md](https://bearsunday.github.io/manuals/1.0/en/redis-dns.html) | Redis cache adapter | Partial | Optional `CMS_REDIS_DSN` binding in [src/Module/ProdModule.php](../src/Module/ProdModule.php); default tests remain Redis-free |
 
 ## Performance and Production
 
 | Manual | Concept | Status | Code or doc anchor |
 |---|---|---|---|
-| [production.md](https://bearsunday.github.io/manuals/1.0/en/production.html) | Production tuning and `ProdModule` | Missing | No `src/Module/ProdModule.php`; no opcache/preload guide |
+| [production.md](https://bearsunday.github.io/manuals/1.0/en/production.html) | Production tuning and `ProdModule` | Done | [src/Module/ProdModule.php](../src/Module/ProdModule.php) overlays BEAR.Package prod module and optional Redis; [docs/production.md](production.md) covers compile artifacts, preload/autoload/module graph, Redis, deployment boundaries, and security commands |
 | [server.md](https://bearsunday.github.io/manuals/1.0/en/server.html) | Swoole and RoadRunner | By design | Runtime servers are out of scope for this reference |
 | [async.md](https://bearsunday.github.io/manuals/1.0/en/async.html) | Parallel `#[Embed]` execution | Done | [bin/async.php](../bin/async.php), `composer async`, `composer parallel:up` |
 | [stream.md](https://bearsunday.github.io/manuals/1.0/en/stream.html) | Streaming responses | Done | [src/Resource/App/Variations/MediaStream.php](../src/Resource/App/Variations/MediaStream.php) |
@@ -137,8 +137,8 @@ source of truth for implemented, deferred, and by-design items.
 
 | Manual | Concept | Status | Code or doc anchor |
 |---|---|---|---|
-| [import.md](https://bearsunday.github.io/manuals/1.0/en/import.html) | Importing sub-applications | By design | Out of this reference's scope |
-| [aaas.md](https://bearsunday.github.io/manuals/1.0/en/aaas.html) | Application as a Service | By design | Out of this reference's scope |
+| [import.md](https://bearsunday.github.io/manuals/1.0/en/import.html) | Importing sub-applications | Done | Companion example in [examples/import](../examples/import) proves `app://catalog/status` imported alongside `app://self/*` |
+| [aaas.md](https://bearsunday.github.io/manuals/1.0/en/aaas.html) | Application as a Service / other-language connection | By design | Better as a companion BEAR.Thrift or isolated import demo |
 
 ## Reference Patterns Beyond The Manual
 
@@ -154,6 +154,10 @@ single manual chapter.
 | MediaQuery SELECT result class | [src/Query/ArticleSelectionQueryInterface.php](../src/Query/ArticleSelectionQueryInterface.php) |
 | MediaQuery DML metadata return | [src/Query/Samples/ArticleAffectedRowsCommandInterface.php](../src/Query/Samples/ArticleAffectedRowsCommandInterface.php) |
 | Natural-key post-insert lookup | [src/Resource/App/Article.php](../src/Resource/App/Article.php), [src/Query/ArticleQueryInterface.php](../src/Query/ArticleQueryInterface.php) |
+| `#[InputFile]` media upload | [src/Resource/App/MediaUpload.php](../src/Resource/App/MediaUpload.php), [tests/Resource/App/MediaUploadTest.php](../tests/Resource/App/MediaUploadTest.php) |
+| OAuth provider swap + identity mapping | [src/Auth/Auth0AuthProvider.php](../src/Auth/Auth0AuthProvider.php), [src/Auth/AuthorIdentityResolver.php](../src/Auth/AuthorIdentityResolver.php) |
+| Practical Google OAuth admin login | [docs/auth-google.md](auth-google.md), [tests/Smoke/GoogleAuthProviderSmokeTest.php](../tests/Smoke/GoogleAuthProviderSmokeTest.php) |
+| `linkCrawl` + DataLoader batch graph | [src/Resource/App/Crawl](../src/Resource/App/Crawl), [src/DataLoader/ArticleTagsDataLoader.php](../src/DataLoader/ArticleTagsDataLoader.php), [tests/Resource/App/Crawl/CrawlDataLoaderTest.php](../tests/Resource/App/Crawl/CrawlDataLoaderTest.php) |
 | Manual `_embedded` build for ID-after-fetch cases | [src/Resource/App/Article.php](../src/Resource/App/Article.php) |
 | Three Article GET implementation variations | [src/Resource/App/Variations](../src/Resource/App/Variations), `composer demo:variations` |
 | PRG redirect on admin writes | [src/Resource/Page/Admin/Article.php](../src/Resource/Page/Admin/Article.php), [src/Resource/Page/Admin/ArticleDelete.php](../src/Resource/Page/Admin/ArticleDelete.php) |
@@ -161,6 +165,8 @@ single manual chapter.
 | HAL envelope contract test | [tests/Hypermedia/HalEnvelopeContractTest.php](../tests/Hypermedia/HalEnvelopeContractTest.php) |
 | `#[Depends]`-chained hypermedia workflow tests | [tests/Hypermedia](../tests/Hypermedia) |
 | QueryRepository cache dependency patterns | [src/Resource/App/Cache](../src/Resource/App/Cache), [docs/conventions.md](conventions.md#cache--cacheable-and-cross-resource-invalidation) |
+| Application import companion example | [examples/import](../examples/import), [tests/Example/ImportAppExampleTest.php](../tests/Example/ImportAppExampleTest.php) |
+| Production/Redis opt-in composition | [src/Module/ProdModule.php](../src/Module/ProdModule.php), `.env.dist` |
 | BEAR.Async module-swap entrypoint | [bin/async.php](../bin/async.php) |
 | BEAR.Streamer transfer-mode variation | [src/Resource/App/Variations/MediaStream.php](../src/Resource/App/Variations/MediaStream.php) |
 
@@ -169,9 +175,5 @@ single manual chapter.
 The detailed roadmap lives in [scope.md](scope.md#deferred--not-built). The next
 highest-value gaps are:
 
-1. PSR-7 `ServerRequestInterface` injection example.
-2. Production `ProdModule` and deployment tuning notes.
-3. Redis cache adapter binding for the existing cache showcase.
-4. Real-CMS patterns not deeply covered by the manual: file upload, resource
-   crawl, N+1 resolution, transaction wrapping, exception-to-HTTP mapping,
-   search, and structured logging.
+1. Optional companion evaluation for `#[Produces]`/BEAR.Accept CSV export,
+   Halo dev context, and async/Swoole manual-dispatch smoke.

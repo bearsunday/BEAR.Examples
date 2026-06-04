@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace MyVendor\Cms\Module;
 
+use Auth0\SDK\Contract\Auth0Interface;
 use BEAR\Package\AbstractAppModule;
 use BEAR\Package\PackageModule;
 use BEAR\Resource\JsonSchemaRequestExceptionHandlerInterface;
@@ -13,13 +14,17 @@ use League\CommonMark\CommonMarkConverter;
 use League\OAuth2\Client\Provider\Google;
 use MyVendor\Cms\Auth\AdminGuard;
 use MyVendor\Cms\Auth\AdminUserInterface;
+use MyVendor\Cms\Auth\Auth0AuthProvider;
 use MyVendor\Cms\Auth\AuthInterface;
+use MyVendor\Cms\Auth\AuthorIdentityResolver;
 use MyVendor\Cms\Auth\AuthSessionInterface;
 use MyVendor\Cms\Auth\GoogleAuthProvider;
 use MyVendor\Cms\Auth\NativeAuthSession;
 use MyVendor\Cms\Auth\UserInterface;
+use MyVendor\Cms\Exception\InvalidAuthProviderException;
 use MyVendor\Cms\Factory\ArticleFactory;
 use MyVendor\Cms\Provider\AdminUserProvider;
+use MyVendor\Cms\Provider\Auth0Provider;
 use MyVendor\Cms\Provider\CommonMarkConverterProvider;
 use MyVendor\Cms\Provider\CurrentUserProvider;
 use MyVendor\Cms\Provider\GoogleProvider;
@@ -34,6 +39,9 @@ use Ray\MediaQuery\MediaQuerySqlModule;
 
 use function dirname;
 use function getenv;
+use function in_array;
+use function strtolower;
+use function trim;
 
 /**
  * Production / CLI bindings: real DB via AuraSqlModule + Ray.MediaQuery,
@@ -86,10 +94,19 @@ final class AppModule extends AbstractAppModule
         $this->bind(ArticleFactory::class)->in(Scope::SINGLETON);
         $this->bind(SqlDateTime::class)->in(Scope::SINGLETON);
 
-        // Authentication: Google OAuth in production. FakeAuthProvider in test/fake.
+        // Authentication: Google OAuth by default; Auth0/OIDC is selected with CMS_AUTH_PROVIDER=auth0.
         $this->bind(Google::class)->toProvider(GoogleProvider::class)->in(Scope::SINGLETON);
-        $this->bind(AuthInterface::class)->to(GoogleAuthProvider::class)->in(Scope::SINGLETON);
+        $this->bind(Auth0Interface::class)->toProvider(Auth0Provider::class)->in(Scope::SINGLETON);
+        $authProvider = strtolower(trim((string) getenv('CMS_AUTH_PROVIDER')));
+        if (! in_array($authProvider, ['', 'google', 'auth0'], true)) {
+            throw new InvalidAuthProviderException($authProvider);
+        }
+
+        $this->bind(AuthInterface::class)->to(
+            $authProvider === 'auth0' ? Auth0AuthProvider::class : GoogleAuthProvider::class,
+        )->in(Scope::SINGLETON);
         $this->bind(AuthSessionInterface::class)->to(NativeAuthSession::class)->in(Scope::SINGLETON);
+        $this->bind(AuthorIdentityResolver::class);
         $this->bind(UserInterface::class)->toProvider(CurrentUserProvider::class);
         $this->bind(AdminUserInterface::class)->toProvider(AdminUserProvider::class);
         $this->bind(AdminGuard::class);

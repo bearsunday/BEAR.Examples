@@ -7,8 +7,8 @@ namespace MyVendor\Cms\Resource\Page\Admin;
 use BEAR\Resource\Code;
 use BEAR\Resource\ResourceObject;
 use MyVendor\Cms\Auth\AuthInterface;
+use MyVendor\Cms\Auth\AuthorIdentityResolver;
 use MyVendor\Cms\Auth\AuthSessionInterface;
-use MyVendor\Cms\Query\AuthorQueryInterface;
 use Throwable;
 
 /** @property array{message: string}|array{} $body */
@@ -17,7 +17,7 @@ class Callback extends ResourceObject
     public function __construct(
         private readonly AuthInterface $auth,
         private readonly AuthSessionInterface $session,
-        private readonly AuthorQueryInterface $author,
+        private readonly AuthorIdentityResolver $identity,
     ) {
     }
 
@@ -39,15 +39,15 @@ class Callback extends ResourceObject
             return $this;
         }
 
-        $author = $this->author->byEmail($user->email);
-        if ($author === null) {
+        $authorId = $this->identity->resolveAuthorId($user);
+        if ($authorId === null) {
             $this->code = Code::FORBIDDEN;
             $this->body = ['message' => 'Forbidden'];
 
             return $this;
         }
 
-        $this->session->login($user, $author->id);
+        $this->session->login($user, $authorId);
         $this->code = 303;
         $this->headers['Location'] = '/admin/index';
         $this->body = [];

@@ -2,7 +2,7 @@
 
 API Document
 
-## Routes (18)
+## Routes (23)
 
 | HTTP Route | Methods | Resource |
 |------------|---------|----------|
@@ -14,18 +14,23 @@ API Document
 | /categories | GET | App/Categories |
 | /category | GET, POST, PUT, DELETE | App/Category |
 | /media | GET, POST, DELETE | App/Media |
+| /media-upload | POST | App/MediaUpload |
 | /tag | GET, POST, DELETE | App/Tag |
 | /tags | GET | App/Tags |
+| /cache/article-preview | GET | App/Cache/ArticlePreview |
 | /cache/article-tags | GET, PUT | App/Cache/ArticleTags |
 | /cache/author | GET, PUT | App/Cache/Author |
 | /cache/author-profile | GET | App/Cache/AuthorProfile |
 | /cache/tag | GET, PUT | App/Cache/Tag |
+| /crawl/articles | GET | App/Crawl/Articles |
+| /crawl/author | GET | App/Crawl/Author |
+| /crawl/tags | GET | App/Crawl/Tags |
 | /variations/article-as-array | GET | App/Variations/ArticleAsArray |
 | /variations/article-raw-pdo | GET | App/Variations/ArticleRawPdo |
 | /variations/article-sql-query | GET | App/Variations/ArticleSqlQuery |
 | /variations/media-stream | GET | App/Variations/MediaStream |
 
-## ResourceObjects (18)
+## ResourceObjects (23)
 
 ### App/Article
 `/article`
@@ -94,6 +99,13 @@ API Document
 | POST | filename*, mimeType*, url*, alt, width, height | - |
 | DELETE | id* | - |
 
+### App/MediaUpload
+`/media-upload`
+
+| Method | Parameters | Links |
+|--------|------------|-------|
+| POST | file*, alt | - |
+
 ### App/Tag
 `/tag`
 
@@ -109,6 +121,13 @@ API Document
 | Method | Parameters | Links |
 |--------|------------|-------|
 | GET | articleId | href(goTag) |
+
+### App/Cache/ArticlePreview
+`/cache/article-preview`
+
+| Method | Parameters | Links |
+|--------|------------|-------|
+| GET | id* | - |
 
 ### App/Cache/ArticleTags
 `/cache/article-tags`
@@ -141,6 +160,27 @@ API Document
 | GET | id* | - |
 | PUT | id*, slug*, name* | - |
 
+### App/Crawl/Articles
+`/crawl/articles`
+
+| Method | Parameters | Links |
+|--------|------------|-------|
+| GET | authorId*, perPage | href(tagList) |
+
+### App/Crawl/Author
+`/crawl/author`
+
+| Method | Parameters | Links |
+|--------|------------|-------|
+| GET | id* | href(articleList) |
+
+### App/Crawl/Tags
+`/crawl/tags`
+
+| Method | Parameters | Links |
+|--------|------------|-------|
+| GET | articleId* | - |
+
 ### App/Variations/ArticleAsArray
 `/variations/article-as-array`
 
@@ -169,7 +209,7 @@ API Document
 |--------|------------|-------|
 | GET | id* | - |
 
-## Responses (13)
+## Responses (17)
 
 | Response | Schema | Properties |
 |----------|--------|------------|
@@ -177,17 +217,21 @@ API Document
 | Write_response | write_response.json | id, slug, email, filename, status, publishedAt, message |
 | ArticleList | articleList.json | items, page, perPage, count, totalCount |
 | Auth_authorization | auth_authorization.json | authorizationUrl |
-| Auth_response | auth_response.json | id, email, name, message, reason |
+| Auth_response | auth_response.json | id, provider, subject, email, name, message, reason |
 | Author | author.json | id, name, email, bio |
 | CategoryList | categoryList.json | items, totalCount |
 | Category | category.json | id, slug, name, description, parentId |
 | Media | media.json | id, filename, mimeType, url, alt, width, height |
 | Tag | tag.json | id, slug, name |
 | TagList | tagList.json | items, totalCount |
+| Cache_article_preview | cache_article_preview.json | id, title, status, authorId, cachePattern |
 | Cache_article_tags | cache_article_tags.json | articleId, cachePattern, items, count |
 | Author_profile | author_profile.json | authorId, dependencyUri, cachePattern |
+| Crawl_article_list | crawl_article_list.json | (array) |
+| Crawl_author | crawl_author.json | id, name, email, bio, articleList |
+| Crawl_tag_list | crawl_tag_list.json | (array) |
 
-## Query Interfaces (12)
+## Query Interfaces (14)
 
 | Interface | Methods |
 |-----------|---------|
@@ -195,6 +239,8 @@ API Document
 | ArticleQueryInterface | item(id):Article, bySlug(slug):Article, list(categoryId, tagId, authorId, status, perPage):PagesInterface |
 | ArticleSelectionQueryInterface | list(status):ArticleSelection |
 | ArticleTagCommandInterface | clear(articleId):void, link(articleId, tagId):void |
+| AuthIdentityCommandInterface | add(provider, subject, authorId, email, name):void |
+| AuthIdentityQueryInterface | byProviderSubject(provider, subject):AuthIdentity |
 | AuthorCommandInterface | add(name, email, bio):void, update(id, name, email, bio):void |
 | AuthorQueryInterface | item(id):Author, byEmail(email):Author, list():array |
 | CategoryCommandInterface | add(slug, name, description, parentId):void, update(id, name, description, parentId):void, delete(id):void |
@@ -202,16 +248,9 @@ API Document
 | MediaCommandInterface | add(filename, mimeType, url, alt, width, height):void, delete(id):void |
 | MediaQueryInterface | item(id):Media, byFilename(filename):Media |
 | TagCommandInterface | add(slug, name):void, update(id, slug, name):void, delete(id):void |
-| TagQueryInterface | item(id):Tag, bySlug(slug):Tag, list():array, listByArticle(articleId):array |
+| TagQueryInterface | item(id):Tag, bySlug(slug):Tag, list():array, listByArticle(articleId):array, listByArticles(articleIds):array |
 
-`ArticleCommandInterface::publish(...):AffectedRows` is an intentional
-state-transition exception to the usual void write-command pattern:
-`ArticlePublish` uses the affected-row result to distinguish a successful
-draft → published move from a concurrent publish/delete conflict. The public
-`/article-publish` request does not accept `status`; the resource supplies
-`published` internally before invoking the command.
-
-## SQL (36)
+## SQL (39)
 
 | File | Query |
 |------|-------|
@@ -285,6 +324,11 @@ FROM arti...` |
 SET title = :title,
     body = :body,
     excerpt = :excerpt,...` |
+| auth_identity_add.sql | `INSERT INTO auth_identities (provider, subject, author_id, email, name)
+VALUE...` |
+| auth_identity_by_provider_subject.sql | `SELECT id, provider, subject, author_id, email, name
+FROM auth_identities
+WHE...` |
 | author_add.sql | `INSERT INTO authors (name, email, bio) VALUES (:name, :email, :bio)` |
 | author_by_email.sql | `SELECT id, name, email, bio FROM authors WHERE email = :email LIMIT 1` |
 | author_item.sql | `SELECT
@@ -361,13 +405,20 @@ ORDER BY name` |
     t.name
 FROM tags t
 JOIN article_tags at ON a...` |
+| tag_list_by_articles.sql | `SELECT
+    at.article_id AS articleId,
+    t.id,
+    t.slug,
+    t.name
+FROM ...` |
 | tag_update.sql | `UPDATE tags SET slug = :slug, name = :name WHERE id = :id` |
 
-## Entities (5)
+## Entities (6)
 
 | Entity | Properties |
 |--------|------------|
 | Article | id, slug, title, body, status, authorId, categoryId |
+| AuthIdentity | id, provider, subject, authorId, email, name |
 | Author | id, name, email, bio |
 | Category | id, slug, name |
 | Media | id, filename, mimeType, url, width, height |

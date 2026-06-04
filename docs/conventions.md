@@ -630,6 +630,26 @@ Pick A whenever the dependency set is `#[Embed]`-expressible. Reach
 for B only when the dependency count or parameters are
 body-derived.
 
+**Shape C — explicit `#[DonutCache]` (scalar HAL preview).**
+`Cache\ArticlePreview` is the explicit `#[DonutCache]` example. Keep it
+scalar-only in this HAL API: donut-hole placeholders rely on string rendering
+through `DonutRequest::__toString()`, while HAL object rendering serializes
+unrendered request placeholders as objects. Use `#[Embed]` + `#[Cacheable]`
+for HAL embed dependency teaching, and use explicit `#[DonutCache]` here only
+to show the no-ETag donut view cache path.
+
+#### Query-string variant invalidation
+
+`#[Purge(uri: 'app://self/articles')]` intentionally covers only the canonical
+article list URI. Query-string variants such as
+`app://self/articles?categoryId=3` are distinct cache entries.
+
+Do not add an application-specific invalidator until a concrete CMS workflow
+needs those cached filter variants. A custom purge service can be correct in a
+production application, but it does not teach a reusable BEAR.Sunday primitive.
+This catalog therefore keeps the executable examples on `#[Purge]`, `#[Embed]`
+dependency propagation, explicit `fromAssoc()`, and explicit `#[DonutCache]`.
+
 #### Anti-patterns
 
 - Writing the self URI into `Header::SURROGATE_KEY` — the framework's
@@ -646,6 +666,22 @@ body-derived.
 - Reaching for `fromAssoc()` when there is no cross-resource
   dependency at all — the default `#[Cacheable]`-only leaf is the
   correct shape.
+- Combining explicit `#[DonutCache]` with HAL `#[Embed]` in this project.
+  It teaches a renderer mismatch instead of cache semantics.
+
+### File upload with `#[InputFile]`
+
+`MediaUpload` is the canonical file-upload example. Keep `Media::onPost`
+as scalar metadata so the project shows both parameter styles side by side.
+
+- Use `#[InputFile] FileUpload|ErrorFileUpload $file`.
+- Keep size/type/extension checks in the resource as well as the attribute:
+  tests can pass pre-built `FileUpload` objects through the query array, which
+  intentionally bypasses `FileUploadFactory` validation.
+- Write runtime files to `CMS_UPLOAD_DIR` (default `var/tmp/uploads`), not to
+  tracked fixture directories.
+- After storing the file, create Media metadata through `MediaCommandInterface`
+  and recover the new row with `byFilename()`.
 
 ## 5. Read/Write SQL contract
 

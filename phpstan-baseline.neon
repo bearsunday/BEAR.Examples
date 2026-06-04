@@ -5,13 +5,3 @@ parameters:
 			identifier: argument.type
 			count: 1
 			path: src/Auth/GoogleAuthProvider.php
-
-		# Vendor interface limitation: Ray\MediaQuery\SqlQueryInterface::getRowList()
-		# declares array<array<mixed>> for tabular fetches, but the Fake (and the
-		# real path with FetchNewInstance) returns a list of entities. Documented
-		# in the method docblock; cannot match without losing precision.
-		-
-			message: '#^Return type \(list\<object\>\) of method MyVendor\\Cms\\Fake\\FakeSqlQuery\:\:getRowList\(\) should be compatible with return type \(array\<array\<mixed\>\>\) of method Ray\\MediaQuery\\SqlQueryInterface\:\:getRowList\(\)$#'
-			identifier: method.childReturnType
-			count: 1
-			path: tests/Fake/FakeSqlQuery.php

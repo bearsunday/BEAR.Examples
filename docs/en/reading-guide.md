@@ -46,7 +46,10 @@ the full Article surface:
 - `Author.php`, `Category.php`, and `Tag.php` for simple item resources.
 - `Articles.php`, `Categories.php`, and `Tags.php` for collection resources.
 - `Media.php` for upload-like data and filename-based lookup.
+- `MediaUpload.php` for the `#[InputFile]` upload boundary.
 - `Auth.php` for an action-style resource that is not CRUD-shaped.
+- `src/Resource/App/Crawl/*` plus `ArticleTagsDataLoader` for
+  `linkCrawl()` and DataLoader batching without manual resource fetching.
 
 ## Pass 4: Runtime Contexts
 
@@ -54,9 +57,13 @@ Then read composition and test support:
 
 - `src/Module/AppModule.php`, `FakeModule.php`, and `TestModule.php` for
   context-specific bindings.
+- `src/Module/ProdModule.php` for the production overlay and optional Redis
+  cache storage.
 - `tests/Fake/FakeSqlQuery.php` for in-memory MediaQuery behavior.
 - `tests/Fake/FakeExtendedPdoProvider.php` for the raw-PDO variation tests.
 - `bin/demo.php` and `bin/demo-variations.php` for runnable examples.
+- `tests/Resource/App/Crawl/CrawlDataLoaderTest.php` for the focused
+  crawl/DataLoader query-count contract.
 
 ## What To Notice By Layer
 

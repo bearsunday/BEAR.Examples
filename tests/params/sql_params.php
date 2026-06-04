@@ -66,6 +66,14 @@ return [
     'author_item.sql' => ['id' => 1],
     'author_list.sql' => [],
     'author_update.sql' => ['name' => 'Updated', 'email' => 'updated@example.com', 'bio' => '', 'id' => 1],
+    'auth_identity_add.sql' => [
+        'provider' => 'google',
+        'subject' => 'smoke-subject',
+        'authorId' => 1,
+        'email' => 'evelyn.moore1@example.com',
+        'name' => 'Evelyn Moore',
+    ],
+    'auth_identity_by_provider_subject.sql' => ['provider' => 'google', 'subject' => 'fake-user-1'],
 
     // categories -------------------------------------------------------
     'category_add.sql' => ['slug' => 'smoke', 'name' => 'Smoke', 'description' => null, 'parentId' => null],
@@ -95,5 +103,6 @@ return [
     'tag_item.sql' => ['id' => 1],
     'tag_list.sql' => [],
     'tag_list_by_article.sql' => ['articleId' => 1],
+    'tag_list_by_articles.sql' => ['articleIds' => [1, 2, 3]],
     'tag_update.sql' => ['slug' => 'smoke', 'name' => 'Smoke', 'id' => 1],
 ];

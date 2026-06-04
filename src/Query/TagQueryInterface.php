@@ -22,4 +22,14 @@ interface TagQueryInterface
     /** @return list<Tag> */
     #[DbQuery('tag_list_by_article')]
     public function listByArticle(int $articleId): array;
+
+    /**
+     * Batch read used by the crawl/DataLoader companion.
+     *
+     * @param list<int> $articleIds
+     *
+     * @return list<array{articleId: int, id: int, slug: string, name: string}>
+     */
+    #[DbQuery('tag_list_by_articles')]
+    public function listByArticles(array $articleIds): array;
 }

@@ -28,7 +28,12 @@ in the current `1.x` HEAD — if you find a discrepancy, that's a doc bug.
 | `app://self/category` / `categories` | GET / POST / PUT / DELETE | |
 | `app://self/tag` / `tags` | GET / POST / DELETE | |
 | `app://self/media` | GET / POST / DELETE | No `media` collection (asymmetric — see "By design") |
+| `app://self/media-upload` | POST | `#[InputFile]` image upload; stores runtime files under `CMS_UPLOAD_DIR` or `var/tmp/uploads` and records Media metadata |
 | `app://self/auth` | GET / POST | OAuth flow: GET returns authorization URL, POST exchanges `{code, state}` |
+| `app://self/crawl/author` | GET | `linkCrawl` root for the author → articles → tags companion graph |
+| `app://self/crawl/articles` | GET | Article summary list with nested DataLoader-backed `tagList` crawl link |
+| `app://self/crawl/tags` | GET | Tag-list row contract used by the DataLoader and standalone reads |
+| `app://self/cache/articlepreview` | GET | Explicit `#[DonutCache]` HAL preview example; scalar-only because donut-hole placeholders are string-renderer oriented |
 | `app://self/cache/author` | GET / PUT | Cache showcase leaf — user-zero-code (`#[Cacheable]` only) |
 | `app://self/cache/authorprofile` | GET | Cache showcase parent — `#[Embed]`-only automatic dependency (single-child, zero cache code; since `bear/query-repository` 1.16) |
 | `app://self/cache/tag` | GET / PUT | Cache showcase leaf — user-zero-code (`#[Cacheable]` only) |
@@ -67,15 +72,17 @@ variation that demonstrates `BEAR.Streamer` without changing canonical
 |---------|-------|-------|
 | `_links` | `#[Link]` attributes (RFC 6570 templates) | Rels follow ALPS Choreography names (`goArticleList`, `goAuthor`, …) |
 | `_embedded` | `#[Embed]` + `addQuery()` for parametric embeds; manual array build inside `onGet` for ID-after-fetch cases | |
+| `linkCrawl` | `src/Resource/App/Crawl/*` + `ArticleTagsDataLoader` | `ResourceInterface::crawl('app://self/crawl/author', 'author-tree', ['id' => 1])` traverses author → articles → tags and batches tags with one MediaQuery call |
 | ALPS profile | `var/alps/profile.json` (single source of truth) | HTML rendering via `composer doc` (`asd`) |
 
 ### Validation
 
 | Layer | Mechanism | Coverage |
 |-------|-----------|----------|
-| Response body | `#[JsonSchema(schema: '...')]` | Canonical App GET resources (`Article`, `Articles`, `Auth`, `Author`, `Category`, `Categories`, `Tag`, `Tags`, `Media`, and the cache showcase) plus `Auth::onPost` (separate `auth_response.json` for string subject id). DELETE methods return without body validation |
+| Response body | `#[JsonSchema(schema: '...')]` | Canonical App GET resources (`Article`, `Articles`, `Auth`, `Author`, `Category`, `Categories`, `Tag`, `Tags`, `Media`, crawl companion resources, and the cache showcase) plus `Auth::onPost` (separate `auth_response.json` for string subject id). DELETE methods return without body validation |
 | Request params | `#[JsonSchema(params: '...')]` | POST and PUT on the resources above (DELETE takes only `int $id`, no params schema) |
 | Input DTO | `#[Input]` + `Ray\InputQuery` | `ArticleCreateInput`, `ArticleUpdateInput`, `AuthExchangeInput`. Author / Category / Tag / Media remain scalar by intentional contrast — see "By design" |
+| File upload | `#[InputFile]` + `Koriym\FileUpload` | `MediaUpload::onPost()` validates image MIME/extension/size and persists Media metadata |
 | Native array DTO inputs | `array` / `array|null` via Ray.InputQuery 1.1 → malformed shapes become `ParameterException` (→ 400) | See `conventions.md` §4 "Native array DTO inputs" |
 
 ### Auth
@@ -83,12 +90,15 @@ variation that demonstrates `BEAR.Streamer` without changing canonical
 | Item | Notes |
 |------|-------|
 | `AuthInterface` | Backend abstraction |
-| `GoogleAuthProvider` | `league/oauth2-google` |
+| `GoogleAuthProvider` | `league/oauth2-google`; default provider |
+| `Auth0AuthProvider` | `auth0/auth0-php`; selected with `CMS_AUTH_PROVIDER=auth0` |
 | `FakeAuthProvider` | Test/fake context |
-| `AuthenticatedUser` | `final readonly` |
+| `AuthenticatedUser` | `final readonly`; keeps `id` as a backward-compatible subject alias and exposes `provider` + `subject` |
+| `AuthIdentity` | `(provider, subject) -> authorId` mapping for stable external identities; email is first-login fallback only |
 | `Auth` resource | Auth flow shape with response schema |
 | `AuthSessionInterface` | Session-backed current-user, OAuth state, login, and logout boundary |
 | `AdminUserInterface` | Authenticated admin identity carrying author ownership; enforced in `Page/Admin/*` through `AdminGuard` |
+| Practical Google guide | `docs/auth-google.md` / `docs/ja/auth-google.md` show OAuth client setup, `.env`, callback, identity mapping, logout, and env-gated authorization URL smoke |
 
 Note: `Page/Admin/*` is now behind an `AdminGuard` check backed by `UserInterface` / `AdminUserInterface`, with CSRF protection on admin form posts via the `Ray\Csrf` `#[SameOrigin]` + `#[CsrfToken]` interceptors.
 
@@ -149,15 +159,21 @@ Patterns the codebase deliberately demonstrates (each appears in at least one pl
 | BEAR.Async opt-in embed parallelization | `bin/async.php` overlays `ParallelRuntimeModule`; Article's `author` / `category` / `tagList` embeds are the reference graph |
 | Three Article GET implementation variations | `src/Resource/App/Variations/` (`composer demo:variations`) |
 | Stream transfer response | `Variations\MediaStream` uses `BEAR.Streamer` and an open file handle body |
+| File upload boundary | `MediaUpload` demonstrates `#[InputFile]`, `FileUpload`, `ErrorFileUpload`, and runtime storage configuration |
+| `linkCrawl` + DataLoader batching | `Crawl\Author` → `Crawl\Articles` → `Crawl\Tags`; `ArticleTagsDataLoader` collapses per-article tag reads into `TagQueryInterface::listByArticles()` |
 | QueryRepository cache — user-zero-code leaf | `Cache\Author`, `Cache\Tag` (`#[Cacheable]` only; reflection-pinned) |
 | QueryRepository cache — `#[Embed]`-only parent (single-child, auto-merged) | `Cache\AuthorProfile`; reflection-pinned to zero manual cache code (since `bear/query-repository` 1.16.0) |
 | QueryRepository cache — one-line `fromAssoc` parent (N-child, body-derived) | `Cache\ArticleTags`; reflection-pinned to exactly one `fromAssoc` call |
+| QueryRepository cache — explicit `#[DonutCache]` | `Cache\ArticlePreview`; scalar HAL preview, no invented clock/random demo |
+| Application import companion | `examples/import/ImportedCatalog`; `ImportAppModule` mounts `app://catalog/status` alongside `app://self/*` in a focused test |
+| Production/security operating reference | `src/Module/ProdModule.php` plus `docs/production.md`; BEAR.Package prod module, optional `CMS_REDIS_DSN` QueryRepository storage, compile artifacts, and SAST/taint commands |
+| Practical Google auth reference | `docs/auth-google.md`; Google OAuth setup, callback, identity mapping, logout, common failures, and env-gated smoke |
 | Reader/admin article visibility split | Public `Page/ArticleList` enforces `published`; admin `Page/Admin/ArticleList` can show all, draft, or published author-owned articles |
 | PRG redirect on admin write | `Page/Admin/Article`, `Page/Admin/ArticleConfirm`, and `Page/Admin/ArticleDelete` redirect 303 after successful writes |
 
 ### Documentation surface
 
-`README.md` → `docs/{en,ja}/reading-guide.md` → `docs/architecture.md` → `docs/conventions.md` → `docs/resources.md` → `docs/alps.md` → `docs/journal/*`. Conventions is the canonical rulebook for new code.
+`README.md` → `docs/{en,ja}/reading-guide.md` → `docs/architecture.md` → `docs/conventions.md` → `docs/resources.md` → `docs/production.md` → `docs/auth-google.md` → `docs/alps.md` → `docs/journal/*`. Conventions is the canonical rulebook for new code.
 
 ---
 
@@ -183,6 +199,10 @@ and remain here only so older journal entries make sense.
 | # | Item | Closed by |
 |---|------|-----------|
 | D2 | Auth boundary for `Page/Admin/*` | `UserInterface` / `AdminUserInterface`, providers, `AdminGuard`, Google OAuth session login, author-scoped ownership, and CSRF form protection |
+| D11 | Application import companion example | `examples/import/ImportedCatalog` plus `ImportAppExampleTest` demonstrate `ImportAppModule` without adding artificial CMS behavior |
+| D12 | `linkCrawl` / DataLoader companion | `src/Resource/App/Crawl/*`, `ArticleTagsDataLoader`, and `CrawlDataLoaderTest` demonstrate author → articles → tags traversal with one batched tag query |
+| D13 | Production/security operating reference | `docs/production.md`, `docs/ja/production.md`, `composer security:sast`, and `composer security:taint` document the opt-in production/security path without adding Redis/DAST/OAuth requirements to default tests |
+| D14 | Practical Google auth reference | `docs/auth-google.md`, `docs/ja/auth-google.md`, and `GoogleAuthProviderSmokeTest` make Google the canonical admin login path while keeping Auth0/OIDC secondary |
 | D7 | `Articles` collection `totalCount` | MediaQuery `PagesInterface::total` is exposed as `totalCount` in the collection body |
 | D8 | `#[Pager]` / `PagesInterface` adoption decision | Article collection reads use Ray.MediaQuery `#[Pager]`; fake uses Pagerfanta `ArrayAdapter` |
 
@@ -200,6 +220,9 @@ These aren't bugs or backlog — they're deliberate choices that keep the refere
 | No `app://self/` entry point | `Page/Index` is the public HTML entry; HAL discoverability is shown via per-resource `_links` |
 | JS-enhanced admin (HTMX or similar) | Out of demonstration scope; the patterns to demonstrate are server-side. An optional add-on would not change App-layer code |
 | Applying `#[Cacheable]` to the main `Article` resource | `Article` composes three embeds (`author`, `category`, `tagList`) and `tagList` is itself a body-derived variable-length list. Mixing `#[Embed]`-driven composition and `fromAssoc()`-driven cross-resource invalidation on the same response is exercised by the `Cache\*` showcase as the canonical pattern; leaving the main `Article` untouched keeps the principal resource side-by-side comparable against the showcase rather than entangling the two demos |
+| PSR-7 request context demo | Deprioritized by design. A diagnostics resource would be easy but unused in this CMS; add one only when a concrete header/cookie/client-IP use emerges |
+| OAuth provider zoo | Google and Auth0/OIDC intentionally cover the two useful shapes: social login and generic tenant-backed identity provider. Adding more providers would mostly repeat configuration mechanics |
+| Other-language connection | Keep out of the CMS mainline. This is better as a companion BEAR.Thrift or isolated `examples/` demo than as an artificial CMS feature |
 
 ## Deferred / not built
 
@@ -207,10 +230,10 @@ Drawn from `architecture.md` "What was intentionally not built", `journal/handof
 
 | # | Item | Why deferred | Recovery / next step |
 |---|------|--------------|----------------------|
-| D1 | `#[CacheableResponse]` on list reads + `#[Purge]` on writes (PR-C2) | **Partial — landed for non-embedded list reads.** `Articles` / `Categories` carry class-level `#[CacheableResponse]`; `Article` / `Category` writes carry `#[Purge(uri: 'app://self/{collection}')]`. Two intentional exclusions: (1) entity resources skip class-level caching because `DonutCommandInterceptor` re-runs `onGet` on deleted entities and mutates `204 → 404`; (2) `Tags` skips caching because it is embedded in `Article` via `#[Embed(rel: 'tagList')]` — when the html context materialises the embed, the donut pipeline calls `(string) $ro` and `CmsQiqRenderer` has no App-template, throws, and breaks the ETag chain. Note: `#[Purge(uri)]` invalidates the canonical URI only, not query-string variants (e.g. `?categoryId=3`) | Pipeline verified in `tests/Resource/App/CacheTest.php` (asserts `try-donut-view` / `put-donut` / `save-etag` / `purge-query-repository` in `RepositoryLogger`). Future follow-ups: per-query-string purge keys and entity-level caching once the delete-mutation upstream behavior is clarified |
+| D1 | Entity-level cache rollout and article-list query-string variants | **Partial — canonical list reads/writes are covered.** `Articles` / `Categories` carry class-level `#[CacheableResponse]`; `Article` / `Category` writes carry `#[Purge(uri: 'app://self/{collection}')]`. Query-string variants (for example `?categoryId=3`) are distinct cache entries and are deliberately left as application policy rather than a reference implementation. Two other intentional exclusions remain: (1) entity resources skip class-level caching because `DonutCommandInterceptor` re-runs `onGet` on deleted entities and mutates `204 → 404`; (2) `Tags` skips caching because it is embedded in `Article` via `#[Embed(rel: 'tagList')]` — when the html context materialises the embed, the donut pipeline calls `(string) $ro` and `CmsQiqRenderer` has no App-template, throws, and breaks the ETag chain | Pipeline verified in `tests/Resource/App/CacheTest.php` (asserts `try-donut-view` / `put-donut` / `save-etag` / `purge-query-repository` in `RepositoryLogger`). Add query-string variant invalidation only when a real CMS workflow needs cached filter variants; revisit entity-level caching once the delete-mutation upstream behavior is clarified |
 | D3 | Async Docker CI smoke | Runtime containers exist, but CI does not yet build ext-parallel and run `composer parallel:demo` | Add a focused GitHub Actions job once image build time and caching are acceptable |
-| D5 | Real Google OAuth integration test | Needs creds + callback URL | env-gated test that skips unless `GOOGLE_CLIENT_ID` is set |
-| D9 | phpstan baseline (2 entries) | Upstream `SqlQueryInterface` return-type narrows; OAuth provider arg-type widening | Wait for upstream relaxation, then drop entries |
+| D5 | Real OAuth integration tests | Needs Google/Auth0 creds + callback URLs | env-gated tests that skip unless provider env vars are set |
+| D9 | phpstan baseline (1 entry) | Upstream OAuth provider arg-type widening | Wait for upstream relaxation, then drop the entry |
 | D10 | Migration to `bearsunday/coding-standard` | Drafted as [coding-standard-roadmap/003](journal/coding-standard-roadmap/003-myvendor-cms-adopts-bearsunday-cs.md); blocked on the package's v0.1 + 001 (`@input-param` expansion) landing | After upstream lands, swap composer dependency and run the migration playbook in 003 |
 
 ---

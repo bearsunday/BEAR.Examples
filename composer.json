@@ -11,6 +11,7 @@
     ],
     "require": {
         "php": "^8.5.0",
+        "auth0/auth0-php": "^8.19",
         "bear/async": "^0.3",
         "bear/package": "^1.14",
         "bear/qiq-module": "^2.0",
@@ -50,6 +51,7 @@
     "autoload-dev": {
         "psr-4": {
             "MyVendor\\Cms\\": "tests/",
+            "MyVendor\\Cms\\Example\\ImportedCatalog\\": "examples/import/ImportedCatalog/src/",
             "Ray\\Csrf\\": "tests-csrf/"
         }
     },
@@ -123,9 +125,14 @@
         ],
         "phpmd": "php -d error_reporting=22527 ./vendor/bin/phpmd src,src-csrf,bin text ./phpmd.xml --exclude \"bin/semantic-ex/*\"",
         "security": [
+            "@security:sast",
+            "@security:taint"
+        ],
+        "security:sast": [
             "./vendor/bin/bear.security-scan src",
             "./vendor/bin/bear.security-scan src-csrf"
         ],
+        "security:taint": "./vendor/bin/psalm --taint-analysis src src-csrf",
         "tests": [
             "@cs",
             "@sa",

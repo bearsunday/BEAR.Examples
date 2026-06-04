@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace MyVendor\Cms\Smoke;
 
+use Aura\Sql\ExtendedPdo;
 use PDO;
+use PDOStatement;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
@@ -54,7 +56,7 @@ final class SqlSmokeTest extends TestCase
     private static string $dbPath = '';
     private static string $templatePath = '';
 
-    private PDO $pdo;
+    private ExtendedPdo $pdo;
 
     public static function setUpBeforeClass(): void
     {
@@ -120,7 +122,7 @@ final class SqlSmokeTest extends TestCase
             sprintf('Failed to copy seeded SQLite template DB to %s', self::$dbPath),
         );
 
-        $this->pdo = new PDO('sqlite:' . self::$dbPath, null, null, [
+        $this->pdo = new ExtendedPdo('sqlite:' . self::$dbPath, null, null, [
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
         ]);
         $this->assertNotFalse(
@@ -186,10 +188,8 @@ final class SqlSmokeTest extends TestCase
 
         $this->pdo->beginTransaction();
         try {
-            $stmt = $this->pdo->prepare($sql);
-            $this->assertNotFalse($stmt, "Failed to prepare {$sqlFile}");
-            $ok = $stmt->execute($params);
-            $this->assertTrue($ok, "Failed to execute {$sqlFile}");
+            $stmt = $this->pdo->perform($sql, $params);
+            $this->assertInstanceOf(PDOStatement::class, $stmt, "Failed to execute {$sqlFile}");
             if ($stmt->columnCount() > 0) {
                 // Close SELECT cursors before rolling back the per-test transaction.
                 $stmt->closeCursor();

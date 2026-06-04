@@ -7,7 +7,7 @@ declare(strict_types=1);
  *
  * Usage: php bin/seed.php [--truncate]
  *
- * Tables filled: authors, categories, tags, articles, article_tags, media.
+ * Tables filled: authors, categories, tags, articles, article_tags, auth_identities, media.
  * Referential integrity matches Phase 3 output, so seeded data is a superset
  * of what FakeSqlQuery returns in test/dev.
  */
@@ -30,7 +30,7 @@ $loadJson = static fn (string $name) => json_decode(
 $truncate = in_array('--truncate', $argv, true);
 if ($truncate) {
     $conn->executeStatement('SET FOREIGN_KEY_CHECKS = 0');
-    foreach (['article_tags', 'articles', 'tags', 'categories', 'authors', 'media'] as $t) {
+    foreach (['auth_identities', 'article_tags', 'articles', 'tags', 'categories', 'authors', 'media'] as $t) {
         $conn->executeStatement(sprintf('TRUNCATE TABLE `%s`', $t));
     }
 
@@ -107,6 +107,20 @@ foreach ($articleTags as $row) {
 }
 
 fwrite(STDOUT, sprintf("Seeded %d article_tags links.\n", count($articleTags)));
+
+$authIdentities = $loadJson('authIdentity.json');
+foreach ($authIdentities as $row) {
+    $conn->insert('auth_identities', [
+        'id' => $row['id'],
+        'provider' => $row['provider'],
+        'subject' => $row['subject'],
+        'author_id' => $row['authorId'],
+        'email' => $row['email'],
+        'name' => $row['name'],
+    ]);
+}
+
+fwrite(STDOUT, sprintf("Seeded %d auth_identities.\n", count($authIdentities)));
 
 $media = $loadJson('media.json');
 foreach ($media as $row) {

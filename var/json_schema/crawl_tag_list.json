@@ -1,0 +1,32 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://example.com/bear-cms/crawl_tag_list",
+    "title": "CrawlTagList",
+    "description": "Tag rows attached by the crawl/DataLoader companion.",
+    "type": "array",
+    "items": {
+        "type": "object",
+        "required": [
+            "articleId",
+            "id",
+            "slug",
+            "name"
+        ],
+        "properties": {
+            "articleId": {
+                "type": "integer",
+                "minimum": 1
+            },
+            "id": {
+                "type": "integer",
+                "minimum": 1
+            },
+            "slug": {
+                "type": "string"
+            },
+            "name": {
+                "type": "string"
+            }
+        }
+    }
+}

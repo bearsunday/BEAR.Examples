@@ -7,6 +7,7 @@ namespace MyVendor\Cms\Fake;
 use Aura\Sql\ExtendedPdo;
 use MyVendor\Cms\Entity\Article;
 use MyVendor\Cms\Entity\ArticleStatus;
+use MyVendor\Cms\Entity\AuthIdentity;
 use MyVendor\Cms\Entity\Author;
 use MyVendor\Cms\Entity\Category;
 use MyVendor\Cms\Entity\Media;
@@ -22,12 +23,14 @@ use Ray\MediaQuery\Result\PostQueryInterface;
 use Ray\MediaQuery\SqlQueryInterface;
 
 use function array_filter;
+use function array_flip;
 use function array_map;
 use function array_values;
 use function count;
 use function dirname;
 use function file_get_contents;
 use function in_array;
+use function is_array;
 use function json_decode;
 use function str_contains;
 use function str_replace;
@@ -74,6 +77,7 @@ final class FakeSqlQuery implements SqlQueryInterface
         'tag_delete',
         'author_add',
         'author_update',
+        'auth_identity_add',
         'media_add',
         'media_delete',
         'article_tag_clear',
@@ -85,6 +89,9 @@ final class FakeSqlQuery implements SqlQueryInterface
 
     /** @var list<array{sqlId: string, values: array<string, mixed>, insertedId?: int}> */
     public array $execLog = [];
+
+    /** @var list<array{method: string, sqlId: string, values: array<string, mixed>}> */
+    public array $queryLog = [];
 
     /** @var array<string, int> */
     private array $nextId;
@@ -98,13 +105,24 @@ final class FakeSqlQuery implements SqlQueryInterface
             'category' => $this->load($fakeDir . '/category.json'),
             'tag' => $this->load($fakeDir . '/tag.json'),
             'author' => $this->load($fakeDir . '/author.json'),
+            'authIdentity' => $this->load($fakeDir . '/authIdentity.json'),
             'media' => $this->load($fakeDir . '/media.json'),
             'articleTag' => $this->load($fakeDir . '/articleTag.json'),
         ];
         $this->nextId = [];
-        foreach (['article', 'category', 'tag', 'author', 'media'] as $t) {
+        foreach (['article', 'category', 'tag', 'author', 'authIdentity', 'media'] as $t) {
             $this->nextId[$t] = $this->maxId($t) + 1;
         }
+    }
+
+    public function resetExecLog(): void
+    {
+        $this->execLog = [];
+    }
+
+    public function resetQueryLog(): void
+    {
+        $this->queryLog = [];
     }
 
     /** @return list<array<string, mixed>> */
@@ -144,6 +162,8 @@ final class FakeSqlQuery implements SqlQueryInterface
             return null;
         }
 
+        $this->queryLog[] = ['method' => 'getRow', 'sqlId' => $sqlId, 'values' => $values];
+
         return match ($sqlId) {
             'article_item' => $this->findArticleById((int) $values['id']),
             'article_by_slug' => $this->findArticleBySlug((string) $values['slug']),
@@ -157,6 +177,10 @@ final class FakeSqlQuery implements SqlQueryInterface
             'tag_by_slug' => $this->findTagBySlug((string) $values['slug']),
             'author_item' => $this->findAuthorById((int) $values['id']),
             'author_by_email' => $this->findAuthorByEmail((string) $values['email']),
+            'auth_identity_by_provider_subject' => $this->findAuthIdentity(
+                (string) $values['provider'],
+                (string) $values['subject'],
+            ),
             'media_item' => $this->findMediaById((int) $values['id']),
             'media_by_filename' => $this->findMediaByFilename((string) $values['filename']),
             default => throw new LogicException("FakeSqlQuery: unknown row sqlId '{$sqlId}'"),
@@ -170,7 +194,7 @@ final class FakeSqlQuery implements SqlQueryInterface
      *
      * @param array<string, mixed> $values
      *
-     * @return list<object>
+     * @return list<array<string, mixed>|object>
      */
     public function getRowList(string $sqlId, array $values = [], FetchInterface|null $fetch = null): array
     {
@@ -180,11 +204,14 @@ final class FakeSqlQuery implements SqlQueryInterface
             return [];
         }
 
+        $this->queryLog[] = ['method' => 'getRowList', 'sqlId' => $sqlId, 'values' => $values];
+
         return match ($sqlId) {
             'article_list' => $this->listArticles($values),
             'category_list' => array_map(fn ($r) => $this->toCategory($r), $this->tables['category']),
             'tag_list' => array_map(fn ($r) => $this->toTag($r), $this->tables['tag']),
             'tag_list_by_article' => $this->listTagsByArticle((int) $values['articleId']),
+            'tag_list_by_articles' => $this->listTagRowsByArticles($values['articleIds']),
             'author_list' => array_map(fn ($r) => $this->toAuthor($r), $this->tables['author']),
             default => throw new LogicException("FakeSqlQuery: unknown row_list sqlId '{$sqlId}'"),
         };
@@ -245,6 +272,7 @@ final class FakeSqlQuery implements SqlQueryInterface
     private function selectRows(string $sqlId, array $values, FetchInterface|null $fetch): array
     {
         $assoc = $fetch === null || $fetch instanceof FetchAssoc;
+        $this->queryLog[] = ['method' => 'selectRows', 'sqlId' => $sqlId, 'values' => $values];
 
         return match ($sqlId) {
             'article_list', 'article_selection_list' => $assoc
@@ -263,6 +291,7 @@ final class FakeSqlQuery implements SqlQueryInterface
                     'name' => $tag->name,
                 ]), $this->listTagsByArticle((int) $values['articleId']))
                 : $this->listTagsByArticle((int) $values['articleId']),
+            'tag_list_by_articles' => $this->listTagRowsByArticles($values['articleIds']),
             'author_list' => $assoc
                 ? array_map(fn ($r) => $this->toAuthorSqlRow($r), $this->tables['author'])
                 : array_map(fn ($r) => $this->toAuthor($r), $this->tables['author']),
@@ -317,6 +346,12 @@ final class FakeSqlQuery implements SqlQueryInterface
             'author_by_email' => $assoc
                 ? $this->mapRawRow('author', 'email', (string) $values['email'], $this->toAuthorSqlRow(...))
                 : $this->findAuthorByEmail((string) $values['email']),
+            'auth_identity_by_provider_subject' => $assoc
+                ? $this->toAuthIdentitySqlRow($this->findAuthIdentityRow(
+                    (string) $values['provider'],
+                    (string) $values['subject'],
+                ))
+                : $this->findAuthIdentity((string) $values['provider'], (string) $values['subject']),
             'media_item' => $assoc
                 ? $this->mapRawRow('media', 'id', (int) $values['id'], $this->toMediaSqlRow(...))
                 : $this->findMediaById((int) $values['id']),
@@ -485,6 +520,20 @@ final class FakeSqlQuery implements SqlQueryInterface
                     ),
                 ];
 
+            case 'auth_identity_add':
+                $id = $this->nextId['authIdentity']++;
+                $this->tables['authIdentity'][] = [
+                    'id' => $id,
+                    'provider' => $values['provider'],
+                    'subject' => $values['subject'],
+                    'authorId' => (int) $values['authorId'],
+                    'email' => $values['email'],
+                    'name' => $values['name'],
+                ];
+                $this->execLog[$logIdx]['insertedId'] = $id;
+
+                return ['affectedRows' => 1, 'insertedId' => $id];
+
             case 'media_add':
                 $id = $this->nextId['media']++;
                 $this->tables['media'][] = [
@@ -539,6 +588,7 @@ final class FakeSqlQuery implements SqlQueryInterface
     public function getPages(string $sqlId, array $values, int $perPage, string $queryTemplate = '/{?page}', string|null $entity = null): PagesInterface
     {
         unset($entity);
+        $this->queryLog[] = ['method' => 'getPages', 'sqlId' => $sqlId, 'values' => $values];
 
         return match ($sqlId) {
             'article_list' => new FakePages(
@@ -737,6 +787,25 @@ final class FakeSqlQuery implements SqlQueryInterface
         return null;
     }
 
+    private function findAuthIdentity(string $provider, string $subject): AuthIdentity|null
+    {
+        $row = $this->findAuthIdentityRow($provider, $subject);
+
+        return $row === null ? null : $this->toAuthIdentity($row);
+    }
+
+    /** @return array<string, mixed>|null */
+    private function findAuthIdentityRow(string $provider, string $subject): array|null
+    {
+        foreach ($this->tables['authIdentity'] as $r) {
+            if ((string) $r['provider'] === $provider && (string) $r['subject'] === $subject) {
+                return $r;
+            }
+        }
+
+        return null;
+    }
+
     private function findMediaById(int $id): Media|null
     {
         foreach ($this->tables['media'] as $r) {
@@ -833,6 +902,45 @@ final class FakeSqlQuery implements SqlQueryInterface
         return array_map(fn ($r) => $this->toTag($r), array_values($tags));
     }
 
+    /** @return list<array{articleId: int, id: int, slug: string, name: string}> */
+    private function listTagRowsByArticles(mixed $articleIds): array
+    {
+        if (! is_array($articleIds)) {
+            return [];
+        }
+
+        $wanted = array_flip(array_map(
+            static fn (mixed $articleId): int => (int) $articleId,
+            $articleIds,
+        ));
+        $rows = [];
+        foreach ($this->tables['articleTag'] as $link) {
+            $articleId = (int) $link['articleId'];
+            if (! isset($wanted[$articleId])) {
+                continue;
+            }
+
+            $tag = $this->findTagById((int) $link['tagId']);
+            if ($tag === null) {
+                continue;
+            }
+
+            $rows[] = [
+                'articleId' => $articleId,
+                'id' => $tag->id,
+                'slug' => $tag->slug,
+                'name' => $tag->name,
+            ];
+        }
+
+        usort(
+            $rows,
+            static fn (array $a, array $b): int => [$a['articleId'], $a['name']] <=> [$b['articleId'], $b['name']],
+        );
+
+        return $rows;
+    }
+
     /**
      * @param array<string, mixed> $r
      *
@@ -905,6 +1013,27 @@ final class FakeSqlQuery implements SqlQueryInterface
             'name' => (string) $r['name'],
             'email' => (string) $r['email'],
             'bio' => (string) ($r['bio'] ?? ''),
+        ];
+    }
+
+    /**
+     * @param array<string, mixed>|null $r
+     *
+     * @return array{id: int, provider: string, subject: string, author_id: int, email: string, name: string}|null
+     */
+    private function toAuthIdentitySqlRow(array|null $r): array|null
+    {
+        if ($r === null) {
+            return null;
+        }
+
+        return [
+            'id' => (int) $r['id'],
+            'provider' => (string) $r['provider'],
+            'subject' => (string) $r['subject'],
+            'author_id' => (int) $r['authorId'],
+            'email' => (string) $r['email'],
+            'name' => (string) $r['name'],
         ];
     }
 
@@ -982,6 +1111,19 @@ final class FakeSqlQuery implements SqlQueryInterface
             name: (string) $r['name'],
             email: (string) $r['email'],
             bio: (string) ($r['bio'] ?? ''),
+        );
+    }
+
+    /** @param array<string, mixed> $r */
+    private function toAuthIdentity(array $r): AuthIdentity
+    {
+        return new AuthIdentity(
+            id: (int) $r['id'],
+            provider: (string) $r['provider'],
+            subject: (string) $r['subject'],
+            authorId: (int) $r['authorId'],
+            email: (string) $r['email'],
+            name: (string) $r['name'],
         );
     }
 
