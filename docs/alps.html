@@ -311,6 +311,17 @@ const setupModeSwitch = (switchId, graphId, otherGraphId) => {
 <span class="selector-option"><input type="checkbox" id="tag-media" class="tag-trigger-checkbox" data-tag="media" name="tag-media"><label for="tag-media"> media</label></span>
 <span class="selector-option"><input type="checkbox" id="tag-tag" class="tag-trigger-checkbox" data-tag="tag" name="tag-tag"><label for="tag-tag"> tag</label></span></div>
 
+<h2>Links</h2>
+
+<ul>
+<li><a rel="apidoc" href="index.html">apidoc</a></li>
+<li><a rel="audit" href="audit.md">audit</a></li>
+<li><a rel="llms" href="llms.txt">llms</a></li>
+<li><a rel="openapi" href="openapi.json">openapi</a></li>
+<li><a rel="schemas" href="schemas/index.html">schemas</a></li>
+<li><a rel="terms" href="terms.html">terms</a></li>
+</ul>
+
 <h2>Semantic Descriptors</h2>
 
 <div class="descriptor-list">
@@ -1854,6 +1865,14 @@ const setupModeSwitch = (switchId, graphId, otherGraphId) => {
     &quot;doc&quot;: {
       &quot;value&quot;: &quot;ALPS profile for the BEAR.Cms App resource API. Covers articles, categories, tags, authors and media with read and write transitions.&quot;
     },
+    &quot;link&quot;: [
+      {&quot;rel&quot;: &quot;apidoc&quot;, &quot;href&quot;: &quot;index.html&quot;},
+      {&quot;rel&quot;: &quot;openapi&quot;, &quot;href&quot;: &quot;openapi.json&quot;},
+      {&quot;rel&quot;: &quot;schemas&quot;, &quot;href&quot;: &quot;schemas/index.html&quot;},
+      {&quot;rel&quot;: &quot;terms&quot;, &quot;href&quot;: &quot;terms.html&quot;},
+      {&quot;rel&quot;: &quot;llms&quot;, &quot;href&quot;: &quot;llms.txt&quot;},
+      {&quot;rel&quot;: &quot;audit&quot;, &quot;href&quot;: &quot;audit.md&quot;}
+    ],
     &quot;descriptor&quot;: [
       {&quot;id&quot;: &quot;id&quot;, &quot;title&quot;: &quot;Identifier&quot;, &quot;def&quot;: &quot;https://schema.org/identifier&quot;},
       {&quot;id&quot;: &quot;slug&quot;, &quot;title&quot;: &quot;URL-safe Slug&quot;, &quot;doc&quot;: {&quot;value&quot;: &quot;Lower-case kebab-case unique identifier used in human-readable URIs.&quot;}},

@@ -10,4 +10,12 @@
     <fakeData dir="docs/examples"/>
     <title>MyVendor.Cms API</title>
     <description>API Document</description>
+    <links>
+        <link rel="profile" href="alps.html"/>
+        <link rel="openapi" href="openapi.json"/>
+        <link rel="schemas" href="schemas/index.html"/>
+        <link rel="llms" href="llms.txt"/>
+        <link rel="terms" href="terms.html"/>
+        <link rel="audit" href="audit.md"/>
+    </links>
 </apidoc>
