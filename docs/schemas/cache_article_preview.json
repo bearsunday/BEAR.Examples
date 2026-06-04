@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/bear-cms/cacheArticlePreview",
+  "title": "CacheArticlePreview",
+  "description": "Explicit DonutCache showcase: cacheable article preview with a session-dependent viewer embed.",
+  "type": "object",
+  "required": ["id", "title", "status", "authorId", "cachePattern"],
+  "properties": {
+    "id": {"type": "integer", "minimum": 1},
+    "title": {"type": "string"},
+    "status": {"type": "string", "enum": ["draft", "published"]},
+    "authorId": {"type": "integer", "minimum": 1},
+    "cachePattern": {"type": "string"}
+  }
+}

@@ -18,6 +18,7 @@
       {"id": "email", "title": "Email", "def": "https://schema.org/email"},
       {"id": "bio", "title": "Biography", "def": "https://schema.org/description"},
       {"id": "filename", "title": "Filename"},
+      {"id": "file", "title": "Uploaded File", "doc": {"value": "Binary file body resolved by Ray.InputQuery #[InputFile]."}},
       {"id": "mimeType", "title": "MIME Type", "def": "https://schema.org/encodingFormat"},
       {"id": "url", "title": "URL", "def": "https://schema.org/contentUrl"},
       {"id": "alt", "title": "Alt Text", "doc": {"value": "Accessibility text describing the media."}},
@@ -124,6 +125,7 @@
         {"href": "#alt"},
         {"href": "#width"},
         {"href": "#height"},
+        {"href": "#doUploadMediaFile"},
         {"href": "#doDeleteMedia"}
       ], "tag": "media"},
 
@@ -219,6 +221,10 @@
         {"href": "#alt"},
         {"href": "#width"},
         {"href": "#height"}
+      ]},
+      {"id": "doUploadMediaFile", "type": "unsafe", "rt": "#Media", "title": "Upload Media File", "tag": "media", "descriptor": [
+        {"href": "#file"},
+        {"href": "#alt"}
       ]},
       {"id": "doDeleteMedia", "type": "idempotent", "rt": "#Media", "title": "Delete Media", "tag": "media", "descriptor": [
         {"href": "#id"}

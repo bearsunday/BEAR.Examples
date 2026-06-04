@@ -127,10 +127,44 @@ author-owned articles.
 - POST — `filename`, `mimeType`, `url`, optional `alt`, `width`, `height`.
 - DELETE `{id}`.
 
+## `app://self/media-upload`
+
+- POST — `#[InputFile] FileUpload|ErrorFileUpload $file`, optional `alt`.
+- Accepts `image/jpeg`, `image/png`, `image/webp`, and `image/svg+xml` up to 5 MiB.
+- Stores files under `CMS_UPLOAD_DIR` (default `var/tmp/uploads`) and records the
+  resulting Media metadata with the existing `MediaCommandInterface`.
+- This is the canonical file-upload example; `app://self/media` remains the
+  scalar metadata write path so readers can compare both parameter styles.
+
+## Crawl/DataLoader companion resources (`app://self/crawl/*`)
+
+These resources are a focused BEAR.Resource `linkCrawl` reference, not a
+separate public API family. They model the author → articles → tags traversal
+without manual resource fetching:
+
+- `app://self/crawl/author?id=1` — crawl root.
+- `app://self/crawl/articles?authorId=1` — article summary list.
+- `app://self/crawl/tags?articleId=1` — tag list shape used for standalone
+  reads and as the DataLoader row contract.
+
+Run the graph through the resource client:
+
+```php
+$ro = $resource->crawl('app://self/crawl/author', 'author-tree', ['id' => 1]);
+```
+
+`Crawl\Author::onGet()` declares the `articleList` crawl link.
+`Crawl\Articles::onGet()` declares the nested `tagList` crawl link with
+`ArticleTagsDataLoader`, which batches all article ids into one
+`TagQueryInterface::listByArticles()` call. The focused test
+`tests/Resource/App/Crawl/CrawlDataLoaderTest.php` pins that behavior by
+asserting one `tag_list_by_articles` query and zero per-article
+`tag_list_by_article` queries.
+
 ## Cache showcase resources (`app://self/cache/*`)
 
-A four-resource set under `src/Resource/App/Cache/*` that demonstrates the
-two BEAR QueryRepository cache patterns the codebase canonicalizes. The
+A five-resource set under `src/Resource/App/Cache/*` that demonstrates the
+BEAR QueryRepository cache patterns the codebase canonicalizes. The
 showcase is hermetic — `composer demo:cache` runs it against an in-memory
 `ArrayAdapter` bound by `CacheShowcaseModule`. See `docs/conventions.md`
 § 4 "Cache" for the canonical pattern, and the reflection tests under
@@ -177,6 +211,24 @@ Both expose GET `{id}` and PUT `{id}`. Cache surface is one attribute:
 PUT on a child URI cascades through to the parent's ETag via the
 Surrogate-Key tag. Run `composer demo:cache` to see the
 GET → cached → child-PUT → invalidated → re-GET flow for both patterns.
+
+### Pattern D — explicit `#[DonutCache]` preview
+
+- `app://self/cache/articlepreview` (`Cache\ArticlePreview`) — GET only.
+  This resource demonstrates the manual's explicit `#[DonutCache]` attribute
+  without inventing a clock/random endpoint. It is scalar HAL output on purpose:
+  donut-hole placeholders are string-renderer oriented, while HAL embeds are
+  better demonstrated by Pattern B.
+
+### Boundary — query-string variant purge policy
+
+- `#[Purge(uri: 'app://self/articles')]` is the canonical URI example.
+  Query-string variants such as `app://self/articles?categoryId=3` are separate
+  cache entries and are not purged by that annotation.
+- This project does not ship a custom article-list variant invalidator. Such a
+  service can be valid in a production CMS, but it is application policy rather
+  than a reusable BEAR.Sunday feature. Add it only when a real workflow depends
+  on cached filter variants.
 
 **Invalidation scope (intentional).** The showcase keeps its cache
 surface self-contained: writes to the main `app://self/article`

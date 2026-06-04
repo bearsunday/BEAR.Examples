@@ -48,9 +48,10 @@ use const JSON_THROW_ON_ERROR;
  *
  * The test walks canonical App resources, invokes every GET-able resource with
  * fake fixture arguments, and validates the rendered representation against the
- * same JSON Schema declared on `onGet()`. `Variations/` are intentionally
- * excluded: they are comparison examples with their own focused tests, not the
- * canonical App API surface.
+ * same JSON Schema declared on `onGet()`. Top-level array schemas validate the
+ * resource body before HAL normalises numeric keys into an object-shaped
+ * document. `Variations/` are intentionally excluded: they are comparison
+ * examples with their own focused tests, not the canonical App API surface.
  */
 final class ResourceSmokeTest extends AbstractAppTestCase
 {
@@ -89,8 +90,10 @@ final class ResourceSmokeTest extends AbstractAppTestCase
 
         $this->assertSame(200, $ro->code, $uri . ' did not return 200');
 
-        $view = json_decode((string) $ro, false, 512, JSON_THROW_ON_ERROR);
         $schema = self::schema($schemaName);
+        $view = $schema->type === 'array'
+            ? json_decode(json_encode($ro->body, JSON_THROW_ON_ERROR), false, 512, JSON_THROW_ON_ERROR)
+            : json_decode((string) $ro, false, 512, JSON_THROW_ON_ERROR);
         $validator = new Validator();
         $validator->validate($view, $schema);
 

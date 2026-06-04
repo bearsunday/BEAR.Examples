@@ -9,7 +9,7 @@ It demonstrates HAL+JSON App resources over Ray.MediaQuery, Qiq Page
 resources for reader-facing HTML, and a minimal Article admin. The domain
 has five entities: Article, Category, Tag, Author, and Media. Every App
 resource has read/write coverage where meaningful, plus an Auth resource
-for the Google OAuth flow.
+for the Google/Auth0 OAuth flow.
 
 ## Background
 
@@ -60,6 +60,8 @@ In scope:
 
 - App resources with HAL links/embeds, JSON Schema validation, and
   Ray.MediaQuery read/write contracts.
+- `#[InputFile]` media upload and scalar media metadata writes side by side.
+- `linkCrawl` with DataLoader batching for an author → articles → tags graph.
 - Page resources using Qiq for public HTML and a small local Article admin.
 - Fake/real DB parity, deterministic semantic data, and MySQL/SQLite setup.
 - Read/write naming conventions, SQL filename conventions, and Resource
@@ -73,6 +75,7 @@ Intentionally not the focus:
 - JavaScript-enhanced editing flows.
 - Production role policy beyond the author-scoped, CSRF-protected demo
   admin.
+- Broad OAuth provider catalog beyond Google and Auth0/OIDC.
 - Exhaustive CRUD symmetry where it would only repeat an already-shown
   pattern.
 
@@ -143,8 +146,8 @@ DB_DSN="sqlite:/tmp/bear_cms.db" composer serve         # Qiq/Page HTML on :8081
 
 ### Admin login
 
-The Page admin uses Google OAuth plus a PHP session. Configure the callback
-URL in `.env` and in the Google OAuth client:
+The canonical admin-login path is Google OAuth plus a PHP session. Configure
+the callback URL in `.env` and in the Google OAuth client:
 
 ```dotenv
 GOOGLE_CLIENT_ID=...
@@ -156,6 +159,10 @@ Then start the Page server and sign in at
 `http://127.0.0.1:8081/admin/login`. The authenticated Google email must match
 an `authors.email` row; that author id becomes the admin's ownership boundary.
 Admins can manage only articles whose `authorId` matches their own author id.
+Auth0/OIDC remains available as a secondary provider adapter through
+`CMS_AUTH_PROVIDER=auth0`, but Google is the copy-paste reference path.
+See [docs/auth-google.md](docs/auth-google.md) for the full setup, identity
+mapping, callback, logout, and env-gated smoke test flow.
 
 ### Built-in servers
 
@@ -189,14 +196,18 @@ Read the repository in this order:
 7. **[docs/status.md](docs/status.md)** — concise current-state map:
    lessons learned, implemented scope, deferred gaps, and by-design
    omissions.
-8. **[docs/alps.md](docs/alps.md)** and
+8. **[docs/production.md](docs/production.md)** — production compile,
+   optional Redis, security commands, and deployment boundaries.
+9. **[docs/auth-google.md](docs/auth-google.md)** — practical Google OAuth
+   setup for the Page admin.
+10. **[docs/alps.md](docs/alps.md)** and
    **[var/alps/profile.json](var/alps/profile.json)** — semantic source of
    truth: Choreography names and Taxonomy nouns.
-9. **[docs/journal/build-log.md](docs/journal/build-log.md)** — phase-by-phase
+11. **[docs/journal/build-log.md](docs/journal/build-log.md)** — phase-by-phase
    construction history.
-10. **[docs/journal/decisions-to-consult.md](docs/journal/decisions-to-consult.md)**
+12. **[docs/journal/decisions-to-consult.md](docs/journal/decisions-to-consult.md)**
    — every decision with the discussion that shaped it.
-11. **[tests/Fake/FakeSqlQuery.php](tests/Fake/FakeSqlQuery.php)** — the fake
+13. **[tests/Fake/FakeSqlQuery.php](tests/Fake/FakeSqlQuery.php)** — the fake
    dispatch contract in executable form.
 
 Index by question:
@@ -209,9 +220,12 @@ Index by question:
 | How do I shape a Resource body, status, embed, or link? | [conventions.md §4 Resource patterns](docs/conventions.md#4-resource-patterns) |
 | Where are the MediaQuery pager / SELECT result / AffectedRows examples? | [docs/media-query-samples.md](docs/media-query-samples.md) |
 | Scalar params or Input DTO? | [conventions.md §4 Input shape & validation](docs/conventions.md#4-resource-patterns) |
+| Where is the linkCrawl/DataLoader example? | [docs/resources.md#crawldataloader-companion-resources-appselfcrawl](docs/resources.md#crawldataloader-companion-resources-appselfcrawl) |
 | How do Read and Write share an entity? | [conventions.md §5 Read/Write SQL contract](docs/conventions.md#5-readwrite-sql-contract) |
 | What is intentionally not built? | [docs/scope.md](docs/scope.md) |
 | What did the project teach, complete, and leave undone? | [docs/status.md](docs/status.md) |
+| How do I run production compile, Redis, or security checks? | [docs/production.md](docs/production.md) |
+| How do I configure Google admin login? | [docs/auth-google.md](docs/auth-google.md) |
 | Why was this decision made? | [journal/decisions-to-consult.md](docs/journal/decisions-to-consult.md) |
 | What changed phase-by-phase? | [journal/build-log.md](docs/journal/build-log.md) |
 | What is the next session expected to know? | [journal/handoff.md](docs/journal/handoff.md) |

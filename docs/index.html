@@ -659,6 +659,28 @@
   <td rowspan="1"></td>
 </tr>
 <tr>
+  <td rowspan="2" class="path-cell" id="path-media-upload">/media-upload</td>
+  <td rowspan="2" class="method-cell"><span class="ti unsafe"></span>POST<div class="method-alps"><a href="alps.html#doUploadMediaFile" class="alps-link">doUploadMediaFile</a></div></td>
+  <td><a href="alps.html#file" class="param alps-param" title="Uploaded File">file</a><span class="req">*</span></td>
+  <td><span class="badge type-string">string</span></td>
+  <td class="param-desc">Koriym\FileUpload\FileUpload resolved by #[InputFile]. Runtime validation is declared by the attribute.</td>
+  <td><div class="extra-info">
+
+    </div></td>
+  <td rowspan="2"><a href="#WriteResponse" class="schema-link">WriteResponse</a></td>
+</tr>
+<tr>
+
+
+  <td><a href="alps.html#alt" class="param alps-param" title="Alt Text">alt</a></td>
+  <td><span class="badge type-string">string</span></td>
+  <td class="param-desc">Alt Text</td>
+  <td><div class="extra-info">
+      <span class="badge constraint">maxLength: 255</span>
+    </div></td>
+
+</tr>
+<tr>
   <td rowspan="4" class="path-cell" id="path-tag">/tag</td>
   <td rowspan="1" class="method-cell"><span class="ti safe"></span>GET<div class="method-alps"><a href="alps.html#goTag" class="alps-link">goTag</a></div></td>
   <td><a href="alps.html#id" class="param alps-param" title="Identifier">id</a><span class="req">*</span></td>
@@ -715,6 +737,17 @@
 
     </div></td>
   <td rowspan="1"><a href="#TagList" class="schema-link">TagList</a></td>
+</tr>
+<tr>
+  <td rowspan="1" class="path-cell" id="path-cache/article-preview">/cache/article-preview</td>
+  <td rowspan="1" class="method-cell"><span class="ti safe"></span>GET<div class="method-alps"><a href="alps.html#goCacheArticlePreview" class="alps-link">goCacheArticlePreview</a></div></td>
+  <td><a href="alps.html#id" class="param alps-param" title="Identifier">id</a><span class="req">*</span></td>
+  <td><span class="badge type-int">int</span></td>
+  <td class="param-desc">Identifier</td>
+  <td><div class="extra-info">
+
+    </div></td>
+  <td rowspan="1"><a href="#CacheArticlePreview" class="schema-link">CacheArticlePreview</a></td>
 </tr>
 <tr>
   <td rowspan="3" class="path-cell" id="path-cache/article-tags">/cache/article-tags</td>
@@ -865,6 +898,50 @@ on completion, so the next GET re-renders against the updated relation.</div><di
       <span class="badge constraint">maxLength: 100</span>
     </div></td>
 
+</tr>
+<tr>
+  <td rowspan="2" class="path-cell" id="path-crawl/articles">/crawl/articles</td>
+  <td rowspan="2" class="method-cell"><span class="ti safe"></span>GET</td>
+  <td><a href="alps.html#authorId" class="param alps-param" title="Author ID (FK)">authorId</a><span class="req">*</span></td>
+  <td><span class="badge type-int">int</span></td>
+  <td class="param-desc">Author ID (FK)</td>
+  <td><div class="extra-info">
+
+    </div></td>
+  <td rowspan="2"><a href="#CrawlArticleList" class="schema-link">CrawlArticleList</a></td>
+</tr>
+<tr>
+
+
+  <td><a href="alps.html#perPage" class="param alps-param" title="Per-Page Count">perPage</a></td>
+  <td><span class="badge type-int">int</span></td>
+  <td class="param-desc">Per-Page Count</td>
+  <td><div class="extra-info">
+
+    </div></td>
+
+</tr>
+<tr>
+  <td rowspan="1" class="path-cell" id="path-crawl/author">/crawl/author</td>
+  <td rowspan="1" class="method-cell"><span class="ti safe"></span>GET</td>
+  <td><a href="alps.html#id" class="param alps-param" title="Identifier">id</a><span class="req">*</span></td>
+  <td><span class="badge type-int">int</span></td>
+  <td class="param-desc">Identifier</td>
+  <td><div class="extra-info">
+
+    </div></td>
+  <td rowspan="1"><a href="#CrawlAuthor" class="schema-link">CrawlAuthor</a></td>
+</tr>
+<tr>
+  <td rowspan="1" class="path-cell" id="path-crawl/tags">/crawl/tags</td>
+  <td rowspan="1" class="method-cell"><span class="ti safe"></span>GET</td>
+  <td><a href="alps.html#articleId" class="param alps-param" title="Article ID (filter)">articleId</a><span class="req">*</span></td>
+  <td><span class="badge type-int">int</span></td>
+  <td class="param-desc">Article ID (filter)</td>
+  <td><div class="extra-info">
+
+    </div></td>
+  <td rowspan="1"><a href="#CrawlTagList" class="schema-link">CrawlTagList</a></td>
 </tr>
 <tr>
   <td rowspan="1" class="path-cell" id="path-variations/article-as-array">/variations/article-as-array</td>
@@ -1222,6 +1299,22 @@ on completion, so the next GET re-renders against the updated relation.</div><di
   <td><span class="prop-name">id</span></td>
   <td><span class="badge type-string">string</span></td>
   <td class="param-desc">Identifier</td>
+  <td><div class="extra-info">
+
+    </div></td>
+</tr>
+<tr>
+  <td><span class="prop-name">provider</span></td>
+  <td><span class="badge type-string">string</span></td>
+  <td class="param-desc"></td>
+  <td><div class="extra-info">
+      <span class="badge constraint">enum: [&quot;google&quot;,&quot;auth0&quot;]</span>
+    </div></td>
+</tr>
+<tr>
+  <td><span class="prop-name">subject</span></td>
+  <td><span class="badge type-string">string</span></td>
+  <td class="param-desc"></td>
   <td><div class="extra-info">
 
     </div></td>
@@ -1598,6 +1691,57 @@ on completion, so the next GET re-renders against the updated relation.</div><di
 </tbody>
 </table>
 </div>
+<div class="object-section" id="CacheArticlePreview">
+<h3 class="object-name"><a href="schemas/cache_article_preview.json" class="schema-file-link" title="JSON Schema">📄</a>CacheArticlePreview</h3>
+<table>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Description</th><th>Meta</th></tr>
+</thead>
+<tbody>
+<tr>
+  <td><span class="prop-name">id</span></td>
+  <td><span class="badge type-int">int</span></td>
+  <td class="param-desc">Identifier</td>
+  <td><div class="extra-info">
+      <span class="badge constraint">minimum: 1</span>
+    </div></td>
+</tr>
+<tr>
+  <td><span class="prop-name">title</span></td>
+  <td><span class="badge type-string">string</span></td>
+  <td class="param-desc">Title</td>
+  <td><div class="extra-info">
+
+    </div></td>
+</tr>
+<tr>
+  <td><span class="prop-name">status</span></td>
+  <td><span class="badge type-string">string</span></td>
+  <td class="param-desc">Lifecycle Status</td>
+  <td><div class="extra-info">
+      <span class="badge constraint">enum: [&quot;draft&quot;,&quot;published&quot;]</span>
+    </div></td>
+</tr>
+<tr>
+  <td><span class="prop-name">authorId</span></td>
+  <td><span class="badge type-int">int</span></td>
+  <td class="param-desc">Author ID (FK)</td>
+  <td><div class="extra-info">
+      <span class="badge constraint">minimum: 1</span>
+    </div></td>
+</tr>
+<tr>
+  <td><span class="prop-name">cachePattern</span></td>
+  <td><span class="badge type-string">string</span></td>
+  <td class="param-desc"></td>
+  <td><div class="extra-info">
+
+    </div></td>
+</tr>
+
+</tbody>
+</table>
+</div>
 <div class="object-section" id="CacheArticleTags">
 <h3 class="object-name"><a href="schemas/cache_article_tags.json" class="schema-file-link" title="JSON Schema">📄</a>CacheArticleTags</h3>
 <table>
@@ -1686,8 +1830,78 @@ on completion, so the next GET re-renders against the updated relation.</div><di
 </tbody>
 </table>
 </div>
+<div class="object-section" id="CrawlAuthor">
+<h3 class="object-name"><a href="schemas/crawl_author.json" class="schema-file-link" title="JSON Schema">📄</a>CrawlAuthor</h3>
+<table>
+<thead>
+<tr><th>Name</th><th>Type</th><th>Description</th><th>Meta</th></tr>
+</thead>
+<tbody>
+<tr>
+  <td><span class="prop-name">id</span></td>
+  <td><span class="badge type-int">int</span></td>
+  <td class="param-desc">Identifier</td>
+  <td><div class="extra-info">
+      <span class="badge constraint">minimum: 1</span>
+    </div></td>
+</tr>
+<tr>
+  <td><span class="prop-name">name</span></td>
+  <td><span class="badge type-string">string</span></td>
+  <td class="param-desc">Name</td>
+  <td><div class="extra-info">
+
+    </div></td>
+</tr>
+<tr>
+  <td><span class="prop-name">email</span></td>
+  <td><span class="badge type-string">string</span></td>
+  <td class="param-desc">Email</td>
+  <td><div class="extra-info">
+      <span class="badge format">format: email</span>
+    </div></td>
+</tr>
+<tr>
+  <td><span class="prop-name">bio</span></td>
+  <td><span class="badge type-string">string</span></td>
+  <td class="param-desc">Biography</td>
+  <td><div class="extra-info">
+
+    </div></td>
+</tr>
+<tr>
+  <td><span class="prop-name">articleList</span></td>
+  <td><span class="badge type-array">array</span></td>
+  <td class="param-desc"></td>
+  <td><div class="extra-info">
+
+    </div></td>
+</tr>
+<tr class="link-row">
+  <td class="prop-name"><a href="#ArticleList">articleList</a></td>
+  <td><span class="badge link">link</span></td>
+  <td class="param-desc"></td>
+  <td>
+    <div class="extra-info">
+      <span class="badge href">href: app://self/crawl/articles?authorId={id}</span>
+    </div>
+  </td>
+</tr>
+
+</tbody>
+</table>
+</div>
 
 
+<h2>Arrays</h2>
+<div class="object-section" id="CrawlArticleList">
+<h3 class="object-name"><a href="schemas/crawl_article_list.json" class="schema-file-link" title="JSON Schema">📄</a>CrawlArticleList</h3>
+<p class="array-type">array of Object</p>
+</div>
+<div class="object-section" id="CrawlTagList">
+<h3 class="object-name"><a href="schemas/crawl_tag_list.json" class="schema-file-link" title="JSON Schema">📄</a>CrawlTagList</h3>
+<p class="array-type">array of Object</p>
+</div>
 
 
 

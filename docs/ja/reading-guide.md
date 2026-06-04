@@ -37,16 +37,22 @@ Article の後は、小さな resource family を読んで同じ規約を確認�
 - `Author.php`、`Category.php`、`Tag.php` は simple item resource。
 - `Articles.php`、`Categories.php`、`Tags.php` は collection resource。
 - `Media.php` は upload 的な data と filename lookup。
+- `MediaUpload.php` は `#[InputFile]` upload boundary。
 - `Auth.php` は CRUD 形ではない action-style resource。
+- `src/Resource/App/Crawl/*` と `ArticleTagsDataLoader` は、手動 resource fetch
+  なしの `linkCrawl()` と DataLoader batching。
 
 ## Pass 4: Runtime Context
 
 最後に composition と test support を読みます。
 
 - `src/Module/AppModule.php`、`FakeModule.php`、`TestModule.php` は context ごとの binding。
+- `src/Module/ProdModule.php` は production overlay と optional Redis cache storage。
 - `tests/Fake/FakeSqlQuery.php` は in-memory MediaQuery の振る舞い。
 - `tests/Fake/FakeExtendedPdoProvider.php` は raw-PDO variation test の支援。
 - `bin/demo.php` と `bin/demo-variations.php` は実行できる例。
+- `tests/Resource/App/Crawl/CrawlDataLoaderTest.php` は crawl/DataLoader の
+  query-count contract。
 
 ## 層ごとの見どころ
 

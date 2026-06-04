@@ -81,11 +81,9 @@ as-is. The additions:
   login, and CSRF form protection, but richer roles beyond author-scoped
   ownership are outside this reference slice.
 - JavaScript-enhanced admin interactions.
-- Per-query-string cache invalidation. `#[CacheableResponse]` +
-  `#[Purge]` are wired for list reads and writes (see scope.md D1);
-  query-string variants of list URIs (e.g. `articles?categoryId=3`)
-  share the canonical purge URI and are deliberately left to a
-  follow-up
+- Query-string cache invalidation beyond canonical collection URIs. Custom
+  filter-variant invalidators are valid application policy, but this reference
+  keeps cache examples focused on reusable BEAR.Sunday primitives.
 - Full UI pager rendering customization. Article collections already use
   Ray.MediaQuery `#[Pager]`; Page templates still render compact previous
   and next links themselves.

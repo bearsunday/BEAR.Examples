@@ -2,7 +2,7 @@
 
 [日本語](ja/status.md)
 
-Current as of 2026-06-01 on the `1.x` line. This page is the short
+Current as of 2026-06-04 on the `1.x` line. This page is the short
 status map: what the project taught us, what is implemented, and what
 is still intentionally absent or deferred. `docs/scope.md` remains the
 detailed source of truth.
@@ -35,22 +35,29 @@ detailed source of truth.
   data per entity, observed JSON Schema, generated API docs, and LLM docs.
 - **HAL App API:** Article CRUD, Article publish state transition,
   Article collection filtering/paging, Author, Category, Tag, Media,
-  Auth, cache showcase resources, HAL links/embeds, and JSON Schema
-  request/response validation.
+  `#[InputFile]` media upload, Auth, cache showcase resources,
+  `linkCrawl`/DataLoader companion resources, HAL links/embeds, and
+  JSON Schema request/response validation.
 - **HTML Page surface:** public Qiq pages plus Article admin create/edit,
   publish confirmation, delete confirmation, article listing, login,
   callback, logout, and PRG redirects.
-- **Auth and browser safety:** Google OAuth provider, fake auth provider,
-  session-backed current user, admin author ownership, `AdminGuard`,
-  `#[SameOrigin]`, and synchronizer-token CSRF checks on unsafe admin
-  form posts.
+- **Auth and browser safety:** Google OAuth provider, Auth0/OIDC provider
+  adapter, fake auth provider, `(provider, subject) -> author` identity
+  mapping, session-backed current user, admin author ownership,
+  `AdminGuard`, `#[SameOrigin]`, and synchronizer-token CSRF checks on
+  unsafe admin form posts. Google is documented as the practical admin-login
+  path with an env-gated authorization URL smoke test.
 - **Persistence:** Doctrine migrations, seed script, MySQL and SQLite
   setup paths, Ray.MediaQuery SQL files, natural-key post-insert lookup,
   and Fake/real response-shape parity.
 - **Reference patterns:** Read/Write query split, Input DTOs contrasted
   with scalar params, native array DTO inputs, MediaQuery pager,
   result objects, DML metadata, async embed entrypoint, streaming
-  variation, and three fixed Article GET comparison variations.
+  variation, explicit `#[DonutCache]` preview, `linkCrawl`/DataLoader
+  batch traversal, production/security operating guide, production
+  `ProdModule` with optional Redis QueryRepository storage, Application
+  import companion example, and three fixed Article GET comparison
+  variations.
 - **Test safety net:** Resource, Page, Hypermedia, Smoke, Entity,
   Interceptor/CSRF, cache, and MySQL integration tests, with integration
   tests skipping when MySQL is unavailable.
@@ -62,13 +69,13 @@ runtime work, or a larger production slice.
 
 | Item | Current state | Next step |
 |---|---|---|
-| Per-query-string cache invalidation | `#[CacheableResponse]` / `#[Purge]` are wired for selected list reads and writes, but purge targets the canonical URI, not each query-string variant | Add explicit variant keys or a broader purge strategy |
+| Query-string cache invalidation | Canonical list URIs are purged by `#[Purge]`; query-string variants are deliberately not implemented as a custom service | Add only when cached filter variants become a real CMS workflow |
 | Entity-level cache rollout | Entity resources remain uncached because deleted-resource and App-template rendering behavior can mutate or break the cache path | Revisit after the upstream behavior is clarified |
 | Async Docker CI smoke | Runtime containers exist, but GitHub Actions does not yet run `composer parallel:up && composer parallel:demo` | Add a focused workflow once image build time and caching are acceptable |
-| Real Google OAuth integration test | Production code uses `league/oauth2-google`; no credential-backed integration test exists | Add an env-gated test that skips unless Google OAuth env vars are present |
-| phpstan baseline | Two upstream type mismatches remain suppressed | Drop the baseline entries after upstream signatures relax |
-| Production deployment slice | No `ProdModule`, opcache/preload guide, Redis cache adapter binding, or production role model beyond author ownership | Add only when this reference grows into a deployment example |
-| PSR-7 injection example | Manual topic has no executable example here | Add a small header/cookie/client-IP resource if it teaches a distinct pattern |
+| Real OAuth token-exchange integration tests | Production code supports Google and Auth0/OIDC; Google authorization URL generation has an env-gated smoke, but real code exchange still requires browser/provider credentials | Add only if callback credentials and a safe integration environment are available |
+| phpstan baseline | One upstream OAuth provider type mismatch remains suppressed | Drop the baseline entry after the upstream signature relaxes |
+| Production deployment hardening | Production compile, optional Redis, and security commands are documented; real hosting, role model beyond author ownership, DAST, and external auditing are still outside the default reference | Expand only when this reference grows into a deployment example |
+| PSR-7 injection example | Manual topic has no executable example here, by design for now | Add only if a real CMS use appears; diagnostics-only request context is intentionally deprioritized |
 
 ## By design
 
@@ -87,3 +94,5 @@ These are not backlog.
   fixed teaching set.
 - No `app://self/` App entry point: `Page/Index` is the public HTML entry,
   and HAL discoverability is demonstrated from concrete top-level resources.
+- No broad OAuth provider zoo: Google and Auth0/OIDC are enough to show
+  social-login and generic identity-provider patterns.

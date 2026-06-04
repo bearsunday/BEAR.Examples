@@ -9,9 +9,9 @@ for CMS semantics.
 
 | Layer        | Example                                                        |
 |--------------|----------------------------------------------------------------|
-| Ontology     | `articleTitle`, `articleStatus`, `categoryParentId`, `mediaAlt` |
+| Ontology     | `articleTitle`, `articleStatus`, `categoryParentId`, `mediaAlt`, `file` |
 | Taxonomy     | `Article`, `ArticleList`, `Category`, `Tag`, `Author`, `Media` |
-| Choreography | `goArticleList`, `goArticle`, `doCreateArticle`, `doDeleteTag` |
+| Choreography | `goArticleList`, `goArticle`, `doCreateArticle`, `doUploadMediaFile` |
 
 - Safe (`go*`): GET transitions.
 - Unsafe (`do*`, `unsafe`): POST, idempotent writes use `idempotent`.
@@ -28,6 +28,10 @@ profile.json → semantic-ex Phase 1 (Experience)   → var/fake/*.json
 ALPS transition names map 1:1 to HAL `_links` rels / Resource URI
 conventions — e.g. `goArticle` → `app://self/article`, `doCreateArticle`
 → `POST app://self/article`.
+
+Media has two write transitions by design: `doCreateMedia` creates metadata
+from an existing URL, while `doUploadMediaFile` demonstrates `#[InputFile]`
+binary upload through `app://self/media-upload`.
 
 ## Validating the profile
 

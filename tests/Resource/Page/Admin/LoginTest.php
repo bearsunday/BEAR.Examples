@@ -4,8 +4,16 @@ declare(strict_types=1);
 
 namespace MyVendor\Cms\Resource\Page\Admin;
 
+use BEAR\Resource\ResourceInterface;
 use MyVendor\Cms\AbstractPageTestCase;
 use MyVendor\Cms\Exception\UnauthenticatedException;
+use MyVendor\Cms\Fake\FakeAuth0Module;
+use MyVendor\Cms\Fake\FakeSqlQuery;
+use MyVendor\Cms\Injector;
+use Ray\MediaQuery\SqlQueryInterface;
+
+use function array_filter;
+use function array_values;
 
 final class LoginTest extends AbstractPageTestCase
 {
@@ -31,6 +39,47 @@ final class LoginTest extends AbstractPageTestCase
 
         $admin = $this->resource->get('page://self/admin/index');
         $this->assertSame(200, $admin->code);
+    }
+
+    public function testCallbackCreatesAuth0IdentityMappingOnEmailFallback(): void
+    {
+        $injector = Injector::getOverrideInstance('html-test-hal-api-app', new FakeAuth0Module());
+        $resource = $injector->getInstance(ResourceInterface::class);
+        $sql = $injector->getInstance(SqlQueryInterface::class);
+        $this->assertInstanceOf(FakeSqlQuery::class, $sql);
+
+        $resource->get('page://self/admin/login');
+        $callback = $resource->get('page://self/admin/callback', [
+            'code' => 'fake-code',
+            'state' => 'fake-state',
+        ]);
+
+        $this->assertSame(303, $callback->code);
+        $writes = array_values(array_filter(
+            $sql->execLog,
+            static fn (array $row): bool => $row['sqlId'] === 'auth_identity_add',
+        ));
+        $this->assertCount(1, $writes);
+        $this->assertSame([
+            'provider' => 'auth0',
+            'subject' => 'auth0|editor-1',
+            'authorId' => 1,
+            'email' => 'evelyn.moore1@example.com',
+            'name' => 'Evelyn Moore',
+        ], $writes[0]['values']);
+
+        $sql->resetExecLog();
+        $resource->get('page://self/admin/login');
+        $second = $resource->get('page://self/admin/callback', [
+            'code' => 'fake-code',
+            'state' => 'fake-state',
+        ]);
+
+        $this->assertSame(303, $second->code);
+        $this->assertSame([], array_values(array_filter(
+            $sql->execLog,
+            static fn (array $row): bool => $row['sqlId'] === 'auth_identity_add',
+        )));
     }
 
     public function testCallbackRejectsInvalidState(): void

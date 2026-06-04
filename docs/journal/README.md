@@ -15,6 +15,8 @@ describe gaps that later closed.
 | [build-log.md](build-log.md) | You want to follow the construction phase by phase |
 | [decisions-to-consult.md](decisions-to-consult.md) | You want to know *why* a particular naming / pattern choice was made |
 | [wishes-to-author.md](wishes-to-author.md) | Working on BEAR.Sunday itself; understanding what gaps a heavy user noticed |
+| [manual-coverage-audit-2026-06-04.md](manual-coverage-audit-2026-06-04.md) | Comparing this reference CMS against the current BEAR.Sunday manual and planning missing example coverage |
+| [bearsunday-manual-review-2026-06-04.md](bearsunday-manual-review-2026-06-04.md) | Reviewing the current BEAR.Sunday official manual for copy-breaking examples, stale runtime data, and structural improvements |
 | [upstream-issue-cache-dependency.md](upstream-issue-cache-dependency.md) | Archived diagnosis / resolved upstream — HAL parent auto-merge miss, fixed in `bear/query-repository` 1.16.0 (`bearsunday/BEAR.QueryRepository#174`). Kept as a record of the diagnosis and the three candidate fixes considered. |
 | [skill-proposals.md](skill-proposals.md) | Working on `bearsunday/BEAR.Skills`; 12 candidate skills with rationale |
 | [review-skill.md](review-skill.md) | About to write a critique / review / evaluation of any framework or codebase. Apply Step 6 self-check before publishing |

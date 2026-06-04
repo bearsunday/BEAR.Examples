@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "MediaUploadInput",
+  "type": "object",
+  "required": ["file"],
+  "properties": {
+    "file": {
+      "type": "object",
+      "description": "Koriym\\FileUpload\\FileUpload resolved by #[InputFile]. Runtime validation is declared by the attribute."
+    },
+    "alt": {
+      "type": ["string", "null"],
+      "maxLength": 255
+    }
+  }
+}

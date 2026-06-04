@@ -56,6 +56,8 @@ return [
     'AuthorQueryInterface::byEmail' => ['evelyn.moore1@example.com'],
     'AuthorQueryInterface::item' => [1],
     'AuthorQueryInterface::list' => [],
+    'AuthIdentityCommandInterface::add' => ['google', 'smoke-subject', 1, 'evelyn.moore1@example.com', 'Evelyn Moore'],
+    'AuthIdentityQueryInterface::byProviderSubject' => ['google', 'fake-user-1'],
 
     // categories -------------------------------------------------------
     'CategoryCommandInterface::add' => ['smoke-media-query', 'Smoke', null, null],
@@ -86,4 +88,5 @@ return [
     'TagQueryInterface::item' => [1],
     'TagQueryInterface::list' => [],
     'TagQueryInterface::listByArticle' => [1],
+    'TagQueryInterface::listByArticles' => [[1, 2, 3]],
 ];

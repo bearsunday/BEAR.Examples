@@ -1,0 +1,32 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://example.com/bear-cms/crawl_author",
+    "title": "CrawlAuthor",
+    "description": "Author root for the crawl/DataLoader companion graph.",
+    "type": "object",
+    "required": [
+        "id",
+        "name",
+        "email",
+        "bio"
+    ],
+    "properties": {
+        "id": {
+            "type": "integer",
+            "minimum": 1
+        },
+        "name": {
+            "type": "string"
+        },
+        "email": {
+            "type": "string",
+            "format": "email"
+        },
+        "bio": {
+            "type": "string"
+        },
+        "articleList": {
+            "$ref": "crawl_article_list.json"
+        }
+    }
+}

@@ -19,6 +19,7 @@ final class FakeAuthProvider implements AuthInterface
         private readonly string $userId = 'fake-user-1',
         private readonly string $email = 'evelyn.moore1@example.com',
         private readonly string $name = 'Evelyn Moore',
+        private readonly string $provider = 'google',
     ) {
     }
 
@@ -29,6 +30,12 @@ final class FakeAuthProvider implements AuthInterface
 
     public function authenticate(string $code, string $state): AuthenticatedUser
     {
-        return new AuthenticatedUser(id: $this->userId, email: $this->email, name: $this->name);
+        return new AuthenticatedUser(
+            id: $this->userId,
+            email: $this->email,
+            name: $this->name,
+            provider: $this->provider,
+            subject: $this->userId,
+        );
     }
 }

@@ -5,12 +5,18 @@ declare(strict_types=1);
 namespace MyVendor\Cms\Resource\App;
 
 use BEAR\QueryRepository\RepositoryLoggerInterface;
+use BEAR\RepositoryModule\Annotation\DonutCache;
 use BEAR\Resource\ResourceInterface;
 use MyVendor\Cms\Injector;
+use MyVendor\Cms\Resource\App\Cache\ArticlePreview;
 use PHPUnit\Framework\TestCase;
+use ReflectionClass;
 
+use function json_decode;
 use function str_contains;
 use function uniqid;
+
+use const JSON_THROW_ON_ERROR;
 
 /**
  * Donut cache pipeline showcase for list resources.
@@ -47,6 +53,25 @@ final class CacheTest extends TestCase
         $this->assertStringContainsString('"op":"try-donut-view"', $log);
         $this->assertStringContainsString('"op":"put-donut"', $log);
         $this->assertStringContainsString('"op":"save-etag"', $log);
+    }
+
+    public function testArticlePreviewUsesExplicitDonutCache(): void
+    {
+        $reflection = new ReflectionClass(ArticlePreview::class);
+        $this->assertNotSame([], $reflection->getAttributes(DonutCache::class));
+
+        $ro = $this->resource->get('app://self/cache/articlepreview', ['id' => 1]);
+        $this->assertSame(200, $ro->code);
+        $body = json_decode((string) $ro, true, 512, JSON_THROW_ON_ERROR);
+        $this->assertIsArray($body);
+        $this->assertSame(1, $body['id']);
+        $this->assertSame('DonutCache explicit HAL preview', $body['cachePattern']);
+        $this->assertArrayNotHasKey('_embedded', $body);
+
+        $log = (string) $this->logger;
+        $this->assertStringContainsString('"op":"try-donut-view"', $log);
+        $this->assertStringContainsString('"op":"put-donut"', $log);
+        $this->assertStringContainsString('"uri":"app://self/cache/articlepreview?id=1"', $log);
     }
 
     public function testArticlePostPurgesArticlesList(): void

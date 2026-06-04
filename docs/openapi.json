@@ -711,6 +711,48 @@
                 }
             }
         },
+        "/media-upload": {
+            "post": {
+                "operationId": "doUploadMediaFile",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "file": {
+                                        "type": "string",
+                                        "description": "Koriym\\FileUpload\\FileUpload resolved by #[InputFile]. Runtime validation is declared by the attribute."
+                                    },
+                                    "alt": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "file"
+                                ]
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/WriteResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    }
+                }
+            }
+        },
         "/tag": {
             "get": {
                 "operationId": "goTag",
@@ -816,6 +858,35 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/TagList"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/cache/article-preview": {
+            "get": {
+                "operationId": "goCacheArticlePreview",
+                "summary": "Explicit `#[DonutCache]` example for a stable article preview.",
+                "description": "The HAL API keeps this example scalar-only: donut-hole placeholders are\nstring-renderer oriented and would be obscured by HAL's object renderer.",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CacheArticlePreview"
                                 }
                             }
                         }
@@ -1072,6 +1143,92 @@
                     },
                     "400": {
                         "description": "Bad Request"
+                    }
+                }
+            }
+        },
+        "/crawl/articles": {
+            "get": {
+                "parameters": [
+                    {
+                        "name": "authorId",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "perPage",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CrawlArticleList"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/crawl/author": {
+            "get": {
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CrawlAuthor"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/crawl/tags": {
+            "get": {
+                "parameters": [
+                    {
+                        "name": "articleId",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CrawlTagList"
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -1390,10 +1547,20 @@
             },
             "AuthResponse": {
                 "title": "AuthResponse",
-                "description": "POST /auth response. Subject `id` is the OAuth provider's user identifier (opaque string), not a DB integer. Failure path returns {message, reason}.",
+                "description": "POST /auth response. `id` is a backward-compatible alias for `subject`; provider + subject are the stable external identity key. Failure path returns {message, reason}.",
                 "type": "object",
                 "properties": {
                     "id": {
+                        "type": "string"
+                    },
+                    "provider": {
+                        "type": "string",
+                        "enum": [
+                            "google",
+                            "auth0"
+                        ]
+                    },
+                    "subject": {
                         "type": "string"
                     },
                     "email": {
@@ -1617,6 +1784,41 @@
                     }
                 }
             },
+            "CacheArticlePreview": {
+                "title": "CacheArticlePreview",
+                "description": "Explicit DonutCache showcase: cacheable article preview with a session-dependent viewer embed.",
+                "type": "object",
+                "required": [
+                    "id",
+                    "title",
+                    "status",
+                    "authorId",
+                    "cachePattern"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "minimum": 1
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "type": "string",
+                        "enum": [
+                            "draft",
+                            "published"
+                        ]
+                    },
+                    "authorId": {
+                        "type": "integer",
+                        "minimum": 1
+                    },
+                    "cachePattern": {
+                        "type": "string"
+                    }
+                }
+            },
             "CacheArticleTags": {
                 "title": "CacheArticleTags",
                 "description": "Cache showcase: per-article tag list whose Surrogate-Key dependency set is body-derived and variable-length.",
@@ -1671,6 +1873,125 @@
                     "cachePattern": {
                         "type": "string",
                         "description": "Human-readable name of the demonstrated cache pattern (Embed-driven default or fromAssoc exception)"
+                    }
+                }
+            },
+            "CrawlTagList": {
+                "title": "CrawlTagList",
+                "description": "Tag rows attached by the crawl/DataLoader companion.",
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "required": [
+                        "articleId",
+                        "id",
+                        "slug",
+                        "name"
+                    ],
+                    "properties": {
+                        "articleId": {
+                            "type": "integer",
+                            "minimum": 1
+                        },
+                        "id": {
+                            "type": "integer",
+                            "minimum": 1
+                        },
+                        "slug": {
+                            "type": "string"
+                        },
+                        "name": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "CrawlArticleList": {
+                "title": "CrawlArticleList",
+                "description": "Article summaries used by the crawl/DataLoader companion.",
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "required": [
+                        "id",
+                        "slug",
+                        "title",
+                        "status",
+                        "authorId",
+                        "categoryId"
+                    ],
+                    "properties": {
+                        "id": {
+                            "type": "integer",
+                            "minimum": 1
+                        },
+                        "slug": {
+                            "type": "string"
+                        },
+                        "title": {
+                            "type": "string"
+                        },
+                        "excerpt": {
+                            "type": [
+                                "string",
+                                "null"
+                            ]
+                        },
+                        "status": {
+                            "type": "string",
+                            "enum": [
+                                "draft",
+                                "published"
+                            ]
+                        },
+                        "publishedAt": {
+                            "type": [
+                                "string",
+                                "null"
+                            ],
+                            "format": "date-time"
+                        },
+                        "authorId": {
+                            "type": "integer",
+                            "minimum": 1
+                        },
+                        "categoryId": {
+                            "type": "integer",
+                            "minimum": 1
+                        },
+                        "tagList": {
+                            "$ref": "#/components/schemas/CrawlTagList"
+                        }
+                    }
+                }
+            },
+            "CrawlAuthor": {
+                "title": "CrawlAuthor",
+                "description": "Author root for the crawl/DataLoader companion graph.",
+                "type": "object",
+                "required": [
+                    "id",
+                    "name",
+                    "email",
+                    "bio"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "minimum": 1
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email"
+                    },
+                    "bio": {
+                        "type": "string"
+                    },
+                    "articleList": {
+                        "$ref": "#/components/schemas/CrawlArticleList"
                     }
                 }
             }

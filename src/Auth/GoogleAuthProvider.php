@@ -46,6 +46,8 @@ final class GoogleAuthProvider implements AuthInterface
             id: (string) $user->getId(),
             email: (string) $user->getEmail(),
             name: (string) $user->getName(),
+            provider: 'google',
+            subject: (string) $user->getId(),
         );
     }
 }
