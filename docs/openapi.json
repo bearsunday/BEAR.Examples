@@ -26,6 +26,11 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/Article"
+                                },
+                                "examples": {
+                                    "fake": {
+                                        "$ref": "#/components/examples/ArticleFake"
+                                    }
                                 }
                             }
                         }
@@ -41,31 +46,62 @@
                                 "type": "object",
                                 "properties": {
                                     "slug": {
-                                        "type": "string"
+                                        "type": "string",
+                                        "minLength": 3,
+                                        "maxLength": 100,
+                                        "pattern": "^[a-z0-9][a-z0-9-]*$",
+                                        "errorMessage": {
+                                            "pattern": "Slug must contain only lowercase letters, digits and hyphens.",
+                                            "minLength": "Slug must be at least 3 characters.",
+                                            "maxLength": "Slug must be at most 100 characters."
+                                        }
                                     },
                                     "title": {
-                                        "type": "string"
+                                        "type": "string",
+                                        "minLength": 1,
+                                        "maxLength": 255
                                     },
                                     "body": {
-                                        "type": "string"
+                                        "type": "string",
+                                        "minLength": 1
                                     },
                                     "authorId": {
-                                        "type": "integer"
+                                        "type": "integer",
+                                        "minimum": 1
                                     },
                                     "categoryId": {
-                                        "type": "integer"
+                                        "type": "integer",
+                                        "minimum": 1
                                     },
                                     "excerpt": {
-                                        "type": "string"
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ]
                                     },
                                     "status": {
-                                        "type": "string"
+                                        "type": "string",
+                                        "enum": [
+                                            "draft",
+                                            "published"
+                                        ],
+                                        "errorMessage": {
+                                            "enum": "Status must be either 'draft' or 'published'."
+                                        }
                                     },
                                     "publishedAt": {
-                                        "type": "string"
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ],
+                                        "format": "date-time"
                                     },
                                     "tagIds": {
-                                        "type": "array"
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer",
+                                            "minimum": 1
+                                        }
                                     }
                                 },
                                 "required": [
@@ -105,25 +141,50 @@
                                 "type": "object",
                                 "properties": {
                                     "id": {
-                                        "type": "integer"
+                                        "type": "integer",
+                                        "minimum": 1
                                     },
                                     "title": {
-                                        "type": "string"
+                                        "type": "string",
+                                        "minLength": 1,
+                                        "maxLength": 255
                                     },
                                     "body": {
-                                        "type": "string"
+                                        "type": "string",
+                                        "minLength": 1
                                     },
                                     "status": {
-                                        "type": "string"
+                                        "type": "string",
+                                        "enum": [
+                                            "draft",
+                                            "published"
+                                        ],
+                                        "errorMessage": {
+                                            "enum": "Status must be either 'draft' or 'published'."
+                                        }
                                     },
                                     "excerpt": {
-                                        "type": "string"
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ]
                                     },
                                     "publishedAt": {
-                                        "type": "string"
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ],
+                                        "format": "date-time"
                                     },
                                     "tagIds": {
-                                        "type": "array"
+                                        "type": [
+                                            "array",
+                                            "null"
+                                        ],
+                                        "items": {
+                                            "type": "integer",
+                                            "minimum": 1
+                                        }
                                     }
                                 },
                                 "required": [
@@ -184,11 +245,24 @@
                                 "type": "object",
                                 "properties": {
                                     "id": {
-                                        "type": "integer"
+                                        "type": "integer",
+                                        "minimum": 1,
+                                        "errorMessage": {
+                                            "type": "Article id must be a number.",
+                                            "minimum": "Article id must be at least 1."
+                                        }
                                     },
                                     "publishedAt": {
-                                        "type": "string",
-                                        "description": "Optional override. When omitted or null, ArticlePublish supplies the current UTC timestamp before invoking ArticleCommandInterface::publish()."
+                                        "description": "Optional override. When omitted or null, ArticlePublish supplies the current UTC timestamp before invoking ArticleCommandInterface::publish().",
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ],
+                                        "format": "date-time",
+                                        "errorMessage": {
+                                            "type": "Published date must be a valid ISO 8601 date-time.",
+                                            "format": "Published date must be a valid ISO 8601 date-time."
+                                        }
                                     }
                                 },
                                 "required": [
@@ -276,6 +350,11 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/ArticleList"
+                                },
+                                "examples": {
+                                    "fake": {
+                                        "$ref": "#/components/examples/ArticleListFake"
+                                    }
                                 }
                             }
                         }
@@ -310,10 +389,14 @@
                                 "type": "object",
                                 "properties": {
                                     "code": {
-                                        "type": "string"
+                                        "type": "string",
+                                        "minLength": 1,
+                                        "maxLength": 2048
                                     },
                                     "state": {
-                                        "type": "string"
+                                        "type": "string",
+                                        "minLength": 1,
+                                        "maxLength": 256
                                     }
                                 },
                                 "required": [
@@ -362,6 +445,11 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/Author"
+                                },
+                                "examples": {
+                                    "fake": {
+                                        "$ref": "#/components/examples/AuthorFake"
+                                    }
                                 }
                             }
                         }
@@ -377,10 +465,14 @@
                                 "type": "object",
                                 "properties": {
                                     "name": {
-                                        "type": "string"
+                                        "type": "string",
+                                        "minLength": 1,
+                                        "maxLength": 100
                                     },
                                     "email": {
-                                        "type": "string"
+                                        "type": "string",
+                                        "format": "email",
+                                        "maxLength": 191
                                     },
                                     "bio": {
                                         "type": "string"
@@ -420,13 +512,18 @@
                                 "type": "object",
                                 "properties": {
                                     "id": {
-                                        "type": "integer"
+                                        "type": "integer",
+                                        "minimum": 1
                                     },
                                     "name": {
-                                        "type": "string"
+                                        "type": "string",
+                                        "minLength": 1,
+                                        "maxLength": 100
                                     },
                                     "email": {
-                                        "type": "string"
+                                        "type": "string",
+                                        "format": "email",
+                                        "maxLength": 191
                                     },
                                     "bio": {
                                         "type": "string"
@@ -469,6 +566,11 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/CategoryList"
+                                },
+                                "examples": {
+                                    "fake": {
+                                        "$ref": "#/components/examples/CategoryListFake"
+                                    }
                                 }
                             }
                         }
@@ -496,6 +598,11 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/Category"
+                                },
+                                "examples": {
+                                    "fake": {
+                                        "$ref": "#/components/examples/CategoryFake"
+                                    }
                                 }
                             }
                         }
@@ -511,16 +618,28 @@
                                 "type": "object",
                                 "properties": {
                                     "slug": {
-                                        "type": "string"
+                                        "type": "string",
+                                        "minLength": 1,
+                                        "maxLength": 100,
+                                        "pattern": "^[a-z0-9][a-z0-9-]*$"
                                     },
                                     "name": {
-                                        "type": "string"
+                                        "type": "string",
+                                        "minLength": 1,
+                                        "maxLength": 100
                                     },
                                     "description": {
-                                        "type": "string"
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ]
                                     },
                                     "parentId": {
-                                        "type": "integer"
+                                        "type": [
+                                            "integer",
+                                            "null"
+                                        ],
+                                        "minimum": 1
                                     }
                                 },
                                 "required": [
@@ -557,16 +676,26 @@
                                 "type": "object",
                                 "properties": {
                                     "id": {
-                                        "type": "integer"
+                                        "type": "integer",
+                                        "minimum": 1
                                     },
                                     "name": {
-                                        "type": "string"
+                                        "type": "string",
+                                        "minLength": 1,
+                                        "maxLength": 100
                                     },
                                     "description": {
-                                        "type": "string"
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ]
                                     },
                                     "parentId": {
-                                        "type": "integer"
+                                        "type": [
+                                            "integer",
+                                            "null"
+                                        ],
+                                        "minimum": 1
                                     }
                                 },
                                 "required": [
@@ -633,6 +762,11 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/Media"
+                                },
+                                "examples": {
+                                    "fake": {
+                                        "$ref": "#/components/examples/MediaFake"
+                                    }
                                 }
                             }
                         }
@@ -648,22 +782,34 @@
                                 "type": "object",
                                 "properties": {
                                     "filename": {
-                                        "type": "string"
+                                        "type": "string",
+                                        "minLength": 1,
+                                        "maxLength": 191
                                     },
                                     "mimeType": {
-                                        "type": "string"
+                                        "type": "string",
+                                        "minLength": 3,
+                                        "maxLength": 64
                                     },
                                     "url": {
-                                        "type": "string"
+                                        "type": "string",
+                                        "format": "uri-reference",
+                                        "maxLength": 255
                                     },
                                     "alt": {
-                                        "type": "string"
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ],
+                                        "maxLength": 255
                                     },
                                     "width": {
-                                        "type": "integer"
+                                        "type": "integer",
+                                        "minimum": 0
                                     },
                                     "height": {
-                                        "type": "integer"
+                                        "type": "integer",
+                                        "minimum": 0
                                     }
                                 },
                                 "required": [
@@ -721,11 +867,15 @@
                                 "type": "object",
                                 "properties": {
                                     "file": {
-                                        "type": "string",
+                                        "type": "object",
                                         "description": "Koriym\\FileUpload\\FileUpload resolved by #[InputFile]. Runtime validation is declared by the attribute."
                                     },
                                     "alt": {
-                                        "type": "string"
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ],
+                                        "maxLength": 255
                                     }
                                 },
                                 "required": [
@@ -773,6 +923,11 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/Tag"
+                                },
+                                "examples": {
+                                    "fake": {
+                                        "$ref": "#/components/examples/TagFake"
+                                    }
                                 }
                             }
                         }
@@ -788,10 +943,15 @@
                                 "type": "object",
                                 "properties": {
                                     "slug": {
-                                        "type": "string"
+                                        "type": "string",
+                                        "minLength": 1,
+                                        "maxLength": 100,
+                                        "pattern": "^[a-z0-9][a-z0-9-]*$"
                                     },
                                     "name": {
-                                        "type": "string"
+                                        "type": "string",
+                                        "minLength": 1,
+                                        "maxLength": 100
                                     }
                                 },
                                 "required": [
@@ -858,6 +1018,11 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/TagList"
+                                },
+                                "examples": {
+                                    "fake": {
+                                        "$ref": "#/components/examples/TagListFake"
+                                    }
                                 }
                             }
                         }
@@ -933,10 +1098,15 @@
                                 "type": "object",
                                 "properties": {
                                     "articleId": {
-                                        "type": "integer"
+                                        "type": "integer",
+                                        "minimum": 1
                                     },
                                     "tagIds": {
-                                        "type": "array"
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer",
+                                            "minimum": 1
+                                        }
                                     }
                                 },
                                 "required": [
@@ -987,6 +1157,11 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/Author"
+                                },
+                                "examples": {
+                                    "fake": {
+                                        "$ref": "#/components/examples/AuthorFake"
+                                    }
                                 }
                             }
                         }
@@ -1004,13 +1179,18 @@
                                 "type": "object",
                                 "properties": {
                                     "id": {
-                                        "type": "integer"
+                                        "type": "integer",
+                                        "minimum": 1
                                     },
                                     "name": {
-                                        "type": "string"
+                                        "type": "string",
+                                        "minLength": 1,
+                                        "maxLength": 100
                                     },
                                     "email": {
-                                        "type": "string"
+                                        "type": "string",
+                                        "format": "email",
+                                        "maxLength": 191
                                     },
                                     "bio": {
                                         "type": "string"
@@ -1094,6 +1274,11 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/Tag"
+                                },
+                                "examples": {
+                                    "fake": {
+                                        "$ref": "#/components/examples/TagFake"
+                                    }
                                 }
                             }
                         }
@@ -1111,13 +1296,19 @@
                                 "type": "object",
                                 "properties": {
                                     "id": {
-                                        "type": "integer"
+                                        "type": "integer",
+                                        "minimum": 1
                                     },
                                     "slug": {
-                                        "type": "string"
+                                        "type": "string",
+                                        "minLength": 1,
+                                        "maxLength": 100,
+                                        "pattern": "^[a-z0-9][a-z0-9-]*$"
                                     },
                                     "name": {
-                                        "type": "string"
+                                        "type": "string",
+                                        "minLength": 1,
+                                        "maxLength": 100
                                     }
                                 },
                                 "required": [
@@ -1254,6 +1445,11 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/Article"
+                                },
+                                "examples": {
+                                    "fake": {
+                                        "$ref": "#/components/examples/ArticleFake"
+                                    }
                                 }
                             }
                         }
@@ -1282,6 +1478,11 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/Article"
+                                },
+                                "examples": {
+                                    "fake": {
+                                        "$ref": "#/components/examples/ArticleFake"
+                                    }
                                 }
                             }
                         }
@@ -1310,6 +1511,11 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/Article"
+                                },
+                                "examples": {
+                                    "fake": {
+                                        "$ref": "#/components/examples/ArticleFake"
+                                    }
                                 }
                             }
                         }
@@ -1994,6 +2200,40 @@
                         "$ref": "#/components/schemas/CrawlArticleList"
                     }
                 }
+            }
+        },
+        "examples": {
+            "ArticleFake": {
+                "summary": "Generated fake article payload",
+                "externalValue": "./examples/article.json"
+            },
+            "ArticleListFake": {
+                "summary": "Generated fake articleList payload",
+                "externalValue": "./examples/articleList.json"
+            },
+            "AuthorFake": {
+                "summary": "Generated fake author payload",
+                "externalValue": "./examples/author.json"
+            },
+            "CategoryListFake": {
+                "summary": "Generated fake categoryList payload",
+                "externalValue": "./examples/categoryList.json"
+            },
+            "CategoryFake": {
+                "summary": "Generated fake category payload",
+                "externalValue": "./examples/category.json"
+            },
+            "MediaFake": {
+                "summary": "Generated fake media payload",
+                "externalValue": "./examples/media.json"
+            },
+            "TagFake": {
+                "summary": "Generated fake tag payload",
+                "externalValue": "./examples/tag.json"
+            },
+            "TagListFake": {
+                "summary": "Generated fake tagList payload",
+                "externalValue": "./examples/tagList.json"
             }
         }
     }

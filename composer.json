@@ -31,7 +31,7 @@
     },
     "require-dev": {
         "bamarni/composer-bin-plugin": "^1.4",
-        "bear/api-doc": "^1.7",
+        "bear/api-doc": "^1.11",
         "bear/cli": "^1.0",
         "bear/devtools": "^1.0",
         "bear/security": "^0.1",
@@ -63,8 +63,11 @@
         "setup": "php bin/setup.php",
         "compile": "./vendor/bin/bear.compile 'MyVendor\\Cms' prod-app ./",
         "doc": [
+            "mkdir -p docs/examples",
+            "cp var/fake/*.json docs/examples/",
             "./vendor/bin/apidoc",
-            "asd -e var/alps/profile.json > docs/alps.html"
+            "asd -e var/alps/profile.json > docs/alps.html",
+            "perl -0pi -e 's/[ \\t]+$//mg' docs/index.html docs/alps.html docs/terms.html"
         ],
         "fake": "php bin/semantic-ex/gen-fake.php",
         "schema": "php bin/semantic-ex/gen-schemas.php",
