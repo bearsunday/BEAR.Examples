@@ -17,7 +17,7 @@ declare(strict_types=1);
  *   4.5) Async embed        ext-parallel via bin/async.php
  *                           (skipped with install hint if ext-parallel
  *                           is not loaded)
- *   5) ALPS validate        npm ASD validate (skipped if npm install was not run)
+ *   5) ALPS validate        npm ASD validate (skipped if composer setup:docs was not run)
  *   6) apidoc               composer doc (HTML / OpenAPI / llms.txt)
  *   7) CLI                  bin/cli/article-show against the real DB
  *
@@ -214,7 +214,7 @@ if (extension_loaded('parallel')) {
 section('5) ALPS profile — validate');
 $asd = $root . '/node_modules/.bin/asd';
 if (! is_file($asd)) {
-    fwrite(STDOUT, "npm ASD is not installed. Run `npm install` to enable this section.\n");
+    fwrite(STDOUT, "npm ASD is not installed. Run `composer setup:docs` to enable this section.\n");
 }
 
 if (is_file($asd)) {

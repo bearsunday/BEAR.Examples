@@ -35,7 +35,8 @@ Media には意図的に 2 種類の write transition があります。`doCreat
 
 ## profile の検証
 
-npm ASD dependency は `composer setup` で install されます。
+`composer doc` は必要に応じて npm ASD dependency を install し、ALPS HTML/SVG
+生成物を再生成します。
 
 ```bash
 npm run alps:validate

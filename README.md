@@ -91,7 +91,8 @@ For the detailed in/out list and deferred items, read
 - Optional: SQLite for quick real-DB trials
 
 `composer install` runs `composer setup`, which clears generated DI/runtime
-cache and installs the npm ASD dependency when npm is available.
+cache. `composer doc` runs `composer setup:docs` and installs the npm ASD
+dependency when it is not already present.
 
 ## Quick Start
 
@@ -252,7 +253,6 @@ Generated API documentation lives under `docs/`:
 Regenerate it with:
 
 ```bash
-composer setup
 composer doc
 ```
 

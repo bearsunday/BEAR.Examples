@@ -60,8 +60,10 @@
             "@composer bin all install --ansi"
         ],
         "setup": "php bin/setup.php",
+        "setup:docs": "php bin/setup-docs.php",
         "compile": "./vendor/bin/bear.compile 'MyVendor\\Cms' prod-app ./",
         "doc": [
+            "@setup:docs",
             "mkdir -p docs/examples",
             "cp var/fake/*.json docs/examples/",
             "./vendor/bin/apidoc",
@@ -161,7 +163,8 @@
         "demo:cache": "php bin/demo-cache.php"
     },
     "scripts-descriptions": {
-        "setup": "Setup the project",
+        "setup": "Clear generated DI/runtime cache",
+        "setup:docs": "Install npm dependencies for generated documentation",
         "compile": "Compile scripts for the production",
         "doc": "Generate API document",
         "test": "Run unit tests",
