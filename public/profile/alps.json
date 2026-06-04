@@ -5,6 +5,14 @@
     "doc": {
       "value": "ALPS profile for a BEAR.Sunday reference CMS. App-resource only (no admin/UI). Covers articles, categories, tags, authors and media with read and write transitions."
     },
+    "link": [
+      {"rel": "apidoc", "href": "index.html"},
+      {"rel": "openapi", "href": "openapi.json"},
+      {"rel": "schemas", "href": "schemas/index.html"},
+      {"rel": "terms", "href": "terms.html"},
+      {"rel": "llms", "href": "llms.txt"},
+      {"rel": "audit", "href": "audit.md"}
+    ],
     "descriptor": [
       {"id": "id", "title": "Identifier", "def": "https://schema.org/identifier"},
       {"id": "slug", "title": "URL-safe Slug", "doc": {"value": "Lower-case kebab-case unique identifier used in human-readable URIs."}},
