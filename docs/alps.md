@@ -35,6 +35,8 @@ binary upload through `app://self/media-upload`.
 
 ## Validating the profile
 
+Run `composer setup` once to install the npm ASD dependency.
+
 ```bash
 npm run alps:validate
 ```

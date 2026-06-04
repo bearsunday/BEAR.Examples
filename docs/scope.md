@@ -73,7 +73,7 @@ variation that demonstrates `BEAR.Streamer` without changing canonical
 | `_links` | `#[Link]` attributes (RFC 6570 templates) | Rels follow ALPS Choreography names (`goArticleList`, `goAuthor`, …) |
 | `_embedded` | `#[Embed]` + `addQuery()` for parametric embeds; manual array build inside `onGet` for ID-after-fetch cases | |
 | `linkCrawl` | `src/Resource/App/Crawl/*` + `ArticleTagsDataLoader` | `ResourceInterface::crawl('app://self/crawl/author', 'author-tree', ['id' => 1])` traverses author → articles → tags and batches tags with one MediaQuery call |
-| ALPS profile | `var/alps/profile.json` (single source of truth) | HTML rendering via `composer doc` (`asd`) |
+| ALPS profile | `var/alps/profile.json` (single source of truth) | HTML/SVG rendering via `composer doc` (npm ASD) |
 
 ### Validation
 

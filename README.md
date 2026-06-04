@@ -90,6 +90,9 @@ For the detailed in/out list and deferred items, read
 - Optional: MySQL via Malt or docker-compose
 - Optional: SQLite for quick real-DB trials
 
+`composer install` runs `composer setup`, which clears generated DI/runtime
+cache and installs the npm ASD dependency when npm is available.
+
 ## Quick Start
 
 Use the fake context first. It needs no database.
@@ -249,7 +252,7 @@ Generated API documentation lives under `docs/`:
 Regenerate it with:
 
 ```bash
-npm install
+composer setup
 composer doc
 ```
 
