@@ -17,7 +17,7 @@ declare(strict_types=1);
  *   4.5) Async embed        ext-parallel via bin/async.php
  *                           (skipped with install hint if ext-parallel
  *                           is not loaded)
- *   5) ALPS validate        asd --validate (skipped if asd missing)
+ *   5) ALPS validate        npm ASD validate (skipped if npm install was not run)
  *   6) apidoc               composer doc (HTML / OpenAPI / llms.txt)
  *   7) CLI                  bin/cli/article-show against the real DB
  *
@@ -212,13 +212,13 @@ if (extension_loaded('parallel')) {
 
 // ── 5) ALPS validate ──────────────────────────────────────────────
 section('5) ALPS profile — validate');
-$asd = trim((string) shell_exec('which asd'));
-if ($asd === '') {
-    fwrite(STDOUT, "asd not installed (npm install -g app-state-diagram).\n");
+$asd = $root . '/node_modules/.bin/asd';
+if (! is_file($asd)) {
+    fwrite(STDOUT, "npm ASD is not installed. Run `npm install` to enable this section.\n");
 }
 
-if ($asd !== '') {
-    run("asd --validate {$root}/var/alps/profile.json 2>&1 | tail -3");
+if (is_file($asd)) {
+    run(escapeshellarg($asd) . ' --validate ' . escapeshellarg($root . '/var/alps/profile.json') . ' 2>&1 | tail -3');
 }
 
 // ── 6) apidoc ─────────────────────────────────────────────────────
