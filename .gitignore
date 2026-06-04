@@ -3,6 +3,7 @@
 .phpunit.result.cache
 /.phpunit.cache/
 /vendor/
+/node_modules/
 /build/
 /var/log/*
 !var/log/.gitkeep
@@ -23,4 +24,3 @@ phpunit.xml
 /malt/
 /var/alps/index.html
 /.claude/
-

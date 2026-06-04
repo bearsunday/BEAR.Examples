@@ -137,7 +137,7 @@ Note: `Page/Admin/*` is now behind an `AdminGuard` check backed by `UserInterfac
 | `composer serve` / `serve:api` | HTML / API HTTP servers |
 | `composer demo` | End-to-end walkthrough |
 | `composer demo:cache` | QueryRepository cache showcase (hermetic, in-memory ArrayAdapter) |
-| `composer doc` | apidoc + OpenAPI + llms.txt + term index + documentation audit + ALPS HTML |
+| `composer doc` | apidoc + OpenAPI + llms.txt + term index + documentation audit + ALPS HTML/SVG |
 | `composer compile` | bear.compile production graph |
 
 Generated commands exist for `article-show` and `article-list` (under `bin/cli/`). Expanding generation to the other entities and to the write-side methods is intentionally out of scope — see "By design".

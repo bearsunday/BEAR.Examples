@@ -130,7 +130,7 @@ AGENTS.md は明示的に「これ以上 variation を増やすな」と釘を�
 | `composer fake` | `var/fake/*.json` (50 件 × 各エンティティ) | `mt_srand(42)` |
 | `composer schema` | `var/json_schema/*.json` | fake から観測 |
 | `composer semantic` | 上記両方 | 同上 |
-| `composer doc` | `docs/openapi.json`, `docs/alps.html`, `docs/llms.txt`, `docs/terms.html`, `docs/terms.md`, `docs/audit.md` | 属性から派生 |
+| `composer doc` | `docs/openapi.json`, `docs/alps.html`, `docs/alps.svg`, `docs/llms.txt`, `docs/terms.html`, `docs/terms.md`, `docs/audit.md` | 属性から派生 |
 | `composer cli` | `bin/cli/*` | `#[Cli]` から生成 |
 
 差分レビューが意味を持つ。生成物が壊れたら属性側を直す。

@@ -109,5 +109,5 @@ git diff --check
 ```
 
 `composer tests` runs coding standards, Psalm, PHPStan, PHPMD, and PHPUnit.
-`composer doc` regenerates ApiDoc, OpenAPI, ALPS HTML, `llms.txt`, the term
+`composer doc` regenerates ApiDoc, OpenAPI, ALPS HTML/SVG, `llms.txt`, the term
 usage index, and the documentation audit report.

@@ -106,5 +106,5 @@ git diff --check
 ```
 
 `composer tests` は coding standards、Psalm、PHPStan、PHPMD、PHPUnit を実行します。
-`composer doc` は ApiDoc、OpenAPI、ALPS HTML、`llms.txt`、term usage index、
+`composer doc` は ApiDoc、OpenAPI、ALPS HTML/SVG、`llms.txt`、term usage index、
 documentation audit report を再生成します。

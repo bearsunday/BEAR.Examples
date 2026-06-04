@@ -86,6 +86,7 @@ For the detailed in/out list and deferred items, read
 
 - PHP 8.5
 - Composer
+- Node.js 20+ and npm for `composer doc` / ALPS diagram generation
 - Optional: MySQL via Malt or docker-compose
 - Optional: SQLite for quick real-DB trials
 
@@ -236,6 +237,8 @@ Generated API documentation lives under `docs/`:
 
 - [docs/index.html](docs/index.html) — generated URI / request / response /
   `_links` / `_embedded` map.
+- [docs/alps.html](docs/alps.html) / [docs/alps.svg](docs/alps.svg) —
+  ALPS semantic profile and static state diagram.
 - [docs/openapi.json](docs/openapi.json) — OpenAPI contract.
 - [docs/llms.txt](docs/llms.txt) — LLM-oriented API summary.
 - [docs/terms.html](docs/terms.html) / [docs/terms.md](docs/terms.md) —
@@ -246,6 +249,7 @@ Generated API documentation lives under `docs/`:
 Regenerate it with:
 
 ```bash
+npm install
 composer doc
 ```
 
@@ -284,7 +288,7 @@ composer tests      # cs + static analysis + PHPMD + PHPUnit
 composer fake       # regenerate var/fake/*.json
 composer schema     # regenerate var/json_schema/*.json from fake
 composer semantic   # fake then schema (the full semantic-ex pass)
-composer doc        # regenerate ApiDoc, OpenAPI, llms.txt, terms, audit, ALPS HTML
+composer doc        # regenerate ApiDoc, OpenAPI, llms.txt, terms, audit, ALPS HTML/SVG (uses npm ASD)
 composer cli        # regenerate bin/cli/* from #[Cli] attributes
 composer serve      # Qiq/Page HTML server on :8081
 composer serve:api  # HAL JSON API server on :8080

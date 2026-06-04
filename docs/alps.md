@@ -36,7 +36,7 @@ binary upload through `app://self/media-upload`.
 ## Validating the profile
 
 ```bash
-asd --validate var/alps/profile.json
+npm run alps:validate
 ```
 
 The current profile validates with 0 errors and 0 warnings.
@@ -44,6 +44,6 @@ The current profile validates with 0 errors and 0 warnings.
 ## Visualising
 
 ```bash
-asd var/alps/profile.json               # HTML state diagram
-asd var/alps/profile.json -f mermaid    # Mermaid classDiagram
+npm run doc:alps                        # HTML and static SVG diagrams
+npx --no-install asd -f mermaid var/alps/profile.json
 ```

@@ -704,7 +704,7 @@ as scalar metadata so the project shows both parameter styles side by side.
 | Input JSON Schema | `var/json_validate/<entity>_<verb>.json` |
 | Fake data | `var/fake/<entity>.json` (deterministic, `mt_srand(42)`) |
 | ALPS profile | `var/alps/profile.json` (single source of truth for semantics) |
-| Generated apidoc | `docs/index.html`, `docs/openapi.json`, `docs/llms.txt`, `docs/terms.html`, `docs/terms.md`, `docs/audit.md`, `docs/examples/*`, `docs/schemas/*` |
+| Generated apidoc | `docs/index.html`, `docs/alps.html`, `docs/alps.svg`, `docs/openapi.json`, `docs/llms.txt`, `docs/terms.html`, `docs/terms.md`, `docs/audit.md`, `docs/examples/*`, `docs/schemas/*` |
 | README spec | `docs/readme-spec.md` (shared top-level README shape) |
 
 ## 7. Tests

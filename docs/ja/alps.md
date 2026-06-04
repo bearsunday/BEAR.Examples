@@ -36,7 +36,7 @@ Media には意図的に 2 種類の write transition があります。`doCreat
 ## profile の検証
 
 ```bash
-asd --validate var/alps/profile.json
+npm run alps:validate
 ```
 
 現在の profile は 0 errors / 0 warnings で validate されます。
@@ -44,6 +44,6 @@ asd --validate var/alps/profile.json
 ## 可視化
 
 ```bash
-asd var/alps/profile.json               # HTML state diagram
-asd var/alps/profile.json -f mermaid    # Mermaid classDiagram
+npm run doc:alps                        # HTML and static SVG diagrams
+npx --no-install asd -f mermaid var/alps/profile.json
 ```

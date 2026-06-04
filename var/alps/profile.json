@@ -8,6 +8,7 @@
     "link": [
       {"rel": "apidoc", "href": "index.html"},
       {"rel": "alps", "href": "alps.html"},
+      {"rel": "diagram", "href": "alps.svg"},
       {"rel": "openapi", "href": "openapi.json"},
       {"rel": "llms", "href": "llms.txt"},
       {"rel": "terms", "href": "terms.html"},

@@ -8,6 +8,7 @@
     "link": [
       {"rel": "apidoc", "href": "https://github.com/bearsunday/MyVendor.Cms/blob/1.x/docs/index.html"},
       {"rel": "alps", "href": "https://github.com/bearsunday/MyVendor.Cms/blob/1.x/docs/alps.html"},
+      {"rel": "diagram", "href": "https://raw.githubusercontent.com/bearsunday/MyVendor.Cms/1.x/docs/alps.svg"},
       {"rel": "openapi", "href": "https://github.com/bearsunday/MyVendor.Cms/blob/1.x/docs/openapi.json"},
       {"rel": "llms", "href": "https://github.com/bearsunday/MyVendor.Cms/blob/1.x/docs/llms.txt"},
       {"rel": "terms", "href": "https://github.com/bearsunday/MyVendor.Cms/blob/1.x/docs/terms.html"},

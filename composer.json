@@ -38,7 +38,6 @@
         "doctrine/dbal": "^4.4",
         "doctrine/migrations": "^3.9",
         "justinrainbow/json-schema": "^6.8",
-        "koriym/app-state-diagram": "^0.11",
         "phpunit/phpunit": "^10.0",
         "roave/security-advisories": "dev-latest"
     },
@@ -66,7 +65,7 @@
             "mkdir -p docs/examples",
             "cp var/fake/*.json docs/examples/",
             "./vendor/bin/apidoc",
-            "asd -e var/alps/profile.json > docs/alps.html",
+            "npm run doc:alps --silent",
             "perl -0pi -e 's/## Findings/## Audit Scope\\nThis report checks the metadata fields used by the BEAR.ApiDoc audit pass. OpenAPI summaries can be derived separately, so a `Missing operation summary` finding can remain even when `docs\\/openapi.json` has a non-empty `summary`. Treat it as a prompt to add explicit source summaries for the audit pass.\\n\\n## Findings/' docs/audit.md",
             "perl -0pi -e 's/[ \\t]+$//mg' docs/index.html docs/alps.html docs/terms.html"
         ],

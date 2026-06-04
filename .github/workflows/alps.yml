@@ -19,17 +19,10 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
-      - run: npm install -g @alps-asd/app-state-diagram
+          cache: 'npm'
+      - run: npm ci
       - name: Generate ALPS diagram
-        run: |
-          if [ -f "docs/alps.json" ]; then
-            asd docs/alps.json
-          elif [ -f "docs/alps.xml" ]; then
-            asd docs/alps.xml
-          else
-            echo "::error::No ALPS profile found (docs/alps.json or docs/alps.xml)"
-            exit 1
-          fi
+        run: npm run doc:alps
       - uses: actions/configure-pages@v4
       - uses: actions/upload-pages-artifact@v3
         with:
