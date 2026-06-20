@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms\Resource\App;
+namespace BEAR\Examples\Resource\App;
 
-use MyVendor\Cms\AbstractAppTestCase;
+use BEAR\Examples\AbstractAppTestCase;
 
 use function uniqid;
 

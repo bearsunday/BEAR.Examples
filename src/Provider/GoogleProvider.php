@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms\Provider;
+namespace BEAR\Examples\Provider;
 
 use League\OAuth2\Client\Provider\Google;
 use Ray\Di\ProviderInterface;

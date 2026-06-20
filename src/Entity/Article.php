@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms\Entity;
+namespace BEAR\Examples\Entity;
 
 use function array_column;
 use function implode;

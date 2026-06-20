@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms\Resource\Page\Admin;
+namespace BEAR\Examples\Resource\Page\Admin;
 
 use BEAR\Resource\ResourceObject;
-use MyVendor\Cms\Auth\AdminGuard;
-use MyVendor\Cms\Auth\AdminUserInterface;
+use BEAR\Examples\Auth\AdminGuard;
+use BEAR\Examples\Auth\AdminUserInterface;
 
 /** @property array{admin: AdminUserInterface} $body */
 class Index extends ResourceObject

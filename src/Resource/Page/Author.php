@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms\Resource\Page;
+namespace BEAR\Examples\Resource\Page;
 
 use BEAR\Resource\ResourceObject;
-use MyVendor\Cms\Entity\Author as AuthorEntity;
-use MyVendor\Cms\Query\AuthorQueryInterface;
+use BEAR\Examples\Entity\Author as AuthorEntity;
+use BEAR\Examples\Query\AuthorQueryInterface;
 
 /** @property array{message: string}|array{author: AuthorEntity} $body */
 class Author extends ResourceObject

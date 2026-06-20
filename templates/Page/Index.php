@@ -1,6 +1,6 @@
 <?php
 /**
- * @var list<\MyVendor\Cms\Entity\Article> $articles
+ * @var list<\BEAR\Examples\Entity\Article> $articles
  */
 ?>
 {{ setLayout('layout/Default') }}

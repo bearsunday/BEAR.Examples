@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms\Resource\App\Crawl;
+namespace BEAR\Examples\Resource\App\Crawl;
 
 use BEAR\Resource\Annotation\JsonSchema;
 use BEAR\Resource\Annotation\Link;
 use BEAR\Resource\Code;
 use BEAR\Resource\ResourceObject;
-use MyVendor\Cms\Query\AuthorQueryInterface;
+use BEAR\Examples\Query\AuthorQueryInterface;
 
 class Author extends ResourceObject
 {

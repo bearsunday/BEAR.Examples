@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms\Auth;
+namespace BEAR\Examples\Auth;
 
 use League\OAuth2\Client\Provider\Google;
 use League\OAuth2\Client\Provider\GoogleUser;
-use MyVendor\Cms\Exception\UnexpectedAuthProviderResponseException;
+use BEAR\Examples\Exception\UnexpectedAuthProviderResponseException;
 
 /**
  * Real Google OAuth provider.

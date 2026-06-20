@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms\Resource\Page\Admin;
+namespace BEAR\Examples\Resource\Page\Admin;
 
 use BEAR\Resource\Code;
 use BEAR\Resource\ResourceObject;
-use MyVendor\Cms\Auth\AuthInterface;
-use MyVendor\Cms\Auth\AuthorIdentityResolver;
-use MyVendor\Cms\Auth\AuthSessionInterface;
+use BEAR\Examples\Auth\AuthInterface;
+use BEAR\Examples\Auth\AuthorIdentityResolver;
+use BEAR\Examples\Auth\AuthSessionInterface;
 use Throwable;
 
 /** @property array{message: string}|array{} $body */

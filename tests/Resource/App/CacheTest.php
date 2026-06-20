@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms\Resource\App;
+namespace BEAR\Examples\Resource\App;
 
 use BEAR\QueryRepository\RepositoryLoggerInterface;
 use BEAR\RepositoryModule\Annotation\DonutCache;
 use BEAR\Resource\ResourceInterface;
-use MyVendor\Cms\Injector;
-use MyVendor\Cms\Resource\App\Cache\ArticlePreview;
+use BEAR\Examples\Injector;
+use BEAR\Examples\Resource\App\Cache\ArticlePreview;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 

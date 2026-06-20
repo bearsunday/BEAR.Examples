@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms\Resource\App;
+namespace BEAR\Examples\Resource\App;
 
 use BEAR\ApiDoc\Annotation\Alps;
 use BEAR\Resource\Annotation\JsonSchema;
 use BEAR\Resource\Annotation\Link;
 use BEAR\Resource\ResourceObject;
-use MyVendor\Cms\Query\TagQueryInterface;
+use BEAR\Examples\Query\TagQueryInterface;
 
 use function array_map;
 use function count;

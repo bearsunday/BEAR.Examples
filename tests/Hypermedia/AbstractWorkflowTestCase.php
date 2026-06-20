@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms\Hypermedia;
+namespace BEAR\Examples\Hypermedia;
 
 use BEAR\Resource\ResourceObject;
-use MyVendor\Cms\AbstractAppTestCase;
+use BEAR\Examples\AbstractAppTestCase;
 
 use function parse_str;
 use function parse_url;

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms;
+namespace BEAR\Examples;
 
 use BEAR\Package\Injector as PackageInjector;
 use Ray\Di\AbstractModule;

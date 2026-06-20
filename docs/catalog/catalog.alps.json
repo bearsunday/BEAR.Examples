@@ -1,0 +1,302 @@
+{
+  "$schema": "https://alps-io.github.io/schemas/alps.json",
+  "alps": {
+    "title": "BEAR.Examples Pattern Catalog",
+    "doc": {
+      "value": "ALPS profile for the Jekyll pattern catalog. It defines the HTML vocabulary used by humans and semantic readers to identify sample cards, guidance, rewrite shapes, source links, tests, and upstream concepts."
+    },
+    "descriptor": [
+      {
+        "id": "patternCatalog",
+        "title": "Pattern Catalog",
+        "doc": {
+          "value": "The catalog document that indexes executable BEAR.Sunday patterns."
+        },
+        "descriptor": [
+          {
+            "href": "#sampleCard"
+          },
+          {
+            "href": "#catalogPage"
+          },
+          {
+            "href": "#goGeneratedContract"
+          },
+          {
+            "href": "#catalogGlossary"
+          }
+        ]
+      },
+      {
+        "id": "sampleCard",
+        "title": "Sample Card",
+        "doc": {
+          "value": "One reusable implementation pattern with guidance for copying and avoiding misuse."
+        },
+        "descriptor": [
+          {
+            "href": "#sampleTitle"
+          },
+          {
+            "href": "#status"
+          },
+          {
+            "href": "#aiGuidance"
+          },
+          {
+            "href": "#upstreamConcept"
+          },
+          {
+            "href": "#intent"
+          },
+          {
+            "href": "#summary"
+          },
+          {
+            "href": "#useWhen"
+          },
+          {
+            "href": "#doNotUseWhen"
+          },
+          {
+            "href": "#patternDiff"
+          },
+          {
+            "href": "#shapeExcerpt"
+          },
+          {
+            "href": "#notes"
+          },
+          {
+            "href": "#goSource"
+          },
+          {
+            "href": "#goTest"
+          },
+          {
+            "href": "#goConvention"
+          }
+        ]
+      },
+      {
+        "id": "sampleTitle",
+        "title": "Sample Title",
+        "def": "https://schema.org/name"
+      },
+      {
+        "id": "status",
+        "title": "Pattern Status",
+        "doc": {
+          "value": "Classification such as canonical, showcase, contrast, by-design, deferred, or historical."
+        }
+      },
+      {
+        "id": "aiGuidance",
+        "title": "AI Guidance",
+        "doc": {
+          "value": "Machine-oriented copy and avoid guidance."
+        },
+        "descriptor": [
+          {
+            "href": "#aiUse"
+          },
+          {
+            "href": "#aiAvoid"
+          },
+          {
+            "href": "#snippetContract"
+          }
+        ]
+      },
+      {
+        "id": "aiUse",
+        "title": "AI Use",
+        "doc": {
+          "value": "Condition under which an AI agent should copy the pattern."
+        }
+      },
+      {
+        "id": "aiAvoid",
+        "title": "AI Avoid",
+        "doc": {
+          "value": "Condition under which an AI agent should not apply the pattern."
+        }
+      },
+      {
+        "id": "snippetContract",
+        "title": "Snippet Contract",
+        "doc": {
+          "value": "Statement that snippets show shape and complete code lives behind source/test links."
+        }
+      },
+      {
+        "id": "upstreamConcept",
+        "title": "Upstream Concept",
+        "doc": {
+          "value": "Framework concept from BEAR.Sunday or Be that this sample grounds."
+        }
+      },
+      {
+        "id": "intent",
+        "title": "Intent",
+        "def": "https://schema.org/description"
+      },
+      {
+        "id": "summary",
+        "title": "Summary",
+        "doc": {
+          "value": "Short plain-language summary of the same pattern or page."
+        }
+      },
+      {
+        "id": "useWhen",
+        "title": "Use When",
+        "doc": {
+          "value": "Positive applicability conditions."
+        }
+      },
+      {
+        "id": "doNotUseWhen",
+        "title": "Do Not Use When",
+        "doc": {
+          "value": "Negative applicability conditions and anti-overgeneralization guidance."
+        }
+      },
+      {
+        "id": "patternDiff",
+        "title": "Pattern Diff",
+        "doc": {
+          "value": "Conceptual rewrite shape, not a historical git diff."
+        }
+      },
+      {
+        "id": "shapeExcerpt",
+        "title": "Shape Excerpt",
+        "doc": {
+          "value": "Short code excerpt showing the implementation shape, not necessarily complete copy-paste code."
+        }
+      },
+      {
+        "id": "notes",
+        "title": "Notes",
+        "doc": {
+          "value": "Rationale, caveats, and connections to conventions."
+        }
+      },
+      {
+        "id": "goSource",
+        "type": "safe",
+        "rt": "#sourceCode",
+        "title": "Source Link",
+        "def": "https://schema.org/codeRepository",
+        "doc": {
+          "value": "Navigate to source code that contains the complete pattern implementation."
+        }
+      },
+      {
+        "id": "goTest",
+        "type": "safe",
+        "rt": "#testCode",
+        "title": "Test Link",
+        "doc": {
+          "value": "Navigate to tests that verify the pattern behavior."
+        }
+      },
+      {
+        "id": "goConvention",
+        "type": "safe",
+        "rt": "#conventionDoc",
+        "title": "Convention Link",
+        "doc": {
+          "value": "Navigate to the convention document that explains the rule."
+        }
+      },
+      {
+        "id": "goGeneratedContract",
+        "type": "safe",
+        "rt": "#generatedArtifact",
+        "title": "Generated Contract",
+        "doc": {
+          "value": "Navigate to generated API, ALPS, OpenAPI, llms.txt, or schema artifacts."
+        }
+      },
+      {
+        "id": "catalogGlossary",
+        "title": "Catalog Glossary",
+        "doc": {
+          "value": "Definitions that prevent semantic drift for readers and agents."
+        }
+      },
+      {
+        "id": "sourceCode",
+        "title": "Source Code"
+      },
+      {
+        "id": "testCode",
+        "title": "Test Code"
+      },
+      {
+        "id": "conventionDoc",
+        "title": "Convention Document"
+      },
+      {
+        "id": "generatedArtifact",
+        "title": "Generated Artifact"
+      },
+      {
+        "id": "catalogPage",
+        "title": "Catalog Page",
+        "doc": {
+          "value": "A profile-declared explainer page about how this catalog should be read."
+        },
+        "descriptor": [
+          {
+            "href": "#readerJob"
+          },
+          {
+            "href": "#summary"
+          },
+          {
+            "href": "#meaningDeclared"
+          },
+          {
+            "href": "#workflowStep"
+          },
+          {
+            "href": "#goCatalogSample"
+          }
+        ]
+      },
+      {
+        "id": "readerJob",
+        "title": "Reader Job",
+        "doc": {
+          "value": "The task the page helps a human or AI reader complete."
+        }
+      },
+      {
+        "id": "meaningDeclared",
+        "title": "Meaning Declared",
+        "doc": {
+          "value": "Explanation of how visible content maps to ALPS descriptors and class bindings."
+        }
+      },
+      {
+        "id": "workflowStep",
+        "title": "Workflow Step",
+        "doc": {
+          "value": "A step in the recommended reading or authoring workflow."
+        }
+      },
+      {
+        "id": "goCatalogSample",
+        "title": "View Catalog Sample",
+        "doc": {
+          "value": "Navigate to a concrete sample card from an explainer page."
+        },
+        "type": "safe",
+        "rt": "#sampleCard"
+      }
+    ]
+  }
+}

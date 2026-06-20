@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms\Module;
+namespace BEAR\Examples\Module;
 
-use MyVendor\Cms\Auth\AuthInterface;
-use MyVendor\Cms\Auth\AuthSessionInterface;
-use MyVendor\Cms\Fake\FakeAdminAuthSessionProvider;
-use MyVendor\Cms\Fake\FakeAuthProvider;
-use MyVendor\Cms\Fake\FakeCsrfToken;
-use MyVendor\Cms\Fake\FakeRequestBodyToken;
-use MyVendor\Cms\Fake\FakeRequestOrigin;
-use MyVendor\Cms\Fake\FakeSqlQuery;
+use BEAR\Examples\Auth\AuthInterface;
+use BEAR\Examples\Auth\AuthSessionInterface;
+use BEAR\Examples\Fake\FakeAdminAuthSessionProvider;
+use BEAR\Examples\Fake\FakeAuthProvider;
+use BEAR\Examples\Fake\FakeCsrfToken;
+use BEAR\Examples\Fake\FakeRequestBodyToken;
+use BEAR\Examples\Fake\FakeRequestOrigin;
+use BEAR\Examples\Fake\FakeSqlQuery;
 use Ray\Csrf\CsrfTokenInterface;
 use Ray\Csrf\Http\AllowedOrigin;
 use Ray\Csrf\Http\RequestBodyTokenInterface;

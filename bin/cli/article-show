@@ -3,17 +3,17 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms\Resource\App;
+namespace BEAR\Examples\Resource\App;
 
 require dirname(__DIR__, 2) . '/vendor/autoload.php';
 
 use BEAR\Resource\ResourceInterface;
-use MyVendor\Cms\Injector;
+use BEAR\Examples\Injector;
 use BEAR\Cli\Config;
 use BEAR\Cli\ResourceCommand;
 
 $resource = Injector::getInstance('cli-hal-api-app')->getInstance(ResourceInterface::class);
-$config = new Config('app://self/article', new \ReflectionMethod(\MyVendor\Cms\Resource\App\Article::class, 'onGet'));
+$config = new Config('app://self/article', new \ReflectionMethod(\BEAR\Examples\Resource\App\Article::class, 'onGet'));
 $command = new ResourceCommand($config, $resource);
 $result = $command($argv);
 

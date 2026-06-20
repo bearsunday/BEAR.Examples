@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms\Resource\Page;
+namespace BEAR\Examples\Resource\Page;
 
 use BEAR\Resource\ResourceObject;
-use MyVendor\Cms\Entity\Article as ArticleEntity;
-use MyVendor\Cms\Entity\Author;
-use MyVendor\Cms\Entity\Category;
-use MyVendor\Cms\Query\ArticleQueryInterface;
-use MyVendor\Cms\Query\AuthorQueryInterface;
-use MyVendor\Cms\Query\CategoryQueryInterface;
-use MyVendor\Cms\Query\TagQueryInterface;
-use MyVendor\Cms\Service\MarkdownRendererInterface;
+use BEAR\Examples\Entity\Article as ArticleEntity;
+use BEAR\Examples\Entity\Author;
+use BEAR\Examples\Entity\Category;
+use BEAR\Examples\Query\ArticleQueryInterface;
+use BEAR\Examples\Query\AuthorQueryInterface;
+use BEAR\Examples\Query\CategoryQueryInterface;
+use BEAR\Examples\Query\TagQueryInterface;
+use BEAR\Examples\Service\MarkdownRendererInterface;
 
 use function array_map;
 

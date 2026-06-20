@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms\Interceptor;
+namespace BEAR\Examples\Interceptor;
 
 use BEAR\Resource\Exception\BadRequestException;
-use MyVendor\Cms\Fake\FakeRequestOrigin;
+use BEAR\Examples\Fake\FakeRequestOrigin;
 use PHPUnit\Framework\TestCase;
 use Ray\Aop\ReflectiveMethodInvocation;
 use Ray\Csrf\Exception\ForbiddenException;

@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms\Resource\App;
+namespace BEAR\Examples\Resource\App;
 
 use Koriym\FileUpload\ErrorFileUpload;
 use Koriym\FileUpload\FileUpload;
-use MyVendor\Cms\AbstractAppTestCase;
-use MyVendor\Cms\Entity\Media;
-use MyVendor\Cms\Query\MediaCommandInterface;
-use MyVendor\Cms\Query\MediaQueryInterface;
+use BEAR\Examples\AbstractAppTestCase;
+use BEAR\Examples\Entity\Media;
+use BEAR\Examples\Query\MediaCommandInterface;
+use BEAR\Examples\Query\MediaQueryInterface;
 use RuntimeException;
 
 use function base64_decode;

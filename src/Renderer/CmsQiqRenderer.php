@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms\Renderer;
+namespace BEAR\Examples\Renderer;
 
 use BEAR\Resource\RenderInterface;
 use BEAR\Resource\ResourceObject;
 use ErrorException;
-use MyVendor\Cms\Auth\AuthSessionInterface;
-use MyVendor\Cms\Auth\UserInterface;
-use MyVendor\Cms\Renderer\Exception\InvalidResourcePathException;
+use BEAR\Examples\Auth\AuthSessionInterface;
+use BEAR\Examples\Auth\UserInterface;
+use BEAR\Examples\Renderer\Exception\InvalidResourcePathException;
 use Override;
 use Qiq\Template;
 use Ray\Aop\WeavedInterface;

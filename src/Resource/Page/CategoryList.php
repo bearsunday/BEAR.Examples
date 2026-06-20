@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms\Resource\Page;
+namespace BEAR\Examples\Resource\Page;
 
 use BEAR\Resource\ResourceObject;
-use MyVendor\Cms\Entity\Category;
-use MyVendor\Cms\Query\CategoryQueryInterface;
+use BEAR\Examples\Entity\Category;
+use BEAR\Examples\Query\CategoryQueryInterface;
 
 /** @property array{categories: list<Category>} $body */
 class CategoryList extends ResourceObject

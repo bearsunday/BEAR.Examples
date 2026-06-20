@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms\DataLoader;
+namespace BEAR\Examples\DataLoader;
 
 use BEAR\Resource\DataLoader\DataLoaderInterface;
-use MyVendor\Cms\Query\TagQueryInterface;
+use BEAR\Examples\Query\TagQueryInterface;
 
 use function array_values;
 

@@ -15,7 +15,7 @@ $context = getenv('APP_CONTEXT') ?: $defaultContext;
 
 exit((require $bootstrap)(
     $context,
-    'MyVendor\Cms',
+    'BEAR\Examples',
     dirname(__DIR__),
     $GLOBALS,
     $_SERVER,

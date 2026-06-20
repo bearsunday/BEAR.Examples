@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms\Input;
+namespace BEAR\Examples\Input;
 
 use Ray\InputQuery\Attribute\Input;
 

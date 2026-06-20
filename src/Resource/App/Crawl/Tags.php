@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms\Resource\App\Crawl;
+namespace BEAR\Examples\Resource\App\Crawl;
 
 use BEAR\Resource\Annotation\JsonSchema;
 use BEAR\Resource\ResourceObject;
-use MyVendor\Cms\Query\TagQueryInterface;
+use BEAR\Examples\Query\TagQueryInterface;
 
 use function array_map;
 

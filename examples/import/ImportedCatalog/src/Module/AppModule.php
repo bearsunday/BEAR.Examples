@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms\Example\ImportedCatalog\Module;
+namespace BEAR\Examples\Example\ImportedCatalog\Module;
 
 use BEAR\Package\AbstractAppModule;
 use BEAR\Package\PackageModule;

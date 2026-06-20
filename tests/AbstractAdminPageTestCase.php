@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms;
+namespace BEAR\Examples;
 
-use MyVendor\Cms\Auth\AdminUser;
+use BEAR\Examples\Auth\AdminUser;
 
 abstract class AbstractAdminPageTestCase extends AbstractPageTestCase
 {

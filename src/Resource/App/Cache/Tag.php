@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms\Resource\App\Cache;
+namespace BEAR\Examples\Resource\App\Cache;
 
 use BEAR\ApiDoc\Annotation\Alps;
 use BEAR\RepositoryModule\Annotation\Cacheable;
 use BEAR\Resource\Annotation\JsonSchema;
 use BEAR\Resource\Code;
 use BEAR\Resource\ResourceObject;
-use MyVendor\Cms\Query\TagCommandInterface;
-use MyVendor\Cms\Query\TagQueryInterface;
+use BEAR\Examples\Query\TagCommandInterface;
+use BEAR\Examples\Query\TagQueryInterface;
 
 /**
  * Cache showcase leaf — symmetric to {@see Author}.

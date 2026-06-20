@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms\Query\Samples;
+namespace BEAR\Examples\Query\Samples;
 
 use Ray\MediaQuery\Annotation\DbQuery;
 use Ray\MediaQuery\Result\AffectedRows;

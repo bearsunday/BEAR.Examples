@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms\Resource\App;
+namespace BEAR\Examples\Resource\App;
 
 use BEAR\ApiDoc\Annotation\Alps;
 use BEAR\Resource\Annotation\JsonSchema;
 use BEAR\Resource\Annotation\Link;
 use BEAR\Resource\Code;
 use BEAR\Resource\ResourceObject;
-use MyVendor\Cms\Query\AuthorCommandInterface;
-use MyVendor\Cms\Query\AuthorQueryInterface;
+use BEAR\Examples\Query\AuthorCommandInterface;
+use BEAR\Examples\Query\AuthorQueryInterface;
 
 use function assert;
 

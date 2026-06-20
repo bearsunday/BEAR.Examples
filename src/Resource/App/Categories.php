@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms\Resource\App;
+namespace BEAR\Examples\Resource\App;
 
 use BEAR\ApiDoc\Annotation\Alps;
 use BEAR\RepositoryModule\Annotation\CacheableResponse;
 use BEAR\Resource\Annotation\JsonSchema;
 use BEAR\Resource\Annotation\Link;
 use BEAR\Resource\ResourceObject;
-use MyVendor\Cms\Query\CategoryQueryInterface;
+use BEAR\Examples\Query\CategoryQueryInterface;
 
 use function array_map;
 use function count;

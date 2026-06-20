@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms\Entity;
+namespace BEAR\Examples\Entity;
 
 final readonly class Author
 {

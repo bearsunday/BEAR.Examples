@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms\Resource\App\Variations;
+namespace BEAR\Examples\Resource\App\Variations;
 
-use MyVendor\Cms\AbstractAppTestCase;
+use BEAR\Examples\AbstractAppTestCase;
 
 final class ArticleAsArrayTest extends AbstractAppTestCase
 {

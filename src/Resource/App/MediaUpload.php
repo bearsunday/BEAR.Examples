@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms\Resource\App;
+namespace BEAR\Examples\Resource\App;
 
 use BEAR\ApiDoc\Annotation\Alps;
 use BEAR\Resource\Annotation\JsonSchema;
@@ -10,8 +10,8 @@ use BEAR\Resource\Code;
 use BEAR\Resource\ResourceObject;
 use Koriym\FileUpload\ErrorFileUpload;
 use Koriym\FileUpload\FileUpload;
-use MyVendor\Cms\Query\MediaCommandInterface;
-use MyVendor\Cms\Query\MediaQueryInterface;
+use BEAR\Examples\Query\MediaCommandInterface;
+use BEAR\Examples\Query\MediaQueryInterface;
 use Ray\InputQuery\Attribute\InputFile;
 use Throwable;
 

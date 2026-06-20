@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms\Fake;
+namespace BEAR\Examples\Fake;
 
-use MyVendor\Cms\Auth\AdminUser;
-use MyVendor\Cms\Auth\AuthenticatedUser;
-use MyVendor\Cms\Auth\AuthSessionInterface;
-use MyVendor\Cms\Auth\UserInterface;
-use MyVendor\Cms\Auth\Visitor;
+use BEAR\Examples\Auth\AdminUser;
+use BEAR\Examples\Auth\AuthenticatedUser;
+use BEAR\Examples\Auth\AuthSessionInterface;
+use BEAR\Examples\Auth\UserInterface;
+use BEAR\Examples\Auth\Visitor;
 
 final class FakeAuthSession implements AuthSessionInterface
 {

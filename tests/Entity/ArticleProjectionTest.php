@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms\Entity;
+namespace BEAR\Examples\Entity;
 
 use PHPUnit\Framework\TestCase;
 

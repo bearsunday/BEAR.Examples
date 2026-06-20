@@ -1,0 +1,30 @@
+title: BEAR.Examples Catalog
+description: Executable BEAR.Sunday pattern catalog for humans and AI agents.
+baseurl: ""
+url: ""
+
+collections:
+  samples:
+    output: true
+    permalink: /samples/:name/
+
+defaults:
+  - scope:
+      path: ""
+      type: samples
+    values:
+      layout: sample
+  - scope:
+      path: ""
+    values:
+      layout: default
+
+markdown: kramdown
+highlighter: rouge
+
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - vendor
+  - vendor/bundle
+  - node_modules

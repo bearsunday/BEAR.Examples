@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms;
+namespace BEAR\Examples;
 
 use BEAR\Resource\ResourceInterface;
-use MyVendor\Cms\Auth\UserInterface;
-use MyVendor\Cms\Auth\Visitor;
-use MyVendor\Cms\Fake\FakeUserModule;
+use BEAR\Examples\Auth\UserInterface;
+use BEAR\Examples\Auth\Visitor;
+use BEAR\Examples\Fake\FakeUserModule;
 use PHPUnit\Framework\TestCase;
 
 /**

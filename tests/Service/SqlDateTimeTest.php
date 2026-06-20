@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms\Service;
+namespace BEAR\Examples\Service;
 
 use PHPUnit\Framework\TestCase;
 

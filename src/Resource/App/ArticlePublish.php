@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms\Resource\App;
+namespace BEAR\Examples\Resource\App;
 
 use BEAR\ApiDoc\Annotation\Alps;
 use BEAR\Resource\Annotation\JsonSchema;
 use BEAR\Resource\Code;
 use BEAR\Resource\ResourceObject;
-use MyVendor\Cms\Entity\ArticleStatus;
-use MyVendor\Cms\Query\ArticleCommandInterface;
-use MyVendor\Cms\Query\ArticleQueryInterface;
-use MyVendor\Cms\Service\SqlDateTime;
+use BEAR\Examples\Entity\ArticleStatus;
+use BEAR\Examples\Query\ArticleCommandInterface;
+use BEAR\Examples\Query\ArticleQueryInterface;
+use BEAR\Examples\Service\SqlDateTime;
 
 use function gmdate;
 

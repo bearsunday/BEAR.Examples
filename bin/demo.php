@@ -28,7 +28,7 @@ declare(strict_types=1);
  */
 
 use BEAR\Resource\ResourceInterface;
-use MyVendor\Cms\Injector;
+use BEAR\Examples\Injector;
 
 require dirname(__DIR__) . '/autoload.php';
 

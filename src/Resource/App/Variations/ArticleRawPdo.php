@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms\Resource\App\Variations;
+namespace BEAR\Examples\Resource\App\Variations;
 
 use Aura\Sql\ExtendedPdoInterface;
 use BEAR\Resource\Annotation\JsonSchema;

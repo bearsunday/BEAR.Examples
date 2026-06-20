@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms\Resource\App;
+namespace BEAR\Examples\Resource\App;
 
 use BEAR\Resource\Annotation\JsonSchema;
 use BEAR\Resource\Code;
 use BEAR\Resource\ResourceObject;
-use MyVendor\Cms\Auth\AuthInterface;
-use MyVendor\Cms\Input\AuthExchangeInput;
+use BEAR\Examples\Auth\AuthInterface;
+use BEAR\Examples\Input\AuthExchangeInput;
 use Ray\InputQuery\Attribute\Input;
 use Throwable;
 

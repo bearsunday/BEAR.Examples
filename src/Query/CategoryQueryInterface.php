@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms\Query;
+namespace BEAR\Examples\Query;
 
-use MyVendor\Cms\Entity\Category;
+use BEAR\Examples\Entity\Category;
 use Ray\MediaQuery\Annotation\DbQuery;
 
 interface CategoryQueryInterface

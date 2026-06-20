@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms\Hypermedia;
+namespace BEAR\Examples\Hypermedia;
 
 use BEAR\Resource\ResourceObject;
 use PHPUnit\Framework\Attributes\Depends;

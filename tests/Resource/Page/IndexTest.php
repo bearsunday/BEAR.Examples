@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms\Resource\Page;
+namespace BEAR\Examples\Resource\Page;
 
-use MyVendor\Cms\AbstractPageTestCase;
-use MyVendor\Cms\Auth\AdminUser;
+use BEAR\Examples\AbstractPageTestCase;
+use BEAR\Examples\Auth\AdminUser;
 
 use function assert;
 

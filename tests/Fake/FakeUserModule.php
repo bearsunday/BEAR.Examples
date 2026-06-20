@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms\Fake;
+namespace BEAR\Examples\Fake;
 
-use MyVendor\Cms\Auth\AuthSessionInterface;
-use MyVendor\Cms\Auth\UserInterface;
+use BEAR\Examples\Auth\AuthSessionInterface;
+use BEAR\Examples\Auth\UserInterface;
 use Ray\Di\AbstractModule;
 
 final class FakeUserModule extends AbstractModule

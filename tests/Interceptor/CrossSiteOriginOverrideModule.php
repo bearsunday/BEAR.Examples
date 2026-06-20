@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms\Interceptor;
+namespace BEAR\Examples\Interceptor;
 
-use MyVendor\Cms\Fake\FakeRequestOrigin;
+use BEAR\Examples\Fake\FakeRequestOrigin;
 use Override;
 use Ray\Csrf\Http\AllowedOrigin;
 use Ray\Csrf\Http\RequestOriginInterface;

@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms\Resource\Page;
+namespace BEAR\Examples\Resource\Page;
 
 use BEAR\Resource\ResourceObject;
-use MyVendor\Cms\Entity\Tag;
-use MyVendor\Cms\Query\TagQueryInterface;
+use BEAR\Examples\Entity\Tag;
+use BEAR\Examples\Query\TagQueryInterface;
 
 /** @property array{tags: list<Tag>} $body */
 class TagList extends ResourceObject

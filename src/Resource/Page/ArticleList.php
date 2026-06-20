@@ -2,19 +2,19 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms\Resource\Page;
+namespace BEAR\Examples\Resource\Page;
 
 use BEAR\Resource\ResourceObject;
-use MyVendor\Cms\Entity\Article;
-use MyVendor\Cms\Entity\ArticleStatus;
-use MyVendor\Cms\Entity\Author;
-use MyVendor\Cms\Entity\Category;
-use MyVendor\Cms\Entity\Tag;
-use MyVendor\Cms\Factory\ArticleFactory;
-use MyVendor\Cms\Query\ArticleQueryInterface;
-use MyVendor\Cms\Query\AuthorQueryInterface;
-use MyVendor\Cms\Query\CategoryQueryInterface;
-use MyVendor\Cms\Query\TagQueryInterface;
+use BEAR\Examples\Entity\Article;
+use BEAR\Examples\Entity\ArticleStatus;
+use BEAR\Examples\Entity\Author;
+use BEAR\Examples\Entity\Category;
+use BEAR\Examples\Entity\Tag;
+use BEAR\Examples\Factory\ArticleFactory;
+use BEAR\Examples\Query\ArticleQueryInterface;
+use BEAR\Examples\Query\AuthorQueryInterface;
+use BEAR\Examples\Query\CategoryQueryInterface;
+use BEAR\Examples\Query\TagQueryInterface;
 use Ray\AuraSqlModule\Pagerfanta\Page as PagerPage;
 
 use function assert;

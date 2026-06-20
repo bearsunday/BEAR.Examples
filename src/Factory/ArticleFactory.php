@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms\Factory;
+namespace BEAR\Examples\Factory;
 
-use MyVendor\Cms\Entity\Article;
-use MyVendor\Cms\Entity\ArticleStatus;
+use BEAR\Examples\Entity\Article;
+use BEAR\Examples\Entity\ArticleStatus;
 
 use function array_map;
 use function str_contains;

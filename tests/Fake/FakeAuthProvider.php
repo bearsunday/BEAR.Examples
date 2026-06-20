@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms\Fake;
+namespace BEAR\Examples\Fake;
 
-use MyVendor\Cms\Auth\AuthenticatedUser;
-use MyVendor\Cms\Auth\AuthInterface;
+use BEAR\Examples\Auth\AuthenticatedUser;
+use BEAR\Examples\Auth\AuthInterface;
 
 /**
  * In-memory replacement for GoogleAuthProvider used by tests / fake-hal-api-app.

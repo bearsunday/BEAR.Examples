@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms\Fake;
+namespace BEAR\Examples\Fake;
 
 use Override;
 use Ray\Csrf\Http\RequestOriginInterface;

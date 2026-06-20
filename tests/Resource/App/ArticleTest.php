@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms\Resource\App;
+namespace BEAR\Examples\Resource\App;
 
 use BEAR\Resource\Exception\ParameterException;
-use MyVendor\Cms\AbstractAppTestCase;
-use MyVendor\Cms\Exception\ValidationException;
+use BEAR\Examples\AbstractAppTestCase;
+use BEAR\Examples\Exception\ValidationException;
 
 use function array_column;
 use function json_decode;

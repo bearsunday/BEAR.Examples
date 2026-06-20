@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms\Integration;
+namespace BEAR\Examples\Integration;
 
 use function uniqid;
 

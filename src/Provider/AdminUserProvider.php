@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms\Provider;
+namespace BEAR\Examples\Provider;
 
-use MyVendor\Cms\Auth\AdminUserInterface;
-use MyVendor\Cms\Auth\UserInterface;
-use MyVendor\Cms\Exception\UnauthenticatedException;
+use BEAR\Examples\Auth\AdminUserInterface;
+use BEAR\Examples\Auth\UserInterface;
+use BEAR\Examples\Exception\UnauthenticatedException;
 use Ray\Di\ProviderInterface;
 
 /** @implements ProviderInterface<AdminUserInterface> */

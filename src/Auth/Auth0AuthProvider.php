@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms\Auth;
+namespace BEAR\Examples\Auth;
 
 use Auth0\SDK\Contract\Auth0Interface;
-use MyVendor\Cms\Exception\UnexpectedAuthProviderResponseException;
+use BEAR\Examples\Exception\UnexpectedAuthProviderResponseException;
 
 use function is_array;
 use function is_string;

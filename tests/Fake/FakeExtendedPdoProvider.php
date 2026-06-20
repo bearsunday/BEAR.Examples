@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms\Fake;
+namespace BEAR\Examples\Fake;
 
 use Aura\Sql\ExtendedPdo;
 use Aura\Sql\ExtendedPdoInterface;

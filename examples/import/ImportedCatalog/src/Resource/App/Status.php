@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms\Example\ImportedCatalog\Resource\App;
+namespace BEAR\Examples\Example\ImportedCatalog\Resource\App;
 
 use BEAR\Resource\ResourceObject;
 

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms\Query;
+namespace BEAR\Examples\Query;
 
-use MyVendor\Cms\Entity\AuthIdentity;
+use BEAR\Examples\Entity\AuthIdentity;
 use Ray\MediaQuery\Annotation\DbQuery;
 
 interface AuthIdentityQueryInterface

@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms\Query;
+namespace BEAR\Examples\Query;
 
-use MyVendor\Cms\Entity\Article;
-use MyVendor\Cms\Factory\ArticleFactory;
+use BEAR\Examples\Entity\Article;
+use BEAR\Examples\Factory\ArticleFactory;
 use Ray\MediaQuery\Annotation\DbQuery;
 use Ray\MediaQuery\Annotation\Pager;
 use Ray\MediaQuery\PagesInterface;

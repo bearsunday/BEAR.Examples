@@ -1,13 +1,13 @@
 <?php
 /**
- * @var \MyVendor\Cms\Entity\Article $article
+ * @var \BEAR\Examples\Entity\Article $article
  * @var string $csrfToken
  * @var string $csrfTokenField
  */
 ?>
 {{ setLayout('layout/Default') }}
 {{ setBlock('bodyClass') ~}}admin admin-confirm admin-articledelete{{ endBlock() }}
-{{ setBlock('title') ~}}Delete Article - MyVendor.Cms{{ endBlock() }}
+{{ setBlock('title') ~}}Delete Article - BEAR.Examples{{ endBlock() }}
 {{ setBlock('header') ~}}<h1 class="AdminArticleDelete">Delete Article</h1>{{ endBlock() }}
 <main>
   <section class="Article">

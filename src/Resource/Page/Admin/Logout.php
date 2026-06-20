@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms\Resource\Page\Admin;
+namespace BEAR\Examples\Resource\Page\Admin;
 
 use BEAR\Resource\ResourceObject;
-use MyVendor\Cms\Auth\AuthSessionInterface;
+use BEAR\Examples\Auth\AuthSessionInterface;
 use Ray\Csrf\Attribute\CsrfToken;
 use Ray\Csrf\Attribute\SameOrigin;
 

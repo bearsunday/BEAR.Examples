@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms\Resource\Page\Admin;
+namespace BEAR\Examples\Resource\Page\Admin;
 
-use MyVendor\Cms\AbstractAdminPageTestCase;
+use BEAR\Examples\AbstractAdminPageTestCase;
 
 final class ArticleListTest extends AbstractAdminPageTestCase
 {

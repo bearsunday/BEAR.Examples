@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms\Smoke;
+namespace BEAR\Examples\Smoke;
 
-use MyVendor\Cms\Auth\GoogleAuthProvider;
-use MyVendor\Cms\Provider\GoogleProvider;
+use BEAR\Examples\Auth\GoogleAuthProvider;
+use BEAR\Examples\Provider\GoogleProvider;
 use PHPUnit\Framework\TestCase;
 
 use function getenv;

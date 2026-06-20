@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms\Result;
+namespace BEAR\Examples\Result;
 
 use ArrayIterator;
 use Countable;
 use IteratorAggregate;
-use MyVendor\Cms\Entity\Article;
+use BEAR\Examples\Entity\Article;
 use Ray\MediaQuery\Result\PostQueryContext;
 use Ray\MediaQuery\Result\PostQueryInterface;
 

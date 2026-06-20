@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms\Fake;
+namespace BEAR\Examples\Fake;
 
-use MyVendor\Cms\Auth\AuthSessionInterface;
+use BEAR\Examples\Auth\AuthSessionInterface;
 use Ray\Di\ProviderInterface;
 
 /** @implements ProviderInterface<AuthSessionInterface> */

@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms\Validation;
+namespace BEAR\Examples\Validation;
 
 use BEAR\Resource\Exception\JsonSchemaException;
 use BEAR\Resource\JsonSchemaRequestExceptionHandlerInterface;
 use BEAR\Resource\ResourceObject;
-use MyVendor\Cms\Exception\ValidationException;
+use BEAR\Examples\Exception\ValidationException;
 use Override;
 
 /**

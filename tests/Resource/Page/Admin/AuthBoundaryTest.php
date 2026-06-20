@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms\Resource\Page\Admin;
+namespace BEAR\Examples\Resource\Page\Admin;
 
-use MyVendor\Cms\AbstractPageTestCase;
-use MyVendor\Cms\Exception\UnauthenticatedException;
+use BEAR\Examples\AbstractPageTestCase;
+use BEAR\Examples\Exception\UnauthenticatedException;
 
 final class AuthBoundaryTest extends AbstractPageTestCase
 {

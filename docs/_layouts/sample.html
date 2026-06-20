@@ -1,0 +1,28 @@
+---
+layout: default
+---
+<article class="sample sampleCard">
+  <header>
+    <p><a href="{{ '/catalog/' | relative_url }}">← Back to catalog</a></p>
+    <h1 class="visually-hidden sampleTitle">{{ page.title }}</h1>
+    <p>
+      <span class="status">{{ page.status }}</span>
+      {% if page.category %}<span class="muted"> · {{ page.category }}</span>{% endif %}
+    </p>
+  </header>
+
+  <section class="metadata aiGuidance" aria-label="AI guidance">
+    <h2>AI guidance</h2>
+    {% if page.ai_use %}<p class="aiUse"><strong>Use:</strong> {{ page.ai_use }}</p>{% endif %}
+    {% if page.ai_avoid %}<p class="aiAvoid"><strong>Avoid:</strong> {{ page.ai_avoid }}</p>{% endif %}
+    {% if page.upstream %}
+      <p class="upstreamConcept"><strong>Upstream concepts:</strong> {{ page.upstream | join: ", " }}</p>
+    {% endif %}
+    {% if page.tags %}
+      <p><strong>Tags:</strong> {{ page.tags | join: ", " }}</p>
+    {% endif %}
+    <p class="snippetContract"><strong>Snippet contract:</strong> Pattern diffs and code blocks show the implementation shape. Use linked source and tests for complete code.</p>
+  </section>
+
+  {{ content }}
+</article>

@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms\Resource\App\Cache;
+namespace BEAR\Examples\Resource\App\Cache;
 
 use BEAR\ApiDoc\Annotation\Alps;
 use BEAR\RepositoryModule\Annotation\DonutCache;
 use BEAR\Resource\Annotation\JsonSchema;
 use BEAR\Resource\Code;
 use BEAR\Resource\ResourceObject;
-use MyVendor\Cms\Query\ArticleQueryInterface;
+use BEAR\Examples\Query\ArticleQueryInterface;
 
 /**
  * Explicit `#[DonutCache]` example for a stable article preview.

@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms\Resource\Page\Admin;
+namespace BEAR\Examples\Resource\Page\Admin;
 
 use BEAR\Resource\Code;
 use BEAR\Resource\ResourceInterface;
 use BEAR\Resource\ResourceObject;
-use MyVendor\Cms\Auth\AdminGuard;
-use MyVendor\Cms\Auth\AdminUserInterface;
-use MyVendor\Cms\Entity\Article;
-use MyVendor\Cms\Query\ArticleQueryInterface;
-use MyVendor\Cms\Query\AuthorQueryInterface;
-use MyVendor\Cms\Query\CategoryQueryInterface;
-use MyVendor\Cms\Query\TagQueryInterface;
+use BEAR\Examples\Auth\AdminGuard;
+use BEAR\Examples\Auth\AdminUserInterface;
+use BEAR\Examples\Entity\Article;
+use BEAR\Examples\Query\ArticleQueryInterface;
+use BEAR\Examples\Query\AuthorQueryInterface;
+use BEAR\Examples\Query\CategoryQueryInterface;
+use BEAR\Examples\Query\TagQueryInterface;
 use Ray\Csrf\Attribute\CsrfToken;
 use Ray\Csrf\Attribute\SameOrigin;
 

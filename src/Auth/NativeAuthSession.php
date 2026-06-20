@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms\Auth;
+namespace BEAR\Examples\Auth;
 
 use Ray\Csrf\CsrfTokenInterface;
 

@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms\Interceptor;
+namespace BEAR\Examples\Interceptor;
 
 use BEAR\Resource\ResourceInterface;
-use MyVendor\Cms\Auth\Visitor;
-use MyVendor\Cms\Fake\FakeUserModule;
-use MyVendor\Cms\Injector;
+use BEAR\Examples\Auth\Visitor;
+use BEAR\Examples\Fake\FakeUserModule;
+use BEAR\Examples\Injector;
 use PHPUnit\Framework\TestCase;
 use Ray\Csrf\Exception\ForbiddenException;
 

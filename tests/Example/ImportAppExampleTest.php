@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms\Example;
+namespace BEAR\Examples\Example;
 
 use BEAR\Package\Module\Import\ImportApp;
 use BEAR\Package\Module\ImportAppModule;
 use BEAR\Resource\ResourceInterface;
-use MyVendor\Cms\Injector;
+use BEAR\Examples\Injector;
 use Override;
 use PHPUnit\Framework\TestCase;
 use Ray\Di\AbstractModule;
@@ -21,7 +21,7 @@ final class ImportAppExampleTest extends TestCase
             protected function configure(): void
             {
                 $this->install(new ImportAppModule([
-                    new ImportApp('catalog', 'MyVendor\Cms\Example\ImportedCatalog', 'app'),
+                    new ImportApp('catalog', 'BEAR\Examples\Example\ImportedCatalog', 'app'),
                 ]));
             }
         });

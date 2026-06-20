@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms\Smoke;
+namespace BEAR\Examples\Smoke;
 
 use PDOStatement;
 use Ray\Di\InjectorInterface;

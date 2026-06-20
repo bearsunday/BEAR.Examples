@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms\Integration;
+namespace BEAR\Examples\Integration;
 
 use BEAR\Resource\ResourceInterface;
-use MyVendor\Cms\Injector;
+use BEAR\Examples\Injector;
 use PDO;
 use PDOException;
 use PHPUnit\Framework\TestCase;

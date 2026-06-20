@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms\Module;
+namespace BEAR\Examples\Module;
 
 use BEAR\QiqModule\QiqModule;
 use BEAR\Resource\RenderInterface;
-use MyVendor\Cms\Renderer\CmsQiqRenderer;
+use BEAR\Examples\Renderer\CmsQiqRenderer;
 use Override;
 use Ray\Di\AbstractModule;
 use Ray\Di\Scope;

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms\Resource\App;
+namespace BEAR\Examples\Resource\App;
 
 use BEAR\ApiDoc\Annotation\Alps;
 use BEAR\RepositoryModule\Annotation\Purge;
@@ -10,8 +10,8 @@ use BEAR\Resource\Annotation\JsonSchema;
 use BEAR\Resource\Annotation\Link;
 use BEAR\Resource\Code;
 use BEAR\Resource\ResourceObject;
-use MyVendor\Cms\Query\CategoryCommandInterface;
-use MyVendor\Cms\Query\CategoryQueryInterface;
+use BEAR\Examples\Query\CategoryCommandInterface;
+use BEAR\Examples\Query\CategoryQueryInterface;
 
 use function assert;
 

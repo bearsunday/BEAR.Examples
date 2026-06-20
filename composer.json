@@ -1,5 +1,5 @@
 {
-    "name": "my-vendor/cms",
+    "name": "bear/examples",
     "type": "project",
     "license": "MIT",
     "description": "Reference CMS for BEAR.Sunday: ALPS-driven, BDR pattern, App-resource only.",
@@ -43,14 +43,14 @@
     },
     "autoload": {
         "psr-4": {
-            "MyVendor\\Cms\\": "src/",
+            "BEAR\\Examples\\": "src/",
             "Ray\\Csrf\\": "src-csrf/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "MyVendor\\Cms\\": "tests/",
-            "MyVendor\\Cms\\Example\\ImportedCatalog\\": "examples/import/ImportedCatalog/src/",
+            "BEAR\\Examples\\": "tests/",
+            "BEAR\\Examples\\Example\\ImportedCatalog\\": "examples/import/ImportedCatalog/src/",
             "Ray\\Csrf\\": "tests-csrf/"
         }
     },
@@ -61,7 +61,7 @@
         ],
         "setup": "php bin/setup.php",
         "setup:docs": "php bin/setup-docs.php",
-        "compile": "./vendor/bin/bear.compile 'MyVendor\\Cms' prod-app ./",
+        "compile": "./vendor/bin/bear.compile 'BEAR\\Examples' prod-app ./",
         "doc": [
             "@setup:docs",
             "mkdir -p docs/examples",
@@ -74,7 +74,7 @@
         "fake": "php bin/semantic-ex/gen-fake.php",
         "schema": "php bin/semantic-ex/gen-schemas.php",
         "semantic": ["@fake", "@schema"],
-        "cli": "./vendor/bin/bear-cli-gen 'MyVendor\\Cms'",
+        "cli": "./vendor/bin/bear-cli-gen 'BEAR\\Examples'",
         "malt:up": [
             "malt install",
             "malt start",

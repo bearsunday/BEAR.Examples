@@ -1,15 +1,15 @@
 <?php
 /**
- * @var \MyVendor\Cms\Entity\Tag|null $tag
- * @var list<\MyVendor\Cms\Entity\Article> $articles
+ * @var \BEAR\Examples\Entity\Tag|null $tag
+ * @var list<\BEAR\Examples\Entity\Article> $articles
  */
 if (! isset($tag) || $tag === null) {
-    throw new \MyVendor\Cms\Exception\TagNotFoundException();
+    throw new \BEAR\Examples\Exception\TagNotFoundException();
 }
 ?>
 {{ setLayout('layout/Default') }}
 {{ setBlock('bodyClass') ~}}public public-detail public-tag{{ endBlock() }}
-{{ setBlock('title') ~}}{{h $tag->name }} - MyVendor.Cms{{ endBlock() }}
+{{ setBlock('title') ~}}{{h $tag->name }} - BEAR.Examples{{ endBlock() }}
 {{ setBlock('header') ~}}<h1 class="Tag">Tag Detail</h1>{{ endBlock() }}
 <main>
   <section class="Tag">

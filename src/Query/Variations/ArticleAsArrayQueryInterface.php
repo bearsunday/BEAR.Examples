@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms\Query\Variations;
+namespace BEAR\Examples\Query\Variations;
 
 use Ray\MediaQuery\Annotation\DbQuery;
 

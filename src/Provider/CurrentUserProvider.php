@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms\Provider;
+namespace BEAR\Examples\Provider;
 
-use MyVendor\Cms\Auth\AuthSessionInterface;
-use MyVendor\Cms\Auth\UserInterface;
+use BEAR\Examples\Auth\AuthSessionInterface;
+use BEAR\Examples\Auth\UserInterface;
 use Ray\Di\ProviderInterface;
 
 /** @implements ProviderInterface<UserInterface> */

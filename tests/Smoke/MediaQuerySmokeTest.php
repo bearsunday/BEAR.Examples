@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms\Smoke;
+namespace BEAR\Examples\Smoke;
 
-use MyVendor\Cms\Injector;
+use BEAR\Examples\Injector;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use RecursiveDirectoryIterator;
@@ -122,7 +122,7 @@ final class MediaQuerySmokeTest extends TestCase
     private static function interfaceName(string $path): string
     {
         $relative = substr($path, strlen(self::QUERY_DIR) + 1, -4);
-        $interface = 'MyVendor\\Cms\\Query\\' . str_replace(DIRECTORY_SEPARATOR, '\\', $relative);
+        $interface = 'BEAR\\Examples\\Query\\' . str_replace(DIRECTORY_SEPARATOR, '\\', $relative);
         if (! interface_exists($interface)) {
             throw new RuntimeException("Query interface does not exist: {$interface}");
         }

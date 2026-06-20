@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms\Resource\App;
+namespace BEAR\Examples\Resource\App;
 
 use BEAR\ApiDoc\Annotation\Alps;
 use BEAR\Cli\Attribute\Cli;
@@ -13,12 +13,12 @@ use BEAR\Resource\Annotation\JsonSchema;
 use BEAR\Resource\Annotation\Link;
 use BEAR\Resource\Code;
 use BEAR\Resource\ResourceObject;
-use MyVendor\Cms\Input\ArticleCreateInput;
-use MyVendor\Cms\Input\ArticleUpdateInput;
-use MyVendor\Cms\Query\ArticleCommandInterface;
-use MyVendor\Cms\Query\ArticleQueryInterface;
-use MyVendor\Cms\Query\ArticleTagCommandInterface;
-use MyVendor\Cms\Service\SqlDateTime;
+use BEAR\Examples\Input\ArticleCreateInput;
+use BEAR\Examples\Input\ArticleUpdateInput;
+use BEAR\Examples\Query\ArticleCommandInterface;
+use BEAR\Examples\Query\ArticleQueryInterface;
+use BEAR\Examples\Query\ArticleTagCommandInterface;
+use BEAR\Examples\Service\SqlDateTime;
 use Ray\InputQuery\Attribute\Input;
 
 use function assert;

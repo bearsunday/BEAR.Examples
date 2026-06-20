@@ -1,18 +1,18 @@
 <?php
 /**
- * @var \MyVendor\Cms\Entity\Article|null $article
+ * @var \BEAR\Examples\Entity\Article|null $article
  * @var string $bodyHtml
- * @var \MyVendor\Cms\Entity\Author|null $author
- * @var \MyVendor\Cms\Entity\Category|null $category
+ * @var \BEAR\Examples\Entity\Author|null $author
+ * @var \BEAR\Examples\Entity\Category|null $category
  * @var list<array{id:int, slug:string, name:string}> $tags
  */
 if (! isset($article) || $article === null) {
-    throw new \MyVendor\Cms\Exception\ArticleNotFoundException();
+    throw new \BEAR\Examples\Exception\ArticleNotFoundException();
 }
 ?>
 {{ setLayout('layout/Default') }}
 {{ setBlock('bodyClass') ~}}public public-detail public-article{{ endBlock() }}
-{{ setBlock('title') ~}}{{h $article->title }} - MyVendor.Cms{{ endBlock() }}
+{{ setBlock('title') ~}}{{h $article->title }} - BEAR.Examples{{ endBlock() }}
 {{ setBlock('header') ~}}<h1 class="Article">Article Detail</h1>{{ endBlock() }}
 <main>
   <article class="Article">

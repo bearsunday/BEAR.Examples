@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms\Module;
+namespace BEAR\Examples\Module;
 
 use Aura\Sql\ExtendedPdoInterface;
-use MyVendor\Cms\Auth\AuthSessionInterface;
-use MyVendor\Cms\Fake\FakeExtendedPdoProvider;
-use MyVendor\Cms\Fake\FakeVisitorAuthSessionProvider;
+use BEAR\Examples\Auth\AuthSessionInterface;
+use BEAR\Examples\Fake\FakeExtendedPdoProvider;
+use BEAR\Examples\Fake\FakeVisitorAuthSessionProvider;
 use Ray\Di\AbstractModule;
 use Ray\Di\Scope;
 

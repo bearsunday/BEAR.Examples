@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms\Exception;
+namespace BEAR\Examples\Exception;
 
 use RuntimeException;
 

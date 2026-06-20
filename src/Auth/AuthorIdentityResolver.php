@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms\Auth;
+namespace BEAR\Examples\Auth;
 
-use MyVendor\Cms\Query\AuthIdentityCommandInterface;
-use MyVendor\Cms\Query\AuthIdentityQueryInterface;
-use MyVendor\Cms\Query\AuthorQueryInterface;
+use BEAR\Examples\Query\AuthIdentityCommandInterface;
+use BEAR\Examples\Query\AuthIdentityQueryInterface;
+use BEAR\Examples\Query\AuthorQueryInterface;
 use Ray\MediaQuery\Exception\PdoPerformException;
 
 use function str_contains;

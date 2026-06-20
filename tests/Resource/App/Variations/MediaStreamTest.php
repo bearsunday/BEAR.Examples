@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms\Resource\App\Variations;
+namespace BEAR\Examples\Resource\App\Variations;
 
 use BEAR\Resource\ResourceObject;
 use BEAR\Resource\TransferInterface;
-use MyVendor\Cms\AbstractAppTestCase;
+use BEAR\Examples\AbstractAppTestCase;
 
 use function file_get_contents;
 use function is_resource;

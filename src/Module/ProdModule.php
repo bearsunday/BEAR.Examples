@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms\Module;
+namespace BEAR\Examples\Module;
 
 use BEAR\Package\Context\ProdModule as PackageProdModule;
 use BEAR\QueryRepository\StorageRedisDsnModule;

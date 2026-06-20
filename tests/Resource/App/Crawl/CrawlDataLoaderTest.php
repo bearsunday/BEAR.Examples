@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms\Resource\App\Crawl;
+namespace BEAR\Examples\Resource\App\Crawl;
 
-use MyVendor\Cms\AbstractAppTestCase;
-use MyVendor\Cms\Fake\FakeSqlQuery;
-use MyVendor\Cms\Injector;
+use BEAR\Examples\AbstractAppTestCase;
+use BEAR\Examples\Fake\FakeSqlQuery;
+use BEAR\Examples\Injector;
 use Ray\MediaQuery\SqlQueryInterface;
 
 use function array_filter;

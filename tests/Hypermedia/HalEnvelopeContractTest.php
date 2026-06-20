@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms\Hypermedia;
+namespace BEAR\Examples\Hypermedia;
 
 use function array_diff;
 use function array_keys;

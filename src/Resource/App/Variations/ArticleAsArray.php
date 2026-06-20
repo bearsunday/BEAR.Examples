@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms\Resource\App\Variations;
+namespace BEAR\Examples\Resource\App\Variations;
 
 use BEAR\Resource\Annotation\JsonSchema;
 use BEAR\Resource\Code;
 use BEAR\Resource\ResourceObject;
-use MyVendor\Cms\Query\Variations\ArticleAsArrayQueryInterface;
+use BEAR\Examples\Query\Variations\ArticleAsArrayQueryInterface;
 
 use function preg_match;
 use function str_replace;

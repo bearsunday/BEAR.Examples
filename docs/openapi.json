@@ -1,7 +1,7 @@
 {
     "openapi": "3.1.0",
     "info": {
-        "title": "MyVendor.Cms API",
+        "title": "BEAR.Examples API",
         "description": "API Document",
         "version": "1.0.0"
     },

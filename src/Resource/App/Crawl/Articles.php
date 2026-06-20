@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms\Resource\App\Crawl;
+namespace BEAR\Examples\Resource\App\Crawl;
 
 use BEAR\Resource\Annotation\JsonSchema;
 use BEAR\Resource\Annotation\Link;
 use BEAR\Resource\ResourceObject;
-use MyVendor\Cms\DataLoader\ArticleTagsDataLoader;
-use MyVendor\Cms\Factory\ArticleFactory;
-use MyVendor\Cms\Query\ArticleQueryInterface;
+use BEAR\Examples\DataLoader\ArticleTagsDataLoader;
+use BEAR\Examples\Factory\ArticleFactory;
+use BEAR\Examples\Query\ArticleQueryInterface;
 use Ray\AuraSqlModule\Pagerfanta\Page;
 
 use function array_map;

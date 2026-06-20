@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms\Query;
+namespace BEAR\Examples\Query;
 
-use MyVendor\Cms\Entity\Author;
+use BEAR\Examples\Entity\Author;
 use Ray\MediaQuery\Annotation\DbQuery;
 
 interface AuthorQueryInterface

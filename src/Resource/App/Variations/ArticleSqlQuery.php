@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms\Resource\App\Variations;
+namespace BEAR\Examples\Resource\App\Variations;
 
 use BEAR\Resource\Annotation\JsonSchema;
 use BEAR\Resource\Code;

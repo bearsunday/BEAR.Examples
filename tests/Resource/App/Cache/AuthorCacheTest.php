@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms\Resource\App\Cache;
+namespace BEAR\Examples\Resource\App\Cache;
 
 use BEAR\QueryRepository\Header;
 use BEAR\Resource\ResourceInterface;
 use BEAR\Sunday\Extension\Transfer\HttpCacheInterface;
-use MyVendor\Cms\Injector;
-use MyVendor\Cms\Module\CacheShowcaseModule;
+use BEAR\Examples\Injector;
+use BEAR\Examples\Module\CacheShowcaseModule;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 

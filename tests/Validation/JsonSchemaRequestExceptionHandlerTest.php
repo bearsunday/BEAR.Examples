@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms\Validation;
+namespace BEAR\Examples\Validation;
 
 use BEAR\Resource\Exception\JsonSchemaRequestException;
 use BEAR\Resource\JsonSchema\ConstraintViolation;
 use BEAR\Resource\JsonSchema\JsonSchemaError;
 use BEAR\Resource\JsonSchema\JsonSchemaErrors;
 use BEAR\Resource\ResourceObject;
-use MyVendor\Cms\Exception\ValidationException;
+use BEAR\Examples\Exception\ValidationException;
 use PHPUnit\Framework\TestCase;
 
 /**

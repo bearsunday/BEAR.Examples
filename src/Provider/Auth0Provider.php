@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms\Provider;
+namespace BEAR\Examples\Provider;
 
 use Auth0\SDK\Auth0;
 use Auth0\SDK\Configuration\SdkConfiguration;
 use Auth0\SDK\Contract\Auth0Interface;
-use MyVendor\Cms\Exception\MissingAuth0ConfigurationException;
+use BEAR\Examples\Exception\MissingAuth0ConfigurationException;
 use Ray\Di\ProviderInterface;
 
 use function getenv;

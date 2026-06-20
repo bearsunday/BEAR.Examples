@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms\Auth;
+namespace BEAR\Examples\Auth;
 
-use MyVendor\Cms\Exception\UnauthenticatedException;
+use BEAR\Examples\Exception\UnauthenticatedException;
 
 final readonly class AdminGuard
 {

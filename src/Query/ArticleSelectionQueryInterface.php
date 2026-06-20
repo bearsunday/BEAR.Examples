@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms\Query;
+namespace BEAR\Examples\Query;
 
-use MyVendor\Cms\Factory\ArticleFactory;
-use MyVendor\Cms\Result\ArticleSelection;
+use BEAR\Examples\Factory\ArticleFactory;
+use BEAR\Examples\Result\ArticleSelection;
 use Ray\MediaQuery\Annotation\DbQuery;
 
 interface ArticleSelectionQueryInterface

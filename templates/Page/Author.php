@@ -1,14 +1,14 @@
 <?php
 /**
- * @var \MyVendor\Cms\Entity\Author|null $author
+ * @var \BEAR\Examples\Entity\Author|null $author
  */
 if (! isset($author) || $author === null) {
-    throw new \MyVendor\Cms\Exception\AuthorNotFoundException();
+    throw new \BEAR\Examples\Exception\AuthorNotFoundException();
 }
 ?>
 {{ setLayout('layout/Default') }}
 {{ setBlock('bodyClass') ~}}public public-detail public-author{{ endBlock() }}
-{{ setBlock('title') ~}}{{h $author->name }} - MyVendor.Cms{{ endBlock() }}
+{{ setBlock('title') ~}}{{h $author->name }} - BEAR.Examples{{ endBlock() }}
 {{ setBlock('header') ~}}<h1 class="Author">Author Detail</h1>{{ endBlock() }}
 <main>
   <section class="Author">

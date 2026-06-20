@@ -1,10 +1,10 @@
 <?php
 /**
- * @var list<\MyVendor\Cms\Entity\Article> $articles
+ * @var list<\BEAR\Examples\Entity\Article> $articles
  * @var array{categoryId:int|null, tagId:int|null, authorId:int|null, status:string|null} $filter
- * @var \MyVendor\Cms\Entity\Category|null $category
- * @var \MyVendor\Cms\Entity\Tag|null $tag
- * @var \MyVendor\Cms\Entity\Author|null $author
+ * @var \BEAR\Examples\Entity\Category|null $category
+ * @var \BEAR\Examples\Entity\Tag|null $tag
+ * @var \BEAR\Examples\Entity\Author|null $author
  * @var int $page
  * @var int $perPage
  * @var bool $hasNext
@@ -16,7 +16,7 @@ $qs = static function (array $params): string {
 ?>
 {{ setLayout('layout/Default') }}
 {{ setBlock('bodyClass') ~}}public public-list public-articlelist{{ endBlock() }}
-{{ setBlock('title') ~}}Article List - MyVendor.Cms{{ endBlock() }}
+{{ setBlock('title') ~}}Article List - BEAR.Examples{{ endBlock() }}
 {{ setBlock('header') ~}}
 <h1 class="ArticleList">Article List</h1>
 <?php if ($category !== null): ?>

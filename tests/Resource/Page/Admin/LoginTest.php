@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms\Resource\Page\Admin;
+namespace BEAR\Examples\Resource\Page\Admin;
 
 use BEAR\Resource\ResourceInterface;
-use MyVendor\Cms\AbstractPageTestCase;
-use MyVendor\Cms\Exception\UnauthenticatedException;
-use MyVendor\Cms\Fake\FakeAuth0Module;
-use MyVendor\Cms\Fake\FakeSqlQuery;
-use MyVendor\Cms\Injector;
+use BEAR\Examples\AbstractPageTestCase;
+use BEAR\Examples\Exception\UnauthenticatedException;
+use BEAR\Examples\Fake\FakeAuth0Module;
+use BEAR\Examples\Fake\FakeSqlQuery;
+use BEAR\Examples\Injector;
 use Ray\MediaQuery\SqlQueryInterface;
 
 use function array_filter;

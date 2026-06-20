@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms\Resource\Page;
+namespace BEAR\Examples\Resource\Page;
 
-use MyVendor\Cms\AbstractPageTestCase;
+use BEAR\Examples\AbstractPageTestCase;
 
 use function assert;
 

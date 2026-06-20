@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms\Example\ImportedCatalog\Module;
+namespace BEAR\Examples\Example\ImportedCatalog\Module;
 
 use BEAR\Resource\ResourceInterface;
 use BEAR\Sunday\Extension\Application\AppInterface;

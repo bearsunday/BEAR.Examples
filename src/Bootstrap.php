@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms;
+namespace BEAR\Examples;
 
 use BEAR\Resource\ResourceObject;
 use BEAR\Sunday\Extension\Application\AppInterface;
 use BEAR\Sunday\Extension\Router\RouterInterface;
-use MyVendor\Cms\Module\App;
+use BEAR\Examples\Module\App;
 use Throwable;
 
 use function assert;

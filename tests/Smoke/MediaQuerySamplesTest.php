@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms\Smoke;
+namespace BEAR\Examples\Smoke;
 
-use MyVendor\Cms\Entity\Article;
-use MyVendor\Cms\Injector;
-use MyVendor\Cms\Query\ArticleCommandInterface;
-use MyVendor\Cms\Query\ArticleQueryInterface;
-use MyVendor\Cms\Query\ArticleSelectionQueryInterface;
-use MyVendor\Cms\Query\Samples\ArticleAffectedRowsCommandInterface;
+use BEAR\Examples\Entity\Article;
+use BEAR\Examples\Injector;
+use BEAR\Examples\Query\ArticleCommandInterface;
+use BEAR\Examples\Query\ArticleQueryInterface;
+use BEAR\Examples\Query\ArticleSelectionQueryInterface;
+use BEAR\Examples\Query\Samples\ArticleAffectedRowsCommandInterface;
 use PHPUnit\Framework\TestCase;
 use Ray\AuraSqlModule\Pagerfanta\Page;
 use Ray\MediaQuery\PagesInterface;

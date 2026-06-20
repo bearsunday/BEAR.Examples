@@ -2,23 +2,23 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\Cms\Resource\Page\Admin;
+namespace BEAR\Examples\Resource\Page\Admin;
 
 use BEAR\Resource\Code;
 use BEAR\Resource\Exception\ParameterException;
 use BEAR\Resource\ResourceInterface;
 use BEAR\Resource\ResourceObject;
-use MyVendor\Cms\Auth\AdminGuard;
-use MyVendor\Cms\Auth\AdminUserInterface;
-use MyVendor\Cms\Entity\Article as ArticleEntity;
-use MyVendor\Cms\Entity\Author;
-use MyVendor\Cms\Entity\Category;
-use MyVendor\Cms\Entity\Tag;
-use MyVendor\Cms\Exception\ValidationException;
-use MyVendor\Cms\Query\ArticleQueryInterface;
-use MyVendor\Cms\Query\AuthorQueryInterface;
-use MyVendor\Cms\Query\CategoryQueryInterface;
-use MyVendor\Cms\Query\TagQueryInterface;
+use BEAR\Examples\Auth\AdminGuard;
+use BEAR\Examples\Auth\AdminUserInterface;
+use BEAR\Examples\Entity\Article as ArticleEntity;
+use BEAR\Examples\Entity\Author;
+use BEAR\Examples\Entity\Category;
+use BEAR\Examples\Entity\Tag;
+use BEAR\Examples\Exception\ValidationException;
+use BEAR\Examples\Query\ArticleQueryInterface;
+use BEAR\Examples\Query\AuthorQueryInterface;
+use BEAR\Examples\Query\CategoryQueryInterface;
+use BEAR\Examples\Query\TagQueryInterface;
 use Ray\Csrf\Attribute\CsrfToken;
 use Ray\Csrf\Attribute\SameOrigin;
 
