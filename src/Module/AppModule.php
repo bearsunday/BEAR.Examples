@@ -6,6 +6,7 @@ namespace BEAR\Examples\Module;
 
 use Auth0\SDK\Contract\Auth0Interface;
 use BEAR\Package\AbstractAppModule;
+use BEAR\Examples\Module\AppErrorModule;
 use BEAR\Package\PackageModule;
 use BEAR\Resource\JsonSchemaRequestExceptionHandlerInterface;
 use BEAR\Resource\Module\JsonSchemaModule;
@@ -60,6 +61,7 @@ final class AppModule extends AbstractAppModule
         (new EnvJson())->load(dirname(__DIR__, 2));
 
         $this->install(new PackageModule());
+        $this->install(new AppErrorModule());
 
         $dsn = (string) (getenv('DB_DSN') ?: 'mysql:host=127.0.0.1;dbname=bear_cms;charset=utf8mb4');
         $user = (string) (getenv('DB_USER') ?: 'root');
