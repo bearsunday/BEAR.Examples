@@ -31,6 +31,9 @@ final class HtmlThrowableHandler implements ThrowableHandlerInterface
     private string $statusText = 'Internal Server Error';
     private string $message = '';
 
+    /** @var array<string, list<string>> */
+    private array $errors = [];
+
     public function __construct(
         private readonly TransferInterface $responder,
         private readonly ErrorInterface $fallback,
@@ -53,6 +56,7 @@ final class HtmlThrowableHandler implements ThrowableHandlerInterface
         $this->status = $status;
         $this->statusText = $this->mapper->statusText($status);
         $this->message = $this->mapper->message($e, $status);
+        $this->errors = $this->mapper->errors($e);
 
         return $this;
     }
@@ -66,7 +70,7 @@ final class HtmlThrowableHandler implements ThrowableHandlerInterface
             return;
         }
 
-        ($this->responder)(new HtmlErrorPage($this->status, $this->statusText, $this->message), []);
+        ($this->responder)(new HtmlErrorPage($this->status, $this->statusText, $this->message, $this->errors), []);
     }
 
     private function asException(Throwable $e): Exception
