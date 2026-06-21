@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace BEAR\Examples\Resource\App\Crawl;
+namespace BEAR\Kata\Resource\App\Crawl;
 
 use BEAR\Resource\Annotation\JsonSchema;
 use BEAR\Resource\Annotation\Link;
 use BEAR\Resource\Code;
 use BEAR\Resource\ResourceObject;
-use BEAR\Examples\Query\AuthorQueryInterface;
+use BEAR\Kata\Query\AuthorQueryInterface;
 
 class Author extends ResourceObject
 {

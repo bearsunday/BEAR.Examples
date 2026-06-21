@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace BEAR\Examples\Integration;
+namespace BEAR\Kata\Integration;
 
 use BEAR\Resource\ResourceInterface;
-use BEAR\Examples\Injector;
+use BEAR\Kata\Injector;
 use PDO;
 use PDOException;
 use PHPUnit\Framework\TestCase;

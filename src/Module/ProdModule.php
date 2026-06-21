@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace BEAR\Examples\Module;
+namespace BEAR\Kata\Module;
 
 use BEAR\Package\Context\ProdModule as PackageProdModule;
 use BEAR\QueryRepository\StorageRedisDsnModule;

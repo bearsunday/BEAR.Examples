@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace BEAR\Examples\Fake;
+namespace BEAR\Kata\Fake;
 
-use BEAR\Examples\Auth\AuthenticatedUser;
-use BEAR\Examples\Auth\AuthInterface;
+use BEAR\Kata\Auth\AuthenticatedUser;
+use BEAR\Kata\Auth\AuthInterface;
 
 /**
  * In-memory replacement for GoogleAuthProvider used by tests / fake-hal-api-app.

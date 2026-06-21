@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace BEAR\Examples\Query;
+namespace BEAR\Kata\Query;
 
-use BEAR\Examples\Entity\Tag;
+use BEAR\Kata\Entity\Tag;
 use Ray\MediaQuery\Annotation\DbQuery;
 
 interface TagQueryInterface

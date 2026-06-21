@@ -1,20 +1,20 @@
 {
   "$schema": "https://alps-io.github.io/schemas/alps.json",
   "alps": {
-    "title": "BEAR.Examples",
+    "title": "BEAR.Kata",
     "doc": {
       "value": "ALPS profile for a BEAR.Sunday reference CMS. App-resource only (no admin/UI). Covers articles, categories, tags, authors and media with read and write transitions."
     },
     "link": [
-      {"rel": "apidoc", "href": "https://github.com/bearsunday/BEAR.Examples/blob/1.x/docs/index.html"},
-      {"rel": "alps", "href": "https://github.com/bearsunday/BEAR.Examples/blob/1.x/docs/alps.html"},
-      {"rel": "diagram", "href": "https://raw.githubusercontent.com/bearsunday/BEAR.Examples/1.x/docs/alps.svg"},
-      {"rel": "openapi", "href": "https://github.com/bearsunday/BEAR.Examples/blob/1.x/docs/openapi.json"},
-      {"rel": "llms", "href": "https://github.com/bearsunday/BEAR.Examples/blob/1.x/docs/llms.txt"},
-      {"rel": "terms", "href": "https://github.com/bearsunday/BEAR.Examples/blob/1.x/docs/terms.html"},
-      {"rel": "terms-markdown", "href": "https://github.com/bearsunday/BEAR.Examples/blob/1.x/docs/terms.md"},
-      {"rel": "audit", "href": "https://github.com/bearsunday/BEAR.Examples/blob/1.x/docs/audit.md"},
-      {"rel": "schemas", "href": "https://github.com/bearsunday/BEAR.Examples/tree/1.x/docs/schemas"}
+      {"rel": "apidoc", "href": "https://github.com/bearsunday/BEAR.Kata/blob/1.x/docs/index.html"},
+      {"rel": "alps", "href": "https://github.com/bearsunday/BEAR.Kata/blob/1.x/docs/alps.html"},
+      {"rel": "diagram", "href": "https://raw.githubusercontent.com/bearsunday/BEAR.Kata/1.x/docs/alps.svg"},
+      {"rel": "openapi", "href": "https://github.com/bearsunday/BEAR.Kata/blob/1.x/docs/openapi.json"},
+      {"rel": "llms", "href": "https://github.com/bearsunday/BEAR.Kata/blob/1.x/docs/llms.txt"},
+      {"rel": "terms", "href": "https://github.com/bearsunday/BEAR.Kata/blob/1.x/docs/terms.html"},
+      {"rel": "terms-markdown", "href": "https://github.com/bearsunday/BEAR.Kata/blob/1.x/docs/terms.md"},
+      {"rel": "audit", "href": "https://github.com/bearsunday/BEAR.Kata/blob/1.x/docs/audit.md"},
+      {"rel": "schemas", "href": "https://github.com/bearsunday/BEAR.Kata/tree/1.x/docs/schemas"}
     ],
     "descriptor": [
       {"id": "id", "title": "Identifier", "def": "https://schema.org/identifier"},

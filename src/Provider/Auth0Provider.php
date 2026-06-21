@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace BEAR\Examples\Provider;
+namespace BEAR\Kata\Provider;
 
 use Auth0\SDK\Auth0;
 use Auth0\SDK\Configuration\SdkConfiguration;
 use Auth0\SDK\Contract\Auth0Interface;
-use BEAR\Examples\Exception\MissingAuth0ConfigurationException;
+use BEAR\Kata\Exception\MissingAuth0ConfigurationException;
 use Ray\Di\ProviderInterface;
 
 use function getenv;

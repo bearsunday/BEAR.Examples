@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace BEAR\Examples\Example\ImportedCatalog\Module;
+namespace BEAR\Kata\Example\ImportedCatalog\Module;
 
 use BEAR\Resource\ResourceInterface;
 use BEAR\Sunday\Extension\Application\AppInterface;

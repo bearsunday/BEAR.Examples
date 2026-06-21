@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace BEAR\Examples\Resource\App;
+namespace BEAR\Kata\Resource\App;
 
-use BEAR\Examples\AbstractAppTestCase;
+use BEAR\Kata\AbstractAppTestCase;
 
 use function ceil;
 

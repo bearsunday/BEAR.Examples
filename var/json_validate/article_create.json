@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "ArticleCreateInput",
-  "description": "Input for POST app://self/article. Validates the named arguments of onPost. Per-field `errorMessage` keys follow the ajv-errors convention (https://ajv.js.org/packages/ajv-errors.html) and are read by BEAR\\Examples\\Validation\\JsonSchemaRequestExceptionHandler.",
+  "description": "Input for POST app://self/article. Validates the named arguments of onPost. Per-field `errorMessage` keys follow the ajv-errors convention (https://ajv.js.org/packages/ajv-errors.html) and are read by BEAR\\Kata\\Validation\\JsonSchemaRequestExceptionHandler.",
   "type": "object",
   "required": ["slug", "title", "body", "authorId", "categoryId"],
   "errorMessage": {

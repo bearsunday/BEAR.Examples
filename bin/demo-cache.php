@@ -32,8 +32,8 @@ use BEAR\QueryRepository\Header;
 use BEAR\Resource\ResourceInterface;
 use BEAR\Resource\ResourceObject;
 use BEAR\Sunday\Extension\Transfer\HttpCacheInterface;
-use BEAR\Examples\Injector;
-use BEAR\Examples\Module\CacheShowcaseModule;
+use BEAR\Kata\Injector;
+use BEAR\Kata\Module\CacheShowcaseModule;
 
 require dirname(__DIR__) . '/autoload.php';
 

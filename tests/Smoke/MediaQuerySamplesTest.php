@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace BEAR\Examples\Smoke;
+namespace BEAR\Kata\Smoke;
 
-use BEAR\Examples\Entity\Article;
-use BEAR\Examples\Injector;
-use BEAR\Examples\Query\ArticleCommandInterface;
-use BEAR\Examples\Query\ArticleQueryInterface;
-use BEAR\Examples\Query\ArticleSelectionQueryInterface;
-use BEAR\Examples\Query\Samples\ArticleAffectedRowsCommandInterface;
+use BEAR\Kata\Entity\Article;
+use BEAR\Kata\Injector;
+use BEAR\Kata\Query\ArticleCommandInterface;
+use BEAR\Kata\Query\ArticleQueryInterface;
+use BEAR\Kata\Query\ArticleSelectionQueryInterface;
+use BEAR\Kata\Query\Samples\ArticleAffectedRowsCommandInterface;
 use PHPUnit\Framework\TestCase;
 use Ray\AuraSqlModule\Pagerfanta\Page;
 use Ray\MediaQuery\PagesInterface;

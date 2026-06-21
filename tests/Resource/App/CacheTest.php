@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace BEAR\Examples\Resource\App;
+namespace BEAR\Kata\Resource\App;
 
 use BEAR\QueryRepository\RepositoryLoggerInterface;
 use BEAR\RepositoryModule\Annotation\DonutCache;
 use BEAR\Resource\ResourceInterface;
-use BEAR\Examples\Injector;
-use BEAR\Examples\Resource\App\Cache\ArticlePreview;
+use BEAR\Kata\Injector;
+use BEAR\Kata\Resource\App\Cache\ArticlePreview;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 

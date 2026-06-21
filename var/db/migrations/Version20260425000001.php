@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace BEAR\Examples\Migrations;
+namespace BEAR\Kata\Migrations;
 
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\Migrations\AbstractMigration;

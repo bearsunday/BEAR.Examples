@@ -1,14 +1,14 @@
 <?php
 /**
- * @var \BEAR\Examples\Entity\Author|null $author
+ * @var \BEAR\Kata\Entity\Author|null $author
  */
 if (! isset($author) || $author === null) {
-    throw new \BEAR\Examples\Exception\AuthorNotFoundException();
+    throw new \BEAR\Kata\Exception\AuthorNotFoundException();
 }
 ?>
 {{ setLayout('layout/Default') }}
 {{ setBlock('bodyClass') ~}}public public-detail public-author{{ endBlock() }}
-{{ setBlock('title') ~}}{{h $author->name }} - BEAR.Examples{{ endBlock() }}
+{{ setBlock('title') ~}}{{h $author->name }} - BEAR.Kata{{ endBlock() }}
 {{ setBlock('header') ~}}<h1 class="Author">Author Detail</h1>{{ endBlock() }}
 <main>
   <section class="Author">

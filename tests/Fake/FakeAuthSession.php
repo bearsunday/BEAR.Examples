@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace BEAR\Examples\Fake;
+namespace BEAR\Kata\Fake;
 
-use BEAR\Examples\Auth\AdminUser;
-use BEAR\Examples\Auth\AuthenticatedUser;
-use BEAR\Examples\Auth\AuthSessionInterface;
-use BEAR\Examples\Auth\UserInterface;
-use BEAR\Examples\Auth\Visitor;
+use BEAR\Kata\Auth\AdminUser;
+use BEAR\Kata\Auth\AuthenticatedUser;
+use BEAR\Kata\Auth\AuthSessionInterface;
+use BEAR\Kata\Auth\UserInterface;
+use BEAR\Kata\Auth\Visitor;
 
 final class FakeAuthSession implements AuthSessionInterface
 {

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace BEAR\Examples\Interceptor;
+namespace BEAR\Kata\Interceptor;
 
-use BEAR\Examples\Fake\FakeRequestOrigin;
+use BEAR\Kata\Fake\FakeRequestOrigin;
 use Override;
 use Ray\Csrf\Http\AllowedOrigin;
 use Ray\Csrf\Http\RequestOriginInterface;

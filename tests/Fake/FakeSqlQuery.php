@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace BEAR\Examples\Fake;
+namespace BEAR\Kata\Fake;
 
 use Aura\Sql\ExtendedPdo;
-use BEAR\Examples\Entity\Article;
-use BEAR\Examples\Entity\ArticleStatus;
-use BEAR\Examples\Entity\AuthIdentity;
-use BEAR\Examples\Entity\Author;
-use BEAR\Examples\Entity\Category;
-use BEAR\Examples\Entity\Media;
-use BEAR\Examples\Entity\Tag;
+use BEAR\Kata\Entity\Article;
+use BEAR\Kata\Entity\ArticleStatus;
+use BEAR\Kata\Entity\AuthIdentity;
+use BEAR\Kata\Entity\Author;
+use BEAR\Kata\Entity\Category;
+use BEAR\Kata\Entity\Media;
+use BEAR\Kata\Entity\Tag;
 use Ray\MediaQuery\Exception\LogicException;
 use Ray\MediaQuery\FetchAssoc;
 use Ray\MediaQuery\FetchInterface;

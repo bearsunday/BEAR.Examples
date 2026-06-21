@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace BEAR\Examples\Resource\App;
+namespace BEAR\Kata\Resource\App;
 
 use BEAR\ApiDoc\Annotation\Alps;
 use BEAR\Resource\Annotation\JsonSchema;
 use BEAR\Resource\Annotation\Link;
 use BEAR\Resource\ResourceObject;
-use BEAR\Examples\Query\TagQueryInterface;
+use BEAR\Kata\Query\TagQueryInterface;
 
 use function array_map;
 use function count;

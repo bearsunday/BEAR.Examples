@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace BEAR\Examples;
+namespace BEAR\Kata;
 
 use BEAR\Resource\ResourceObject;
 use BEAR\Sunday\Extension\Application\AppInterface;
 use BEAR\Sunday\Extension\Router\RouterInterface;
-use BEAR\Examples\Module\App;
+use BEAR\Kata\Module\App;
 use Throwable;
 
 use function assert;

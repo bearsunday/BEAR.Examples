@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace BEAR\Examples;
+namespace BEAR\Kata;
 
-use BEAR\Examples\Auth\AdminUser;
+use BEAR\Kata\Auth\AdminUser;
 
 abstract class AbstractAdminPageTestCase extends AbstractPageTestCase
 {

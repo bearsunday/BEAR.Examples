@@ -1,15 +1,15 @@
 <?php
 /**
- * @var \BEAR\Examples\Entity\Category|null $category
- * @var list<\BEAR\Examples\Entity\Article> $articles
+ * @var \BEAR\Kata\Entity\Category|null $category
+ * @var list<\BEAR\Kata\Entity\Article> $articles
  */
 if (! isset($category) || $category === null) {
-    throw new \BEAR\Examples\Exception\CategoryNotFoundException();
+    throw new \BEAR\Kata\Exception\CategoryNotFoundException();
 }
 ?>
 {{ setLayout('layout/Default') }}
 {{ setBlock('bodyClass') ~}}public public-detail public-category{{ endBlock() }}
-{{ setBlock('title') ~}}{{h $category->name }} - BEAR.Examples{{ endBlock() }}
+{{ setBlock('title') ~}}{{h $category->name }} - BEAR.Kata{{ endBlock() }}
 {{ setBlock('header') ~}}<h1 class="Category">Category Detail</h1>{{ endBlock() }}
 <main>
   <section class="Category">

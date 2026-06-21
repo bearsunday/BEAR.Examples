@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace BEAR\Examples\Module;
+namespace BEAR\Kata\Module;
 
-use BEAR\Examples\Auth\AuthInterface;
-use BEAR\Examples\Auth\AuthSessionInterface;
-use BEAR\Examples\Fake\FakeAdminAuthSessionProvider;
-use BEAR\Examples\Fake\FakeAuthProvider;
-use BEAR\Examples\Fake\FakeCsrfToken;
-use BEAR\Examples\Fake\FakeRequestBodyToken;
-use BEAR\Examples\Fake\FakeRequestOrigin;
-use BEAR\Examples\Fake\FakeSqlQuery;
+use BEAR\Kata\Auth\AuthInterface;
+use BEAR\Kata\Auth\AuthSessionInterface;
+use BEAR\Kata\Fake\FakeAdminAuthSessionProvider;
+use BEAR\Kata\Fake\FakeAuthProvider;
+use BEAR\Kata\Fake\FakeCsrfToken;
+use BEAR\Kata\Fake\FakeRequestBodyToken;
+use BEAR\Kata\Fake\FakeRequestOrigin;
+use BEAR\Kata\Fake\FakeSqlQuery;
 use Ray\Csrf\CsrfTokenInterface;
 use Ray\Csrf\Http\AllowedOrigin;
 use Ray\Csrf\Http\RequestBodyTokenInterface;

@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace BEAR\Examples\Service;
+namespace BEAR\Kata\Service;
 
-use BEAR\Examples\Auth\AuthenticatedUser;
-use BEAR\Examples\Auth\AuthorIdentityResolver;
-use BEAR\Examples\Entity\AuthIdentity;
-use BEAR\Examples\Entity\Author;
-use BEAR\Examples\Query\AuthIdentityCommandInterface;
-use BEAR\Examples\Query\AuthIdentityQueryInterface;
-use BEAR\Examples\Query\AuthorQueryInterface;
+use BEAR\Kata\Auth\AuthenticatedUser;
+use BEAR\Kata\Auth\AuthorIdentityResolver;
+use BEAR\Kata\Entity\AuthIdentity;
+use BEAR\Kata\Entity\Author;
+use BEAR\Kata\Query\AuthIdentityCommandInterface;
+use BEAR\Kata\Query\AuthIdentityQueryInterface;
+use BEAR\Kata\Query\AuthorQueryInterface;
 use PHPUnit\Framework\TestCase;
 use Ray\MediaQuery\Exception\PdoPerformException;
 

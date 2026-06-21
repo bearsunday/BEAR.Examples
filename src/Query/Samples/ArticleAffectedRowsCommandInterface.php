@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace BEAR\Examples\Query\Samples;
+namespace BEAR\Kata\Query\Samples;
 
 use Ray\MediaQuery\Annotation\DbQuery;
 use Ray\MediaQuery\Result\AffectedRows;

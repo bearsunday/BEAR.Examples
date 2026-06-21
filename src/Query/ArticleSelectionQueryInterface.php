@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace BEAR\Examples\Query;
+namespace BEAR\Kata\Query;
 
-use BEAR\Examples\Factory\ArticleFactory;
-use BEAR\Examples\Result\ArticleSelection;
+use BEAR\Kata\Factory\ArticleFactory;
+use BEAR\Kata\Result\ArticleSelection;
 use Ray\MediaQuery\Annotation\DbQuery;
 
 interface ArticleSelectionQueryInterface

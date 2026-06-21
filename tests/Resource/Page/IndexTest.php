@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace BEAR\Examples\Resource\Page;
+namespace BEAR\Kata\Resource\Page;
 
-use BEAR\Examples\AbstractPageTestCase;
-use BEAR\Examples\Auth\AdminUser;
+use BEAR\Kata\AbstractPageTestCase;
+use BEAR\Kata\Auth\AdminUser;
 
 use function assert;
 

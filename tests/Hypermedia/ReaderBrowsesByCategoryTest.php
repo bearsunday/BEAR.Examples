@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace BEAR\Examples\Hypermedia;
+namespace BEAR\Kata\Hypermedia;
 
 use BEAR\Resource\ResourceObject;
 use PHPUnit\Framework\Attributes\Depends;

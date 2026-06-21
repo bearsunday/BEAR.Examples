@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace BEAR\Examples\Resource\App;
+namespace BEAR\Kata\Resource\App;
 
 use BEAR\Resource\Annotation\JsonSchema;
 use BEAR\Resource\Code;
 use BEAR\Resource\ResourceObject;
-use BEAR\Examples\Auth\AuthInterface;
-use BEAR\Examples\Input\AuthExchangeInput;
+use BEAR\Kata\Auth\AuthInterface;
+use BEAR\Kata\Input\AuthExchangeInput;
 use Ray\InputQuery\Attribute\Input;
 use Throwable;
 

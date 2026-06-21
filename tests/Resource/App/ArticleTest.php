@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace BEAR\Examples\Resource\App;
+namespace BEAR\Kata\Resource\App;
 
 use BEAR\Resource\Exception\ParameterException;
-use BEAR\Examples\AbstractAppTestCase;
-use BEAR\Examples\Exception\ValidationException;
+use BEAR\Kata\AbstractAppTestCase;
+use BEAR\Kata\Exception\ValidationException;
 
 use function array_column;
 use function json_decode;

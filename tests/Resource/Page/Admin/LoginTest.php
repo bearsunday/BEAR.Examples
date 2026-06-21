@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace BEAR\Examples\Resource\Page\Admin;
+namespace BEAR\Kata\Resource\Page\Admin;
 
 use BEAR\Resource\ResourceInterface;
-use BEAR\Examples\AbstractPageTestCase;
-use BEAR\Examples\Exception\UnauthenticatedException;
-use BEAR\Examples\Fake\FakeAuth0Module;
-use BEAR\Examples\Fake\FakeSqlQuery;
-use BEAR\Examples\Injector;
+use BEAR\Kata\AbstractPageTestCase;
+use BEAR\Kata\Exception\UnauthenticatedException;
+use BEAR\Kata\Fake\FakeAuth0Module;
+use BEAR\Kata\Fake\FakeSqlQuery;
+use BEAR\Kata\Injector;
 use Ray\MediaQuery\SqlQueryInterface;
 
 use function array_filter;

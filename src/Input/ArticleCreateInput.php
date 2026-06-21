@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace BEAR\Examples\Input;
+namespace BEAR\Kata\Input;
 
 use Ray\InputQuery\Attribute\Input;
 

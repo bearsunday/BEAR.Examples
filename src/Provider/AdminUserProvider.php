@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace BEAR\Examples\Provider;
+namespace BEAR\Kata\Provider;
 
-use BEAR\Examples\Auth\AdminUserInterface;
-use BEAR\Examples\Auth\UserInterface;
-use BEAR\Examples\Exception\UnauthenticatedException;
+use BEAR\Kata\Auth\AdminUserInterface;
+use BEAR\Kata\Auth\UserInterface;
+use BEAR\Kata\Exception\UnauthenticatedException;
 use Ray\Di\ProviderInterface;
 
 /** @implements ProviderInterface<AdminUserInterface> */

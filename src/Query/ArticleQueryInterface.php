@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace BEAR\Examples\Query;
+namespace BEAR\Kata\Query;
 
-use BEAR\Examples\Entity\Article;
-use BEAR\Examples\Factory\ArticleFactory;
+use BEAR\Kata\Entity\Article;
+use BEAR\Kata\Factory\ArticleFactory;
 use Ray\MediaQuery\Annotation\DbQuery;
 use Ray\MediaQuery\Annotation\Pager;
 use Ray\MediaQuery\PagesInterface;

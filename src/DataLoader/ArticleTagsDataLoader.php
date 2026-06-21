@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace BEAR\Examples\DataLoader;
+namespace BEAR\Kata\DataLoader;
 
 use BEAR\Resource\DataLoader\DataLoaderInterface;
-use BEAR\Examples\Query\TagQueryInterface;
+use BEAR\Kata\Query\TagQueryInterface;
 
 use function array_values;
 

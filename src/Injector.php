@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace BEAR\Examples;
+namespace BEAR\Kata;
 
 use BEAR\Package\Injector as PackageInjector;
 use Ray\Di\AbstractModule;

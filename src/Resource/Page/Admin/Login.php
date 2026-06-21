@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace BEAR\Examples\Resource\Page\Admin;
+namespace BEAR\Kata\Resource\Page\Admin;
 
 use BEAR\Resource\ResourceObject;
-use BEAR\Examples\Auth\AuthInterface;
-use BEAR\Examples\Auth\AuthSessionInterface;
+use BEAR\Kata\Auth\AuthInterface;
+use BEAR\Kata\Auth\AuthSessionInterface;
 
 /** @property array{} $body */
 class Login extends ResourceObject

@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace BEAR\Examples\Resource\App;
+namespace BEAR\Kata\Resource\App;
 
 use Koriym\FileUpload\ErrorFileUpload;
 use Koriym\FileUpload\FileUpload;
-use BEAR\Examples\AbstractAppTestCase;
-use BEAR\Examples\Entity\Media;
-use BEAR\Examples\Query\MediaCommandInterface;
-use BEAR\Examples\Query\MediaQueryInterface;
+use BEAR\Kata\AbstractAppTestCase;
+use BEAR\Kata\Entity\Media;
+use BEAR\Kata\Query\MediaCommandInterface;
+use BEAR\Kata\Query\MediaQueryInterface;
 use RuntimeException;
 
 use function base64_decode;

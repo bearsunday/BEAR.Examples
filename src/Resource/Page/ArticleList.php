@@ -2,19 +2,19 @@
 
 declare(strict_types=1);
 
-namespace BEAR\Examples\Resource\Page;
+namespace BEAR\Kata\Resource\Page;
 
 use BEAR\Resource\ResourceObject;
-use BEAR\Examples\Entity\Article;
-use BEAR\Examples\Entity\ArticleStatus;
-use BEAR\Examples\Entity\Author;
-use BEAR\Examples\Entity\Category;
-use BEAR\Examples\Entity\Tag;
-use BEAR\Examples\Factory\ArticleFactory;
-use BEAR\Examples\Query\ArticleQueryInterface;
-use BEAR\Examples\Query\AuthorQueryInterface;
-use BEAR\Examples\Query\CategoryQueryInterface;
-use BEAR\Examples\Query\TagQueryInterface;
+use BEAR\Kata\Entity\Article;
+use BEAR\Kata\Entity\ArticleStatus;
+use BEAR\Kata\Entity\Author;
+use BEAR\Kata\Entity\Category;
+use BEAR\Kata\Entity\Tag;
+use BEAR\Kata\Factory\ArticleFactory;
+use BEAR\Kata\Query\ArticleQueryInterface;
+use BEAR\Kata\Query\AuthorQueryInterface;
+use BEAR\Kata\Query\CategoryQueryInterface;
+use BEAR\Kata\Query\TagQueryInterface;
 use Ray\AuraSqlModule\Pagerfanta\Page as PagerPage;
 
 use function assert;

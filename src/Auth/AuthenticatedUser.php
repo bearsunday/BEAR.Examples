@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace BEAR\Examples\Auth;
+namespace BEAR\Kata\Auth;
 
 final readonly class AuthenticatedUser
 {

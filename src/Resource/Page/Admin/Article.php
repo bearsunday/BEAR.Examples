@@ -2,23 +2,23 @@
 
 declare(strict_types=1);
 
-namespace BEAR\Examples\Resource\Page\Admin;
+namespace BEAR\Kata\Resource\Page\Admin;
 
 use BEAR\Resource\Code;
 use BEAR\Resource\Exception\ParameterException;
 use BEAR\Resource\ResourceInterface;
 use BEAR\Resource\ResourceObject;
-use BEAR\Examples\Auth\AdminGuard;
-use BEAR\Examples\Auth\AdminUserInterface;
-use BEAR\Examples\Entity\Article as ArticleEntity;
-use BEAR\Examples\Entity\Author;
-use BEAR\Examples\Entity\Category;
-use BEAR\Examples\Entity\Tag;
-use BEAR\Examples\Exception\ValidationException;
-use BEAR\Examples\Query\ArticleQueryInterface;
-use BEAR\Examples\Query\AuthorQueryInterface;
-use BEAR\Examples\Query\CategoryQueryInterface;
-use BEAR\Examples\Query\TagQueryInterface;
+use BEAR\Kata\Auth\AdminGuard;
+use BEAR\Kata\Auth\AdminUserInterface;
+use BEAR\Kata\Entity\Article as ArticleEntity;
+use BEAR\Kata\Entity\Author;
+use BEAR\Kata\Entity\Category;
+use BEAR\Kata\Entity\Tag;
+use BEAR\Kata\Exception\ValidationException;
+use BEAR\Kata\Query\ArticleQueryInterface;
+use BEAR\Kata\Query\AuthorQueryInterface;
+use BEAR\Kata\Query\CategoryQueryInterface;
+use BEAR\Kata\Query\TagQueryInterface;
 use Ray\Csrf\Attribute\CsrfToken;
 use Ray\Csrf\Attribute\SameOrigin;
 

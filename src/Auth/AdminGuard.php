@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace BEAR\Examples\Auth;
+namespace BEAR\Kata\Auth;
 
-use BEAR\Examples\Exception\UnauthenticatedException;
+use BEAR\Kata\Exception\UnauthenticatedException;
 
 final readonly class AdminGuard
 {

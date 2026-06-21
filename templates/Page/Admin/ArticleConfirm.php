@@ -1,6 +1,6 @@
 <?php
 /**
- * @var \BEAR\Examples\Entity\Article $article
+ * @var \BEAR\Kata\Entity\Article $article
  * @var string $authorName
  * @var string $categoryName
  * @var list<string> $tagNames
@@ -12,7 +12,7 @@
 ?>
 {{ setLayout('layout/Default') }}
 {{ setBlock('bodyClass') ~}}admin admin-confirm admin-articleconfirm{{ endBlock() }}
-{{ setBlock('title') ~}}Publish Article - BEAR.Examples{{ endBlock() }}
+{{ setBlock('title') ~}}Publish Article - BEAR.Kata{{ endBlock() }}
 {{ setBlock('header') ~}}<h1 class="AdminArticleConfirm">Publish Article</h1>{{ endBlock() }}
 <main>
   <?php if ($errors !== []): ?>

@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace BEAR\Examples\Result;
+namespace BEAR\Kata\Result;
 
 use ArrayIterator;
 use Countable;
 use IteratorAggregate;
-use BEAR\Examples\Entity\Article;
+use BEAR\Kata\Entity\Article;
 use Ray\MediaQuery\Result\PostQueryContext;
 use Ray\MediaQuery\Result\PostQueryInterface;
 

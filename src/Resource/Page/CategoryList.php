@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace BEAR\Examples\Resource\Page;
+namespace BEAR\Kata\Resource\Page;
 
 use BEAR\Resource\ResourceObject;
-use BEAR\Examples\Entity\Category;
-use BEAR\Examples\Query\CategoryQueryInterface;
+use BEAR\Kata\Entity\Category;
+use BEAR\Kata\Query\CategoryQueryInterface;
 
 /** @property array{categories: list<Category>} $body */
 class CategoryList extends ResourceObject

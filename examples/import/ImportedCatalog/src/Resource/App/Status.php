@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace BEAR\Examples\Example\ImportedCatalog\Resource\App;
+namespace BEAR\Kata\Example\ImportedCatalog\Resource\App;
 
 use BEAR\Resource\ResourceObject;
 

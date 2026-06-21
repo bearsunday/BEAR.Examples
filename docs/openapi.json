@@ -1,7 +1,7 @@
 {
     "openapi": "3.1.0",
     "info": {
-        "title": "BEAR.Examples API",
+        "title": "BEAR.Kata API",
         "description": "API Document",
         "version": "1.0.0"
     },

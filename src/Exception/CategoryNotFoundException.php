@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace BEAR\Examples\Exception;
+namespace BEAR\Kata\Exception;
 
 use RuntimeException;
 

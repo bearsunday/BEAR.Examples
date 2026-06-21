@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
 <ruleset
-        name="BEAR.Examples"
+        name="BEAR.Kata"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="vendor-bin/tools/vendor/squizlabs/php_codesniffer/phpcs.xsd"
 >
-    <description>BEAR.Examples uses the BEAR.Sunday coding standard.</description>
+    <description>BEAR.Kata uses the BEAR.Sunday coding standard.</description>
     <arg name="basepath" value="."/>
     <arg name="extensions" value="php"/>
     <arg name="parallel" value="80"/>

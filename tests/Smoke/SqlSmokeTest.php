@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace BEAR\Examples\Smoke;
+namespace BEAR\Kata\Smoke;
 
 use Aura\Sql\ExtendedPdo;
 use PDO;

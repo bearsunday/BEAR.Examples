@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace BEAR\Examples\Query;
+namespace BEAR\Kata\Query;
 
-use BEAR\Examples\Entity\Author;
+use BEAR\Kata\Entity\Author;
 use Ray\MediaQuery\Annotation\DbQuery;
 
 interface AuthorQueryInterface

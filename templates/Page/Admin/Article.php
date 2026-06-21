@@ -1,12 +1,12 @@
 <?php
 /**
  * @var 'create'|'edit' $mode
- * @var \BEAR\Examples\Entity\Article|null $article
+ * @var \BEAR\Kata\Entity\Article|null $article
  * @var array<string, mixed> $values
  * @var array<string, list<string>> $errors
- * @var list<\BEAR\Examples\Entity\Author> $authors
- * @var list<\BEAR\Examples\Entity\Category> $categories
- * @var list<\BEAR\Examples\Entity\Tag> $tags
+ * @var list<\BEAR\Kata\Entity\Author> $authors
+ * @var list<\BEAR\Kata\Entity\Category> $categories
+ * @var list<\BEAR\Kata\Entity\Tag> $tags
  * @var list<int> $selectedTagIds
  * @var string|null $saved
  * @var string $csrfToken
@@ -35,7 +35,7 @@ $nameFor = static function (array $entities, int $id): string {
 ?>
 {{ setLayout('layout/Default') }}
 {{ setBlock('bodyClass') ~}}admin admin-form admin-article{{ endBlock() }}
-{{ setBlock('title') ~}}{{h $heading }} - BEAR.Examples{{ endBlock() }}
+{{ setBlock('title') ~}}{{h $heading }} - BEAR.Kata{{ endBlock() }}
 {{ setBlock('header') ~}}<h1 class="AdminArticle">{{h $heading }}</h1>{{ endBlock() }}
 <main>
   <?php if ($saved === 'created'): ?>

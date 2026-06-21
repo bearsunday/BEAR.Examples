@@ -11,7 +11,7 @@ return [
         'execution_time_column_name' => 'execution_time',
     ],
     'migrations_paths' => [
-        'BEAR\\Examples\\Migrations' => __DIR__ . '/var/db/migrations',
+        'BEAR\\Kata\\Migrations' => __DIR__ . '/var/db/migrations',
     ],
     'all_or_nothing' => true,
     'transactional' => true,

@@ -15,7 +15,7 @@ $context = getenv('APP_CONTEXT') ?: $defaultContext;
 
 exit((require $bootstrap)(
     $context,
-    'BEAR\Examples',
+    'BEAR\Kata',
     dirname(__DIR__),
     $GLOBALS,
     $_SERVER,

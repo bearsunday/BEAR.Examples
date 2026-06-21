@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace BEAR\Examples\Example\ImportedCatalog\Module;
+namespace BEAR\Kata\Example\ImportedCatalog\Module;
 
 use BEAR\Package\AbstractAppModule;
 use BEAR\Package\PackageModule;

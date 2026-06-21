@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace BEAR\Examples\Auth;
+namespace BEAR\Kata\Auth;
 
 use Auth0\SDK\Contract\Auth0Interface;
-use BEAR\Examples\Exception\UnexpectedAuthProviderResponseException;
+use BEAR\Kata\Exception\UnexpectedAuthProviderResponseException;
 
 use function is_array;
 use function is_string;

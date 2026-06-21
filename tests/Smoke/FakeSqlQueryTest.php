@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace BEAR\Examples\Smoke;
+namespace BEAR\Kata\Smoke;
 
-use BEAR\Examples\Entity\Article;
-use BEAR\Examples\Fake\FakeSqlQuery;
+use BEAR\Kata\Entity\Article;
+use BEAR\Kata\Fake\FakeSqlQuery;
 use PHPUnit\Framework\TestCase;
 use Ray\MediaQuery\Result\AffectedRows;
 use Ray\MediaQuery\Result\InsertedRow;

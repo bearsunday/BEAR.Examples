@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace BEAR\Examples\Resource\App\Crawl;
+namespace BEAR\Kata\Resource\App\Crawl;
 
 use BEAR\Resource\Annotation\JsonSchema;
 use BEAR\Resource\ResourceObject;
-use BEAR\Examples\Query\TagQueryInterface;
+use BEAR\Kata\Query\TagQueryInterface;
 
 use function array_map;
 

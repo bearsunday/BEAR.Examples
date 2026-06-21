@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace BEAR\Examples\Provide\Error;
+namespace BEAR\Kata\Provide\Error;
 
 use BEAR\Resource\ResourceObject;
 

@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace BEAR\Examples\Resource\Page\Admin;
+namespace BEAR\Kata\Resource\Page\Admin;
 
 use BEAR\Resource\ResourceObject;
-use BEAR\Examples\Auth\AdminGuard;
-use BEAR\Examples\Auth\AdminUserInterface;
+use BEAR\Kata\Auth\AdminGuard;
+use BEAR\Kata\Auth\AdminUserInterface;
 
 /** @property array{admin: AdminUserInterface} $body */
 class Index extends ResourceObject

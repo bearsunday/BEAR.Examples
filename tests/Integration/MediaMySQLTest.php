@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace BEAR\Examples\Integration;
+namespace BEAR\Kata\Integration;
 
 use function uniqid;
 

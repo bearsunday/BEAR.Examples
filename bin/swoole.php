@@ -10,7 +10,7 @@ if (! file_exists($bootstrap)) {
 
 exit((require $bootstrap)(
     'prod-app',
-    'BEAR\Examples',
+    'BEAR\Kata',
     '127.0.0.1',
     8080,
 ));

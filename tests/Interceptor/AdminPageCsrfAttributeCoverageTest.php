@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace BEAR\Examples\Interceptor;
+namespace BEAR\Kata\Interceptor;
 
 use PHPUnit\Framework\TestCase;
 use Ray\Csrf\Attribute\CsrfToken;
@@ -44,7 +44,7 @@ use function sprintf;
 final class AdminPageCsrfAttributeCoverageTest extends TestCase
 {
     private const string ADMIN_PAGE_DIR = __DIR__ . '/../../src/Resource/Page/Admin';
-    private const string ADMIN_PAGE_NAMESPACE = 'BEAR\\Examples\\Resource\\Page\\Admin\\';
+    private const string ADMIN_PAGE_NAMESPACE = 'BEAR\\Kata\\Resource\\Page\\Admin\\';
     private const array UNSAFE_VERBS = ['onPost', 'onPut', 'onDelete', 'onPatch'];
 
     /** @dataProvider unsafeAdminMethodProvider */

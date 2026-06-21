@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace BEAR\Examples\Module;
+namespace BEAR\Kata\Module;
 
 use BEAR\QiqModule\QiqModule;
 use BEAR\Resource\RenderInterface;
 use BEAR\Sunday\Extension\Error\ThrowableHandlerInterface;
-use BEAR\Examples\Provide\Error\HtmlThrowableHandler;
-use BEAR\Examples\Renderer\CmsQiqRenderer;
+use BEAR\Kata\Provide\Error\HtmlThrowableHandler;
+use BEAR\Kata\Renderer\CmsQiqRenderer;
 use Override;
 use Ray\Di\AbstractModule;
 use Ray\Di\Scope;

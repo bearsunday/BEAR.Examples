@@ -1,11 +1,11 @@
 <?php
 /**
- * @var \BEAR\Examples\Auth\AdminUserInterface $admin
+ * @var \BEAR\Kata\Auth\AdminUserInterface $admin
  */
 ?>
 {{ setLayout('layout/Default') }}
 {{ setBlock('bodyClass') ~}}admin admin-index{{ endBlock() }}
-{{ setBlock('title') ~}}Admin - BEAR.Examples{{ endBlock() }}
+{{ setBlock('title') ~}}Admin - BEAR.Kata{{ endBlock() }}
 {{ setBlock('header') ~}}<h1 class="AdminIndex">Admin</h1>{{ endBlock() }}
 <main>
   <section class="AdminIndex">

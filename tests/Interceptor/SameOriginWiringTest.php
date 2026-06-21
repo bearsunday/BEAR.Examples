@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace BEAR\Examples\Interceptor;
+namespace BEAR\Kata\Interceptor;
 
 use BEAR\Resource\ResourceInterface;
-use BEAR\Examples\Auth\Visitor;
-use BEAR\Examples\Fake\FakeUserModule;
-use BEAR\Examples\Injector;
+use BEAR\Kata\Auth\Visitor;
+use BEAR\Kata\Fake\FakeUserModule;
+use BEAR\Kata\Injector;
 use PHPUnit\Framework\TestCase;
 use Ray\Csrf\Exception\ForbiddenException;
 

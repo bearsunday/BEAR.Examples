@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace BEAR\Examples\Resource\Page\Admin;
+namespace BEAR\Kata\Resource\Page\Admin;
 
 use BEAR\Resource\ResourceObject;
-use BEAR\Examples\Auth\AdminGuard;
-use BEAR\Examples\Entity\Article;
-use BEAR\Examples\Factory\ArticleFactory;
-use BEAR\Examples\Query\ArticleQueryInterface;
+use BEAR\Kata\Auth\AdminGuard;
+use BEAR\Kata\Entity\Article;
+use BEAR\Kata\Factory\ArticleFactory;
+use BEAR\Kata\Query\ArticleQueryInterface;
 use Ray\AuraSqlModule\Pagerfanta\Page as PagerPage;
 
 use function assert;

@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace BEAR\Examples\Resource\App\Cache;
+namespace BEAR\Kata\Resource\App\Cache;
 
 use BEAR\ApiDoc\Annotation\Alps;
 use BEAR\RepositoryModule\Annotation\Cacheable;
 use BEAR\Resource\Annotation\JsonSchema;
 use BEAR\Resource\Code;
 use BEAR\Resource\ResourceObject;
-use BEAR\Examples\Query\AuthorCommandInterface;
-use BEAR\Examples\Query\AuthorQueryInterface;
+use BEAR\Kata\Query\AuthorCommandInterface;
+use BEAR\Kata\Query\AuthorQueryInterface;
 
 /**
  * Cache showcase leaf — fully automatic dependency tracking.

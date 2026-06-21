@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace BEAR\Examples\Resource\App\Variations;
+namespace BEAR\Kata\Resource\App\Variations;
 
 use BEAR\AppMeta\AbstractAppMeta;
 use BEAR\Resource\Code;
 use BEAR\Resource\ResourceObject;
 use BEAR\Streamer\StreamTransferInject;
-use BEAR\Examples\Query\MediaQueryInterface;
+use BEAR\Kata\Query\MediaQueryInterface;
 
 use function basename;
 use function fclose;

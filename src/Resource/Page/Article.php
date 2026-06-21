@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace BEAR\Examples\Resource\Page;
+namespace BEAR\Kata\Resource\Page;
 
 use BEAR\Resource\ResourceObject;
-use BEAR\Examples\Entity\Article as ArticleEntity;
-use BEAR\Examples\Entity\Author;
-use BEAR\Examples\Entity\Category;
-use BEAR\Examples\Query\ArticleQueryInterface;
-use BEAR\Examples\Query\AuthorQueryInterface;
-use BEAR\Examples\Query\CategoryQueryInterface;
-use BEAR\Examples\Query\TagQueryInterface;
-use BEAR\Examples\Service\MarkdownRendererInterface;
+use BEAR\Kata\Entity\Article as ArticleEntity;
+use BEAR\Kata\Entity\Author;
+use BEAR\Kata\Entity\Category;
+use BEAR\Kata\Query\ArticleQueryInterface;
+use BEAR\Kata\Query\AuthorQueryInterface;
+use BEAR\Kata\Query\CategoryQueryInterface;
+use BEAR\Kata\Query\TagQueryInterface;
+use BEAR\Kata\Service\MarkdownRendererInterface;
 
 use function array_map;
 

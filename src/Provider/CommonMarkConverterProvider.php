@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace BEAR\Examples\Provider;
+namespace BEAR\Kata\Provider;
 
 use League\CommonMark\CommonMarkConverter;
 use League\CommonMark\Util\HtmlFilter;

@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace BEAR\Examples\Resource\Page;
+namespace BEAR\Kata\Resource\Page;
 
 use BEAR\Resource\ResourceObject;
-use BEAR\Examples\Entity\Tag;
-use BEAR\Examples\Query\TagQueryInterface;
+use BEAR\Kata\Entity\Tag;
+use BEAR\Kata\Query\TagQueryInterface;
 
 /** @property array{tags: list<Tag>} $body */
 class TagList extends ResourceObject

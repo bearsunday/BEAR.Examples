@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace BEAR\Examples\Renderer;
+namespace BEAR\Kata\Renderer;
 
 use BEAR\Resource\RenderInterface;
 use BEAR\Resource\ResourceObject;
 use ErrorException;
-use BEAR\Examples\Auth\AuthSessionInterface;
-use BEAR\Examples\Auth\UserInterface;
-use BEAR\Examples\Renderer\Exception\InvalidResourcePathException;
+use BEAR\Kata\Auth\AuthSessionInterface;
+use BEAR\Kata\Auth\UserInterface;
+use BEAR\Kata\Renderer\Exception\InvalidResourcePathException;
 use Override;
 use Qiq\Template;
 use Ray\Aop\WeavedInterface;

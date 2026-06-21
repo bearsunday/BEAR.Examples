@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace BEAR\Examples\Factory;
+namespace BEAR\Kata\Factory;
 
-use BEAR\Examples\Entity\Article;
-use BEAR\Examples\Entity\ArticleStatus;
+use BEAR\Kata\Entity\Article;
+use BEAR\Kata\Entity\ArticleStatus;
 
 use function array_map;
 use function str_contains;

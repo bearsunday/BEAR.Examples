@@ -2,12 +2,12 @@
 <apidoc
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="./vendor/bear/api-doc/apidoc.xsd">
-    <appName>BEAR\Examples</appName>
+    <appName>BEAR\Kata</appName>
     <scheme>app</scheme>
     <docDir>docs</docDir>
     <format>html,openapi,llms,audit,terms</format>
     <alps>var/alps/profile.json</alps>
     <fakeData dir="docs/examples"/>
-    <title>BEAR.Examples API</title>
+    <title>BEAR.Kata API</title>
     <description>API Document</description>
 </apidoc>

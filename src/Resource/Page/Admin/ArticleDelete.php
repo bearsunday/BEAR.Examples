@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace BEAR\Examples\Resource\Page\Admin;
+namespace BEAR\Kata\Resource\Page\Admin;
 
 use BEAR\Resource\Code;
 use BEAR\Resource\ResourceInterface;
 use BEAR\Resource\ResourceObject;
-use BEAR\Examples\Auth\AdminGuard;
-use BEAR\Examples\Auth\AdminUserInterface;
-use BEAR\Examples\Entity\Article;
-use BEAR\Examples\Query\ArticleQueryInterface;
+use BEAR\Kata\Auth\AdminGuard;
+use BEAR\Kata\Auth\AdminUserInterface;
+use BEAR\Kata\Entity\Article;
+use BEAR\Kata\Query\ArticleQueryInterface;
 use Ray\Csrf\Attribute\CsrfToken;
 use Ray\Csrf\Attribute\SameOrigin;
 

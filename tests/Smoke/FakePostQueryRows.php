@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace BEAR\Examples\Smoke;
+namespace BEAR\Kata\Smoke;
 
 use Ray\MediaQuery\Result\PostQueryContext;
 use Ray\MediaQuery\Result\PostQueryInterface;

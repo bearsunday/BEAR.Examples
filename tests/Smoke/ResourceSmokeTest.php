@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace BEAR\Examples\Smoke;
+namespace BEAR\Kata\Smoke;
 
 use BEAR\Resource\Annotation\JsonSchema;
 use BEAR\Resource\ResourceInterface;
 use JsonSchema\Validator;
-use BEAR\Examples\AbstractAppTestCase;
-use BEAR\Examples\Injector;
-use BEAR\Examples\Module\CacheShowcaseModule;
+use BEAR\Kata\AbstractAppTestCase;
+use BEAR\Kata\Injector;
+use BEAR\Kata\Module\CacheShowcaseModule;
 use PHPUnit\Framework\Attributes\DataProvider;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -175,7 +175,7 @@ final class ResourceSmokeTest extends AbstractAppTestCase
     private static function className(string $path): string
     {
         $relative = substr($path, strlen(self::RESOURCE_DIR) + 1, -4);
-        $class = 'BEAR\\Examples\\Resource\\App\\' . str_replace(DIRECTORY_SEPARATOR, '\\', $relative);
+        $class = 'BEAR\\Kata\\Resource\\App\\' . str_replace(DIRECTORY_SEPARATOR, '\\', $relative);
         if (! class_exists($class)) {
             throw new RuntimeException('Resource class does not exist: ' . $class);
         }

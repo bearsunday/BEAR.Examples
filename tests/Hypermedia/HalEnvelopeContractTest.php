@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace BEAR\Examples\Hypermedia;
+namespace BEAR\Kata\Hypermedia;
 
 use function array_diff;
 use function array_keys;

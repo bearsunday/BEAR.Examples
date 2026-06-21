@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace BEAR\Examples\Resource\App;
+namespace BEAR\Kata\Resource\App;
 
 use BEAR\ApiDoc\Annotation\Alps;
 use BEAR\Cli\Attribute\Cli;
@@ -11,8 +11,8 @@ use BEAR\RepositoryModule\Annotation\CacheableResponse;
 use BEAR\Resource\Annotation\JsonSchema;
 use BEAR\Resource\Annotation\Link;
 use BEAR\Resource\ResourceObject;
-use BEAR\Examples\Factory\ArticleFactory;
-use BEAR\Examples\Query\ArticleQueryInterface;
+use BEAR\Kata\Factory\ArticleFactory;
+use BEAR\Kata\Query\ArticleQueryInterface;
 use Ray\AuraSqlModule\Pagerfanta\Page;
 
 use function array_map;

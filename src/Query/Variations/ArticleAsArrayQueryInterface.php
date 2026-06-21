@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace BEAR\Examples\Query\Variations;
+namespace BEAR\Kata\Query\Variations;
 
 use Ray\MediaQuery\Annotation\DbQuery;
 

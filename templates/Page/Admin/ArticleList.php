@@ -1,6 +1,6 @@
 <?php
 /**
- * @var list<\BEAR\Examples\Entity\Article> $articles
+ * @var list<\BEAR\Kata\Entity\Article> $articles
  * @var array{status:string|null} $filter
  * @var int $page
  * @var int $perPage
@@ -15,7 +15,7 @@ $qs = static function (array $params): string {
 ?>
 {{ setLayout('layout/Default') }}
 {{ setBlock('bodyClass') ~}}admin admin-list admin-articlelist{{ endBlock() }}
-{{ setBlock('title') ~}}Article Administration - BEAR.Examples{{ endBlock() }}
+{{ setBlock('title') ~}}Article Administration - BEAR.Kata{{ endBlock() }}
 {{ setBlock('header') ~}}<h1 class="AdminArticleList">Article Administration</h1>{{ endBlock() }}
 <main>
   <?php if ($deleted): ?>

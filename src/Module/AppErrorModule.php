@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace BEAR\Examples\Module;
+namespace BEAR\Kata\Module;
 
 use BEAR\Sunday\Extension\Error\ThrowableHandlerInterface;
-use BEAR\Examples\Provide\Error\AppThrowableHandler;
-use BEAR\Examples\Provide\Error\ExceptionStatusMapper;
+use BEAR\Kata\Provide\Error\AppThrowableHandler;
+use BEAR\Kata\Provide\Error\ExceptionStatusMapper;
 use Override;
 use Ray\Di\AbstractModule;
 

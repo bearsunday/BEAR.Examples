@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use BEAR\Examples\Bootstrap;
+use BEAR\Kata\Bootstrap;
 
 if (PHP_SAPI === 'cli-server') {
     $path = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);

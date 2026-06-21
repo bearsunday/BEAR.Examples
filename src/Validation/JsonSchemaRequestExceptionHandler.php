@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace BEAR\Examples\Validation;
+namespace BEAR\Kata\Validation;
 
 use BEAR\Resource\Exception\JsonSchemaException;
 use BEAR\Resource\JsonSchemaRequestExceptionHandlerInterface;
 use BEAR\Resource\ResourceObject;
-use BEAR\Examples\Exception\ValidationException;
+use BEAR\Kata\Exception\ValidationException;
 use Override;
 
 /**

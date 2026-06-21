@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace BEAR\Examples\Fake;
+namespace BEAR\Kata\Fake;
 
-use BEAR\Examples\Auth\AuthSessionInterface;
-use BEAR\Examples\Auth\UserInterface;
+use BEAR\Kata\Auth\AuthSessionInterface;
+use BEAR\Kata\Auth\UserInterface;
 use Ray\Di\AbstractModule;
 
 final class FakeUserModule extends AbstractModule

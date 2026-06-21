@@ -1,11 +1,11 @@
 <?php
 /**
- * @var list<\BEAR\Examples\Entity\Category> $categories
+ * @var list<\BEAR\Kata\Entity\Category> $categories
  */
 ?>
 {{ setLayout('layout/Default') }}
 {{ setBlock('bodyClass') ~}}public public-list public-categorylist{{ endBlock() }}
-{{ setBlock('title') ~}}Category List - BEAR.Examples{{ endBlock() }}
+{{ setBlock('title') ~}}Category List - BEAR.Kata{{ endBlock() }}
 {{ setBlock('header') ~}}<h1 class="CategoryList">Categories</h1>{{ endBlock() }}
 <main>
   <section class="CategoryList">

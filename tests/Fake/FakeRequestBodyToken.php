@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace BEAR\Examples\Fake;
+namespace BEAR\Kata\Fake;
 
 use Override;
 use Ray\Csrf\Http\RequestBodyTokenInterface;

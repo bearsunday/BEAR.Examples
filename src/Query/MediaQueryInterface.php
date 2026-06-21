@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace BEAR\Examples\Query;
+namespace BEAR\Kata\Query;
 
-use BEAR\Examples\Entity\Media;
+use BEAR\Kata\Entity\Media;
 use Ray\MediaQuery\Annotation\DbQuery;
 
 interface MediaQueryInterface

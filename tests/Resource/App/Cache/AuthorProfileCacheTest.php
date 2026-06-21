@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace BEAR\Examples\Resource\App\Cache;
+namespace BEAR\Kata\Resource\App\Cache;
 
 use BEAR\QueryRepository\Header;
 use BEAR\Resource\ResourceInterface;
 use BEAR\Sunday\Extension\Transfer\HttpCacheInterface;
-use BEAR\Examples\Injector;
-use BEAR\Examples\Module\CacheShowcaseModule;
+use BEAR\Kata\Injector;
+use BEAR\Kata\Module\CacheShowcaseModule;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 

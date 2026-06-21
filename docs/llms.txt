@@ -1,4 +1,4 @@
-# BEAR\Examples
+# BEAR\Kata
 
 API Document
 

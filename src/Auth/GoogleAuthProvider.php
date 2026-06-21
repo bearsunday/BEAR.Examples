@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace BEAR\Examples\Auth;
+namespace BEAR\Kata\Auth;
 
 use League\OAuth2\Client\Provider\Google;
 use League\OAuth2\Client\Provider\GoogleUser;
-use BEAR\Examples\Exception\UnexpectedAuthProviderResponseException;
+use BEAR\Kata\Exception\UnexpectedAuthProviderResponseException;
 
 /**
  * Real Google OAuth provider.

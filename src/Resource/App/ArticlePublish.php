@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace BEAR\Examples\Resource\App;
+namespace BEAR\Kata\Resource\App;
 
 use BEAR\ApiDoc\Annotation\Alps;
 use BEAR\Resource\Annotation\JsonSchema;
 use BEAR\Resource\Code;
 use BEAR\Resource\ResourceObject;
-use BEAR\Examples\Entity\ArticleStatus;
-use BEAR\Examples\Query\ArticleCommandInterface;
-use BEAR\Examples\Query\ArticleQueryInterface;
-use BEAR\Examples\Service\SqlDateTime;
+use BEAR\Kata\Entity\ArticleStatus;
+use BEAR\Kata\Query\ArticleCommandInterface;
+use BEAR\Kata\Query\ArticleQueryInterface;
+use BEAR\Kata\Service\SqlDateTime;
 
 use function gmdate;
 

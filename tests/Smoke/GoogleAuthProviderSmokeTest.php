@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace BEAR\Examples\Smoke;
+namespace BEAR\Kata\Smoke;
 
-use BEAR\Examples\Auth\GoogleAuthProvider;
-use BEAR\Examples\Provider\GoogleProvider;
+use BEAR\Kata\Auth\GoogleAuthProvider;
+use BEAR\Kata\Provider\GoogleProvider;
 use PHPUnit\Framework\TestCase;
 
 use function getenv;

@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace BEAR\Examples\Fake;
+namespace BEAR\Kata\Fake;
 
-use BEAR\Examples\Auth\AdminUser;
-use BEAR\Examples\Auth\AuthSessionInterface;
+use BEAR\Kata\Auth\AdminUser;
+use BEAR\Kata\Auth\AuthSessionInterface;
 use Ray\Di\ProviderInterface;
 
 /** @implements ProviderInterface<AuthSessionInterface> */

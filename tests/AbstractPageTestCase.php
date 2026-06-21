@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace BEAR\Examples;
+namespace BEAR\Kata;
 
 use BEAR\Resource\ResourceInterface;
-use BEAR\Examples\Auth\UserInterface;
-use BEAR\Examples\Auth\Visitor;
-use BEAR\Examples\Fake\FakeUserModule;
+use BEAR\Kata\Auth\UserInterface;
+use BEAR\Kata\Auth\Visitor;
+use BEAR\Kata\Fake\FakeUserModule;
 use PHPUnit\Framework\TestCase;
 
 /**

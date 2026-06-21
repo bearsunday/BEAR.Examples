@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace BEAR\Examples\Hypermedia;
+namespace BEAR\Kata\Hypermedia;
 
 use BEAR\Resource\ResourceObject;
-use BEAR\Examples\AbstractAppTestCase;
+use BEAR\Kata\AbstractAppTestCase;
 
 use function parse_str;
 use function parse_url;

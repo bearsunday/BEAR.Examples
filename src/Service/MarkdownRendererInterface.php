@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace BEAR\Examples\Service;
+namespace BEAR\Kata\Service;
 
 interface MarkdownRendererInterface
 {

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace BEAR\Examples\Module;
+namespace BEAR\Kata\Module;
 
 use BEAR\RepositoryModule\Annotation\ResourceObjectPool;
 use Override;

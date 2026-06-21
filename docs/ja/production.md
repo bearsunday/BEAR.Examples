@@ -27,7 +27,7 @@ production compile は次で実行します。
 composer compile
 ```
 
-compile は `BEAR\Examples` の `prod-app` context を対象にします。生成物は runtime
+compile は `BEAR\Kata` の `prod-app` context を対象にします。生成物は runtime
 build products で、手で編集する source file ではありません。
 
 - `autoload.php` — compiled autoloader entry。

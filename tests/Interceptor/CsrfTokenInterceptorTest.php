@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace BEAR\Examples\Interceptor;
+namespace BEAR\Kata\Interceptor;
 
-use BEAR\Examples\Fake\FakeCsrfToken;
-use BEAR\Examples\Fake\FakeRequestBodyToken;
+use BEAR\Kata\Fake\FakeCsrfToken;
+use BEAR\Kata\Fake\FakeRequestBodyToken;
 use PHPUnit\Framework\TestCase;
 use Ray\Aop\ReflectiveMethodInvocation;
 use Ray\Csrf\Exception\ForbiddenException;

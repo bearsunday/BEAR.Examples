@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace BEAR\Examples\Auth;
+namespace BEAR\Kata\Auth;
 
-use BEAR\Examples\Query\AuthIdentityCommandInterface;
-use BEAR\Examples\Query\AuthIdentityQueryInterface;
-use BEAR\Examples\Query\AuthorQueryInterface;
+use BEAR\Kata\Query\AuthIdentityCommandInterface;
+use BEAR\Kata\Query\AuthIdentityQueryInterface;
+use BEAR\Kata\Query\AuthorQueryInterface;
 use Ray\MediaQuery\Exception\PdoPerformException;
 
 use function str_contains;

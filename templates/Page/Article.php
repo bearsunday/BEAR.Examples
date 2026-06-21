@@ -1,18 +1,18 @@
 <?php
 /**
- * @var \BEAR\Examples\Entity\Article|null $article
+ * @var \BEAR\Kata\Entity\Article|null $article
  * @var string $bodyHtml
- * @var \BEAR\Examples\Entity\Author|null $author
- * @var \BEAR\Examples\Entity\Category|null $category
+ * @var \BEAR\Kata\Entity\Author|null $author
+ * @var \BEAR\Kata\Entity\Category|null $category
  * @var list<array{id:int, slug:string, name:string}> $tags
  */
 if (! isset($article) || $article === null) {
-    throw new \BEAR\Examples\Exception\ArticleNotFoundException();
+    throw new \BEAR\Kata\Exception\ArticleNotFoundException();
 }
 ?>
 {{ setLayout('layout/Default') }}
 {{ setBlock('bodyClass') ~}}public public-detail public-article{{ endBlock() }}
-{{ setBlock('title') ~}}{{h $article->title }} - BEAR.Examples{{ endBlock() }}
+{{ setBlock('title') ~}}{{h $article->title }} - BEAR.Kata{{ endBlock() }}
 {{ setBlock('header') ~}}<h1 class="Article">Article Detail</h1>{{ endBlock() }}
 <main>
   <article class="Article">

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace BEAR\Examples\Resource\App\Variations;
+namespace BEAR\Kata\Resource\App\Variations;
 
-use BEAR\Examples\AbstractAppTestCase;
+use BEAR\Kata\AbstractAppTestCase;
 
 final class ArticleSqlQueryTest extends AbstractAppTestCase
 {

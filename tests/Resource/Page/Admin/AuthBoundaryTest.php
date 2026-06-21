@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace BEAR\Examples\Resource\Page\Admin;
+namespace BEAR\Kata\Resource\Page\Admin;
 
-use BEAR\Examples\AbstractPageTestCase;
-use BEAR\Examples\Exception\UnauthenticatedException;
+use BEAR\Kata\AbstractPageTestCase;
+use BEAR\Kata\Exception\UnauthenticatedException;
 
 final class AuthBoundaryTest extends AbstractPageTestCase
 {

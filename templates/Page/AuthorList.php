@@ -1,11 +1,11 @@
 <?php
 /**
- * @var list<\BEAR\Examples\Entity\Author> $authors
+ * @var list<\BEAR\Kata\Entity\Author> $authors
  */
 ?>
 {{ setLayout('layout/Default') }}
 {{ setBlock('bodyClass') ~}}public public-list public-authorlist{{ endBlock() }}
-{{ setBlock('title') ~}}Author List - BEAR.Examples{{ endBlock() }}
+{{ setBlock('title') ~}}Author List - BEAR.Kata{{ endBlock() }}
 {{ setBlock('header') ~}}<h1 class="AuthorList">Authors</h1>{{ endBlock() }}
 <main>
   <section class="AuthorList">

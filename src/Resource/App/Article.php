@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace BEAR\Examples\Resource\App;
+namespace BEAR\Kata\Resource\App;
 
 use BEAR\ApiDoc\Annotation\Alps;
 use BEAR\Cli\Attribute\Cli;
@@ -13,12 +13,12 @@ use BEAR\Resource\Annotation\JsonSchema;
 use BEAR\Resource\Annotation\Link;
 use BEAR\Resource\Code;
 use BEAR\Resource\ResourceObject;
-use BEAR\Examples\Input\ArticleCreateInput;
-use BEAR\Examples\Input\ArticleUpdateInput;
-use BEAR\Examples\Query\ArticleCommandInterface;
-use BEAR\Examples\Query\ArticleQueryInterface;
-use BEAR\Examples\Query\ArticleTagCommandInterface;
-use BEAR\Examples\Service\SqlDateTime;
+use BEAR\Kata\Input\ArticleCreateInput;
+use BEAR\Kata\Input\ArticleUpdateInput;
+use BEAR\Kata\Query\ArticleCommandInterface;
+use BEAR\Kata\Query\ArticleQueryInterface;
+use BEAR\Kata\Query\ArticleTagCommandInterface;
+use BEAR\Kata\Service\SqlDateTime;
 use Ray\InputQuery\Attribute\Input;
 
 use function assert;

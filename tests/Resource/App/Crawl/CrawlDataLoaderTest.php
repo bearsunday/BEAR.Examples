@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace BEAR\Examples\Resource\App\Crawl;
+namespace BEAR\Kata\Resource\App\Crawl;
 
-use BEAR\Examples\AbstractAppTestCase;
-use BEAR\Examples\Fake\FakeSqlQuery;
-use BEAR\Examples\Injector;
+use BEAR\Kata\AbstractAppTestCase;
+use BEAR\Kata\Fake\FakeSqlQuery;
+use BEAR\Kata\Injector;
 use Ray\MediaQuery\SqlQueryInterface;
 
 use function array_filter;

@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace BEAR\Examples\Provider;
+namespace BEAR\Kata\Provider;
 
-use BEAR\Examples\Auth\AuthSessionInterface;
-use BEAR\Examples\Auth\UserInterface;
+use BEAR\Kata\Auth\AuthSessionInterface;
+use BEAR\Kata\Auth\UserInterface;
 use Ray\Di\ProviderInterface;
 
 /** @implements ProviderInterface<UserInterface> */

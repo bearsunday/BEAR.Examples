@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace BEAR\Examples\Resource\App;
+namespace BEAR\Kata\Resource\App;
 
 use BEAR\ApiDoc\Annotation\Alps;
 use BEAR\Resource\Annotation\JsonSchema;
 use BEAR\Resource\Code;
 use BEAR\Resource\ResourceObject;
-use BEAR\Examples\Query\MediaCommandInterface;
-use BEAR\Examples\Query\MediaQueryInterface;
+use BEAR\Kata\Query\MediaCommandInterface;
+use BEAR\Kata\Query\MediaQueryInterface;
 
 use function assert;
 

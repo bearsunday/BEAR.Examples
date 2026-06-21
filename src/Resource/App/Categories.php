@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace BEAR\Examples\Resource\App;
+namespace BEAR\Kata\Resource\App;
 
 use BEAR\ApiDoc\Annotation\Alps;
 use BEAR\RepositoryModule\Annotation\CacheableResponse;
 use BEAR\Resource\Annotation\JsonSchema;
 use BEAR\Resource\Annotation\Link;
 use BEAR\Resource\ResourceObject;
-use BEAR\Examples\Query\CategoryQueryInterface;
+use BEAR\Kata\Query\CategoryQueryInterface;
 
 use function array_map;
 use function count;
