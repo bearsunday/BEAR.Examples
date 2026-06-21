@@ -1,8 +1,19 @@
 # Notes for future Claude Code sessions
 
+## Implementing a pattern? Start at the Kata index
+
+To learn or transplant an implementation pattern ("how do I add a pager /
+HAL embed / streaming response / PRG form / Cacheable resource"), start at
+`docs/source-index.md` — the Kata (型) source index. Each Kata maps an intent
+to canonical Source, Tests, a **着手前チェック (before)**, and a
+**マスター確認 (after)** checklist. The `bear-kata` skill
+(`.claude/skills/bear-kata/SKILL.md`) routes intent → Kata. Prefer
+`Status: canonical` Katas as the form to copy; `comparison-only` Katas are
+for understanding only, not for transplanting.
+
 ## Project shape
 
-Namespace `BEAR\Examples\`. PSR-4 both under `src/` and `tests/`.
+Namespace `BEAR\Kata\`. PSR-4 both under `src/` and `tests/`.
 Primary surface is the HAL+JSON App API. `src/Resource/Page/*` +
 `templates/Page/*` provide Qiq HTML: public pages are read-only, and
 `src/Resource/Page/Admin/*` adds article create/update/delete forms
@@ -28,7 +39,7 @@ Switching contexts loads/removes modules by keyword prefix; see
 - Tests (no DB): `vendor/bin/phpunit`
 - Fake CLI demo:
   ```php
-  $r = BEAR\Examples\Injector::getInstance('fake-hal-api-app')
+  $r = BEAR\Kata\Injector::getInstance('fake-hal-api-app')
       ->getInstance(BEAR\Resource\ResourceInterface::class);
   var_dump($r->get('app://self/article', ['id' => 1])->body);
   ```

@@ -1,327 +1,102 @@
-# MyVendor.Cms
+# BEAR.Kata
 
-## Description
+BEAR.Sunday アプリケーションの実装パターン集。「これを実装したい時、どのファイルを見るか」をAIエージェントと人間が素早く引くためのリファレンス実装プロジェクト。
 
-MyVendor.Cms is a reference CMS built on
-[BEAR.Sunday](https://bearsunday.github.io/).
+各Kataの詳細（Aliases / 着手前チェック / Source / Tests / Key points / マスター確認）は [docs/source-index.md](docs/source-index.md) を参照。AIエージェントは intent から `/bear-kata` スキル（[.claude/skills/bear-kata](.claude/skills/bear-kata/SKILL.md)）経由でも該当Kataを引ける。
 
-It demonstrates HAL+JSON App resources over Ray.MediaQuery, Qiq Page
-resources for reader-facing HTML, and a minimal Article admin. The domain
-has five entities: Article, Category, Tag, Author, and Media. Every App
-resource has read/write coverage where meaningful, plus an Auth resource
-for the Google/Auth0 OAuth flow.
+## Kata 一覧
 
-## Background
+| Status | 意味 |
+|---|---|
+| `canonical` | 通常の実装で最初に真似する正規形 |
+| `showcase` | 特定機能を切り出して見せる実例 |
+| `comparison-only` | 比較理解用。デフォルト実装としてコピーしない |
+| `support` | テスト、Fake、生成物など正規形を支える周辺実装 |
 
-This repository is a working teaching artefact: BEAR.Sunday's canonical
-naming, structure, and flow rendered as a small CMS that humans and AI
-assistants can read as a template.
+### Data access / BDR
 
-Framework conventions are easiest to learn from a complete executable
-example. The code is intentionally small, but each naming, module,
-Resource, Query, SQL, validation, fake, and test choice is meant to be
-copied deliberately.
+| ID | 説明 | Status |
+|---|---|---|
+| [`db-read-one-entity`](docs/source-index.md#db-read-one-entity) | DBから主キーで1件のEntityを読む | canonical |
+| [`db-read-by-natural-key`](docs/source-index.md#db-read-by-natural-key) | natural keyで1件読む | canonical |
+| [`db-read-list-pager`](docs/source-index.md#db-read-list-pager) | DBから一覧をページングして読む | canonical |
+| [`db-command-write`](docs/source-index.md#db-command-write) | DB書き込みをCommand Interfaceに分ける | canonical |
+| [`db-link-table-sync`](docs/source-index.md#db-link-table-sync) | link tableをclear/linkで同期する | canonical |
+| [`db-result-projection`](docs/source-index.md#db-result-projection) | Query結果を専用Result objectにする | showcase |
+| [`db-array-row-comparison`](docs/source-index.md#db-array-row-comparison) | Entityではなくarrayで読む比較例を見る | comparison-only |
+| [`db-sqlquery-orchestration`](docs/source-index.md#db-sqlquery-orchestration) | `SqlQueryInterface`で複数SQLを調停する | comparison-only |
+| [`db-raw-pdo-comparison`](docs/source-index.md#db-raw-pdo-comparison) | Raw PDOとの違いを見る | comparison-only |
 
-The implementation was built as a semantic-driven, resolution-increasing
-pipeline:
+### Resource / API
 
-1. **ALPS profile** — semantic model in
-   [var/alps/profile.json](var/alps/profile.json).
-2. **Fake data (semantic-ex)** — 50 realistic records per entity in
-   [var/fake/](var/fake), with referential integrity.
-3. **JSON Schema from observed data** —
-   [var/json_schema/](var/json_schema) is derived from the fake, not
-   decided up front.
-4. **Read path** — readonly entities (`src/Entity/`), `#[DbQuery]`
-   interfaces (`src/Query/`), and `tests/Fake/FakeSqlQuery.php`.
-5. **Write path** — Command interfaces (`src/Query/*CommandInterface.php`)
-   fronted by Resource `onPost`, `onPut`, and `onDelete` methods.
-6. **Real DB** — Doctrine Migrations and the seed script load the same fake
-   data into a real backend, with matching SQL in `var/db/sql/`.
-7. **Hypermedia** — `#[Link]`, `#[Embed]`, and `addQuery()` materialise
-   HAL `_links` and `_embedded`; `#[JsonSchema]` validates request and
-   response bodies.
-8. **Qiq HTML** — Page resources render public pages and the Article admin
-   without JavaScript.
+| ID | 説明 | Status |
+|---|---|---|
+| [`api-get-hal-resource`](docs/source-index.md#api-get-hal-resource) | GET ResourceをHAL+JSONで返す | canonical |
+| [`api-post-input-dto`](docs/source-index.md#api-post-input-dto) | POST入力をInput DTOで受ける | canonical |
+| [`api-put-tristate-input`](docs/source-index.md#api-put-tristate-input) | PUTでtri-state入力を扱う | canonical |
+| [`api-delete-no-content`](docs/source-index.md#api-delete-no-content) | DELETE成功を204で返す | canonical |
+| [`not-found-response`](docs/source-index.md#not-found-response) | 見つからないResourceを404にする | canonical |
+| [`json-schema-validation`](docs/source-index.md#json-schema-validation) | Request/ResponseをJSON Schemaで検証する | canonical |
+| [`hal-link`](docs/source-index.md#hal-link) | HAL `_links` を `#[Link]` で宣言する | canonical |
+| [`hal-embed`](docs/source-index.md#hal-embed) | HAL `_embedded` を `#[Embed]` と `addQuery()` で作る | canonical |
 
-See [docs/architecture.md](docs/architecture.md) for the BDR layout and
-design rationale.
+### HTML / Page
 
-For the current project status — what this reference implementation taught,
-what is implemented, and what remains deliberately absent or deferred — read
-[docs/status.md](docs/status.md).
+| ID | 説明 | Status |
+|---|---|---|
+| [`page-resource-qiq-detail`](docs/source-index.md#page-resource-qiq-detail) | Page Resourceで1件詳細HTMLを描画する | canonical |
+| [`page-resource-list`](docs/source-index.md#page-resource-list) | Page Resourceで一覧HTMLを描画する | canonical |
+| [`markdown-to-html`](docs/source-index.md#markdown-to-html) | Markdown本文をHTMLへ変換する | canonical |
+| [`admin-prg-form`](docs/source-index.md#admin-prg-form) | Admin formでPRGを使う | showcase |
 
-## Scope
+### Runtime / representation
 
-This project demonstrates BEAR.Sunday application-resource and page-resource
-design. It is not intended to be a production-ready CMS.
+| ID | 説明 | Status |
+|---|---|---|
+| [`stream-response`](docs/source-index.md#stream-response) | ファイルやバイナリをストリームで返す | showcase |
+| [`cacheable-leaf`](docs/source-index.md#cacheable-leaf) | `#[Cacheable]` だけのleaf resourceを作る | showcase |
+| [`cache-embed-dependency`](docs/source-index.md#cache-embed-dependency) | `#[Embed]` 親Resourceの依存を自動合成する | showcase |
+| [`cache-body-derived-dependency`](docs/source-index.md#cache-body-derived-dependency) | body由来の可変長依存を `fromAssoc()` で宣言する | showcase |
+| [`async-embed-parallel`](docs/source-index.md#async-embed-parallel) | embed graphを並列実行に載せる | showcase |
+| [`cli-resource`](docs/source-index.md#cli-resource) | ResourceをCLIコマンドとして公開する | showcase |
 
-In scope:
+### Tests / fake
 
-- App resources with HAL links/embeds, JSON Schema validation, and
-  Ray.MediaQuery read/write contracts.
-- `#[InputFile]` media upload and scalar media metadata writes side by side.
-- `linkCrawl` with DataLoader batching for an author → articles → tags graph.
-- Page resources using Qiq for public HTML and a small local Article admin.
-- Fake/real DB parity, deterministic semantic data, and MySQL/SQLite setup.
-- Read/write naming conventions, SQL filename conventions, and Resource
-  body/status patterns.
-- Tests that pin status codes, body shapes, links, embeds, schema behavior,
-  fakes, and representative real-DB paths.
+| ID | 説明 | Status |
+|---|---|---|
+| [`fake-sql-query`](docs/source-index.md#fake-sql-query) | DBなしでMediaQueryをFakeする | support |
+| [`app-resource-test`](docs/source-index.md#app-resource-test) | App ResourceのAPI contractをテストする | support |
+| [`page-resource-test`](docs/source-index.md#page-resource-test) | Page ResourceのHTML contractをテストする | support |
+| [`hypermedia-workflow-test`](docs/source-index.md#hypermedia-workflow-test) | Link/Embedを辿るworkflowをテストする | support |
+| [`mysql-integration-test`](docs/source-index.md#mysql-integration-test) | 実DB経路を必要時だけ検証する | support |
 
-Intentionally not the focus:
+### Semantic / generated artifacts
 
-- A full production admin UI.
-- JavaScript-enhanced editing flows.
-- Production role policy beyond the author-scoped, CSRF-protected demo
-  admin.
-- Broad OAuth provider catalog beyond Google and Auth0/OIDC.
-- Exhaustive CRUD symmetry where it would only repeat an already-shown
-  pattern.
+| ID | 説明 | Status |
+|---|---|---|
+| [`alps-profile-ssot`](docs/source-index.md#alps-profile-ssot) | ALPS profileを意味のSSOTにする | support |
+| [`semantic-fake-data`](docs/source-index.md#semantic-fake-data) | semantic-exで決定的fake dataを作る | support |
+| [`json-schema-generated`](docs/source-index.md#json-schema-generated) | fake observationからJSON Schemaを生成する | support |
+| [`apidoc-llms-generated`](docs/source-index.md#apidoc-llms-generated) | API docsとllms.txtを生成する | support |
 
-For the detailed in/out list and deferred items, read
-[docs/scope.md](docs/scope.md).
-
-## Requirements
-
-- PHP 8.5
-- Composer
-- Node.js 20+ and npm for `composer doc` / ALPS diagram generation
-- Optional: MySQL via Malt or docker-compose
-- Optional: SQLite for quick real-DB trials
-
-`composer install` runs `composer setup`, which clears generated DI/runtime
-cache. `composer doc` runs `composer setup:docs` and installs the npm ASD
-dependency when it is not already present.
-
-## Quick Start
-
-Use the fake context first. It needs no database.
+## クイックスタート
 
 ```bash
-composer install
-composer fake
-php -r 'require "autoload.php"; $r = BEAR\Examples\Injector::getInstance("fake-hal-api-app")->getInstance(BEAR\Resource\ResourceInterface::class); echo json_encode($r->get("app://self/article", ["id" => 1])->body, JSON_PRETTY_PRINT);'
-```
-
-Run the main test suite:
-
-```bash
+composer install && composer fake
+php -r 'require "autoload.php"; $r = BEAR\Kata\Injector::getInstance("fake-hal-api-app")->getInstance(BEAR\Resource\ResourceInterface::class); echo json_encode($r->get("app://self/article", ["id" => 1])->body, JSON_PRETTY_PRINT);'
 composer test
 ```
 
-## Setup
+## ドキュメント
 
-### Real database via Malt (macOS)
-
-```bash
-brew tap koriym/malt && brew install malt
-malt install && malt create && malt start
-source <(malt env)
-
-cp .env.dist .env       # edit DB_DSN / DB_USER / DB_PASSWORD
-vendor/bin/doctrine-migrations migrate --no-interaction
-php bin/seed.php
-composer serve:api      # HAL JSON API at http://127.0.0.1:8080
-composer serve          # Qiq/Page HTML at http://127.0.0.1:8081
-```
-
-### Real database via docker-compose (cross-platform)
-
-```bash
-composer docker:up
-cp .env.dist .env
-```
-
-`composer docker:up` starts only MySQL and runs migrations/seeding. Optional
-runtime containers are explicit: use `composer parallel:up` for the
-ext-parallel async entrypoint, or `composer swoole:up` when working on the
-Swoole runtime path.
-
-### Real database via SQLite (CI / quick trials)
-
-```bash
-rm -f /tmp/bear_cms.db
-DB_DSN="sqlite:/tmp/bear_cms.db" vendor/bin/doctrine-migrations migrate --no-interaction
-DB_DSN="sqlite:/tmp/bear_cms.db" php bin/seed.php
-DB_DSN="sqlite:/tmp/bear_cms.db" composer serve         # Qiq/Page HTML on :8081
-# or to expose the HAL JSON API on :8080:
-# DB_DSN="sqlite:/tmp/bear_cms.db" composer serve:api
-```
-
-### Admin login
-
-The canonical admin-login path is Google OAuth plus a PHP session. Configure
-the callback URL in `.env` and in the Google OAuth client:
-
-```dotenv
-GOOGLE_CLIENT_ID=...
-GOOGLE_CLIENT_SECRET=...
-GOOGLE_REDIRECT_URI=http://127.0.0.1:8081/admin/callback
-```
-
-Then start the Page server and sign in at
-`http://127.0.0.1:8081/admin/login`. The authenticated Google email must match
-an `authors.email` row; that author id becomes the admin's ownership boundary.
-Admins can manage only articles whose `authorId` matches their own author id.
-Auth0/OIDC remains available as a secondary provider adapter through
-`CMS_AUTH_PROVIDER=auth0`, but Google is the copy-paste reference path.
-See [docs/auth-google.md](docs/auth-google.md) for the full setup, identity
-mapping, callback, logout, and env-gated smoke test flow.
-
-### Built-in servers
-
-Each server is blocking, so run them in separate terminals:
-
-```bash
-# terminal 1
-composer serve           # Qiq/Page HTML at http://127.0.0.1:8081
-
-# terminal 2
-composer serve:api       # HAL JSON API at http://127.0.0.1:8080
-```
-
-## Reference Guide
-
-Read the repository in this order:
-
-1. **[README.md](README.md)** — what the project is and how to run it.
-2. **[docs/readme-spec.md](docs/readme-spec.md)** — the shared README frame
-   for BEAR.Sunday-aligned reference projects.
-3. **[docs/en/reading-guide.md](docs/en/reading-guide.md)**
-   ([日本語](docs/ja/reading-guide.md)) — where to start reading the code
-   and what to notice by layer.
-4. **[docs/architecture.md](docs/architecture.md)** — BDR layout,
-   dispatch quirks, and design rationale.
-5. **[docs/conventions.md](docs/conventions.md)** — the canonical rulebook:
-   naming, Resource patterns, Read/Write SQL contract, and test policy.
-   New code patterns land here first.
-6. **[docs/scope.md](docs/scope.md)** — what the reference includes,
-   omits, and defers.
-7. **[docs/status.md](docs/status.md)** — concise current-state map:
-   lessons learned, implemented scope, deferred gaps, and by-design
-   omissions.
-8. **[docs/production.md](docs/production.md)** — production compile,
-   optional Redis, security commands, and deployment boundaries.
-9. **[docs/auth-google.md](docs/auth-google.md)** — practical Google OAuth
-   setup for the Page admin.
-10. **[docs/alps.md](docs/alps.md)** and
-   **[var/alps/profile.json](var/alps/profile.json)** — semantic source of
-   truth: Choreography names and Taxonomy nouns.
-11. **[docs/journal/build-log.md](docs/journal/build-log.md)** — phase-by-phase
-   construction history.
-12. **[docs/journal/decisions-to-consult.md](docs/journal/decisions-to-consult.md)**
-   — every decision with the discussion that shaped it.
-13. **[tests/Fake/FakeSqlQuery.php](tests/Fake/FakeSqlQuery.php)** — the fake
-   dispatch contract in executable form.
-
-Index by question:
-
-| If you're asking... | Start here |
-|---|---|
-| What should a BEAR.Sunday reference README look like? | [docs/readme-spec.md](docs/readme-spec.md) |
-| Where should I start reading the code? | [docs/en/reading-guide.md](docs/en/reading-guide.md) / [日本語](docs/ja/reading-guide.md) |
-| What do I name a class, method, SQL file, or property? | [conventions.md §3 Naming](docs/conventions.md#3-naming) |
-| How do I shape a Resource body, status, embed, or link? | [conventions.md §4 Resource patterns](docs/conventions.md#4-resource-patterns) |
-| Where are the MediaQuery pager / SELECT result / AffectedRows examples? | [docs/media-query-samples.md](docs/media-query-samples.md) |
-| Scalar params or Input DTO? | [conventions.md §4 Input shape & validation](docs/conventions.md#4-resource-patterns) |
-| Where is the linkCrawl/DataLoader example? | [docs/resources.md#crawldataloader-companion-resources-appselfcrawl](docs/resources.md#crawldataloader-companion-resources-appselfcrawl) |
-| How do Read and Write share an entity? | [conventions.md §5 Read/Write SQL contract](docs/conventions.md#5-readwrite-sql-contract) |
-| What is intentionally not built? | [docs/scope.md](docs/scope.md) |
-| What did the project teach, complete, and leave undone? | [docs/status.md](docs/status.md) |
-| How do I run production compile, Redis, or security checks? | [docs/production.md](docs/production.md) |
-| How do I configure Google admin login? | [docs/auth-google.md](docs/auth-google.md) |
-| Why was this decision made? | [journal/decisions-to-consult.md](docs/journal/decisions-to-consult.md) |
-| What changed phase-by-phase? | [journal/build-log.md](docs/journal/build-log.md) |
-| What is the next session expected to know? | [journal/handoff.md](docs/journal/handoff.md) |
-
-## API Documentation
-
-Generated API documentation lives under `docs/`:
-
-- [docs/index.html](docs/index.html) — generated URI / request / response /
-  `_links` / `_embedded` map.
-- [docs/alps.html](docs/alps.html) / [docs/alps.svg](docs/alps.svg) —
-  ALPS semantic profile and static state diagram.
-- [docs/openapi.json](docs/openapi.json) — OpenAPI contract.
-- [docs/llms.txt](docs/llms.txt) — LLM-oriented API summary.
-- [docs/terms.html](docs/terms.html) / [docs/terms.md](docs/terms.md) —
-  term usage index for the API vocabulary.
-- [docs/audit.md](docs/audit.md) — generated documentation coverage report.
-- [docs/resources.md](docs/resources.md) — hand-written resource overview.
-
-Regenerate it with:
-
-```bash
-composer doc
-```
-
-The HAL JSON API is served by `composer serve:api` on
-`http://127.0.0.1:8080`. Page resources are served by `composer serve` on
-`http://127.0.0.1:8081/`. Public pages include `/`, `/articlelist`, and
-`/article?id=1`; the local admin sign-in starts at `/admin/login` and lands
-on `/admin/index`.
-
-Public Page article lists always restrict results to published articles. The
-App-layer `app://self/articles` resource keeps `status` as an explicit API
-filter and returns all lifecycle states when the filter is omitted.
-
-## Runtime Contexts
-
-| Context                    | Purpose                               | DB required |
-|----------------------------|---------------------------------------|-------------|
-| `hal-api-app`              | Production HAL JSON HTTP              | yes         |
-| `html-hal-app`             | Production Qiq/Page HTML HTTP         | yes         |
-| `cli-hal-api-app`          | `composer app` / `bin/app.php`        | yes         |
-| `cli-html-hal-app`         | `composer page` / `bin/page.php`      | yes         |
-| `fake-hal-api-app`         | Dev runtime against FakeSqlQuery      | no          |
-| `test-hal-api-app`         | PHPUnit App resource tests            | no          |
-| `html-test-hal-api-app`    | PHPUnit Page/Qiq tests                | no          |
-
-`fake-` prepends [src/Module/FakeModule.php](src/Module/FakeModule.php);
-`test-` prepends [src/Module/TestModule.php](src/Module/TestModule.php).
-
-## Development
-
-Useful composer scripts:
-
-```bash
-composer test       # PHPUnit suite (integration auto-skips without MySQL)
-composer tests      # cs + static analysis + PHPMD + PHPUnit
-composer fake       # regenerate var/fake/*.json
-composer schema     # regenerate var/json_schema/*.json from fake
-composer semantic   # fake then schema (the full semantic-ex pass)
-composer doc        # regenerate ApiDoc, OpenAPI, llms.txt, terms, audit, ALPS HTML/SVG (uses npm ASD)
-composer cli        # regenerate bin/cli/* from #[Cli] attributes
-composer serve      # Qiq/Page HTML server on :8081
-composer serve:api  # HAL JSON API server on :8080
-```
-
-CLI commands generated from `#[Cli]` attributes:
-
-```bash
-composer cli
-bin/cli/article-show -i 1
-bin/cli/article-list -s published -n 5
-```
-
-Tests run Resource, Entity, Hypermedia, Smoke, and Integration suites. The
-Integration suite (`tests/Integration/`) skips automatically unless MySQL is
-reachable; bring it up with `docker compose up -d` or Malt to include it.
-
-## Project Journal
-
-Reflection and decision logs live in [docs/journal/](docs/journal/):
-build log, framework critique, skill proposals, and the back-and-forth that
-shaped the design choices. They are not part of the API surface, but they
-are useful when reading this repository as a reference implementation.
+- [docs/source-index.md](docs/source-index.md) — 各KataのSource / Tests / Key points 詳細
+- [docs/setup.md](docs/setup.md) — DB・サーバー起動・管理者ログイン
+- [docs/architecture.md](docs/architecture.md) — BDRレイアウトと設計根拠
+- [docs/conventions.md](docs/conventions.md) — 命名・Resourceパターン・Read/Write SQL契約
+- [docs/scope.md](docs/scope.md) — 実装範囲と意図的な除外事項
 
 ## Links
 
 - [BEAR.Sunday manual](https://bearsunday.github.io/manuals/1.0/en/index.html)
 - [Ray.MediaQuery](https://github.com/ray-di/Ray.MediaQuery)
-- [BEAR.ApiDoc](https://github.com/bearsunday/BEAR.ApiDoc)
-- [BEAR.Cli](https://github.com/bearsunday/BEAR.Cli)
-- [Malt](https://koriym.github.io/homebrew-malt/)
-- [BEAR.Skills](https://github.com/bearsunday/BEAR.Skills)
 - [ALPS](https://alps.io/)
