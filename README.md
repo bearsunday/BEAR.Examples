@@ -101,7 +101,7 @@ Use the fake context first. It needs no database.
 ```bash
 composer install
 composer fake
-php -r 'require "autoload.php"; $r = MyVendor\Cms\Injector::getInstance("fake-hal-api-app")->getInstance(BEAR\Resource\ResourceInterface::class); echo json_encode($r->get("app://self/article", ["id" => 1])->body, JSON_PRETTY_PRINT);'
+php -r 'require "autoload.php"; $r = BEAR\Examples\Injector::getInstance("fake-hal-api-app")->getInstance(BEAR\Resource\ResourceInterface::class); echo json_encode($r->get("app://self/article", ["id" => 1])->body, JSON_PRETTY_PRINT);'
 ```
 
 Run the main test suite:

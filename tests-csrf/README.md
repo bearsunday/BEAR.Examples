@@ -1,7 +1,7 @@
 # tests-csrf — library-pure tests
 
 Lives alongside `src-csrf/`. Tests that depend only on the
-`Ray\Csrf\` library surface — no MyVendor\Cms dependency — live
+`Ray\Csrf\` library surface — no BEAR\Examples dependency — live
 here so they migrate with the source when `ray/csrf-module` is
 published.
 

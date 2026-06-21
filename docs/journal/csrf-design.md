@@ -62,7 +62,7 @@ on (`AllowedOrigin`, `CsrfTokenField`). `AppModule` installs the
 module after the auth bindings, passing the operator-controlled
 `CMS_ALLOWED_ORIGIN` env value through the constructor.
 `FakeModule` rebinds the interfaces to in-memory fakes
-(`MyVendor\Cms\Fake\Fake*`) so tests / CLI / fake-app don't have to
+(`BEAR\Examples\Fake\Fake*`) so tests / CLI / fake-app don't have to
 script HTTP headers.
 
 `RequestOriginInterface` and `AllowedOrigin` are deliberately
@@ -190,7 +190,7 @@ binding before CI does.
 
 `src-csrf/` (namespace `Ray\Csrf`) and its companion `tests-csrf/`
 hold the CSRF stack as a self-contained upstream candidate. Nothing
-in `src-csrf/` references `MyVendor\Cms` — the library depends only
+in `src-csrf/` references `BEAR\Examples` — the library depends only
 on `ray/aop`, `ray/di`, and `bear/resource`.
 
 When `ray/csrf-module` is published (target: koriym/ray.csrf or

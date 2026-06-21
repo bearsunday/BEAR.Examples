@@ -1,4 +1,4 @@
-# MyVendor\Cms
+# BEAR\Examples
 
 API Document
 

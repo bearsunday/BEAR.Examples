@@ -28,7 +28,7 @@ Run production compilation with:
 composer compile
 ```
 
-The compile step targets `MyVendor\Cms` in the `prod-app` context. The generated
+The compile step targets `BEAR\Examples` in the `prod-app` context. The generated
 artifacts are runtime build products, not source files to edit by hand:
 
 - `autoload.php` — compiled autoloader entry.

@@ -3,7 +3,7 @@
 This companion example demonstrates BEAR.Sunday application import without
 mixing an artificial feature into the CMS domain.
 
-- Imported app namespace: `MyVendor\Cms\Example\ImportedCatalog`
+- Imported app namespace: `BEAR\Examples\Example\ImportedCatalog`
 - Imported host: `catalog`
 - Imported resource: `app://catalog/status`
 - Import wiring: `BEAR\Package\Module\ImportAppModule`

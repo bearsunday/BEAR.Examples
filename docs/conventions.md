@@ -28,9 +28,9 @@ then the code/docs follow.
 
 | What | Convention |
 |------|-----------|
-| Namespace root | `MyVendor\Cms` |
+| Namespace root | `BEAR\Examples` |
 | Layer directories | `src/Entity/`, `src/Query/`, `src/Resource/App/`, `src/Module/`, `src/Service/` |
-| Fake placement | `tests/Fake/` — `composer.json` maps `MyVendor\Cms\` to both `src/` and `tests/` (autoload + autoload-dev), so `fake-hal-api-app` (dev) and `test-hal-api-app` (test) both resolve `MyVendor\Cms\Fake\*`. Production (`composer install --no-dev`) does not load `tests/`, keeping the prod artefact free of fake bindings |
+| Fake placement | `tests/Fake/` — `composer.json` maps `BEAR\Examples\` to both `src/` and `tests/` (autoload + autoload-dev), so `fake-hal-api-app` (dev) and `test-hal-api-app` (test) both resolve `BEAR\Examples\Fake\*`. Production (`composer install --no-dev`) does not load `tests/`, keeping the prod artefact free of fake bindings |
 | Module composition | `FakeModule` provides the binding; `TestModule` *installs* `FakeModule`. Two-stage so prod/cli/fake/test contexts can compose differently |
 | Resource placement | `src/Resource/App/<Class>.php` — every URI is a class. No `App/Index.php` unless a "/" entry-point is meaningful |
 | Read/Write split | Always two interfaces per entity: `<Entity>QueryInterface` (Read) and `<Entity>CommandInterface` (Write). Both live in `src/Query/` — the interface name suffix carries the Read/Write distinction so `MediaQuerySqlModule` can scan a single directory. Never mix Read and Write methods on the same interface |
@@ -213,17 +213,17 @@ template; the framework's `catch (Throwable)` path routes to
 ```php
 <?php
 /**
- * @var \MyVendor\Cms\Entity\Article|null $article
+ * @var \BEAR\Examples\Entity\Article|null $article
  */
 if (! isset($article) || $article === null) {
-    throw new \MyVendor\Cms\Exception\ArticleNotFoundException();
+    throw new \BEAR\Examples\Exception\ArticleNotFoundException();
 }
 ?>
 ```
 
 The exception is per-entity (`ArticleNotFoundException`,
 `AuthorNotFoundException`, …), not shared, mirroring the existing
-`MyVendor\Cms\Exception\*NotFoundException` family. Only the *primary*
+`BEAR\Examples\Exception\*NotFoundException` family. Only the *primary*
 entity needs the guard; list-shaped vars are always lists (possibly
 empty), not null.
 
@@ -365,7 +365,7 @@ seeking pattern coverage:
   - the fields cohere as a named struct that's meaningful beyond
     the resource (e.g. an OAuth callback pair)
 
-  Define `MyVendor\Cms\Input\<Action>Input` as `final readonly class`
+  Define `BEAR\Examples\Input\<Action>Input` as `final readonly class`
   with `#[Input]` on each constructor parameter, type the resource
   argument as `#[Input] <Dto>`, and BEAR.Resource's `InputParam` (via
   `Ray\InputQuery\InputQueryInterface`) materialises the object from
@@ -428,11 +428,11 @@ middle.
 
 ### Exceptions
 - No generic `LogicException` / `RuntimeException`. Define
-  `MyVendor\Cms\Exception\<DomainName>Exception` for any thrown
+  `BEAR\Examples\Exception\<DomainName>Exception` for any thrown
   exception originating in `src/`.
 - Read errors (not found) return 404 via `$this->code` — do not throw.
 - Request-validation failure throws
-  `MyVendor\Cms\Exception\ValidationException` (not the framework's
+  `BEAR\Examples\Exception\ValidationException` (not the framework's
   `JsonSchemaRequestException`) carrying a `field => list<string>` map.
   `JsonSchemaRequestExceptionHandler` groups BEAR.Resource's structured
   request-schema errors; Page resources catch and surface it as a 422 form
@@ -725,14 +725,14 @@ method names are the steps, and PHPUnit's testdox output reads top
 to bottom as the user story:
 
 ```text
-Reader Browses By Tag (MyVendor\Cms\Hypermedia\ReaderBrowsesByTag)
+Reader Browses By Tag (BEAR\Examples\Hypermedia\ReaderBrowsesByTag)
  ✔ Opens tag list
  ✔ Picks a tag
  ✔ Views articles under that tag
  ✔ Opens an article
  ✔ Looks up the author
 
-Editor Manages Article (MyVendor\Cms\Hypermedia\EditorManagesArticle)
+Editor Manages Article (BEAR\Examples\Hypermedia\EditorManagesArticle)
  ✔ Creates an article
  ✔ Reads back the new article
  ✔ Revises the article

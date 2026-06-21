@@ -3,7 +3,7 @@
 ## Environment
 
 - This project requires PHP 8.5. On this machine, use `zsh -ic 'sphp85; <command>'` for Composer/PHP commands that need the Homebrew PHP 8.5 runtime, or prefix `PATH` with `/opt/homebrew/opt/php@8.5/bin`.
-- The namespace root is `MyVendor\Cms\`; Composer maps it to `src/` and maps the same namespace to `tests/` for dev/test fakes.
+- The namespace root is `BEAR\Examples\`; Composer maps it to `src/` and maps the same namespace to `tests/` for dev/test fakes.
 - The checkout may be detached. Create a feature branch from `1.x` before committing unless the user asks otherwise.
 
 ## Project Shape

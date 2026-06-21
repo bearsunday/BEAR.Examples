@@ -2,7 +2,7 @@
 
 ## Project shape
 
-Namespace `MyVendor\Cms\`. PSR-4 both under `src/` and `tests/`.
+Namespace `BEAR\Examples\`. PSR-4 both under `src/` and `tests/`.
 Primary surface is the HAL+JSON App API. `src/Resource/Page/*` +
 `templates/Page/*` provide Qiq HTML: public pages are read-only, and
 `src/Resource/Page/Admin/*` adds article create/update/delete forms
@@ -28,7 +28,7 @@ Switching contexts loads/removes modules by keyword prefix; see
 - Tests (no DB): `vendor/bin/phpunit`
 - Fake CLI demo:
   ```php
-  $r = MyVendor\Cms\Injector::getInstance('fake-hal-api-app')
+  $r = BEAR\Examples\Injector::getInstance('fake-hal-api-app')
       ->getInstance(BEAR\Resource\ResourceInterface::class);
   var_dump($r->get('app://self/article', ['id' => 1])->body);
   ```

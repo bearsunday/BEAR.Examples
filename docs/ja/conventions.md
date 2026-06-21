@@ -28,9 +28,9 @@
 
 | What | Convention |
 |------|-----------|
-| Namespace root | `MyVendor\Cms` |
+| Namespace root | `BEAR\Examples` |
 | Layer ディレクトリ | `src/Entity/`、`src/Query/`、`src/Resource/App/`、`src/Module/`、`src/Service/` |
-| Fake の配置 | `tests/Fake/` — `composer.json` は `MyVendor\Cms\` を `src/` と `tests/` の両方にマッピング (autoload + autoload-dev) しているので、`fake-hal-api-app` (dev) と `test-hal-api-app` (test) のどちらでも `MyVendor\Cms\Fake\*` を解決できます。Production (`composer install --no-dev`) では `tests/` をロードしないので、prod 成果物に fake binding が混入しません |
+| Fake の配置 | `tests/Fake/` — `composer.json` は `BEAR\Examples\` を `src/` と `tests/` の両方にマッピング (autoload + autoload-dev) しているので、`fake-hal-api-app` (dev) と `test-hal-api-app` (test) のどちらでも `BEAR\Examples\Fake\*` を解決できます。Production (`composer install --no-dev`) では `tests/` をロードしないので、prod 成果物に fake binding が混入しません |
 | Module 構成 | `FakeModule` が binding を提供し、`TestModule` が `FakeModule` を *install* します。prod / cli / fake / test の各 context が異なる構成を取れるよう二段階にしています |
 | Resource 配置 | `src/Resource/App/<Class>.php` — すべての URI が class です。"/" entry-point に意味がない限り `App/Index.php` は作りません |
 | Read/Write 分離 | entity ごとに必ず 2 つの interface を作ります: `<Entity>QueryInterface` (Read) と `<Entity>CommandInterface` (Write)。両方とも `src/Query/` に置き、interface 名の suffix で Read/Write の区別を担うことで、`MediaQuerySqlModule` が単一ディレクトリをスキャンできます。Read と Write を同じ interface に混在させてはいけません |
@@ -198,16 +198,16 @@ template は呼び出されるため、ガードなしで null entity のプロ�
 ```php
 <?php
 /**
- * @var \MyVendor\Cms\Entity\Article|null $article
+ * @var \BEAR\Examples\Entity\Article|null $article
  */
 if (! isset($article) || $article === null) {
-    throw new \MyVendor\Cms\Exception\ArticleNotFoundException();
+    throw new \BEAR\Examples\Exception\ArticleNotFoundException();
 }
 ?>
 ```
 
 例外は entity ごと (`ArticleNotFoundException`、`AuthorNotFoundException`
-など) で、既存の `MyVendor\Cms\Exception\*NotFoundException` 系列に揃えます。
+など) で、既存の `BEAR\Examples\Exception\*NotFoundException` 系列に揃えます。
 ガードが必要なのは *primary* entity のみ。list 形式の変数は常に list
 (空かもしれない) であり、null ではありません。
 
@@ -345,7 +345,7 @@ response schema は endpoint が実際に何を返すかで選び、テンプレ
   - フィールド群が、resource を超えて意味を持つ名前付き struct としてまとまる
     (例: OAuth callback ペア)
 
-  `MyVendor\Cms\Input\<Action>Input` を `final readonly class` として定義し、
+  `BEAR\Examples\Input\<Action>Input` を `final readonly class` として定義し、
   各 constructor 引数に `#[Input]` を付け、resource 引数の型を
   `#[Input] <Dto>` にすると、BEAR.Resource の `InputParam`
   (`Ray\InputQuery\InputQueryInterface` 経由) が flat な request 配列から
@@ -384,9 +384,9 @@ Ray.MediaQuery の DTO サポートは、Resource-to-Command 境界が本当に 
 
 ### 例外
 - 汎用の `LogicException` / `RuntimeException` は使いません。`src/` 由来で
-  throw する例外は `MyVendor\Cms\Exception\<DomainName>Exception` を定義します。
+  throw する例外は `BEAR\Examples\Exception\<DomainName>Exception` を定義します。
 - Read のエラー (見つからない) は throw せず、`$this->code` 経由で 404 を返します。
-- リクエスト検証失敗は `MyVendor\Cms\Exception\ValidationException`
+- リクエスト検証失敗は `BEAR\Examples\Exception\ValidationException`
   (フレームワークの `JsonSchemaRequestException` ではない) を throw し、
   `field => list<string>` の map を保持します。
   `JsonSchemaRequestExceptionHandler` は BEAR.Resource の構造化された
