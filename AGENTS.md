@@ -3,15 +3,17 @@
 ## Environment
 
 - This project requires PHP 8.5. On this machine, use `zsh -ic 'sphp85; <command>'` for Composer/PHP commands that need the Homebrew PHP 8.5 runtime, or prefix `PATH` with `/opt/homebrew/opt/php@8.5/bin`.
-- The namespace root is `BEAR\Examples\`; Composer maps it to `src/` and maps the same namespace to `tests/` for dev/test fakes.
+- The namespace root is `BEAR\Kata\`; Composer maps it to `src/` and maps the same namespace to `tests/` for dev/test fakes.
 - The checkout may be detached. Create a feature branch from `1.x` before committing unless the user asks otherwise.
 
 ## Project Shape
 
 - This is a BEAR.Sunday reference CMS: HAL+JSON App resource API plus read-only Qiq/Page HTML. Admin write UI and JavaScript frontend are not built yet.
 - Canonical implementation rules live in `docs/conventions.md`; read it before changing resource, query, SQL, schema, or fake-data behavior.
+- To implement or transplant a pattern, start at `docs/source-index.md` — the Kata (型) source index that maps an intent to canonical Source, Tests, a before-checklist, and a mastery checklist. The `bear-kata` skill (`.claude/skills/bear-kata/SKILL.md`) routes intent → Kata.
 - Useful orientation docs:
   - `README.md` for setup and the reading order.
+  - `docs/source-index.md` for the intent→source Kata index.
   - `docs/architecture.md` for the BDR layout and context composition.
   - `docs/resources.md` for URI and response shapes.
   - `var/alps/profile.json` and `docs/alps.md` for semantic source-of-truth changes.
