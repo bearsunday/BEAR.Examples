@@ -79,13 +79,29 @@ BEAR.Sunday アプリケーションの実装パターン集。「これを実�
 | [`json-schema-generated`](docs/source-index.md#json-schema-generated) | fake observationからJSON Schemaを生成する | support |
 | [`apidoc-llms-generated`](docs/source-index.md#apidoc-llms-generated) | API docsとllms.txtを生成する | support |
 
-## クイックスタート
+## スキルを獲得して使う
+
+このリポジトリの価値は CMS を動かすことではなく、`bear-kata` スキルを獲得して **自分の BEAR.Sunday 実装に型(Kata)を適用する** ことにあります。
+
+### 1. スキルを獲得する
 
 ```bash
-composer install && composer fake
-php -r 'require "autoload.php"; $r = BEAR\Kata\Injector::getInstance("fake-hal-api-app")->getInstance(BEAR\Resource\ResourceInterface::class); echo json_encode($r->get("app://self/article", ["id" => 1])->body, JSON_PRETTY_PRINT);'
-composer test
+# 個人用（どのプロジェクトでも有効）
+mkdir -p ~/.claude/skills && cp -r .claude/skills/bear-kata ~/.claude/skills/
+
+# または特定プロジェクト用
+mkdir -p /path/to/your-project/.claude/skills && cp -r .claude/skills/bear-kata /path/to/your-project/.claude/skills/
 ```
+
+このリポジトリ内で Claude Code を開く場合は、`.claude/skills/bear-kata/` が自動で有効になるのでコピー不要です。
+
+### 2. スキルを発動する
+
+Claude Code で、実装したいことを伝えるだけです。
+
+> 記事一覧のページングを **kata に従って実装してください**
+
+「kata に従って」「BEAR.Sunday で〜を実装したい」と言うと `bear-kata` スキルが発動し、[ソース索引](docs/source-index.md) から該当 Kata（着手前チェック → Source / Tests → マスター確認）へ誘導します。`/bear-kata` で明示的に呼ぶこともできます。
 
 ## ドキュメント
 

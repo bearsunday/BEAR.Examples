@@ -1,6 +1,6 @@
 ---
 name: bear-kata
-description: BEAR.Sunday実装の「型(Kata)」をソース索引から引く。「BEAR.Sundayで〜を実装したい」時に、どの正規形(canonical)ソースを真似し、どのテストで振る舞いを確認し、実装後にどうマスターを検証するかを案内する。Use when user says "BEAR.Sundayで〜を実装したい", "Kata", "ソース索引", "source index", "どのソースを見れば", "pager/HAL embed/streaming/PRG/Cacheable/FakeSqlQuery を実装", or asks which BEAR.Sunday reference implementation to copy for a feature.
+description: BEAR.Sunday実装の「型(Kata)」をソース索引から引く。「BEAR.Sundayで〜を実装したい」時に、どの正規形(canonical)ソースを真似し、どのテストで振る舞いを確認し、実装後にどうマスターを検証するかを案内する。Use when user says "〜をkataに従って実装してください", "kataに従って実装", "kata に従って", "BEAR.Sundayで〜を実装したい", "Kata", "ソース索引", "source index", "どのソースを見れば", "pager/HAL embed/streaming/PRG/Cacheable/FakeSqlQuery を実装", or asks which BEAR.Sunday reference implementation to copy/follow for a feature.
 user-invocable: true
 ---
 
@@ -44,4 +44,5 @@ user-invocable: true
 
 - `comparison-only` の Kata（`db-array-row-comparison`, `db-sqlquery-orchestration`, `db-raw-pdo-comparison`）は**理解用**。正規形として移植しない。
 - 索引のパスはこのリポジトリ（BEAR.Kata）内の実ファイル。別プロジェクトへ移植する際は、命名規約（`docs/conventions.md`）と型を保ったまま自分の Entity 名へ読み替える。
+- **別プロジェクトでこのスキルを使う場合**、ローカルに `docs/source-index.md` が無いことがある。その時は GitHub のコピーを参照する: `https://github.com/bearsunday/BEAR.Examples/blob/1.x/docs/source-index.md`（raw: `https://raw.githubusercontent.com/bearsunday/BEAR.Examples/1.x/docs/source-index.md`）。`Source` / `Tests` のパスも同じリポジトリの該当ファイルとして読む。
 - 索引に該当 Kata が無い時は、近い Status=`canonical` の Kata の型（Query/Command 分離、SQL外部化、ResourceObject body/status、HAL rel 層分離）を当てはめ、`docs/conventions.md` を参照する。
