@@ -13,6 +13,8 @@
         "php": "^8.5.0",
         "auth0/auth0-php": "^8.19",
         "bear/async": "^0.3",
+        "bear/defer": "^0.1.0",
+        "bear/event-sourcing": "1.x-dev",
         "bear/package": "^1.14",
         "bear/qiq-module": "^2.0",
         "bear/query-repository": "^1.16",

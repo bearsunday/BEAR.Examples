@@ -93,6 +93,12 @@ BEAR.Kata の各エントリは「Kata（型）」です。武道の型と同じ
 | [`cacheable-response`](#cacheable-response) | showcase | `#[CacheableResponse]`でレスポンス全体をキャッシュする |
 | [`admin-auth-boundary`](#admin-auth-boundary) | showcase | AdminGuardによるauthor-scoped認可境界 |
 | [`import-app`](#import-app) | showcase | ImportAppModuleで他アプリのResourceを呼ぶ |
+| [`event-extraction`](#event-extraction) | showcase | Semantic Logger観察ログからEventを抽出する |
+| [`event-filter-replay`](#event-filter-replay) | showcase | Eventsをフィルタしてreplayする |
+| [`event-store-persistence`](#event-store-persistence) | support | EventStoreInterfaceでEventを永続化する |
+| [`resource-observation-bridge`](#resource-observation-bridge) | showcase | BEAR.Resource実行から観察ログを生成する |
+| [`defer-resource-request`](#defer-resource-request) | showcase | `#[Defer]` + `#[Link]`で応答後にfollow-upを実行する |
+| [`defer-conditional`](#defer-conditional) | showcase | `DeferInterface::add()`で条件付きdeferを手動制御する |
 
 ## Data access / BDR
 
@@ -1043,6 +1049,158 @@ BEAR.Kata の各エントリは「Kata（型）」です。武道の型と同じ
 - **Do not:** マイクロサービス化せずとも、composer経由でアプリ間連携が可能。
 - **マスター確認（After）:**
   - [ ] 他アプリのresourceが `app://<host>/...` で呼べることを `ImportAppExampleTest.php` 相当で green。
+
+
+
+## Event Sourcing
+
+### `event-extraction`
+
+**Semantic Logger観察ログからimmutable Eventを抽出する**
+
+- **ID:** `event-extraction`
+- **Aliases:** event sourcing, SemanticLogExtractor, Event, RecordedMethods, semantic logger, event extraction, observation
+- **Status:** `showcase`
+- **Use when:** アプリケーションの状態変化をイベントとして記録し、replay可能なsource of truthにしたい。
+- **着手前チェック（Before）:**
+  - [ ] Semantic Loggerのopen/close観察ツリーからEventを抽出し、ドメインにevent-dispatchコードを追加しないと理解したか。
+  - [ ] `RecordedMethods` で記録対象method（デフォルト: POST/PUT/PATCH/DELETE、GETは除外）を制御すると決めたか。
+  - [ ] Eventは `uri`, `method`, `params`, `timestamp`, `result` の事実のみを持つと理解したか。
+- **Source:**
+  - `vendor/bear/event-sourcing/src/SemanticLogExtractor.php`
+  - `vendor/bear/event-sourcing/src/Event.php`
+  - `vendor/bear/event-sourcing/src/RecordedMethods.php`
+  - `tests/Fake/FakeResourceRequestContext.php`
+  - `tests/Fake/FakeResourceResponseContext.php`
+- **Tests:**
+  - `tests/Smoke/EventExtractionTest.php`
+- **Key points:** Semantic Loggerが観察源。Eventはresource操作（method on uri）の不変事実。`RecordedMethods` で記録範囲を制御。code >= 400 はスキップ。
+- **Do not:** ドメインコードにevent-dispatchを追加しない。Eventにドメインロジックを入れない。
+- **マスター確認（After）:**
+  - [ ] write操作（POST/PUT/PATCH/DELETE）のみがデフォルトで抽出される。
+  - [ ] `RecordedMethods::WITH_READS` でGETも含まれる。
+  - [ ] code >= 400 の操作はスキップされることを `EventExtractionTest.php` 相当で green。
+
+### `event-filter-replay`
+
+**Eventsコレクションをフィルタしてreplayする**
+
+- **ID:** `event-filter-replay`
+- **Aliases:** event replay, filter events, CallbackFilterIterator, Events, replay, projection
+- **Status:** `showcase`
+- **Use when:** 抽出したEventをURI prefix / params / timestampでフィルタし、特定エンティティの状態変化をreplayしたい。
+- **着手前チェック（Before）:**
+  - [ ] `Events` はcountable + iterableで、PHP標準の `CallbackFilterIterator` でフィルタすると理解したか。
+  - [ ] query methodをEventsに追加せず、filterをstackすると理解したか。
+- **Source:**
+  - `vendor/bear/event-sourcing/src/Events.php`
+  - `vendor/bear/event-sourcing/src/EventsInterface.php`
+- **Tests:**
+  - `tests/Smoke/EventReplayTest.php`
+- **Key points:** `CallbackFilterIterator` でURI prefix / params / timestamp / method でフィルタ。query methodを生やさずfilterをstack。
+- **Do not:** Eventsコレクションに専用query methodを追加しない（PHP標準iteratorで十分）。
+- **マスター確認（After）:**
+  - [ ] 特定id / URI prefix / method でフィルタされたEventが正しく抽出されることを `EventReplayTest.php` 相当で green。
+
+### `event-store-persistence`
+
+**EventStoreInterfaceでEventを永続化する**
+
+- **ID:** `event-store-persistence`
+- **Aliases:** EventStore, InMemoryEventStore, MediaQueryEventStore, event persistence, event storage
+- **Status:** `support`
+- **Use when:** 抽出したEventを永続化し、後から全Eventを再取得したい。
+- **着手前チェック（Before）:**
+  - [ ] `EventStoreInterface` は `append`, `appendAll`, `all` の小さい永続化ポートで、runtime hookではないと理解したか。
+  - [ ] test用は `InMemoryEventStore`、SQL永続化は `MediaQueryEventStore`（Ray.MediaQuery経由）を使うと決めたか。
+  - [ ] ES Moduleはアプリ所有のMediaQuery/AuraSqlを隠さないと理解したか。
+- **Source:**
+  - `vendor/bear/event-sourcing/src/EventStoreInterface.php`
+  - `vendor/bear/event-sourcing/src/Store/InMemoryEventStore.php`
+  - `vendor/bear/event-sourcing/src/Store/MediaQueryEventStore.php`
+- **Tests:**
+  - `tests/Smoke/EventStoreTest.php`
+- **Key points:** `EventStoreInterface` は小さい永続化ポート。InMemory（test）とMediaQuery（SQL）の2実装。ES ModuleはアプリのDB設定を隠さない。
+- **Do not:** runtime中の自動永続化をしない（明示的に `appendAll()` を呼ぶ）。
+- **マスター確認（After）:**
+  - [ ] InMemoryEventStore に appendAll → all で同じEventが戻ることを `EventStoreTest.php` 相当で green。
+
+### `resource-observation-bridge`
+
+**BEAR.Resource実行からSemantic Logger観察ログを生成する**
+
+- **ID:** `resource-observation-bridge`
+- **Aliases:** ResourceObservationModule, InvokerInterface, BodyStoreInterface, FileBodyStore, DevLogModule, observation bridge
+- **Status:** `showcase`
+- **Use when:** BEAR.Resourceの実行ツリーをSemantic Logger観察ログとして記録し、event extractionの入力にしたい。
+- **着手前チェック（Before）:**
+  - [ ] `ResourceObservationModule` で `InvokerInterface` をdecorateし、`LoggerInterface` はdecorateしないと理解したか。
+  - [ ] `BodyStoreInterface` でrendered bodyを外部化し、`body_ref` で参照すると決めたか。
+  - [ ] 開発時は `DevLogModule` でbodyファイルを自動クリア＋全method記録すると理解したか。
+- **Source:**
+  - `vendor/bear/event-sourcing/src/Resource/ResourceObservationModule.php`
+  - `vendor/bear/event-sourcing/src/Resource/BodyStoreInterface.php`
+  - `vendor/bear/event-sourcing/src/Resource/NullBodyStore.php`
+  - `tests/Fake/Observation/Resource/App/Hello.php`
+- **Tests:**
+  - `tests/Smoke/ResourceObservationTest.php`
+- **Key points:** `InvokerInterface` decorate で観察ログ生成。`BodyStoreInterface` でbody外部化。`DevLogModule` は開発用（全method記録＋自動クリア）。
+- **Do not:** `LoggerInterface` をdecorateしない（`InvokerInterface` が正しいdecorate対象）。
+- **マスター確認（After）:**
+  - [ ] Resource実行後にSemantic Loggerログが生成され、Event抽出可能になることを `ResourceObservationTest.php` 相当で green。
+
+## Deferred execution
+
+### `defer-resource-request`
+
+**`#[Defer]` + `#[Link]`で応答後に実行するfollow-up Resourceを宣言する**
+
+- **ID:** `defer-resource-request`
+- **Aliases:** defer, deferred, #[Defer], 202 Accepted, post-response execution, DeferModule, DeferInterceptor, SyncDefer
+- **Status:** `showcase`
+- **Use when:** Resourceが202 Acceptedを即時返却し、重いfollow-up処理をレスポンス転送後に実行したい。
+- **着手前チェック（Before）:**
+  - [ ] `#[Defer(['rel1', 'rel2'])]` で `#[Link]` relを指定し、hardcoded URIを使わないと決めたか。
+  - [ ] follow-up Resourceは通常のResourceであり、deferを意識しないと理解したか。
+  - [ ] 実行戦略（sync/queue/Swoole）は `DeferInterface` bindingで切り替え、Resource codeは変えないと理解したか。
+- **Source:**
+  - `vendor/bear/defer/src/Attribute/Defer.php`
+  - `vendor/bear/defer/src/DeferInterceptor.php`
+  - `vendor/bear/defer/src/Module/DeferModule.php`
+  - `vendor/bear/defer/src/SyncDefer.php`
+  - `tests/Fake/Defer/Resource/App/Article.php`
+  - `tests/Fake/Defer/Resource/App/Publish.php`
+  - `tests/Fake/Defer/Resource/App/Note.php`
+- **Tests:**
+  - `tests/Resource/App/DeferTest.php`
+- **Key points:** `#[Defer]` は `#[Link]` relを参照し、bodyからURI templateを展開。`DeferInterceptor` はAfter interceptor（proceed後にenqueue）。実行戦略はbindingで切り替え。
+- **Do not:** Resource内でdefer callを手書きしない（`#[Defer]` で宣言的）。follow-up URIをhardcodeしない（`#[Link]` 経由）。
+- **マスター確認（After）:**
+  - [ ] 202 が即時返却され、follow-upが転送後に実行されることを `DeferTest.php` 相当で green。
+
+### `defer-conditional`
+
+**`DeferInterface::add()`で条件付きdeferを手動制御する**
+
+- **ID:** `defer-conditional`
+- **Aliases:** conditional defer, DeferInterface, manual defer, add(), flush(), DeferTransfer, ConnectionCloserInterface
+- **Status:** `showcase`
+- **Use when:** follow-up処理が条件付きの場合、`#[Defer]` を迂回して `DeferInterface::add()` で手動制御したい。
+- **着手前チェック（Before）:**
+  - [ ] `DeferInterface` と `ResourceInterface` をinjectし、`$defer->add($request)` で手動enqueueすると決めたか。
+  - [ ] `DeferTransfer` がbase transfer後にconnectionをreleaseし、その後に `flush()` が走ることを理解したか。
+- **Source:**
+  - `vendor/bear/defer/src/DeferInterface.php`
+  - `vendor/bear/defer/src/DeferTransfer.php`
+  - `vendor/bear/defer/src/ConnectionCloserInterface.php`
+  - `vendor/bear/defer/src/SapiConnectionCloser.php`
+  - `tests/Fake/Defer/Resource/App/ConditionalArticle.php`
+- **Tests:**
+  - `tests/Resource/App/DeferTest.php`
+- **Key points:** `DeferInterface::add(callable $request)` で手動enqueue。`DeferTransfer` は transfer → connection release → flush の順。`ConnectionCloserInterface` でSAPI別の接続解放。
+- **Do not:** `DeferInterface` のsingleton queueをflushせずに放置しない（`flush()` はrequest boundaryで必須）。
+- **マスター確認（After）:**
+  - [ ] 条件付きでfollow-upがenqueueされ、転送後に実行されることを `DeferTest.php` 相当で green。
 
 ## Tests / fake
 
