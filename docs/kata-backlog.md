@@ -392,7 +392,7 @@ and tests will be created in BEAR.Kata to demonstrate each pattern.
 **BEAR.Resource実行からSemantic Logger観察ログを生成する**
 
 - **ID:** `resource-observation-bridge`
-- **Aliases:** ResourceObservationModule, InvokerInterface, BodyStoreInterface, FileBodyStore, DevLogModule, observation bridge, stree
+- **Aliases:** ResourceObservationModule, InvokerInterface, BodyStoreInterface, FileBodyStore, DevLogModule, observation bridge
 - **Status:** `showcase`
 - **Use when:** BEAR.Resourceの実行ツリーをSemantic Logger観察ログとして記録し、event extractionの入力にしたい。
 - **着手前チェック（Before）:**
@@ -402,7 +402,7 @@ and tests will be created in BEAR.Kata to demonstrate each pattern.
 - **Source:**
   - `vendor/bear/event-sourcing/src/Resource/ResourceObservationModule.php`
   - `vendor/bear/event-sourcing/src/Resource/BodyStoreInterface.php`
-  - `vendor/bear/event-sourcing/src/Resource/FileBodyStore.php`
+  - `vendor/bear/event-sourcing/src/Resource/NullBodyStore.php`
   - `vendor/bear/event-sourcing/src/Resource/DevLogModule.php`
 - **Tests:**
   - `tests/Smoke/ResourceObservationTest.php`（新規）
@@ -463,7 +463,7 @@ will be created in BEAR.Kata to demonstrate each pattern.
   - `vendor/bear/defer/src/ConnectionCloserInterface.php`
   - `vendor/bear/defer/src/SapiConnectionCloser.php`
 - **Tests:**
-  - `tests/Resource/App/DeferConditionalTest.php`（新規）
+  - `tests/Resource/App/DeferTest.php`（新規）
 - **Key points:** `DeferInterface::add(callable $request)` で手動enqueue。`DeferTransfer` は transfer → connection release → flush の順。`ConnectionCloserInterface` でSAPI別の接続解放。
 - **Do not:** `DeferInterface` のsingleton queueをflushせずに放置しない（`flush()` はrequest boundaryで必須）。
 - **マスター確認（After）:**

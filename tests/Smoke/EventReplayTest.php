@@ -21,53 +21,6 @@ use function iterator_to_array;
  */
 final class EventReplayTest extends TestCase
 {
-    /**
-     * @return array{0: string, 1: string}
-     */
-    private function buildLog(): array
-    {
-        $logger = new SemanticLogger();
-
-        $u1 = $logger->open(new FakeResourceRequestContext(
-            uri: 'app://self/users',
-            method: 'POST',
-            query: ['id' => 'koriym', 'name' => 'Akihito'],
-            timestamp: '2026-06-10T12:00:00.000000+00:00',
-        ));
-        $logger->close(new FakeResourceResponseContext(201, ['id' => 'koriym']), $u1);
-
-        $o1 = $logger->open(new FakeResourceRequestContext(
-            uri: 'app://self/orders',
-            method: 'POST',
-            query: ['order_id' => 'O-1000', 'user_id' => 'koriym'],
-            timestamp: '2026-06-10T12:30:00.000000+00:00',
-        ));
-        $logger->close(new FakeResourceResponseContext(201, ['order_id' => 'O-1000']), $o1);
-
-        $o2 = $logger->open(new FakeResourceRequestContext(
-            uri: 'app://self/orders',
-            method: 'POST',
-            query: ['order_id' => 'O-2000', 'user_id' => 'other'],
-            timestamp: '2026-06-10T13:00:00.000000+00:00',
-        ));
-        $logger->close(new FakeResourceResponseContext(201, ['order_id' => 'O-2000']), $o2);
-
-        $d1 = $logger->open(new FakeResourceRequestContext(
-            uri: 'app://self/orders/O-1000',
-            method: 'DELETE',
-            query: ['order_id' => 'O-1000'],
-            timestamp: '2026-06-10T14:00:00.000000+00:00',
-        ));
-        $logger->close(new FakeResourceResponseContext(204, null), $d1);
-
-        $events = (new SemanticLogExtractor())->extract($logger->flush());
-
-        return [
-            $logger->flush() instanceof \Koriym\SemanticLogger\LogJson ? 'log' : 'no-log',
-            $events->count() > 0 ? 'events' : 'no-events',
-        ];
-    }
-
     public function testFilterByUserId(): void
     {
         $logger = new SemanticLogger();

@@ -1067,9 +1067,9 @@ BEAR.Kata の各エントリは「Kata（型）」です。武道の型と同じ
   - [ ] `RecordedMethods` で記録対象method（デフォルト: POST/PUT/PATCH/DELETE、GETは除外）を制御すると決めたか。
   - [ ] Eventは `uri`, `method`, `params`, `timestamp`, `result` の事実のみを持つと理解したか。
 - **Source:**
-  - `vendor/bear/event-sourcing/src/SemanticLogExtractor.php`
-  - `vendor/bear/event-sourcing/src/Event.php`
-  - `vendor/bear/event-sourcing/src/RecordedMethods.php`
+  - `vendor/bear/event-sourcing/src/SemanticLogExtractor.php` *(external package)*
+  - `vendor/bear/event-sourcing/src/Event.php` *(external package)*
+  - `vendor/bear/event-sourcing/src/RecordedMethods.php` *(external package)*
   - `tests/Fake/FakeResourceRequestContext.php`
   - `tests/Fake/FakeResourceResponseContext.php`
 - **Tests:**
@@ -1093,8 +1093,8 @@ BEAR.Kata の各エントリは「Kata（型）」です。武道の型と同じ
   - [ ] `Events` はcountable + iterableで、PHP標準の `CallbackFilterIterator` でフィルタすると理解したか。
   - [ ] query methodをEventsに追加せず、filterをstackすると理解したか。
 - **Source:**
-  - `vendor/bear/event-sourcing/src/Events.php`
-  - `vendor/bear/event-sourcing/src/EventsInterface.php`
+  - `vendor/bear/event-sourcing/src/Events.php` *(external package)*
+  - `vendor/bear/event-sourcing/src/EventsInterface.php` *(external package)*
 - **Tests:**
   - `tests/Smoke/EventReplayTest.php`
 - **Key points:** `CallbackFilterIterator` でURI prefix / params / timestamp / method でフィルタ。query methodを生やさずfilterをstack。
@@ -1115,9 +1115,9 @@ BEAR.Kata の各エントリは「Kata（型）」です。武道の型と同じ
   - [ ] test用は `InMemoryEventStore`、SQL永続化は `MediaQueryEventStore`（Ray.MediaQuery経由）を使うと決めたか。
   - [ ] ES Moduleはアプリ所有のMediaQuery/AuraSqlを隠さないと理解したか。
 - **Source:**
-  - `vendor/bear/event-sourcing/src/EventStoreInterface.php`
-  - `vendor/bear/event-sourcing/src/Store/InMemoryEventStore.php`
-  - `vendor/bear/event-sourcing/src/Store/MediaQueryEventStore.php`
+  - `vendor/bear/event-sourcing/src/EventStoreInterface.php` *(external package)*
+  - `vendor/bear/event-sourcing/src/Store/InMemoryEventStore.php` *(external package)*
+  - `vendor/bear/event-sourcing/src/Store/MediaQueryEventStore.php` *(external package)*
 - **Tests:**
   - `tests/Smoke/EventStoreTest.php`
 - **Key points:** `EventStoreInterface` は小さい永続化ポート。InMemory（test）とMediaQuery（SQL）の2実装。ES ModuleはアプリのDB設定を隠さない。
@@ -1138,9 +1138,9 @@ BEAR.Kata の各エントリは「Kata（型）」です。武道の型と同じ
   - [ ] `BodyStoreInterface` でrendered bodyを外部化し、`body_ref` で参照すると決めたか。
   - [ ] 開発時は `DevLogModule` でbodyファイルを自動クリア＋全method記録すると理解したか。
 - **Source:**
-  - `vendor/bear/event-sourcing/src/Resource/ResourceObservationModule.php`
-  - `vendor/bear/event-sourcing/src/Resource/BodyStoreInterface.php`
-  - `vendor/bear/event-sourcing/src/Resource/NullBodyStore.php`
+  - `vendor/bear/event-sourcing/src/Resource/ResourceObservationModule.php` *(external package)*
+  - `vendor/bear/event-sourcing/src/Resource/BodyStoreInterface.php` *(external package)*
+  - `vendor/bear/event-sourcing/src/Resource/NullBodyStore.php` *(external package)*
   - `tests/Fake/Observation/Resource/App/Hello.php`
 - **Tests:**
   - `tests/Smoke/ResourceObservationTest.php`
@@ -1164,10 +1164,10 @@ BEAR.Kata の各エントリは「Kata（型）」です。武道の型と同じ
   - [ ] follow-up Resourceは通常のResourceであり、deferを意識しないと理解したか。
   - [ ] 実行戦略（sync/queue/Swoole）は `DeferInterface` bindingで切り替え、Resource codeは変えないと理解したか。
 - **Source:**
-  - `vendor/bear/defer/src/Attribute/Defer.php`
-  - `vendor/bear/defer/src/DeferInterceptor.php`
-  - `vendor/bear/defer/src/Module/DeferModule.php`
-  - `vendor/bear/defer/src/SyncDefer.php`
+  - `vendor/bear/defer/src/Attribute/Defer.php` *(external package)*
+  - `vendor/bear/defer/src/DeferInterceptor.php` *(external package)*
+  - `vendor/bear/defer/src/Module/DeferModule.php` *(external package)*
+  - `vendor/bear/defer/src/SyncDefer.php` *(external package)*
   - `tests/Fake/Defer/Resource/App/Article.php`
   - `tests/Fake/Defer/Resource/App/Publish.php`
   - `tests/Fake/Defer/Resource/App/Note.php`
@@ -1190,10 +1190,10 @@ BEAR.Kata の各エントリは「Kata（型）」です。武道の型と同じ
   - [ ] `DeferInterface` と `ResourceInterface` をinjectし、`$defer->add($request)` で手動enqueueすると決めたか。
   - [ ] `DeferTransfer` がbase transfer後にconnectionをreleaseし、その後に `flush()` が走ることを理解したか。
 - **Source:**
-  - `vendor/bear/defer/src/DeferInterface.php`
-  - `vendor/bear/defer/src/DeferTransfer.php`
-  - `vendor/bear/defer/src/ConnectionCloserInterface.php`
-  - `vendor/bear/defer/src/SapiConnectionCloser.php`
+  - `vendor/bear/defer/src/DeferInterface.php` *(external package)*
+  - `vendor/bear/defer/src/DeferTransfer.php` *(external package)*
+  - `vendor/bear/defer/src/ConnectionCloserInterface.php` *(external package)*
+  - `vendor/bear/defer/src/SapiConnectionCloser.php` *(external package)*
   - `tests/Fake/Defer/Resource/App/ConditionalArticle.php`
 - **Tests:**
   - `tests/Resource/App/DeferTest.php`

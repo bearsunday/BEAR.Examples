@@ -118,6 +118,7 @@ final class DeferTest extends TestCase
         $injector = $this->injector();
         $resource = $injector->getInstance(ResourceInterface::class);
         $spy = $injector->getInstance(DeferInterface::class);
+        $log = $injector->getInstance(CallLog::class);
         assert($spy instanceof SpyDefer);
 
         $ro = $resource->post('app://self/conditional-article', [
@@ -128,5 +129,9 @@ final class DeferTest extends TestCase
 
         $this->assertSame(202, $ro->code);
         $this->assertCount(1, $spy->added, 'One deferred request when publish=true');
+
+        // Flush and verify the deferred request actually executes
+        $spy->flush();
+        $this->assertSame(['publish:100'], $log->calls);
     }
 }

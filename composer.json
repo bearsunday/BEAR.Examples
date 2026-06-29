@@ -13,8 +13,6 @@
         "php": "^8.5.0",
         "auth0/auth0-php": "^8.19",
         "bear/async": "^0.3",
-        "bear/defer": "^0.1.0",
-        "bear/event-sourcing": "1.x-dev",
         "bear/package": "^1.14",
         "bear/qiq-module": "^2.0",
         "bear/query-repository": "^1.16",
@@ -41,7 +39,9 @@
         "doctrine/migrations": "^3.9",
         "justinrainbow/json-schema": "^6.8",
         "phpunit/phpunit": "^10.0",
-        "roave/security-advisories": "dev-latest"
+        "roave/security-advisories": "dev-latest",
+        "bear/defer": "^0.1.0",
+        "bear/event-sourcing": "1.x-dev"
     },
     "autoload": {
         "psr-4": {
@@ -75,7 +75,10 @@
         ],
         "fake": "php bin/semantic-ex/gen-fake.php",
         "schema": "php bin/semantic-ex/gen-schemas.php",
-        "semantic": ["@fake", "@schema"],
+        "semantic": [
+            "@fake",
+            "@schema"
+        ],
         "cli": "./vendor/bin/bear-cli-gen 'BEAR\\Kata'",
         "malt:up": [
             "malt install",

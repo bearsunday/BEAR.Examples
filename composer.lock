@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "165e2781d6167b531b34199589373646",
+    "content-hash": "038b171b559263daf2b809a499c30822",
     "packages": [
         {
             "name": "aura/cli",
@@ -410,117 +410,6 @@
                 "source": "https://github.com/bearsunday/BEAR.Async/tree/0.3.0"
             },
             "time": "2026-05-13T13:10:05+00:00"
-        },
-        {
-            "name": "bear/defer",
-            "version": "0.1.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/bearsunday/BEAR.Defer.git",
-                "reference": "d23dd09b3f3092ae23deee68f1f47582aaeb2239"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/bearsunday/BEAR.Defer/zipball/d23dd09b3f3092ae23deee68f1f47582aaeb2239",
-                "reference": "d23dd09b3f3092ae23deee68f1f47582aaeb2239",
-                "shasum": ""
-            },
-            "require": {
-                "bear/resource": "^1.32",
-                "php": "^8.2",
-                "ray/aop": "^2.0",
-                "ray/di": "^2.0"
-            },
-            "require-dev": {
-                "bamarni/composer-bin-plugin": "^1.8",
-                "phpunit/phpunit": "^11.5"
-            },
-            "type": "library",
-            "extra": {
-                "bamarni-bin": {
-                    "bin-links": true,
-                    "forward-command": true
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "BEAR\\Defer\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Akihito Koriyama",
-                    "email": "akihito.koriyama@gmail.com"
-                }
-            ],
-            "description": "Deferred resource requests for BEAR.Resource",
-            "support": {
-                "issues": "https://github.com/bearsunday/BEAR.Defer/issues",
-                "source": "https://github.com/bearsunday/BEAR.Defer/tree/0.1.0"
-            },
-            "time": "2026-06-28T16:34:06+00:00"
-        },
-        {
-            "name": "bear/event-sourcing",
-            "version": "1.x-dev",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/bearsunday/BEAR.EventSourcing.git",
-                "reference": "ea28cd6a8b0d4c20942faa264b6d4e902c92a532"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/bearsunday/BEAR.EventSourcing/zipball/ea28cd6a8b0d4c20942faa264b6d4e902c92a532",
-                "reference": "ea28cd6a8b0d4c20942faa264b6d4e902c92a532",
-                "shasum": ""
-            },
-            "require": {
-                "bear/resource": "^1.32",
-                "koriym/semantic-logger": "^0.8",
-                "php": "^8.2",
-                "ray/di": "^2.19",
-                "ray/media-query": "^1.1"
-            },
-            "require-dev": {
-                "maglnet/composer-require-checker": "^4.14",
-                "phpunit/phpunit": "^11.5",
-                "squizlabs/php_codesniffer": "^3.11",
-                "vimeo/psalm": "^6.0"
-            },
-            "default-branch": true,
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "BEAR\\EventSourcing\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Akihito Koriyama",
-                    "email": "akihito.koriyama@gmail.com"
-                }
-            ],
-            "description": "Event sourcing primitives extracted from Semantic Logger observations",
-            "homepage": "https://github.com/bearsunday/BEAR.EventSourcing",
-            "keywords": [
-                "BEAR.Sunday",
-                "event-sourcing",
-                "events",
-                "semantic-logger"
-            ],
-            "support": {
-                "issues": "https://github.com/bearsunday/BEAR.EventSourcing/issues",
-                "source": "https://github.com/bearsunday/BEAR.EventSourcing"
-            },
-            "time": "2026-06-27T12:46:28+00:00"
         },
         {
             "name": "bear/package",
@@ -1942,61 +1831,6 @@
                 "source": "https://github.com/koriym/Koriym.Psr4List/tree/1.4.0"
             },
             "time": "2025-10-27T01:52:35+00:00"
-        },
-        {
-            "name": "koriym/semantic-logger",
-            "version": "0.8.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/koriym/Koriym.SemanticLogger.git",
-                "reference": "11ceb9e6d7a9e4723736f66bce9be78eb8a5b94d"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/koriym/Koriym.SemanticLogger/zipball/11ceb9e6d7a9e4723736f66bce9be78eb8a5b94d",
-                "reference": "11ceb9e6d7a9e4723736f66bce9be78eb8a5b94d",
-                "shasum": ""
-            },
-            "require": {
-                "justinrainbow/json-schema": "^6.4",
-                "php": "^8.1"
-            },
-            "require-dev": {
-                "bamarni/composer-bin-plugin": "^1.8",
-                "phpunit/phpunit": "^10.5"
-            },
-            "bin": [
-                "bin/validate-semantic-log.php",
-                "bin/stree"
-            ],
-            "type": "library",
-            "extra": {
-                "bamarni-bin": {
-                    "bin-links": true,
-                    "forward-command": true
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Koriym\\SemanticLogger\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Akihito Koriyama",
-                    "email": "akihito.koriyama@gmail.com"
-                }
-            ],
-            "description": "Type-safe structured logging with schema validation and meaningful context",
-            "support": {
-                "issues": "https://github.com/koriym/Koriym.SemanticLogger/issues",
-                "source": "https://github.com/koriym/Koriym.SemanticLogger/tree/0.8.0"
-            },
-            "time": "2026-04-24T08:34:32+00:00"
         },
         {
             "name": "laminas/laminas-escaper",
@@ -5819,6 +5653,59 @@
             "time": "2025-11-28T15:32:37+00:00"
         },
         {
+            "name": "bear/defer",
+            "version": "0.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/bearsunday/BEAR.Defer.git",
+                "reference": "d23dd09b3f3092ae23deee68f1f47582aaeb2239"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/bearsunday/BEAR.Defer/zipball/d23dd09b3f3092ae23deee68f1f47582aaeb2239",
+                "reference": "d23dd09b3f3092ae23deee68f1f47582aaeb2239",
+                "shasum": ""
+            },
+            "require": {
+                "bear/resource": "^1.32",
+                "php": "^8.2",
+                "ray/aop": "^2.0",
+                "ray/di": "^2.0"
+            },
+            "require-dev": {
+                "bamarni/composer-bin-plugin": "^1.8",
+                "phpunit/phpunit": "^11.5"
+            },
+            "type": "library",
+            "extra": {
+                "bamarni-bin": {
+                    "bin-links": true,
+                    "forward-command": true
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "BEAR\\Defer\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Akihito Koriyama",
+                    "email": "akihito.koriyama@gmail.com"
+                }
+            ],
+            "description": "Deferred resource requests for BEAR.Resource",
+            "support": {
+                "issues": "https://github.com/bearsunday/BEAR.Defer/issues",
+                "source": "https://github.com/bearsunday/BEAR.Defer/tree/0.1.0"
+            },
+            "time": "2026-06-28T16:34:06+00:00"
+        },
+        {
             "name": "bear/devtools",
             "version": "1.2.2",
             "source": {
@@ -5886,6 +5773,64 @@
                 "source": "https://github.com/bearsunday/BEAR.DevTools/tree/1.2.2"
             },
             "time": "2025-12-30T01:26:02+00:00"
+        },
+        {
+            "name": "bear/event-sourcing",
+            "version": "1.x-dev",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/bearsunday/BEAR.EventSourcing.git",
+                "reference": "ea28cd6a8b0d4c20942faa264b6d4e902c92a532"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/bearsunday/BEAR.EventSourcing/zipball/ea28cd6a8b0d4c20942faa264b6d4e902c92a532",
+                "reference": "ea28cd6a8b0d4c20942faa264b6d4e902c92a532",
+                "shasum": ""
+            },
+            "require": {
+                "bear/resource": "^1.32",
+                "koriym/semantic-logger": "^0.8",
+                "php": "^8.2",
+                "ray/di": "^2.19",
+                "ray/media-query": "^1.1"
+            },
+            "require-dev": {
+                "maglnet/composer-require-checker": "^4.14",
+                "phpunit/phpunit": "^11.5",
+                "squizlabs/php_codesniffer": "^3.11",
+                "vimeo/psalm": "^6.0"
+            },
+            "default-branch": true,
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "BEAR\\EventSourcing\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Akihito Koriyama",
+                    "email": "akihito.koriyama@gmail.com"
+                }
+            ],
+            "description": "Event sourcing primitives extracted from Semantic Logger observations",
+            "homepage": "https://github.com/bearsunday/BEAR.EventSourcing",
+            "keywords": [
+                "BEAR.Sunday",
+                "event-sourcing",
+                "events",
+                "semantic-logger"
+            ],
+            "support": {
+                "issues": "https://github.com/bearsunday/BEAR.EventSourcing/issues",
+                "source": "https://github.com/bearsunday/BEAR.EventSourcing"
+            },
+            "time": "2026-06-27T12:46:28+00:00"
         },
         {
             "name": "bear/security",
@@ -6420,6 +6365,61 @@
                 "source": "https://github.com/koriym/Koriym.PhpServer/tree/1.0.1"
             },
             "time": "2025-01-03T00:56:16+00:00"
+        },
+        {
+            "name": "koriym/semantic-logger",
+            "version": "0.8.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/koriym/Koriym.SemanticLogger.git",
+                "reference": "11ceb9e6d7a9e4723736f66bce9be78eb8a5b94d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/koriym/Koriym.SemanticLogger/zipball/11ceb9e6d7a9e4723736f66bce9be78eb8a5b94d",
+                "reference": "11ceb9e6d7a9e4723736f66bce9be78eb8a5b94d",
+                "shasum": ""
+            },
+            "require": {
+                "justinrainbow/json-schema": "^6.4",
+                "php": "^8.1"
+            },
+            "require-dev": {
+                "bamarni/composer-bin-plugin": "^1.8",
+                "phpunit/phpunit": "^10.5"
+            },
+            "bin": [
+                "bin/validate-semantic-log.php",
+                "bin/stree"
+            ],
+            "type": "library",
+            "extra": {
+                "bamarni-bin": {
+                    "bin-links": true,
+                    "forward-command": true
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Koriym\\SemanticLogger\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Akihito Koriyama",
+                    "email": "akihito.koriyama@gmail.com"
+                }
+            ],
+            "description": "Type-safe structured logging with schema validation and meaningful context",
+            "support": {
+                "issues": "https://github.com/koriym/Koriym.SemanticLogger/issues",
+                "source": "https://github.com/koriym/Koriym.SemanticLogger/tree/0.8.0"
+            },
+            "time": "2026-04-24T08:34:32+00:00"
         },
         {
             "name": "michelf/php-markdown",
@@ -10005,9 +10005,9 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "bear/event-sourcing": 20,
         "bear/resource": 20,
-        "roave/security-advisories": 20
+        "roave/security-advisories": 20,
+        "bear/event-sourcing": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,
