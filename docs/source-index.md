@@ -82,6 +82,17 @@ BEAR.Kata の各エントリは「Kata（型）」です。武道の型と同じ
 | [`semantic-fake-data`](#semantic-fake-data) | support | semantic-exで決定的fake dataを作る |
 | [`json-schema-generated`](#json-schema-generated) | support | fake observationからJSON Schemaを生成する |
 | [`apidoc-llms-generated`](#apidoc-llms-generated) | support | API docsとllms.txtを生成する |
+| [`auth-oauth-flow`](#auth-oauth-flow) | showcase | OAuth認証フローをAuthInterface経由で示す |
+| [`csrf-same-origin-protection`](#csrf-same-origin-protection) | canonical | CSRFトークン + Same-Origin interceptorをAOP bindする |
+| [`file-upload-input`](#file-upload-input) | canonical | `#[InputFile]`でファイルアップロードを受ける |
+| [`crawl-data-loader`](#crawl-data-loader) | showcase | `#[Link(crawl:...)]` + DataLoaderでN+1を解消する |
+| [`state-transition-resource`](#state-transition-resource) | canonical | 状態遷移を独立Resourceとして切り出す |
+| [`error-status-mapping`](#error-status-mapping) | canonical | 例外→HTTPステータスマッピングとエラーハンドリング |
+| [`cache-purge`](#cache-purge) | showcase | `#[Purge]`でwrite時にcollection cacheを手動無効化する |
+| [`donut-cache`](#donut-cache) | showcase | `#[DonutCache]`で部分キャッシュを示す |
+| [`cacheable-response`](#cacheable-response) | showcase | `#[CacheableResponse]`でレスポンス全体をキャッシュする |
+| [`admin-auth-boundary`](#admin-auth-boundary) | showcase | AdminGuardによるauthor-scoped認可境界 |
+| [`import-app`](#import-app) | showcase | ImportAppModuleで他アプリのResourceを呼ぶ |
 
 ## Data access / BDR
 
@@ -519,6 +530,128 @@ BEAR.Kata の各エントリは「Kata（型）」です。武道の型と同じ
   - [ ] embed rel が `go*` でない（Taxonomy名詞）。
   - [ ] `_embedded` に子Resourceが現れることを `HalEnvelopeContractTest.php` 相当で green。
 
+
+
+### `auth-oauth-flow`
+
+**OAuth認証フローをResourceで示す**
+
+- **ID:** `auth-oauth-flow`
+- **Aliases:** OAuth, Auth0, Google login, AuthInterface, authorization URL, token exchange, session auth
+- **Status:** `showcase`
+- **Use when:** OAuth provider（Google, Auth0）を使ったログインフローをResourceで実装したい。
+- **着手前チェック（Before）:**
+  - [ ] 認証backendを `AuthInterface` で抽象化し、providerをDI bindingで切り替えられるようにしたか。
+  - [ ] GETでauthorization URLを返し、POSTでcode+stateをtoken exchangeする2段階フローにしたか。
+  - [ ] 認証失敗時はprovider内部情報を漏らさず401にすると決めたか。
+- **Source:**
+  - `src/Resource/App/Auth.php`
+  - `src/Auth/AuthInterface.php`
+  - `src/Auth/GoogleAuthProvider.php`
+  - `src/Auth/Auth0AuthProvider.php`
+  - `src/Auth/NativeAuthSession.php`
+- **Tests:**
+  - `tests/Resource/App/AuthTest.php`
+  - `tests/Smoke/GoogleAuthProviderSmokeTest.php`
+- **Key points:** `AuthInterface` でproviderを抽象化。GET→authorization URL、POST→token exchange。失敗は401でprovider内部を漏らさない。
+- **Do not:** provider固有の例外や内部メッセージをresponse bodyに含めない。
+- **マスター確認（After）:**
+  - [ ] `AuthInterface` binding が test と prod で切り替わる（FakeAuthProvider vs GoogleAuthProvider）。
+  - [ ] GET で authorizationUrl が返り、POST で authenticated user が返ることを `AuthTest.php` 相当で green。
+
+### `file-upload-input`
+
+**`#[InputFile]`でファイルアップロードを受ける**
+
+- **ID:** `file-upload-input`
+- **Aliases:** file upload, InputFile, FileUpload, media upload, MIME validation, binary upload
+- **Status:** `canonical`
+- **Use when:** HTTP multipartアップロードでファイルを受け取り、検証して保存したい。
+- **着手前チェック（Before）:**
+  - [ ] `#[InputFile]` で `FileUpload|ErrorFileUpload` を受ける形にしたか。
+  - [ ] MIME type / サイズ / 拡張子の3検証をResource内で行うと決めたか。
+  - [ ] upload失敗時はロールバック（保存ファイル削除）し、500 または 400 を返すと決めたか。
+- **Source:**
+  - `src/Resource/App/MediaUpload.php`
+- **Tests:**
+  - `tests/Resource/App/MediaUploadTest.php`
+- **Key points:** `#[InputFile]` で `FileUpload|ErrorFileUpload` を受け、MIME/サイズ/拡張子検証後、`move()` で保存→メタデータ登録。失敗時はロールバック。
+- **Do not:** 検証前にファイルを保存しない。メタデータ登録失敗時に保存ファイルを残さない。
+- **マスター確認（After）:**
+  - [ ] 不正MIME / 超過サイズ / 空ファイル が 400 で拒否される。
+  - [ ] 正常アップロードで 201 + Location が返ることを `MediaUploadTest.php` 相当で green。
+
+### `crawl-data-loader`
+
+**`#[Link(crawl:...)]` + DataLoaderでN+1を解消する**
+
+- **ID:** `crawl-data-loader`
+- **Aliases:** crawl, linkCrawl, DataLoader, DataLoaderInterface, N+1, batch query, resource graph
+- **Status:** `showcase`
+- **Use when:** `#[Link(crawl:...)]`でリソースグラフを構築し、子リソースのN+1クエリをバッチで解消したい。
+- **着手前チェック（Before）:**
+  - [ ] `#[Link(crawl: ...)]` でcrawl名を指定し、リソースグラフを宣言的に構築すると決めたか。
+  - [ ] N+1が起きる子リソースに `dataLoader: DataLoaderClass::class` を指定し、`DataLoaderInterface::__invoke()` でバッチクエリを実装すると決めたか。
+- **Source:**
+  - `src/Resource/App/Crawl/Articles.php`
+  - `src/Resource/App/Crawl/Tags.php`
+  - `src/DataLoader/ArticleTagsDataLoader.php`
+- **Tests:**
+  - `tests/Resource/App/Crawl/CrawlDataLoaderTest.php`
+- **Key points:** `#[Link(crawl: ...)]` でグラフ名を宣言。`DataLoaderInterface::__invoke(array $queries): array` でバッチクエリ。keyはURI templateから自動推論。
+- **Do not:** DataLoaderを使わずに1件ずつクエリするN+1状態を放置しない。
+- **マスター確認（After）:**
+  - [ ] クエリ数が子リソース数に比例せず定数になることを `CrawlDataLoaderTest.php` 相当で green。
+
+### `state-transition-resource`
+
+**状態遷移を独立Resourceとして切り出す**
+
+- **ID:** `state-transition-resource`
+- **Aliases:** state machine, state transition, draft published, ArticlePublish, 409 Conflict, AffectedRows
+- **Status:** `canonical`
+- **Use when:** リソースの状態遷移（draft→published等）をフィールド編集(PUT)とは別のResourceとして切り出したい。
+- **着手前チェック（Before）:**
+  - [ ] フィールド編集と状態遷移を別Resourceに分け、遷移専用のURIを持たせると決めたか。
+  - [ ] 既に目標状態にある場合は409 Conflictを返し、再実行を安全にすると決めたか。
+  - [ ] `AffectedRows` で原子性を判定し、競合を検出すると理解したか。
+- **Source:**
+  - `src/Resource/App/ArticlePublish.php`
+  - `src/Query/ArticleCommandInterface.php::publish()`
+  - `var/db/sql/article_publish.sql`
+- **Tests:**
+  - `tests/Resource/App/ArticlePublishTest.php`
+- **Key points:** 状態遷移は独立Resource（`ArticlePublish`）。既に目標状態なら409 Conflict。`AffectedRows::isAffected()` で原子性判定。
+- **Do not:** フィールド編集のPUTに状態遷移を混ぜない。既に目標状態の再遷移を200で成功扱いしない。
+- **マスター確認（After）:**
+  - [ ] draft→published で 200 + publishedAt が返る。
+  - [ ] 既に published の再publishで 409 が返ることを `ArticlePublishTest.php` 相当で green。
+
+### `error-status-mapping`
+
+**例外→HTTPステータスマッピングとエラーハンドリング**
+
+- **ID:** `error-status-mapping`
+- **Aliases:** error handling, exception handler, status mapping, vnd.error, error page, JsonSchemaRequestExceptionHandler, AppThrowableHandler
+- **Status:** `canonical`
+- **Use when:** 例外をHTTPステータスコードにマッピングし、カスタムエラーページとJSON Schema検証例外ハンドリングを提供したい。
+- **着手前チェック（Before）:**
+  - [ ] ドメイン例外を `ExceptionStatusMapper` でHTTPステータスにマッピングすると決めたか。
+  - [ ] APIとHTMLで別のハンドラ（`AppThrowableHandler` / `HtmlThrowableHandler`）を使うと理解したか。
+  - [ ] JSON Schema validationエラーを `JsonSchemaRequestExceptionHandler` で `ValidationException` に変換すると決めたか。
+- **Source:**
+  - `src/Provide/Error/ExceptionStatusMapper.php`
+  - `src/Provide/Error/AppThrowableHandler.php`
+  - `src/Provide/Error/HtmlThrowableHandler.php`
+  - `src/Validation/JsonSchemaRequestExceptionHandler.php`
+- **Tests:**
+  - `tests/Provide/Error/ExceptionStatusMapperTest.php`
+  - `tests/Validation/JsonSchemaRequestExceptionHandlerTest.php`
+- **Key points:** `ExceptionStatusMapper` でドメイン例外→HTTPステータス。APIは `AppThrowableHandler`、HTMLは `HtmlThrowableHandler`。JSON Schema検証エラーは `ValidationException` に変換。
+- **Do not:** ドメイン例外をそのままthrowして框架に500を任せない。
+- **マスター確認（After）:**
+  - [ ] 各ドメイン例外が正しいステータスコードにマッピングされることを `ExceptionStatusMapperTest.php` 相当で green。
+
 ## HTML / Page
 
 ### `page-resource-qiq-detail`
@@ -622,6 +755,30 @@ BEAR.Kata の各エントリは「Kata（型）」です。武道の型と同じ
 - **マスター確認（After）:**
   - [ ] Page Admin が `app://self/...` の write を呼び、独自のSQL/write logicを持たない。
   - [ ] 成功時に303 redirect している。
+  - [ ] 他authorの記事を操作できないことを `AuthBoundaryTest.php` 相当で green。
+
+
+
+### `admin-auth-boundary`
+
+**AdminGuardによるauthor-scoped認可境界**
+
+- **ID:** `admin-auth-boundary`
+- **Aliases:** AdminGuard, auth boundary, author-scoped, authorization, session identity, admin page protection
+- **Status:** `showcase`
+- **Use when:** Admin Page Resourceで、ログイン済みユーザーが自分の記事のみ操作できる認可境界を設けたい。
+- **着手前チェック（Before）:**
+  - [ ] `AdminGuard` で `AdminUserInterface` を注入し、author identityをsessionから取得すると決めたか。
+  - [ ] 他authorの記事を操作しようとした場合、403 Forbiddenを返すと決めたか。
+- **Source:**
+  - `src/Auth/AdminGuard.php`
+  - `src/Auth/AdminUserInterface.php`
+  - `src/Provider/AdminUserProvider.php`
+- **Tests:**
+  - `tests/Resource/Page/Admin/AuthBoundaryTest.php`
+- **Key points:** `AdminGuard` でauthor-scoped認可。他authorのリソース操作は403。
+- **Do not:** 認可チェックをResource本体に散らさない（guardで一元化）。
+- **マスター確認（After）:**
   - [ ] 他authorの記事を操作できないことを `AuthBoundaryTest.php` 相当で green。
 
 ## Runtime / representation
@@ -767,6 +924,125 @@ BEAR.Kata の各エントリは「Kata（型）」です。武道の型と同じ
 - **マスター確認（After）:**
   - [ ] CLI が既存Resource methodを呼び、ロジックの重複実装が無い。
   - [ ] `composer cli` 後に `bin/cli/<name>` が生成され、HTTPと同じ結果を返す。
+
+
+
+### `csrf-same-origin-protection`
+
+**CSRFトークン + Same-Origin interceptorをAOPでbindする**
+
+- **ID:** `csrf-same-origin-protection`
+- **Aliases:** CSRF, CsrfToken, SameOrigin, interceptor, AOP, form protection, double submit cookie
+- **Status:** `canonical`
+- **Use when:** Admin Page Resourceのwrite操作をCSRF攻撃とCross-Site Origin攻撃から保護したい。
+- **着手前チェック（Before）:**
+  - [ ] `#[CsrfToken]` と `#[SameOrigin]` の2つのAttributeを使い、それぞれ interceptor をAOP bindすると決めたか。
+  - [ ] CSRFトークンはdouble-submit-cookie方式で、session経由で生成・検証すると理解したか。
+  - [ ] Same-Originは `Sec-Fetch-Site` / `Origin` / `Referer` の3シグナルで判定し、全欠落時はfail-closedにすると理解したか。
+- **Source:**
+  - `src-csrf/Attribute/CsrfToken.php`
+  - `src-csrf/Attribute/SameOrigin.php`
+  - `src-csrf/Interceptor/CsrfTokenInterceptor.php`
+  - `src-csrf/Interceptor/SameOriginInterceptor.php`
+  - `src-csrf/CsrfModule.php`
+  - `src-csrf/SessionCsrfToken.php`
+- **Tests:**
+  - `tests/Interceptor/CsrfTokenInterceptorTest.php`
+  - `tests/Interceptor/CsrfTokenWiringTest.php`
+  - `tests/Interceptor/SameOriginInterceptorTest.php`
+  - `tests/Interceptor/SameOriginWiringTest.php`
+- **Key points:** `#[CsrfToken]` → double-submit-cookie CSRF検証。`#[SameOrigin]` → Sec-Fetch-Site/Origin/Referer 3シグナル判定、fail-closed。
+- **Do not:** シグナル全欠落時に許可しない（fail-closed）。CSRFトークンをURLに露出させない。
+- **マスター確認（After）:**
+  - [ ] token mismatch で `ForbiddenException` が throw される。
+  - [ ] origin mismatch で `ForbiddenException` が throw される。
+  - [ ] `CsrfTokenInterceptorTest.php` / `SameOriginInterceptorTest.php` 相当で green。
+
+### `cache-purge`
+
+**`#[Purge]`でwrite時にcollection cacheを手動無効化する**
+
+- **ID:** `cache-purge`
+- **Aliases:** Purge, cache invalidation, manual purge, collection cache, #[Purge]
+- **Status:** `showcase`
+- **Use when:** write操作（POST/PUT/DELETE）後に、関連collection resourceのキャッシュを手動で無効化したい。
+- **着手前チェック（Before）:**
+  - [ ] `#[Purge(uri: 'app://self/<collection>')]` をwrite methodに付け、該当collection cacheを一括無効化すると決めたか。
+  - [ ] Purge対象はcollection URI（`articles`, `categories`）で、item URIでないことを確認したか。
+- **Source:**
+  - `src/Resource/App/Article.php::onPost()`
+  - `src/Resource/App/Article.php::onPut()`
+  - `src/Resource/App/Article.php::onDelete()`
+  - `src/Resource/App/Category.php`
+- **Tests:**
+  - `tests/Resource/App/ArticleTest.php`
+  - `tests/Resource/App/CategoryTest.php`
+- **Key points:** `#[Purge(uri: 'app://self/articles')]` をwrite methodに付ける。collection全体のキャッシュが無効化される。
+- **Do not:** item URIではなくcollection URIをPurgeする。write後にPurgeを忘れない。
+- **マスター確認（After）:**
+  - [ ] POST/PUT/DELETE 後に該当collection cacheが無効化されることを確認。
+
+### `donut-cache`
+
+**`#[DonutCache]`で部分キャッシュを示す**
+
+- **ID:** `donut-cache`
+- **Aliases:** DonutCache, donut caching, partial cache, donut hole, ArticlePreview
+- **Status:** `showcase`
+- **Use when:** Resource全体のうち、embedされた非キャッシュ可能部分を除いたキャッシュ可能部分を分離してキャッシュしたい。
+- **着手前チェック（Before）:**
+  - [ ] `#[DonutCache]` は全体キャッシュではなく、embed子が非キャッシュ可能な時に使うと理解したか。
+  - [ ] `#[Cacheable]` とは使い分け（DonutCache=部分キャッシュ、Cacheable=全体キャッシュ）を理解したか。
+- **Source:**
+  - `src/Resource/App/Cache/ArticlePreview.php`
+- **Tests:**
+  - `tests/Resource/App/CacheTest.php`
+- **Key points:** `#[DonutCache]` はembed子が非キャッシュ可能な時の部分キャッシュ。全体キャッシュは `#[Cacheable]`。
+- **Do not:** `#[Cacheable]` と `#[DonutCache]` を混同しない。
+- **マスター確認（After）:**
+  - [ ] `#[DonutCache]` Resource がキャッシュされ、子の更新でhole部分のみ再描画されることを `CacheTest.php` 相当で green。
+
+### `cacheable-response`
+
+**`#[CacheableResponse]`でレスポンス全体をキャッシュする**
+
+- **ID:** `cacheable-response`
+- **Aliases:** CacheableResponse, response cache, whole content cache, Articles, Categories
+- **Status:** `showcase`
+- **Use when:** Collection resourceのレスポンス全体をキャッシュし、ETagと条件付きリクエストで配信したい。
+- **着手前チェック（Before）:**
+  - [ ] `#[CacheableResponse]` は全体コンテンツキャッシュ（embed子も含む）で、`#[Cacheable]` は個別Resourceのキャッシュだと理解したか。
+  - [ ] Donut cacheと違い、embed子もキャッシュ対象になることを理解したか。
+- **Source:**
+  - `src/Resource/App/Articles.php`
+  - `src/Resource/App/Categories.php`
+- **Tests:**
+  - `tests/Resource/App/ArticlesTest.php`
+  - `tests/Resource/App/CategoryTest.php`
+- **Key points:** `#[CacheableResponse]` は全体キャッシュ。embed子も含めてキャッシュされる。`#[Cacheable]`（個別キャッシュ）と `#[DonutCache]`（部分キャッシュ）と使い分ける。
+- **Do not:** 3つのcache属性（Cacheable / DonutCache / CacheableResponse）を混同しない。
+- **マスター確認（After）:**
+  - [ ] `#[CacheableResponse]` Resource が全体キャッシュされ、ETagが付くことを確認。
+
+### `import-app`
+
+**ImportAppModuleで他アプリのResourceを呼ぶ**
+
+- **ID:** `import-app`
+- **Aliases:** ImportApp, ImportAppModule, multi-app, composer package, cross-app resource, System Boundary
+- **Status:** `showcase`
+- **Use when:** composer installした別アプリのResourceを、自アプリから `app://<host>/...` で呼びたい。
+- **着手前チェック（Before）:**
+  - [ ] `ImportAppModule` に `ImportApp($host, $namespace, $context)` を渡してinstallすると決めたか。
+  - [ ] 呼び出し側は `app://<host>/<resource>` でアクセスし、`#[Embed]` / `#[Link]` も使えると理解したか。
+- **Source:**
+  - `tests/Example/ImportAppExampleTest.php`
+- **Tests:**
+  - `tests/Example/ImportAppExampleTest.php`
+- **Key points:** `ImportAppModule` で他アプリをimport。host名経由でresource呼び出し。`#[Embed]` / `#[Link]` も使用可能。
+- **Do not:** マイクロサービス化せずとも、composer経由でアプリ間連携が可能。
+- **マスター確認（After）:**
+  - [ ] 他アプリのresourceが `app://<host>/...` で呼べることを `ImportAppExampleTest.php` 相当で green。
 
 ## Tests / fake
 
