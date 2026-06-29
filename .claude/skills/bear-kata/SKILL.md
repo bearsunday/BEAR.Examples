@@ -1,6 +1,6 @@
 ---
 name: bear-kata
-description: BEAR.Sunday実装の「型(Kata)」をソース索引から引く。「BEAR.Sundayで〜を実装したい」時に、どの正規形(canonical)ソースを真似し、どのテストで振る舞いを確認し、実装後にどうマスターを検証するかを案内する。Use when user says "〜をkataに従って実装してください", "kataに従って実装", "kata に従って", "BEAR.Sundayで〜を実装したい", "Kata", "ソース索引", "source index", "どのソースを見れば", "pager/HAL embed/streaming/PRG/Cacheable/FakeSqlQuery を実装", or asks which BEAR.Sunday reference implementation to copy/follow for a feature.
+description: BEAR.Sunday実装の「型(Kata)」をソース索引から引く。「BEAR.Sundayで〜を実装したい」時に、どの正規形(canonical)ソースを真似し、どのテストで振る舞いを確認し、実装後にどうマスターを検証するかを案内する。Use when user says "〜をkataに従って実装してください", "kataに従って実装", "kata に従って", "BEAR.Sundayで〜を実装したい", "Kata", "ソース索引", "source index", "どのソースを見れば", "pager/HAL embed/streaming/PRG/Cacheable/CSRF/OAuth/ファイルアップロード/イベントソーシング/defer/FakeSqlQuery を実装", or asks which BEAR.Sunday reference implementation to copy/follow for a feature.
 user-invocable: true
 ---
 
@@ -12,14 +12,14 @@ user-invocable: true
 
 ## いつ使うか
 
-- 「BEAR.Sundayで○○を実装したい」（一覧/ページング、HAL link/embed、POST/PUT/DELETE、ストリーム応答、キャッシュ、PRGフォーム、CLI 等）。
+- 「BEAR.Sundayで○○を実装したい」（一覧/ページング、HAL link/embed、POST/PUT/DELETE、ストリーム応答、キャッシュ、PRGフォーム、CLI、OAuth認証、CSRF保護、ファイルアップロード、イベントソーシング、defer実行、エラーハンドリング、状態遷移 等）。
 - 「どのソースを真似すればいい？」「このパターンの正規形は？」。
 - 既存実装が型に従っているかレビューしたい。
 
 ## 手順（6ステップ）
 
 1. **INTENT を言語化する。** ユーザーがやりたいことを1文にする。例:「記事一覧をページングして返したい」。
-2. **ROUTE — 索引で Kata を引く。** [`docs/source-index.md`](docs/source-index.md) を開き、`Aliases`（`pager`, `#[Embed]`, `streaming`, `PRG`, `FakeSqlQuery` 等）でマッチする Kata を選ぶ。冒頭の一覧テーブルからも引ける。
+2. **ROUTE — 索引で Kata を引く。** [`docs/source-index.md`](docs/source-index.md) を開き、`Aliases`（`pager`, `#[Embed]`, `streaming`, `PRG`, `CSRF`, `OAuth`, `#[Defer]`, `event sourcing`, `FakeSqlQuery` 等）でマッチする Kata を選ぶ。冒頭の一覧テーブルからも引ける。
 3. **Status を確認する。**
    - `canonical` … 最初に真似する正規形。コピー可。
    - `showcase` … 特定機能の実例。

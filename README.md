@@ -39,6 +39,11 @@ BEAR.Sunday アプリケーションの実装パターン集。「これを実�
 | [`json-schema-validation`](docs/source-index.md#json-schema-validation) | Request/ResponseをJSON Schemaで検証する | canonical |
 | [`hal-link`](docs/source-index.md#hal-link) | HAL `_links` を `#[Link]` で宣言する | canonical |
 | [`hal-embed`](docs/source-index.md#hal-embed) | HAL `_embedded` を `#[Embed]` と `addQuery()` で作る | canonical |
+| [`auth-oauth-flow`](docs/source-index.md#auth-oauth-flow) | OAuth認証フローをAuthInterface経由で示す | showcase |
+| [`file-upload-input`](docs/source-index.md#file-upload-input) | `#[InputFile]`でファイルアップロードを受ける | canonical |
+| [`crawl-data-loader`](docs/source-index.md#crawl-data-loader) | `#[Link(crawl:...)]` + DataLoaderでN+1を解消する | showcase |
+| [`state-transition-resource`](docs/source-index.md#state-transition-resource) | 状態遷移を独立Resourceとして切り出す | canonical |
+| [`error-status-mapping`](docs/source-index.md#error-status-mapping) | 例外→HTTPステータスマッピングとエラーハンドリング | canonical |
 
 ### HTML / Page
 
@@ -48,6 +53,7 @@ BEAR.Sunday アプリケーションの実装パターン集。「これを実�
 | [`page-resource-list`](docs/source-index.md#page-resource-list) | Page Resourceで一覧HTMLを描画する | canonical |
 | [`markdown-to-html`](docs/source-index.md#markdown-to-html) | Markdown本文をHTMLへ変換する | canonical |
 | [`admin-prg-form`](docs/source-index.md#admin-prg-form) | Admin formでPRGを使う | showcase |
+| [`admin-auth-boundary`](docs/source-index.md#admin-auth-boundary) | AdminGuardによるauthor-scoped認可境界 | showcase |
 
 ### Runtime / representation
 
@@ -59,6 +65,27 @@ BEAR.Sunday アプリケーションの実装パターン集。「これを実�
 | [`cache-body-derived-dependency`](docs/source-index.md#cache-body-derived-dependency) | body由来の可変長依存を `fromAssoc()` で宣言する | showcase |
 | [`async-embed-parallel`](docs/source-index.md#async-embed-parallel) | embed graphを並列実行に載せる | showcase |
 | [`cli-resource`](docs/source-index.md#cli-resource) | ResourceをCLIコマンドとして公開する | showcase |
+| [`csrf-same-origin-protection`](docs/source-index.md#csrf-same-origin-protection) | CSRFトークン + Same-Origin interceptorをAOP bindする | canonical |
+| [`cache-purge`](docs/source-index.md#cache-purge) | `#[Purge]`でwrite時にcollection cacheを手動無効化する | showcase |
+| [`donut-cache`](docs/source-index.md#donut-cache) | `#[DonutCache]`で部分キャッシュを示す | showcase |
+| [`cacheable-response`](docs/source-index.md#cacheable-response) | `#[CacheableResponse]`でレスポンス全体をキャッシュする | showcase |
+| [`import-app`](docs/source-index.md#import-app) | ImportAppModuleで他アプリのResourceを呼ぶ | showcase |
+
+### Event Sourcing
+
+| ID | 説明 | Status |
+|---|---|---|
+| [`event-extraction`](docs/source-index.md#event-extraction) | Semantic Logger観察ログからEventを抽出する | showcase |
+| [`event-filter-replay`](docs/source-index.md#event-filter-replay) | Eventsをフィルタしてreplayする | showcase |
+| [`event-store-persistence`](docs/source-index.md#event-store-persistence) | EventStoreInterfaceでEventを永続化する | support |
+| [`resource-observation-bridge`](docs/source-index.md#resource-observation-bridge) | BEAR.Resource実行から観察ログを生成する | showcase |
+
+### Deferred execution
+
+| ID | 説明 | Status |
+|---|---|---|
+| [`defer-resource-request`](docs/source-index.md#defer-resource-request) | `#[Defer]` + `#[Link]`で応答後にfollow-upを実行する | showcase |
+| [`defer-conditional`](docs/source-index.md#defer-conditional) | `DeferInterface::add()`で条件付きdeferを手動制御する | showcase |
 
 ### Tests / fake
 
