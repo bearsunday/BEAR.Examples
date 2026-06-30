@@ -4,6 +4,45 @@ BEAR.Sunday アプリケーションの実装パターン集。「これを実�
 
 各Kataの詳細（Aliases / 着手前チェック / Source / Tests / Key points / マスター確認）は [docs/source-index.md](docs/source-index.md) を参照。AIエージェントは intent から `/bear-kata` スキル（[.claude/skills/bear-kata](.claude/skills/bear-kata/SKILL.md)）経由でも該当Kataを引ける。
 
+## カバレッジ
+
+BEAR.Sunday公式ドキュメントの主要機能と、この索引の対応状況。詳細は [docs/scope.md](docs/scope.md) を参照。
+
+| 機能領域 | Kata有無 | 該当Kata |
+|---|---|---|
+| Resource GET / POST / PUT / DELETE | ✅ | `api-get-hal-resource`, `api-post-input-dto`, `api-put-tristate-input`, `api-delete-no-content` |
+| Resource PATCH | ❌ 未実装 | PUT tri-state で代替可能 |
+| Resource OPTIONS | ❌ 未実装 | `OptionsMethodModule` が公式に存在 |
+| HAL `_links` / `_embedded` | ✅ | `hal-link`, `hal-embed` |
+| Crawl / DataLoader | ✅ | `crawl-data-loader` |
+| Not Found (404) | ✅ | `not-found-response` |
+| JSON Schema validation | ✅ | `json-schema-validation`, `json-schema-generated` |
+| DB: BDR read / write / pager / link table | ✅ | `db-read-one-entity`, `db-read-by-natural-key`, `db-read-list-pager`, `db-command-write`, `db-link-table-sync` |
+| DB: Result projection / CQRS | ✅ | `db-result-projection` |
+| Cache: `#[Cacheable]` / `#[DonutCache]` / `#[CacheableResponse]` / `#[Purge]` | ✅ | `cacheable-leaf`, `donut-cache`, `cacheable-response`, `cache-purge` |
+| Cache: `#[Embed]` dependency / `fromAssoc` | ✅ | `cache-embed-dependency`, `cache-body-derived-dependency` |
+| Cache: ETag / 304 Conditional Request | ❌ 未実装 | `cacheable-response` が間接的に触れる |
+| HTML: Page / Qiq detail / list | ✅ | `page-resource-qiq-detail`, `page-resource-list` |
+| HTML: Markdown 変換 | ✅ | `markdown-to-html` |
+| HTML: Admin PRG / auth boundary | ✅ | `admin-prg-form`, `admin-auth-boundary` |
+| Stream response | ✅ | `stream-response` |
+| Async / Parallel embed | ✅ | `async-embed-parallel` |
+| CLI | ✅ | `cli-resource` |
+| OAuth 認証 | ✅ | `auth-oauth-flow` |
+| CSRF / Same-Origin 保護 | ✅ | `csrf-same-origin-protection` |
+| ファイルアップロード | ✅ | `file-upload-input` |
+| 状態遷移 Resource | ✅ | `state-transition-resource` |
+| エラーハンドリング | ✅ | `error-status-mapping` |
+| Event Sourcing | ✅ | `event-extraction`, `event-filter-replay`, `event-store-persistence`, `resource-observation-bridge` |
+| Deferred execution | ✅ | `defer-resource-request`, `defer-conditional` |
+| Import (cross-app) | ✅ | `import-app` |
+| ALPS / API Doc / fake data | ✅ | `alps-profile-ssot`, `apidoc-llms-generated`, `semantic-fake-data` |
+| Content Negotiation | ❌ 未実装 | `BEAR.Accept`, `#[Produces]` が公式に存在 |
+| Ray.WebFormModule フォームバリデーション | ❌ 未実装 | `admin-prg-form` はPRGのみ |
+| Production デプロイ / compile / preload | ❌ スコープ外 | インフラ層 |
+| High-Performance Servers (Swoole / RR / FrankenPHP) | ❌ スコープ外 | ランタイム層 |
+| Aura.Router カスタムルーティング | ❌ スコープ外 | フレームワーク設定 |
+
 ## Kata 一覧
 
 | Status | 意味 |
@@ -14,6 +53,7 @@ BEAR.Sunday アプリケーションの実装パターン集。「これを実�
 | `support` | テスト、Fake、生成物など正規形を支える周辺実装 |
 
 ### Data access / BDR
+DB読み書きの正規形。Ray.MediaQuery + `#[DbQuery]` + Entity/Factory のBDRパターン。
 
 | ID | 説明 | Status |
 |---|---|---|
@@ -28,6 +68,7 @@ BEAR.Sunday アプリケーションの実装パターン集。「これを実�
 | [`db-raw-pdo-comparison`](docs/source-index.md#db-raw-pdo-comparison) | Raw PDOとの違いを見る | comparison-only |
 
 ### Resource / API
+App ResourceのHTTP メソッド別パターン。HAL+JSON、入力DTO、バリデーション、エラー、OAuth、ファイルアップロード、Crawl/DataLoader。
 
 | ID | 説明 | Status |
 |---|---|---|
@@ -46,6 +87,7 @@ BEAR.Sunday アプリケーションの実装パターン集。「これを実�
 | [`error-status-mapping`](docs/source-index.md#error-status-mapping) | 例外→HTTPステータスマッピングとエラーハンドリング | canonical |
 
 ### HTML / Page
+Page Resource + Qiq template によるHTML描画。Markdown変換、Admin PRG、認可境界。
 
 | ID | 説明 | Status |
 |---|---|---|
@@ -56,22 +98,24 @@ BEAR.Sunday アプリケーションの実装パターン集。「これを実�
 | [`admin-auth-boundary`](docs/source-index.md#admin-auth-boundary) | AdminGuardによるauthor-scoped認可境界 | showcase |
 
 ### Runtime / representation
+キャッシュ（`#[Cacheable]` / `#[DonutCache]` / `#[CacheableResponse]` / `#[Purge]`）、ストリーム、Async/Parallel、CLI、CSRF保護、Import App。
 
 | ID | 説明 | Status |
 |---|---|---|
 | [`stream-response`](docs/source-index.md#stream-response) | ファイルやバイナリをストリームで返す | showcase |
 | [`cacheable-leaf`](docs/source-index.md#cacheable-leaf) | `#[Cacheable]` だけのleaf resourceを作る | showcase |
 | [`cache-embed-dependency`](docs/source-index.md#cache-embed-dependency) | `#[Embed]` 親Resourceの依存を自動合成する | showcase |
-| [`cache-body-derived-dependency`](docs/source-index.md#cache-body-derived-dependency) | body由来の可変長依存を `fromAssoc()` で宣言する | showcase |
+| [`cache-body-derived-dependency`](docs/source-index.md#cache-body-derived-dependency) | `fromAssoc()` + Surrogate-Keyでbody由来の可変長依存を宣言する | showcase |
 | [`async-embed-parallel`](docs/source-index.md#async-embed-parallel) | embed graphを並列実行に載せる | showcase |
 | [`cli-resource`](docs/source-index.md#cli-resource) | ResourceをCLIコマンドとして公開する | showcase |
 | [`csrf-same-origin-protection`](docs/source-index.md#csrf-same-origin-protection) | CSRFトークン + Same-Origin interceptorをAOP bindする | canonical |
 | [`cache-purge`](docs/source-index.md#cache-purge) | `#[Purge]`でwrite時にcollection cacheを手動無効化する | showcase |
-| [`donut-cache`](docs/source-index.md#donut-cache) | `#[DonutCache]`で部分キャッシュを示す | showcase |
-| [`cacheable-response`](docs/source-index.md#cacheable-response) | `#[CacheableResponse]`でレスポンス全体をキャッシュする | showcase |
+| [`donut-cache`](docs/source-index.md#donut-cache) | `#[DonutCache]`でドーナツキャッシュ（Donut Cache / Donut Hole）を示す | showcase |
+| [`cacheable-response`](docs/source-index.md#cacheable-response) | `#[CacheableResponse]`でレスポンス全体キャッシュ + ETag配信 | showcase |
 | [`import-app`](docs/source-index.md#import-app) | ImportAppModuleで他アプリのResourceを呼ぶ | showcase |
 
 ### Event Sourcing
+Semantic Logger観察 → Event抽出 → フィルタ/replay → 永続化。Resource実行の観察ブリッジ。
 
 | ID | 説明 | Status |
 |---|---|---|
@@ -81,6 +125,7 @@ BEAR.Sunday アプリケーションの実装パターン集。「これを実�
 | [`resource-observation-bridge`](docs/source-index.md#resource-observation-bridge) | BEAR.Resource実行から観察ログを生成する | showcase |
 
 ### Deferred execution
+`#[Defer]` + `#[Link]` で応答後にfollow-up Resourceを実行。202 Accepted即時返却。
 
 | ID | 説明 | Status |
 |---|---|---|
@@ -88,6 +133,7 @@ BEAR.Sunday アプリケーションの実装パターン集。「これを実�
 | [`defer-conditional`](docs/source-index.md#defer-conditional) | `DeferInterface::add()`で条件付きdeferを手動制御する | showcase |
 
 ### Tests / fake
+DBなしテストのFake基盤。Resource/Page/Hypermedia contract test、MySQL integration。
 
 | ID | 説明 | Status |
 |---|---|---|
@@ -98,6 +144,7 @@ BEAR.Sunday アプリケーションの実装パターン集。「これを実�
 | [`mysql-integration-test`](docs/source-index.md#mysql-integration-test) | 実DB経路を必要時だけ検証する | support |
 
 ### Semantic / generated artifacts
+ALPS profile SSOT、決定的fake data、JSON Schema生成、API doc + llms.txt生成。
 
 | ID | 説明 | Status |
 |---|---|---|
