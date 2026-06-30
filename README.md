@@ -11,17 +11,18 @@ BEAR.Sunday公式ドキュメントの主要機能と、この索引の対応状
 | 機能領域 | Kata有無 | 該当Kata |
 |---|---|---|
 | Resource GET / POST / PUT / DELETE | ✅ | `api-get-hal-resource`, `api-post-input-dto`, `api-put-tristate-input`, `api-delete-no-content` |
-| Resource PATCH | ❌ 未実装 | PUT tri-state で代替可能 |
+| Resource PATCH | ❌ 未実装 | `onPatch` はBEAR.Sundayがネイティブ対応。tri-state入力の型は `api-put-tristate-input` を流用可能 |
 | Resource OPTIONS | ❌ 未実装 | `OptionsMethodModule` が公式に存在 |
 | HAL `_links` / `_embedded` | ✅ | `hal-link`, `hal-embed` |
 | Crawl / DataLoader | ✅ | `crawl-data-loader` |
 | Not Found (404) | ✅ | `not-found-response` |
 | JSON Schema validation | ✅ | `json-schema-validation`, `json-schema-generated` |
-| DB: BDR read / write / pager / link table | ✅ | `db-read-one-entity`, `db-read-by-natural-key`, `db-read-list-pager`, `db-command-write`, `db-link-table-sync` |
+| DB: BDR read / write / pager / link table / after-insert lookup | ✅ | `db-read-one-entity`, `db-read-by-natural-key`, `db-read-list-pager`, `db-command-write`, `db-link-table-sync` |
 | DB: Result projection / CQRS | ✅ | `db-result-projection` |
 | Cache: `#[Cacheable]` / `#[DonutCache]` / `#[CacheableResponse]` / `#[Purge]` | ✅ | `cacheable-leaf`, `donut-cache`, `cacheable-response`, `cache-purge` |
 | Cache: `#[Embed]` dependency / `fromAssoc` | ✅ | `cache-embed-dependency`, `cache-body-derived-dependency` |
-| Cache: ETag / 304 Conditional Request | ❌ 未実装 | `cacheable-response` が間接的に触れる |
+| Cache: ETag 配信 | ✅ | `cacheable-response` がETagを付与 |
+| Cache: 304 Conditional Request（If-None-Match） | ❌ 未実装 | ETag配信は `cacheable-response` が対応、304応答は未実装 |
 | HTML: Page / Qiq detail / list | ✅ | `page-resource-qiq-detail`, `page-resource-list` |
 | HTML: Markdown 変換 | ✅ | `markdown-to-html` |
 | HTML: Admin PRG / auth boundary | ✅ | `admin-prg-form`, `admin-auth-boundary` |
@@ -45,6 +46,8 @@ BEAR.Sunday公式ドキュメントの主要機能と、この索引の対応状
 
 ## Kata 一覧
 
+> 各Kataの `Aliases`（検索用キーワード）は [docs/source-index.md](docs/source-index.md) に記載されています。より具体的なintent語（`after insert lookup`, `double submit cookie`, `linkCrawl` 等）で検索する場合は source-index.md を引いてください。
+
 | Status | 意味 |
 |---|---|
 | `canonical` | 通常の実装で最初に真似する正規形 |
@@ -58,7 +61,7 @@ DB読み書きの正規形。Ray.MediaQuery + `#[DbQuery]` + Entity/Factory のB
 | ID | 説明 | Status |
 |---|---|---|
 | [`db-read-one-entity`](docs/source-index.md#db-read-one-entity) | DBから主キーで1件のEntityを読む | canonical |
-| [`db-read-by-natural-key`](docs/source-index.md#db-read-by-natural-key) | natural keyで1件読む | canonical |
+| [`db-read-by-natural-key`](docs/source-index.md#db-read-by-natural-key) | natural keyで1件読む（INSERT後の新規ID回収） | canonical |
 | [`db-read-list-pager`](docs/source-index.md#db-read-list-pager) | DBから一覧をページングして読む | canonical |
 | [`db-command-write`](docs/source-index.md#db-command-write) | DB書き込みをCommand Interfaceに分ける | canonical |
 | [`db-link-table-sync`](docs/source-index.md#db-link-table-sync) | link tableをclear/linkで同期する | canonical |
@@ -92,7 +95,7 @@ Page Resource + Qiq template によるHTML描画。Markdown変換、Admin PRG、
 | ID | 説明 | Status |
 |---|---|---|
 | [`page-resource-qiq-detail`](docs/source-index.md#page-resource-qiq-detail) | Page Resourceで1件詳細HTMLを描画する | canonical |
-| [`page-resource-list`](docs/source-index.md#page-resource-list) | Page Resourceで一覧HTMLを描画する | canonical |
+| [`page-resource-list`](docs/source-index.md#page-resource-list) | Page Resourceで一覧HTMLを描画する（pagerは `db-read-list-pager` を使用） | canonical |
 | [`markdown-to-html`](docs/source-index.md#markdown-to-html) | Markdown本文をHTMLへ変換する | canonical |
 | [`admin-prg-form`](docs/source-index.md#admin-prg-form) | Admin formでPRGを使う | showcase |
 | [`admin-auth-boundary`](docs/source-index.md#admin-auth-boundary) | AdminGuardによるauthor-scoped認可境界 | showcase |
@@ -115,7 +118,7 @@ Page Resource + Qiq template によるHTML描画。Markdown変換、Admin PRG、
 | [`import-app`](docs/source-index.md#import-app) | ImportAppModuleで他アプリのResourceを呼ぶ | showcase |
 
 ### Event Sourcing
-Semantic Logger観察 → Event抽出 → フィルタ/replay → 永続化。Resource実行の観察ブリッジ。
+Semantic Logger観察 → Event抽出（`event-extraction` がentry）→ フィルタ/replay → 永続化。Resource実行の観察ブリッジ。
 
 | ID | 説明 | Status |
 |---|---|---|

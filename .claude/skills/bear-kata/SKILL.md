@@ -62,7 +62,7 @@ user-invocable: true
 - Aura.Router カスタムルーティング — フレームワーク設定
 
 **カバーなし（BEAR.Sundayに機能はあるがKata未実装）:**
-- PATCH メソッド — PUT tri-state で代替可能だが別メソッド
+- PATCH メソッド — `onPatch` はBEAR.Sundayがネイティブ対応。tri-state入力の型は `api-put-tristate-input` を流用可能
 - OPTIONS メソッド — `OptionsMethodModule` が公式に存在
 - Content Negotiation — `BEAR.Accept`, `#[Produces]` が公式に存在
 - 条件付きリクエスト / ETag 304 — `cacheable-response` が間接的に触れる
@@ -71,7 +71,7 @@ user-invocable: true
 ### 該当Kataが無い時
 
 1. **conventions.md を参照** — 命名・Read/Write分離・SQL外部化・HAL rel層分離などの規約はKata横断で適用できる
-2. **近いKataの型を当てはめる** — 例: PATCH → `api-put-tristate-input` のtri-state考え方、AOP interceptor → `csrf-same-origin-protection` の実装形、ETag → `cacheable-response` のCacheableResponse
+2. **近いKataの型を当てはめる** — 例: PATCH → `api-put-tristate-input` のtri-state入力の型を流用（`onPatch` はBEAR.Sundayがネイティブ対応）、AOP interceptor → `csrf-same-origin-protection` の実装形、ETag → `cacheable-response` のCacheableResponse
 3. **scope.md で意図的除外か確認** — [`docs/scope.md`](docs/scope.md) に意図的スコープ外の一覧がある
 4. **BEAR.Sunday公式マニュアルを参照** — https://bearsunday.github.io/manuals/1.0/en/
 
@@ -79,5 +79,5 @@ user-invocable: true
 
 - `comparison-only` の Kata（`db-array-row-comparison`, `db-sqlquery-orchestration`, `db-raw-pdo-comparison`）は**理解用**。正規形として移植しない。
 - 索引のパスはこのリポジトリ（BEAR.Kata）内の実ファイル。別プロジェクトへ移植する際は、命名規約（`docs/conventions.md`）と型を保ったまま自分の Entity 名へ読み替える。
-- **別プロジェクトでこのスキルを使う場合**、ローカルに `docs/source-index.md` が無いことがある。その時は GitHub のコピーを参照する: `https://github.com/bearsunday/BEAR.Examples/blob/1.x/docs/source-index.md`（raw: `https://raw.githubusercontent.com/bearsunday/BEAR.Examples/1.x/docs/source-index.md`）。`Source` / `Tests` のパスも同じリポジトリの該当ファイルとして読む。
+- **別プロジェクトでこのスキルを使う場合**、ローカルに `docs/source-index.md` が無いことがある。その時は GitHub のコピーを参照する: `https://github.com/bearsunday/BEAR.Kata/blob/1.x/docs/source-index.md`（raw: `https://raw.githubusercontent.com/bearsunday/BEAR.Kata/1.x/docs/source-index.md`）。`Source` / `Tests` のパスも同じリポジトリ（BEAR.Kata）の該当ファイルとして読む。
 - 索引に該当 Kata が無い時は、近い Status=`canonical` の Kata の型（Query/Command 分離、SQL外部化、ResourceObject body/status、HAL rel 層分離）を当てはめ、`docs/conventions.md` を参照する。
