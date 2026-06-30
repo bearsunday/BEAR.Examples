@@ -24,12 +24,13 @@ final class HtmlErrorPage extends ResourceObject
     {
         $this->code = $code;
         $this->headers = ['Content-Type' => 'text/html; charset=utf-8'];
+        $escapedMessage = htmlspecialchars($message, ENT_QUOTES);
         $list = $this->renderErrors($errors);
         $this->view = <<<HTML
         <!DOCTYPE html>
         <html lang="en">
         <head><meta charset="utf-8"><title>{$code} {$statusText}</title></head>
-        <body><h1>{$code} {$statusText}</h1><p>{$message}</p>{$list}</body>
+        <body><h1>{$code} {$statusText}</h1><p>{$escapedMessage}</p>{$list}</body>
         </html>
         HTML;
     }
