@@ -39,7 +39,9 @@
         "doctrine/migrations": "^3.9",
         "justinrainbow/json-schema": "^6.8",
         "phpunit/phpunit": "^10.0",
-        "roave/security-advisories": "dev-latest"
+        "roave/security-advisories": "dev-latest",
+        "bear/defer": "^0.1.0",
+        "bear/event-sourcing": "1.x-dev"
     },
     "autoload": {
         "psr-4": {
@@ -73,7 +75,10 @@
         ],
         "fake": "php bin/semantic-ex/gen-fake.php",
         "schema": "php bin/semantic-ex/gen-schemas.php",
-        "semantic": ["@fake", "@schema"],
+        "semantic": [
+            "@fake",
+            "@schema"
+        ],
         "cli": "./vendor/bin/bear-cli-gen 'BEAR\\Kata'",
         "malt:up": [
             "malt install",
