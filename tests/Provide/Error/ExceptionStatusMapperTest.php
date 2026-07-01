@@ -62,6 +62,17 @@ final class ExceptionStatusMapperTest extends TestCase
         $this->assertSame('Validation failed.', $message);
     }
 
+    public function testErrorsForValidationException(): void
+    {
+        $e = new ValidationException(['email' => ['Invalid email address.']]);
+        $this->assertSame(['email' => ['Invalid email address.']], $this->mapper->errors($e));
+    }
+
+    public function testErrorsAreEmptyForNonValidationException(): void
+    {
+        $this->assertSame([], $this->mapper->errors(new RuntimeException()));
+    }
+
     public function testStatusText(): void
     {
         $this->assertSame('Not Found', $this->mapper->statusText(Code::NOT_FOUND));

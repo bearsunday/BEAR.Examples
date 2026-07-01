@@ -79,6 +79,17 @@ final class ExceptionStatusMapper
         return $this->statusText($status);
     }
 
+    /**
+     * Structured per-field validation errors for a throwable, or `[]` when it
+     * carries none — so a handler can surface a `{ "errors": {...} }` body / list.
+     *
+     * @return array<string, list<string>> field path => messages
+     */
+    public function errors(Throwable $e): array
+    {
+        return $e instanceof ValidationException ? $e->errors : [];
+    }
+
     /** Reason phrase for an HTTP status (e.g. 404 → "Not Found"). */
     public function statusText(int $status): string
     {

@@ -50,7 +50,13 @@ final class AppThrowableHandler implements ThrowableHandlerInterface
         }
 
         $this->delegated = false;
-        $this->errorPage = new AppErrorPage($status, ['message' => $this->mapper->message($e, $status)]);
+        $body = ['message' => $this->mapper->message($e, $status)];
+        $errors = $this->mapper->errors($e);
+        if ($errors !== []) {
+            $body['errors'] = $errors;
+        }
+
+        $this->errorPage = new AppErrorPage($status, $body);
 
         return $this;
     }

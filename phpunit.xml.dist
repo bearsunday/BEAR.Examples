@@ -26,6 +26,9 @@
     <testsuite name="interceptor">
       <directory>tests/Interceptor</directory>
     </testsuite>
+    <testsuite name="provide">
+      <directory>tests/Provide</directory>
+    </testsuite>
     <testsuite name="service">
       <directory>tests/Service</directory>
     </testsuite>
