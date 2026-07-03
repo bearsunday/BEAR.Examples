@@ -39,6 +39,13 @@ See [BDR_PATTERN-ja.md](https://github.com/ray-di/Ray.MediaQuery/blob/1.x/BDR_PA
 | Resource  | `src/Query/*`        | `#[DbQuery]` Read interfaces → entity              |
 |           | `src/Query/*`        | `#[DbQuery]` Write interfaces → `void`             |
 
+Page resources reference App resources (`app://`) rather than owning
+domain state — the **Reachability** principle. A Page reads the App so
+the information stays reachable from the HAL API, CLI, `#[Embed]`,
+`#[Link]`, `#[Cacheable]`, JSON Schema, and ALPS; only pure presentation
+derivatives are owned by the Page. See
+[conventions.md §4 Reachability](conventions.md#reachability--page-reads-app).
+
 Factories are not used here: the simplest path is `FetchNewInstance` via
 PDO::FETCH_FUNC, which constructs the entity positionally from the SELECT
 column order. SQL files in `var/db/sql/` therefore project columns in the

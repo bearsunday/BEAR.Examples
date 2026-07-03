@@ -17,6 +17,7 @@ return [
     'app://self/articles' => ['get' => []],
     'app://self/auth' => ['get' => []],
     'app://self/author' => ['get' => ['id' => 1]],
+    'app://self/authors' => ['get' => []],
     'app://self/cache/articlepreview' => ['get' => ['id' => 1]],
     'app://self/cache/articletags' => ['get' => ['articleId' => 3]],
     'app://self/cache/author' => ['get' => ['id' => 1]],

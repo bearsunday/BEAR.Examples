@@ -20,6 +20,8 @@ Primary surface is the HAL+JSON App API. `src/Resource/Page/*` +
 that wrap the App resources. No JS frontend yet. Admin pages are protected
 by the typed `UserInterface` / `AdminUserInterface` boundary and a
 session-backed OAuth login flow (`/admin/login` → `/admin/callback`).
+Page resources reference App (they do not own domain state) — the
+Reachability principle, see `docs/conventions.md` §4 Reachability.
 
 ## Contexts
 
