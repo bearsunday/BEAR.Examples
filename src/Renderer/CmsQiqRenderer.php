@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace BEAR\Kata\Renderer;
 
+use BEAR\Resource\AbstractRequest;
 use BEAR\Resource\RenderInterface;
 use BEAR\Resource\ResourceObject;
 use ErrorException;
@@ -57,6 +58,17 @@ final readonly class CmsQiqRenderer implements RenderInterface
         }
 
         $vars = is_array($ro->body) ? $ro->body : ['value' => $ro->body];
+        // Resolve embedded child resources (lazy Requests) to their rendered
+        // string BEFORE the page template runs. Rendering a child mid-template
+        // shares Qiq's block state and would clobber the parent's setBlock()
+        // (e.g. the page header). Pre-rendering keeps each resource's blocks
+        // isolated, and each child is drawn with its own App template.
+        foreach ($vars as $key => $value) {
+            if ($value instanceof AbstractRequest) {
+                $vars[$key] = (string) $value;
+            }
+        }
+
         $vars += $this->commonVars($ro);
         if ($ro->code >= 500) {
             return $this->renderError($ro);

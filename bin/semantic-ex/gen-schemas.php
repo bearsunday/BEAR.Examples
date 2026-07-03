@@ -225,6 +225,18 @@ $authorSchema = [
     ],
 ];
 
+$authorListSchema = [
+    '$schema' => 'https://json-schema.org/draft/2020-12/schema',
+    '$id' => $baseId . '/authorList',
+    'title' => 'AuthorList',
+    'type' => 'object',
+    'required' => ['items'],
+    'properties' => [
+        'items' => ['type' => 'array', 'items' => ['$ref' => 'author.json']],
+        'totalCount' => ['type' => 'integer', 'minimum' => 0],
+    ],
+];
+
 $mediaSchema = [
     '$schema' => 'https://json-schema.org/draft/2020-12/schema',
     '$id' => $baseId . '/media',
@@ -253,6 +265,7 @@ $write('categoryList.json', $categoryListSchema);
 $write('tag.json', $tagSchema);
 $write('tagList.json', $tagListSchema);
 $write('author.json', $authorSchema);
+$write('authorList.json', $authorListSchema);
 $write('media.json', $mediaSchema);
 
 // observations.md (lightweight)

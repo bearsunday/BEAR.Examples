@@ -16,7 +16,7 @@ then the code/docs follow.
 1. [Code structure](#1-code-structure) — namespaces, directory layout, Read/Write split
 2. [Contexts](#2-contexts) — `hal-api-app` / `cli-` / `fake-` / `test-` composition
 3. [Naming](#3-naming) — class, query method, resource property, SQL filename, ALPS, HAL rel
-4. [Resource patterns](#4-resource-patterns) — body construction, status codes, after-INSERT id, pagination, **input shape & validation**, exceptions, named arguments, method order, **cache**
+4. [Resource patterns](#4-resource-patterns) — body construction, status codes, after-INSERT id, pagination, **input shape & validation**, exceptions, named arguments, method order, **cache**, **reachability (Page reads App)**
 5. [Read/Write SQL contract](#5-readwrite-sql-contract) — column order, fetch mode, write-id detection
 6. [File / data layout](#6-filedata-layout) — `var/` artefact placement
 7. [Tests](#7-tests) — context wiring, hermetic fakes, hypermedia workflow tests
@@ -682,6 +682,105 @@ as scalar metadata so the project shows both parameter styles side by side.
   tracked fixture directories.
 - After storing the file, create Media metadata through `MediaCommandInterface`
   and recover the new row with `byFilename()`.
+
+### Reachability — Page reads App
+
+This is the design conclusion that decides where a piece of information
+lives. It is one question asked repeatedly: **should this information
+exist on the App surface?** Yes → App resource (`app://`). No → Page.
+
+#### The principle
+
+A Page reads an App resource because the information has to be
+*operable in the App context*. Domain information that belongs on the
+App surface is defined as an App resource; the Page **references** it,
+it does not **own** it.
+
+Being an App resource means the information is **reachable** from *all*
+of: the HAL API, the CLI (`#[Cli]`), `#[Embed]`, `#[Link]`,
+`#[Cacheable]`, JSON Schema, and ALPS. Information placed in a Page is
+trapped on the HTML island — invisible from every one of those
+surfaces.
+
+The context relation is **one-directional**: `Page → App` may
+reference; `App → Page` does not exist. So even at a 1:1 mapping the
+Page reads the App — not to avoid duplication, but to keep the
+information *resident in the App context*.
+
+Two kinds of failure, asymmetric in severity:
+
+| Failure | Severity | What it costs |
+|---|---|---|
+| The Page assembles information that has **no corresponding `app://`** | **severe — forbidden** | a reachability *hole*: invisible from API / CLI / Embed |
+| The Page **re-assembles** information that already exists in App | minor | hurts DRY but preserves reachability |
+
+Lean toward referencing. A duplication is a smell; a hole is a defect.
+
+**The only exception is pure presentation derivatives** — things with
+no meaning on the API surface: `bodyHtml`, the CSRF token, form display
+state, empty-list messages, auth toggles, not-found guards. These may
+be owned by the Page.
+
+#### App holds state; context binds the representation
+
+An App resource holds **state only**; its representation is bound from
+the outside by the *outer context*. The App is indifferent to how it is
+rendered:
+
+- under `hal-api-app`, `HalRenderer` emits JSON;
+- under `html-hal-app`, the App resource *also* has an HTML template in
+  `templates/App/*`, rendered by `CmsQiqRenderer`.
+
+Canonical example: `src/Resource/App/Authors.php`
+(`app://self/authors`, `#[Cacheable]`) holds the author collection as
+body state; `templates/App/Authors.php` is its HTML representation (a
+`<ul>` fragment) used only under `html-hal-app`.
+`src/Resource/Page/AuthorList.php` references it via
+`#[Embed(rel: 'authorList', src: 'app://self/authors')]`, and
+`templates/Page/AuthorList.php` only lays it out with `<?= $authorList ?>`.
+
+`CmsQiqRenderer` pre-resolves each embedded child `Request` to a string
+*before* the page template runs, to avoid Qiq block-state clobbering
+(the shared-clone header bug).
+
+#### Choosing the embed kind
+
+Ownership of the **representation** is decided by embed kind: **normal
+embed → App owns it; self embed → Page owns it.**
+
+- **Show the child representation as-is → NORMAL embed** (the base
+  form). The child enters under the `{rel}` namespace, so
+  `{child.name}` keeps a DTO-like unit of meaning consistent across
+  body, template, and HAL output. The App holds the HTML template used
+  in the display. `AuthorList` above is the canonical example.
+- **Fuse several children's data into one integrated view the Page
+  lays out itself → SELF embed** (`rel: '_self'`): flatten the child
+  body into the parent's top level and discard the child
+  representation.
+
+Two constraints on self embed:
+
+1. A resource embedded as `_self` **must** use `#[Cacheable]` (value
+   cache). `#[CacheableResponse]` / `#[DonutCache]` restore only the
+   *view* on a cache hit, not the *body*, so `linkSelf` (which reads
+   the body) breaks. The framework enforces this with a domain
+   exception.
+2. Self embed's flat merge **collides** on multiple children
+   (`user.name` and `contact.name` both become `name`) and loses
+   provenance. The namespaced normal embed is the safer default.
+
+#### Cache and representation
+
+Refinements from measurement:
+
+- App-layer cache holds **representation-independent state only**
+  (`#[Cacheable]` `type=value`: body saved, `view=null`).
+- Representation-bearing cache (`type=view` / `#[CacheableResponse]`)
+  requires **per-context pool separation**: the cache key `getUriKey`
+  is URI-only and does not distinguish rendering context, so on a
+  shared pool an HTML view can bleed into a HAL response.
+- App does **not** reflect a render failure into its own state
+  (`code`).
 
 ## 5. Read/Write SQL contract
 
