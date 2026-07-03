@@ -758,14 +758,14 @@ embed → App owns it; self embed → Page owns it.**
   body into the parent's top level and discard the child
   representation.
 
-Two constraints on self embed:
+Two constraints on self-embed:
 
 1. A resource embedded as `_self` **must** use `#[Cacheable]` (value
    cache). `#[CacheableResponse]` / `#[DonutCache]` restore only the
    *view* on a cache hit, not the *body*, so `linkSelf` (which reads
    the body) breaks. The framework enforces this with a domain
    exception.
-2. Self embed's flat merge **collides** on multiple children
+2. Self-embed's flat merge **collides** on multiple children
    (`user.name` and `contact.name` both become `name`) and loses
    provenance. The namespaced normal embed is the safer default.
 

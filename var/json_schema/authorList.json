@@ -13,7 +13,7 @@
                 "$ref": "author.json"
             }
         },
-        "totalCount": {
+        "count": {
             "type": "integer",
             "minimum": 0
         }

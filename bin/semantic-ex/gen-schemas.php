@@ -233,7 +233,7 @@ $authorListSchema = [
     'required' => ['items'],
     'properties' => [
         'items' => ['type' => 'array', 'items' => ['$ref' => 'author.json']],
-        'totalCount' => ['type' => 'integer', 'minimum' => 0],
+        'count' => ['type' => 'integer', 'minimum' => 0],
     ],
 ];
 
