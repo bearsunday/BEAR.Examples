@@ -43,11 +43,18 @@ BEAR.Sunday公式ドキュメントの主要機能と、この索引の対応状
 | Ray.WebFormModule フォームバリデーション | 📖 型のみ | `form-validation-webform`（manual-only。このリポジトリの正規形はJSON Schema + DTO + PRG） |
 | Web context binding（`#[CookieParam]` 等 / `#[ResourceParam]`） | 📖 型のみ | `web-context-param-binding`（manual-only） |
 | AOP validation（`#[Valid]`） | 📖 型のみ | `aop-validation-valid`（manual-only。正規形は `json-schema-validation`） |
+| レート制限 / スロットリング | 🔗 外部参照 | `rate-limit-interceptor`（external。参照実装: apple-x-co/bear-app） |
+| リソース権限（RBAC/ACL） | 🔗 外部参照 | `resource-permission-authorization`（external。参照実装: apple-x-co/bear-app） |
+| バッチ / キューワーカー | 🔗 外部参照 | `batch-command-resource`（external。参照実装: apple-x-co/bear-app） |
+| 署名付きURL検証 | 🔗 外部参照 | `signed-url-verification`（external。参照実装: apple-x-co/bear-app） |
+| LLM Tool Use | 🔗 外部参照 | `tool-use-instrument`（external。参照実装: bearsunday/BEAR.ToolUse） |
 | Production デプロイ / compile / preload | ❌ スコープ外 | インフラ層 |
 | High-Performance Servers (Swoole / RR / FrankenPHP) | ❌ スコープ外 | ランタイム層 |
 | Aura.Router カスタムルーティング | ❌ スコープ外 | フレームワーク設定 |
 
-> 📖 型のみ（`manual-only`）: BEAR.Sundayに機能はあるがこのリポジトリに正規実装が無いKata。公式マニュアルを一次資料に、近い実装済みKataの型を流用して移植する。詳細は [docs/source-index.md](docs/source-index.md#manual-only型のみ記述--公式マニュアル準拠) を参照。
+> 📖 型のみ（`manual-only`）: BEAR.Sundayに機能はあるがこのリポジトリに正規実装が無いKata。公式マニュアルを一次資料に、近い実装済みKataの型を流用して移植する。
+> 🔗 外部参照（`external`）: 参照実装が外部公開リポジトリにあるKata。型を読み取って自プロジェクトで再実装する（コードはコピーしない）。
+> 詳細は [docs/source-index.md](docs/source-index.md) の各セクションを参照。
 
 ## Kata 一覧
 
@@ -60,6 +67,7 @@ BEAR.Sunday公式ドキュメントの主要機能と、この索引の対応状
 | `comparison-only` | 比較理解用。デフォルト実装としてコピーしない |
 | `support` | テスト、Fake、生成物など正規形を支える周辺実装 |
 | `manual-only` | 公式マニュアルを一次資料とする型の記述のみ。このリポジトリに正規実装・テストはまだ無い |
+| `external` | 外部公開リポジトリの参照実装を指す型の記述。このリポジトリに正規実装は無い |
 
 ### Data access / BDR
 DB読み書きの正規形。Ray.MediaQuery + `#[DbQuery]` + Entity/Factory のBDRパターン。
@@ -178,6 +186,17 @@ BEAR.Sundayに機能はあるがこのリポジトリに正規実装が無いKat
 | [`web-context-param-binding`](docs/source-index.md#web-context-param-binding) | Webコンテキスト値と他Resource値を引数に束縛する | manual-only |
 | [`db-transactional`](docs/source-index.md#db-transactional) | `#[Transactional]`で複数書き込みを原子化する | manual-only |
 | [`aop-validation-valid`](docs/source-index.md#aop-validation-valid) | `#[Valid]`/`#[OnValidate]`でAOPバリデーション | manual-only |
+
+### External reference（外部参照実装）
+参照実装が外部公開リポジトリ（[apple-x-co/bear-app](https://github.com/apple-x-co/bear-app)、[bearsunday/BEAR.ToolUse](https://github.com/bearsunday/BEAR.ToolUse)）にあるKata。型を読み取って自プロジェクトで再実装する。
+
+| ID | 説明 | Status |
+|---|---|---|
+| [`rate-limit-interceptor`](docs/source-index.md#rate-limit-interceptor) | `#[RateLimiter]`×interceptorで試行回数を制限する | external |
+| [`resource-permission-authorization`](docs/source-index.md#resource-permission-authorization) | `#[RequiredPermission]`でリソース単位の権限を判定する | external |
+| [`batch-command-resource`](docs/source-index.md#batch-command-resource) | バッチ/キューワーカーをCommand Resourceとして表現する | external |
+| [`signed-url-verification`](docs/source-index.md#signed-url-verification) | 有効期限付き署名URLでメール検証リンクを実装する | external |
+| [`tool-use-instrument`](docs/source-index.md#tool-use-instrument) | `#[Tool]`でResourceをLLMのtool定義として公開する | external |
 
 ## スキルを獲得して使う
 

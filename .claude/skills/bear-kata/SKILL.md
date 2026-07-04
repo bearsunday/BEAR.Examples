@@ -26,6 +26,7 @@ user-invocable: true
    - `comparison-only` … 比較理解用。**デフォルト実装にコピーしない。**
    - `support` … テスト/Fake/生成物。
    - `manual-only` … 型の記述のみ。**公式マニュアルを一次資料に、「近いKata」の型を流用して移植する。**
+   - `external` … 型の記述のみ。**`Reference:` の外部リポジトリを参照実装として読み、自プロジェクトで再実装する（コードはコピーしない）。**
 4. **着手前チェック（Before）を読む。** 書き始める前に守るべき型と前提（命名・分離・契約）を確認する。
 5. **READ → OBSERVE。** `Source` を読んで `Key points` と `Do not` を把握し、`Tests` で期待される振る舞い（status / body / link / embed）を確認する。
 6. **IMPLEMENT → MASTER。** ユーザーのプロジェクトに移植したら、**マスター確認（After）** のチェックリストを実装に対して走らせる。最終確証は「`Tests` に挙げたテストを自分の実装へ写経して green になること」。全項目 ✓ なら、その Kata をマスターしたと判断する。
@@ -60,10 +61,17 @@ user-invocable: true
 - `api-patch-partial-update` — PATCH差分更新（近いKata: `api-put-tristate-input`）
 - `api-options-method` — OPTIONS（`OptionsMethodModule`）
 - `content-negotiation` — `BEAR.Accept` / `#[Produces]`
-- `form-validation-webform` — Ray.WebFormModule（このリポジトリの正規形はJSON Schema + DTO + PRG）
+- `form-validation-webform` — Ray.WebFormModule（このリポジトリの正規形はJSON Schema + DTO + PRG。実働参照: apple-x-co/bear-app）
 - `web-context-param-binding` — `#[CookieParam]` 等 / `#[ResourceParam]`
 - `db-transactional` — `#[Transactional]`
 - `aop-validation-valid` — `#[Valid]` / `#[OnValidate]`（正規形は `json-schema-validation`）
+
+**external（外部参照実装 5 Kata — 型を読み取り再実装する）:**
+- `rate-limit-interceptor` — `#[RateLimiter]` × interceptor（429、総当たり対策。参照: apple-x-co/bear-app）
+- `resource-permission-authorization` — `#[RequiredPermission]` × AccessControl（RBAC/ACL。参照: apple-x-co/bear-app）
+- `batch-command-resource` — cron/queue workerをCommand Resource化（参照: apple-x-co/bear-app）
+- `signed-url-verification` — 有効期限付き署名URL（メール検証。参照: apple-x-co/bear-app）
+- `tool-use-instrument` — `#[Tool]` でResourceをLLM tool定義に（参照: bearsunday/BEAR.ToolUse）
 
 **カバーなし（意図的スコープ外）:**
 - Production デプロイ / compile / preload — インフラ層
@@ -73,7 +81,7 @@ user-invocable: true
 
 ### 該当Kataが無い時
 
-1. **manual-only Kata を確認** — PATCH / OPTIONS / content negotiation / WebForm / web context binding / `#[Transactional]` / `#[Valid]` は型の記述がある（Sourceは公式マニュアル）
+1. **manual-only / external Kata を確認** — PATCH / OPTIONS / content negotiation / WebForm / web context binding / `#[Transactional]` / `#[Valid]` / レート制限 / RBAC / バッチworker / 署名URL / Tool Use は型の記述がある（一次資料は公式マニュアルまたは外部参照実装）
 2. **conventions.md を参照** — 命名・Read/Write分離・SQL外部化・HAL rel層分離などの規約はKata横断で適用できる
 3. **近いKataの型を当てはめる** — 例: AOP interceptor → `csrf-same-origin-protection` の実装形、ETag/304 → `conditional-request-304`
 4. **scope.md で意図的除外か確認** — [`docs/scope.md`](docs/scope.md) に意図的スコープ外の一覧がある

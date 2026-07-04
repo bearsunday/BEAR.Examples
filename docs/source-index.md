@@ -34,6 +34,7 @@ BEAR.Kata の各エントリは「Kata（型）」です。武道の型と同じ
 | `comparison-only` | 比較理解用。デフォルト実装としてコピーしない |
 | `support` | テスト、Fake、生成物など正規形を支える周辺実装 |
 | `manual-only` | 公式マニュアルを一次資料とする型の記述のみ。このリポジトリに正規実装・テストはまだ無い |
+| `external` | 外部公開リポジトリ（実働アプリ・未導入パッケージ）の参照実装を指す型の記述。このリポジトリに正規実装は無い |
 
 ## 使い方
 
@@ -44,7 +45,7 @@ BEAR.Kata の各エントリは「Kata（型）」です。武道の型と同じ
 5. `Tests` を読み、期待される振る舞いを確認します。
 6. 実装後に **マスター確認** のチェックリストを自分のコードに対して走らせ、全項目が満たされたらそのKataをマスターしたと判断します。マスター確認は「`Tests` に挙げたテストを自分の実装へ写経して green になること」を最終確証とします。
 
-`manual-only` のKataは手順が異なります。Sourceの代わりに公式マニュアル章を読み、**近いKata** に挙げた実装済みKataの型（命名・分離・テスト形）を流用して移植します。マスター確認は自プロジェクトに書いたテストのgreenが最終確証です。
+`manual-only` と `external` のKataは手順が異なります。Sourceの代わりに一次資料（公式マニュアル章、または `Reference:` の外部リポジトリ）を読み、**近いKata** に挙げた実装済みKataの型（命名・分離・テスト形）を流用して移植します。マスター確認は自プロジェクトに書いたテストのgreenが最終確証です。
 
 ## 索引（一覧）
 
@@ -114,6 +115,11 @@ BEAR.Kata の各エントリは「Kata（型）」です。武道の型と同じ
 | [`web-context-param-binding`](#web-context-param-binding) | manual-only | Webコンテキスト値と他Resource値を引数に束縛する |
 | [`db-transactional`](#db-transactional) | manual-only | `#[Transactional]`で複数書き込みを原子化する |
 | [`aop-validation-valid`](#aop-validation-valid) | manual-only | `#[Valid]`/`#[OnValidate]`でAOPバリデーション |
+| [`rate-limit-interceptor`](#rate-limit-interceptor) | external | `#[RateLimiter]`×interceptorで試行回数を制限する |
+| [`resource-permission-authorization`](#resource-permission-authorization) | external | `#[RequiredPermission]`でリソース単位の権限を判定する |
+| [`batch-command-resource`](#batch-command-resource) | external | バッチ/キューワーカーをCommand Resourceとして表現する |
+| [`signed-url-verification`](#signed-url-verification) | external | 有効期限付き署名URLでメール検証リンクを実装する |
+| [`tool-use-instrument`](#tool-use-instrument) | external | `#[Tool]`でResourceをLLMのtool定義として公開する |
 
 ## Data access / BDR
 
@@ -266,7 +272,7 @@ BEAR.Kata の各エントリは「Kata（型）」です。武道の型と同じ
   - `tests/Resource/App/ArticleTest.php`
   - `tests/Integration/ArticleMySQLTest.php`
   - `tests/Smoke/MediaQuerySamplesTest.php`
-- **Key points:** readは `<Entity>QueryInterface`、writeは `<Entity>CommandInterface` に分ける。write methodは `add`, `update`, `delete` の命令形。同じSQL idでも宣言した戻り値型だけで挙動が切り替わる：`void`=実行のみ / `AffectedRows`=影響行数 / `InsertedRow`=auto-increment idと解決済み値。影響行数が要る遷移系writeの実例は `ArticleCommandInterface::publish(): AffectedRows`。
+- **Key points:** readは `<Entity>QueryInterface`、writeは `<Entity>CommandInterface` に分ける。write methodは `add`, `update`, `delete` の命令形。同じSQL idでも宣言した戻り値型だけで挙動が切り替わる：`void`=実行のみ / `AffectedRows`=影響行数 / `InsertedRow`=auto-increment idと解決済み値。影響行数が要る遷移系writeの実例は `ArticleCommandInterface::publish(): AffectedRows`。Ray.MediaQueryは `DateTimeInterface` 引数の自動SQL文字列変換や `ToScalarInterface` / `__toString()` による値オブジェクト変換も提供する（本リポジトリはwire値を `SqlDateTime::fromRfc3339()` で明示変換して渡す方式）。
 - **Do not:** read/write methodを同じinterfaceに混ぜる。
 - **マスター確認（After）:**
   - [ ] `<Entity>QueryInterface` に write method が、`<Entity>CommandInterface` に read method が混ざっていない。
@@ -405,6 +411,19 @@ BEAR.Kata の各エントリは「Kata（型）」です。武道の型と同じ
 
 ## Resource / API
 
+RESTメソッドはテーブルへのCRUDではなく、application stateへの操作です。各メソッドの安全性（safe=状態を変えない）と冪等性（idempotent=繰り返しても同じ結果）が、キャッシュ戦略とAI安全設計の両方を駆動します。
+
+| Method | Safe | Idempotent | 意味 |
+|---|---|---|---|
+| GET | ✅ | ✅ | 状態を読む。自由にキャッシュ・AIから自由に呼べる |
+| POST | — | — | 状態を変える。繰り返しは同じ結果を保証しない |
+| PUT | — | ✅ | representation全体をURIに置く（無ければ作成） |
+| PATCH | — | — | 差分を適用する |
+| DELETE | — | ✅ | 削除する |
+| OPTIONS | ✅ | ✅ | 必要パラメータと応答仕様を照会する |
+
+また `#[Embed]` が埋め込むのはresourceの**結果**ではなくresourceへの**request**（=関係そのもの）です。この区別が、Resourceクラスを変えないままの並列実行（`async-embed-parallel`）・DataLoaderバッチ（`crawl-data-loader`）・部分キャッシュ（`donut-cache`）を可能にします。
+
 ### `api-get-hal-resource`
 
 **GET ResourceをHAL+JSONで返す**
@@ -450,7 +469,7 @@ BEAR.Kata の各エントリは「Kata（型）」です。武道の型と同じ
   - `var/json_validate/article_create.json`
 - **Tests:**
   - `tests/Resource/App/ArticleTest.php`
-- **Key points:** Resource method parameterに `#[Input] ArticleCreateInput $input` を置く。schema validationは `#[JsonSchema(params: ...)]`。失敗モードは2層 — 必須fieldの欠落はDTO生成時の `ParameterException`、schema違反（pattern等）は `ValidationException`（いずれも400）。成功時は `Code::CREATED`（201）+ `Location` header、新idは自然キー再SELECTで回収（`db-read-by-natural-key`）。Ray.InputQueryはネストDTOや `#[Input(item: ...)]` のobject array入力にも対応する。
+- **Key points:** Resource method parameterに `#[Input] ArticleCreateInput $input` を置く。schema validationは `#[JsonSchema(params: ...)]`。失敗モードは2層 — 必須fieldの欠落はDTO生成時の `ParameterException`、schema違反（pattern等）は `ValidationException`（いずれも400）。成功時は `Code::CREATED`（201）+ `Location` header、新idは自然キー再SELECTで回収（`db-read-by-natural-key`）。Ray.InputQueryはネストDTOや `#[Input(item: ...)]` のobject array入力にも対応する。作成後のresource本体を201 bodyで返したい場合はbear/packageの `#[ReturnCreatedResource]` がLocationの内部GETを自動で行う。
 - **Do not:** 多数の関連する入力を無理にflat scalar parameterへ増やし続けない。
 - **マスター確認（After）:**
   - [ ] method signature が `#[Input] <Entity>CreateInput $input` になっている。
@@ -566,7 +585,7 @@ BEAR.Kata の各エントリは「Kata（型）」です。武道の型と同じ
 **HAL `_links` を `#[Link]` で宣言する**
 
 - **ID:** `hal-link`
-- **Aliases:** HAL link, `_links`, `#[Link]`, affordance, Choreography rel, URI template, リンク, 遷移, ハイパーメディア, URIテンプレート
+- **Aliases:** HAL link, `_links`, `#[Link]`, affordance, Choreography rel, URI template, linkSelf, linkNew, リンク, 遷移, ハイパーメディア, URIテンプレート
 - **Status:** `canonical`
 - **Manual:** https://bearsunday.github.io/manuals/1.0/en/resource_link.html
 - **Use when:** clientが次に遷移できるResourceをHAL linkとして表したい。
@@ -955,6 +974,8 @@ BEAR.Kata の各エントリは「Kata（型）」です。武道の型と同じ
 
 ## Runtime / representation
 
+キャッシュ束（`cacheable-leaf` 〜 `conditional-request-304`）の前提は「キャッシュを無効化するのは時間（TTL）ではなくイベント（write）」です。着手前に1つだけ問うこと — そのresourceは本質的に静的（data resource。DBから読んでいても意味は静的）か、本質的に動的（計算過程自体が表現）か。前者ならcache Kataを適用し、後者にはcache属性を付けません。TTLを短くすることを戦略の代用にしないでください。
+
 ### `stream-response`
 
 **ファイルやバイナリをストリームで返す**
@@ -1168,7 +1189,7 @@ BEAR.Kata の各エントリは「Kata（型）」です。武道の型と同じ
   - `src/Resource/App/Category.php`
 - **Tests:**
   - `tests/Resource/App/CacheTest.php`
-- **Key points:** `#[Purge(uri: 'app://self/articles')]` をwrite methodに付ける。`#[Purge]` はrepeatableで、URI templateにmethod引数をbindできる（`#[Purge(uri: 'app://self/user/friend?user_id={id}')]`）。非 `#[Cacheable]` クラスでは `#[Purge]`/`#[Refresh]` 付きmethodのみにinterceptorがbindされるため、write methodごとの付け忘れに注意。
+- **Key points:** `#[Purge(uri: 'app://self/articles')]` をwrite methodに付ける。`#[Purge]` はrepeatableで、URI templateにmethod引数をbindできる（`#[Purge(uri: 'app://self/user/friend?user_id={id}')]`）。非 `#[Cacheable]` クラスでは `#[Purge]`/`#[Refresh]` 付きmethodのみにinterceptorがbindされるため、write methodごとの付け忘れに注意。実行時の手動無効化は `DonutRepositoryInterface::purge(new Uri(...))` / `invalidateTags([...])` でも行える（manual「Cache invalidation」）。
 - **Do not:** `#[Purge]` にitem URIを渡さない（同一URIの無効化は自動に任せる）。query-string variantまでpurgeされると誤解しない。write後のPurgeを忘れない。
 - **マスター確認（After）:**
   - [ ] POST/PUT/DELETE後にRepositoryLoggerのログへ `purge-query-repository` と対象collection URIが出ることを `CacheTest.php` 相当で green。
@@ -1751,9 +1772,10 @@ BEAR.Kata の各エントリは「Kata（型）」です。武道の型と同じ
 **Ray.WebFormModuleでAOPフォームバリデーション**
 
 - **ID:** `form-validation-webform`
-- **Aliases:** WebFormModule, #[FormValidation], #[InputValidation], Aura.Input, form class, vnd.error, フォームバリデーション
+- **Aliases:** WebFormModule, #[FormValidation], #[InputValidation], Aura.Input, form class, vnd.error, onPostValidationFailed, フォームバリデーション
 - **Status:** `manual-only`
 - **Manual:** https://bearsunday.github.io/manuals/1.0/en/form.html
+- **Reference:** [apple-x-co/bear-app](https://github.com/apple-x-co/bear-app) — `source/app/src/Resource/Page/Admin/Login.php`（`#[FormValidation]` + `onPostValidationFailed` callback）、`source/app/src/Form/Admin/*Form.php`（Contact / Fieldset / Multiple / Upload の4種のform demo）
 - **Use when:** フィールド定義・検証ルール・描画helperを1つのform classに集約し、AOPで検証を差し込みたい。
 - **近いKata:** `admin-prg-form`（このリポジトリの正規形: JSON Schema + Input DTO + PRG + CSRF）。WebFormはそれに代わる別方式であり、同じ境界で併用しない。
 - **着手前チェック（Before）:**
@@ -1820,3 +1842,111 @@ BEAR.Kata の各エントリは「Kata（型）」です。武道の型と同じ
 - **Do not:** JSON Schemaで表現できる形状検証をAOP validationに重複させない。
 - **マスター確認（After）:**
   - [ ] 検証分離後もmethod本体に検証分岐が残っていないことを確認し、成功/失敗経路を自プロジェクトのtestでpinしてgreen。
+
+## External reference（外部参照実装の型）
+
+このセクションのKataは、BEAR.Sundayの実装型として価値があるが、参照実装がこのリポジトリではなく外部の公開リポジトリにあるものです。
+
+- 参照実装の主な出典は [apple-x-co/bear-app](https://github.com/apple-x-co/bear-app)（DDD + CQRS構成の実働BEAR.Sundayアプリ。`Reference:` のパスは同リポジトリの `source/app/` 配下）と、公式パッケージ [bearsunday/BEAR.ToolUse](https://github.com/bearsunday/BEAR.ToolUse)。
+- bear-appにはライセンス表記が無いため**コードをコピーしない**こと。attribute × interceptor の構成・命名・責務分割という「型」を読み取り、自プロジェクトで再実装します。
+- bear-appはDDD層構造（Domain/Application/Infrastructure）を採用しており、このリポジトリのBDR（Bound / Domain / Resource）とはアーキテクチャの流儀が異なります。以下のKataはその流儀差に依存しない横断的な型のみを抽出しています。
+
+### `rate-limit-interceptor`
+
+**`#[RateLimiter]`×interceptorで試行回数を制限する**
+
+- **ID:** `rate-limit-interceptor`
+- **Aliases:** rate limit, throttling, #[RateLimiter], 429, Too Many Requests, brute force, レート制限, スロットリング, 総当たり対策, アカウントロック
+- **Status:** `external`
+- **Manual:** https://bearsunday.github.io/manuals/1.0/en/aop.html（AOPの一次資料）
+- **Reference:** [apple-x-co/bear-app](https://github.com/apple-x-co/bear-app) — `src/Annotation/RateLimiter.php`, `src/Interceptor/Throttling.php`, `ddd/core/src/Domain/Throttle/`
+- **Use when:** ログインや公開write APIへの試行回数をURI×IP単位で制限し、超過を429で拒否したい。
+- **近いKata:** `csrf-same-origin-protection`（attribute × interceptor × AOP bindの実装形はこれを流用）
+- **着手前チェック（Before）:**
+  - [ ] ポリシー（`limit` / `interval`）はattribute引数に持たせ、interceptorは `getAnnotation()` で読むと決めたか。
+  - [ ] 制限キーの単位（例: `sha1($uri . '|' . $remoteIp)`）とカウンタの保存先（DB/cache）を決めたか。
+  - [ ] カウント・判定はdomain service（`ThrottlingHandlerInterface` 相当）に委譲し、interceptorは調停のみにすると決めたか。
+- **Key points:** `#[RateLimiter(limit: 10, interval: '30 minutes')]` をwrite methodに付与。interceptorは超過なら429を設定して例外、通過なら `countUp()` して `proceed()`。intervalはPHPのrelative format文字列。ログイン失敗の恒久ロック（account lock）も同じThrottle domainの応用。
+- **Do not:** interceptorにストレージ実装を直書きしない。`X-Forwarded-For` を無検証で信頼しない（信頼できるproxy配下でのみ使用し、それ以外は `REMOTE_ADDR`）。
+- **マスター確認（After）:**
+  - [ ] 上限超過で429、interval経過後に回復することを自プロジェクトのtestでpinしてgreen。
+
+### `resource-permission-authorization`
+
+**`#[RequiredPermission]`でリソース単位の権限を判定する**
+
+- **ID:** `resource-permission-authorization`
+- **Aliases:** RBAC, ACL, permission, #[RequiredPermission], authorization, role, 権限, 認可, ロール, アクセス制御
+- **Status:** `external`
+- **Manual:** https://bearsunday.github.io/manuals/1.0/en/security.html
+- **Reference:** [apple-x-co/bear-app](https://github.com/apple-x-co/bear-app) — `src/Annotation/RequiredPermission.php`, `src/Interceptor/AdminAuthorization.php`, `ddd/core/src/Domain/AccessControl/`
+- **Use when:** author-ownership（`admin-auth-boundary`）を超えて、ロール/権限（Read/Write/Privilege等）でリソース単位のアクセス制御をしたい。
+- **近いKata:** `admin-auth-boundary`（401=認証と403=認可の責務分離。ownership比較はそちら）
+- **着手前チェック（Before）:**
+  - [ ] `#[RequiredPermission(resourceName, Permission::Write)]` のようにmethodへ要求権限を宣言し、interceptorが現在ユーザーの `AccessControl::isAllowed()` で判定すると決めたか。
+  - [ ] attribute未付与のmethodをfail-closed（Forbidden）にする方針を理解したか（bear-appの `AdminAuthorization` はannotation不在で即throw）。
+  - [ ] Permissionをenumで定義し、allow/denyルールの構築をResourceから分離すると決めたか。
+- **Key points:** 判定素材（resourceName × Permission enum）はattributeが持ち、interceptorは認証済みユーザーのAccessControlに委譲して403。ルール構築（`addResource()->allow()->deny()`）はimmutableなdomain objectに閉じる。
+- **Do not:** 権限判定をResource本体に散らさない（資源データ依存のownership比較は例外 — `admin-auth-boundary` と使い分ける）。fail-openにしない。
+- **マスター確認（After）:**
+  - [ ] 権限のあるユーザーで200、無いユーザーで403、attribute未付与methodで403（fail-closed）を自プロジェクトのtestでpinしてgreen。
+
+### `batch-command-resource`
+
+**バッチ/キューワーカーをCommand Resourceとして表現する**
+
+- **ID:** `batch-command-resource`
+- **Aliases:** command resource, batch, cron, queue worker, mail queue, scheduled job, バッチ, 定期実行, キューワーカー, メールキュー
+- **Status:** `external`
+- **Manual:** https://bearsunday.github.io/manuals/1.0/en/resource.html（Resource一般）, https://bearsunday.github.io/manuals/1.0/en/cli.html（CLI起動）
+- **Reference:** [apple-x-co/bear-app](https://github.com/apple-x-co/bear-app) — `src/Resource/Command/SendEmailFromEmailQueue.php`, `src/Resource/Command/DeleteAdmins.php`, `bin/command.php`
+- **Use when:** cronやワーカーが実行するバッチ処理（メールキュー送信、掃除ジョブ、予約公開）をResourceの統一インターフェースで表現したい。
+- **近いKata:** `cli-resource`（HTTP以外からResourceを呼ぶ同型）, `defer-resource-request`（応答後実行との使い分け — リトライが必要な処理はdeferでなくqueue+バッチ）
+- **着手前チェック（Before）:**
+  - [ ] バッチも `ResourceObject`（`Resource/Command/*` の `onPost`）にし、cron側は `php bin/command.php post /send-email-from-email-queue` のようにURIで起動すると決めたか。
+  - [ ] バッチ専用のCLI context（bear-appは `cli-command-app`）を用意すると理解したか。
+  - [ ] 処理の実体はUseCase/domain serviceに置き、Command Resourceは境界（起動点）のみにすると決めたか。
+- **Key points:** ジョブの入口もURIになるため、手動再実行・テスト・監視が通常のResourceと同じ道具で揃う。DBのqueueテーブル＋定期起動のCommand Resourceという構成は、失敗時に再実行可能なジョブ（メール送信等）の置き場所として `#[Defer]`（応答後・at-most-once）と補完関係にある。
+- **Do not:** cronスクリプトからドメインロジックを直接呼ばない（Resource URIを唯一の入口に保つ）。リトライ必須の処理をdefer（応答後実行）で代用しない。
+- **マスター確認（After）:**
+  - [ ] CLIからCommand Resource経由でジョブが実行され、同じResourceをテストから `ResourceInterface` で呼べることを確認してgreen。
+
+### `signed-url-verification`
+
+**有効期限付き署名URLでメール検証リンクを実装する**
+
+- **ID:** `signed-url-verification`
+- **Aliases:** signed URL, URL signature, email verification, expiring link, magic link, 署名付きURL, メール検証, 有効期限付きリンク
+- **Status:** `external`
+- **Manual:** —（公式マニュアル章なし）
+- **Reference:** [apple-x-co/bear-app](https://github.com/apple-x-co/bear-app) — `ddd/core/src/Domain/UrlSignature/`, `src/Resource/Page/Admin/EmailVerify.php`, `src/Resource/Page/Admin/Join.php`
+- **Use when:** メールアドレス検証・招待・下書きプレビュー共有など、URLだけで一時的な権限を渡すリンクを発行したい。
+- **近いKata:** `admin-session-login`（外部から戻ってくるフローの型）, `error-status-mapping`（検証失敗例外→ステータスの振り分け）
+- **着手前チェック（Before）:**
+  - [ ] 有効期限＋対象（address等）を持つpayloadを暗号化/署名してURLに載せ、平文のserialize文字列を露出させないと決めたか。
+  - [ ] 検証失敗を `ExpiredSignatureException` / `InvalidSignatureException` のような型付き例外で投げ分け、ステータスへマッピングすると決めたか。
+  - [ ] deserialize時に `unserialize($s, ['allowed_classes' => false])` でオブジェクト注入を防ぐと理解したか（またはJSONを使う）。
+- **Key points:** payload（expiry + address + random）を `UrlSignatureEncrypterInterface` 相当で不透明トークン化し、検証Page Resourceが復号→期限/宛先検証→本処理。期限切れ・改竄・宛先不一致で別々の例外を投げ、UXを分岐できる。
+- **Do not:** 未署名・未暗号化のpayloadをURLに載せない。期限なしの検証リンクを発行しない。
+- **マスター確認（After）:**
+  - [ ] 正常リンクで検証成功、期限切れ・改竄リンクでそれぞれ期待するエラー応答になることを自プロジェクトのtestでpinしてgreen。
+
+### `tool-use-instrument`
+
+**`#[Tool]`でResourceをLLMのtool定義として公開する**
+
+- **ID:** `tool-use-instrument`
+- **Aliases:** Tool Use, MCP, AI instrument, #[Tool], #[Exclude], LlmClientInterface, agent loop, AIエージェント, ツール定義
+- **Status:** `external`
+- **Manual:** —（公式マニュアル章なし。learnサイト「AI Era」が背景思想）
+- **Reference:** [bearsunday/BEAR.ToolUse](https://github.com/bearsunday/BEAR.ToolUse)（`composer require bear/tool-use`。このリポジトリには未インストール）
+- **Use when:** BEAR.SundayのResourceを、コードを書き換えずにLLMのtool（function calling / Tool Use）として公開したい。
+- **近いKata:** `apidoc-llms-generated`（Resource/schema/ALPSからのAI向け資料生成という同じSSOT原理）
+- **着手前チェック（Before）:**
+  - [ ] tool定義はResource classから自動生成され、parameter説明はJSON Schema・ALPS profile・PHPDocから引かれると理解したか（説明を別途手書きしない）。
+  - [ ] 公開範囲は `#[Tool(description: ...)]` / `#[Exclude]` で制御すると決めたか。
+  - [ ] LLM側は `LlmClientInterface` 実装で差し替え（LLM-agnostic）と理解したか。
+- **Key points:** 「GETはsafe（AIが自由に呼べる）、writeは冪等性で扱いを分ける」というmethod意味論が、そのままAIのtool安全設計になる。URI・型・schemaという既存のresource定義がtool定義のSSOT — `docs/llms.txt`（`apidoc-llms-generated`）が知識面、Tool Useが実行面。
+- **Do not:** tool説明をResource定義と別に二重管理しない。安全でないwrite系toolを無制限にAIへ公開しない。
+- **マスター確認（After）:**
+  - [ ] `#[Tool]` 付きResourceのtool定義が生成され、`#[Exclude]` が反映されることを自プロジェクトのtestでpinしてgreen。
