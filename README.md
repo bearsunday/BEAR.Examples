@@ -11,25 +11,26 @@ BEAR.Sunday公式ドキュメントの主要機能と、この索引の対応状
 | 機能領域 | Kata有無 | 該当Kata |
 |---|---|---|
 | Resource GET / POST / PUT / DELETE | ✅ | `api-get-hal-resource`, `api-post-input-dto`, `api-put-tristate-input`, `api-delete-no-content` |
-| Resource PATCH | ❌ 未実装 | `onPatch` はBEAR.Sundayがネイティブ対応。tri-state入力の型は `api-put-tristate-input` を流用可能 |
-| Resource OPTIONS | ❌ 未実装 | `OptionsMethodModule` が公式に存在 |
+| Resource PATCH | 📖 型のみ | `api-patch-partial-update`（manual-only。tri-state入力の型は `api-put-tristate-input` を流用） |
+| Resource OPTIONS | 📖 型のみ | `api-options-method`（manual-only。`OptionsMethodModule`） |
 | HAL `_links` / `_embedded` | ✅ | `hal-link`, `hal-embed` |
 | Crawl / DataLoader | ✅ | `crawl-data-loader` |
 | Not Found (404) | ✅ | `not-found-response` |
 | JSON Schema validation | ✅ | `json-schema-validation`, `json-schema-generated` |
-| DB: BDR read / write / pager / link table / after-insert lookup | ✅ | `db-read-one-entity`, `db-read-by-natural-key`, `db-read-list-pager`, `db-command-write`, `db-link-table-sync` |
+| DB: BDR read / write / pager / link table / after-insert lookup | ✅ | `db-read-one-entity`, `db-entity-factory`, `db-read-by-natural-key`, `db-read-list-pager`, `db-command-write`, `db-link-table-sync` |
 | DB: Result projection / CQRS | ✅ | `db-result-projection` |
+| DB: トランザクション（`#[Transactional]`） | 📖 型のみ | `db-transactional`（manual-only。backing classはインストール済み） |
 | Cache: `#[Cacheable]` / `#[DonutCache]` / `#[CacheableResponse]` / `#[Purge]` | ✅ | `cacheable-leaf`, `donut-cache`, `cacheable-response`, `cache-purge` |
 | Cache: `#[Embed]` dependency / `fromAssoc` | ✅ | `cache-embed-dependency`, `cache-body-derived-dependency` |
 | Cache: ETag 配信 | ✅ | `cacheable-response` がETagを付与 |
-| Cache: 304 Conditional Request（If-None-Match） | ❌ 未実装 | ETag配信は `cacheable-response` が対応、304応答は未実装 |
+| Cache: 304 Conditional Request（If-None-Match） | ✅ | `conditional-request-304` — `src/Bootstrap.php` の `isNotModified()` が304を返す |
 | HTML: Page / Qiq detail / list | ✅ | `page-resource-qiq-detail`, `page-resource-list` |
 | HTML: Markdown 変換 | ✅ | `markdown-to-html` |
-| HTML: Admin PRG / auth boundary | ✅ | `admin-prg-form`, `admin-auth-boundary` |
+| HTML: Admin PRG / 確認画面 / auth boundary | ✅ | `admin-prg-form`, `admin-confirm-page`, `admin-auth-boundary` |
 | Stream response | ✅ | `stream-response` |
 | Async / Parallel embed | ✅ | `async-embed-parallel` |
 | CLI | ✅ | `cli-resource` |
-| OAuth 認証 | ✅ | `auth-oauth-flow` |
+| OAuth 認証 / セッションログイン | ✅ | `auth-oauth-flow`, `admin-session-login` |
 | CSRF / Same-Origin 保護 | ✅ | `csrf-same-origin-protection` |
 | ファイルアップロード | ✅ | `file-upload-input` |
 | 状態遷移 Resource | ✅ | `state-transition-resource` |
@@ -38,11 +39,15 @@ BEAR.Sunday公式ドキュメントの主要機能と、この索引の対応状
 | Deferred execution | ✅ | `defer-resource-request`, `defer-conditional` |
 | Import (cross-app) | ✅ | `import-app` |
 | ALPS / API Doc / fake data | ✅ | `alps-profile-ssot`, `apidoc-llms-generated`, `semantic-fake-data` |
-| Content Negotiation | ❌ 未実装 | `BEAR.Accept`, `#[Produces]` が公式に存在 |
-| Ray.WebFormModule フォームバリデーション | ❌ 未実装 | `admin-prg-form` はPRGのみ |
+| Content Negotiation | 📖 型のみ | `content-negotiation`（manual-only。`BEAR.Accept`, `#[Produces]`） |
+| Ray.WebFormModule フォームバリデーション | 📖 型のみ | `form-validation-webform`（manual-only。このリポジトリの正規形はJSON Schema + DTO + PRG） |
+| Web context binding（`#[CookieParam]` 等 / `#[ResourceParam]`） | 📖 型のみ | `web-context-param-binding`（manual-only） |
+| AOP validation（`#[Valid]`） | 📖 型のみ | `aop-validation-valid`（manual-only。正規形は `json-schema-validation`） |
 | Production デプロイ / compile / preload | ❌ スコープ外 | インフラ層 |
 | High-Performance Servers (Swoole / RR / FrankenPHP) | ❌ スコープ外 | ランタイム層 |
 | Aura.Router カスタムルーティング | ❌ スコープ外 | フレームワーク設定 |
+
+> 📖 型のみ（`manual-only`）: BEAR.Sundayに機能はあるがこのリポジトリに正規実装が無いKata。公式マニュアルを一次資料に、近い実装済みKataの型を流用して移植する。詳細は [docs/source-index.md](docs/source-index.md#manual-only型のみ記述--公式マニュアル準拠) を参照。
 
 ## Kata 一覧
 
@@ -54,6 +59,7 @@ BEAR.Sunday公式ドキュメントの主要機能と、この索引の対応状
 | `showcase` | 特定機能を切り出して見せる実例 |
 | `comparison-only` | 比較理解用。デフォルト実装としてコピーしない |
 | `support` | テスト、Fake、生成物など正規形を支える周辺実装 |
+| `manual-only` | 公式マニュアルを一次資料とする型の記述のみ。このリポジトリに正規実装・テストはまだ無い |
 
 ### Data access / BDR
 DB読み書きの正規形。Ray.MediaQuery + `#[DbQuery]` + Entity/Factory のBDRパターン。
@@ -61,6 +67,7 @@ DB読み書きの正規形。Ray.MediaQuery + `#[DbQuery]` + Entity/Factory のB
 | ID | 説明 | Status |
 |---|---|---|
 | [`db-read-one-entity`](docs/source-index.md#db-read-one-entity) | DBから主キーで1件のEntityを読む | canonical |
+| [`db-entity-factory`](docs/source-index.md#db-entity-factory) | `#[DbQuery(factory:)]`でDB行をEntityへ変換する（enum・日付正規化） | canonical |
 | [`db-read-by-natural-key`](docs/source-index.md#db-read-by-natural-key) | natural keyで1件読む（INSERT後の新規ID回収） | canonical |
 | [`db-read-list-pager`](docs/source-index.md#db-read-list-pager) | DBから一覧をページングして読む | canonical |
 | [`db-command-write`](docs/source-index.md#db-command-write) | DB書き込みをCommand Interfaceに分ける | canonical |
@@ -98,7 +105,9 @@ Page Resource + Qiq template によるHTML描画。Markdown変換、Admin PRG、
 | [`page-resource-list`](docs/source-index.md#page-resource-list) | Page Resourceで一覧HTMLを描画する（pagerは `db-read-list-pager` を使用） | canonical |
 | [`markdown-to-html`](docs/source-index.md#markdown-to-html) | Markdown本文をHTMLへ変換する | canonical |
 | [`admin-prg-form`](docs/source-index.md#admin-prg-form) | Admin formでPRGを使う | showcase |
-| [`admin-auth-boundary`](docs/source-index.md#admin-auth-boundary) | AdminGuardによるauthor-scoped認可境界 | showcase |
+| [`admin-auth-boundary`](docs/source-index.md#admin-auth-boundary) | 型で表現する認証境界とauthor-scoped認可 | showcase |
+| [`admin-session-login`](docs/source-index.md#admin-session-login) | セッションOAuthログインフロー（login → callback → logout） | showcase |
+| [`admin-confirm-page`](docs/source-index.md#admin-confirm-page) | 確認画面Page Resourceで状態遷移をラップする | showcase |
 
 ### Runtime / representation
 キャッシュ（`#[Cacheable]` / `#[DonutCache]` / `#[CacheableResponse]` / `#[Purge]`）、ストリーム、Async/Parallel、CLI、CSRF保護、Import App。
@@ -115,6 +124,7 @@ Page Resource + Qiq template によるHTML描画。Markdown変換、Admin PRG、
 | [`cache-purge`](docs/source-index.md#cache-purge) | `#[Purge]`でwrite時にcollection cacheを手動無効化する | showcase |
 | [`donut-cache`](docs/source-index.md#donut-cache) | `#[DonutCache]`でドーナツキャッシュ（Donut Cache / Donut Hole）を示す | showcase |
 | [`cacheable-response`](docs/source-index.md#cacheable-response) | `#[CacheableResponse]`でレスポンス全体キャッシュ + ETag配信 | showcase |
+| [`conditional-request-304`](docs/source-index.md#conditional-request-304) | 条件付きリクエスト（If-None-Match → 304）で転送を省く | showcase |
 | [`import-app`](docs/source-index.md#import-app) | ImportAppModuleで他アプリのResourceを呼ぶ | showcase |
 
 ### Event Sourcing
@@ -155,6 +165,19 @@ ALPS profile SSOT、決定的fake data、JSON Schema生成、API doc + llms.txt�
 | [`semantic-fake-data`](docs/source-index.md#semantic-fake-data) | semantic-exで決定的fake dataを作る | support |
 | [`json-schema-generated`](docs/source-index.md#json-schema-generated) | fake observationからJSON Schemaを生成する | support |
 | [`apidoc-llms-generated`](docs/source-index.md#apidoc-llms-generated) | API docsとllms.txtを生成する | support |
+
+### Manual-only（型のみ記述）
+BEAR.Sundayに機能はあるがこのリポジトリに正規実装が無いKata。公式マニュアルを一次資料に、近い実装済みKataの型を流用して移植する。
+
+| ID | 説明 | Status |
+|---|---|---|
+| [`api-patch-partial-update`](docs/source-index.md#api-patch-partial-update) | PATCHで差分更新を受ける | manual-only |
+| [`api-options-method`](docs/source-index.md#api-options-method) | OPTIONSでメソッドとパラメータ仕様を返す | manual-only |
+| [`content-negotiation`](docs/source-index.md#content-negotiation) | AcceptヘッダでJSON/HTML/CSV等を出し分ける | manual-only |
+| [`form-validation-webform`](docs/source-index.md#form-validation-webform) | Ray.WebFormModuleでAOPフォームバリデーション | manual-only |
+| [`web-context-param-binding`](docs/source-index.md#web-context-param-binding) | Webコンテキスト値と他Resource値を引数に束縛する | manual-only |
+| [`db-transactional`](docs/source-index.md#db-transactional) | `#[Transactional]`で複数書き込みを原子化する | manual-only |
+| [`aop-validation-valid`](docs/source-index.md#aop-validation-valid) | `#[Valid]`/`#[OnValidate]`でAOPバリデーション | manual-only |
 
 ## スキルを獲得して使う
 

@@ -54,13 +54,17 @@ Switching contexts loads/removes modules by keyword prefix; see
 
 ## Gotchas
 
-- `DbQueryInterceptor` routes **every** `#[DbQuery]` call to getRow or
-  getRowList by return type. `exec()` on SqlQueryInterface is *not* used
-  by the interceptor. FakeSqlQuery handles write SQL ids inside
-  getRow/getRowList accordingly.
-- Ray.MediaQuery's `FetchNewInstance` uses `PDO::FETCH_FUNC`, so SELECT
-  column order must match the entity's `__construct` positional args. If
-  you add a column, keep the SELECT and the constructor aligned.
+- `DbQueryInterceptor` routes `#[DbQuery]` calls three ways: `#[Pager]`
+  methods go to getPages/getCount, `PostQueryInterface` return types
+  (`InsertedRow`/`AffectedRows`) go to execPostQuery, and everything else
+  to getRow or getRowList by return type. `exec()` on SqlQueryInterface
+  is *not* used by the interceptor. FakeSqlQuery handles write SQL ids
+  inside getRow/getRowList accordingly.
+- Ray.MediaQuery hydrates via `PDO::FETCH_FUNC`, so SELECT column order
+  must match the hydration target's positional args: the entity's
+  `__construct` for plain `#[DbQuery]` (Author etc.), or the factory
+  method for `#[DbQuery(factory: ...)]` (Article uses `ArticleFactory`).
+  If you add a column, keep the SELECT and the constructor/factory aligned.
 - Writes return `void` from Command methods. To get the new id back, use
   the entity's natural unique key (slug/email/filename) via a
   `by<NaturalKey>` query (`bySlug` / `byEmail` / `byFilename`) — see
