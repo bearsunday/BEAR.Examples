@@ -75,6 +75,7 @@ final class AppThrowableHandler implements ThrowableHandlerInterface
         ]), []);
     }
 
+    /** @phpstan-return Exception */
     private function asException(Throwable $e): Throwable
     {
         if ($e instanceof Exception) {

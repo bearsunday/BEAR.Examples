@@ -73,6 +73,7 @@ final class HtmlThrowableHandler implements ThrowableHandlerInterface
         ($this->responder)(new HtmlErrorPage($this->status, $this->statusText, $this->message, $this->errors), []);
     }
 
+    /** @phpstan-return Exception */
     private function asException(Throwable $e): Throwable
     {
         if ($e instanceof Exception) {
