@@ -28,7 +28,7 @@ final class ExceptionStatusMapperTest extends TestCase
         $this->mapper = new ExceptionStatusMapper();
     }
 
-    /** @return array<string, array{0: Throwable, 1: int}> */
+    /** @return array<string, array{0: Throwable, 1: int|null}> */
     public static function statusProvider(): array
     {
         return [
