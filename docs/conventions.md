@@ -148,9 +148,17 @@ entity, distinguishing it from auxiliary write-only links.
   `article_delete.sql`, `article_tag_clear.sql`, `article_tag_link.sql`
 
 ### ALPS Ontology
-- Entity-prefixed: `articleId`, `articleSlug`, `articleTitle`,
-  `categoryParentId`, `mediaAlt`. Not `id` / `slug` (collision risk
-  across entities).
+- Flat, schema.org-anchored: the descriptor id is the plain field name
+  (`title`, `status`, `slug`, `publishedAt`), with `def` pointing to
+  schema.org where a match exists (`title` → `https://schema.org/headline`,
+  `body` → `https://schema.org/articleBody`). Shared vocabulary is
+  deliberate: `name` is a single descriptor reused by author, category,
+  and tag — the meaning is anchored by `def`, not by an entity prefix.
+- Cross-entity references keep their prefix (`authorId`, `categoryId`,
+  `tagId`, `articleId`, `parentId`) because they name another entity's
+  identity, not a field of the owning entity.
+- SSOT is `var/alps/profile.json`; this section describes it, not the
+  other way around.
 
 ### HAL rel naming — split by ALPS layer
 This is the critical rule. ALPS has two distinct layers and HAL has
