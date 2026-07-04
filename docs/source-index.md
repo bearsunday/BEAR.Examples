@@ -546,7 +546,7 @@ RESTメソッドはテーブルへのCRUDではなく、application stateへの�
 - **Tests:**
   - `tests/Resource/App/ArticleTest.php`
   - `tests/Resource/Page/ArticleTest.php`
-- **Key points:** not-found readは例外ではなくResourceで404 bodyを置く。Page templateは4xxでも呼ばれるためguardを置く — guardは `ArticleNotFoundException` をthrowし、`CmsQiqRenderer::render()` がcatchしてError templateを描画する（code>=500は本文templateを呼ばず即Error描画）。
+- **Key points:** not-found readは例外ではなくResourceで404 bodyを置く。Page側は `_self` embed経由でAppの404がそのまま伝播する（`page-resource-qiq-detail`）。Page templateは4xxでも呼ばれるためguardを置く — guardは `ArticleNotFoundException` をthrowし、`CmsQiqRenderer::render()` がcatchしてError templateを描画する（code>=500は本文templateを呼ばず即Error描画）。
 - **Do not:** `src/` からgeneric runtime exceptionを投げてnot-found表現にしない。
 - **マスター確認（After）:**
   - [ ] `src/` に not-found用の generic `throw new \RuntimeException` 等が無い（必要なら `src/Exception/` のドメイン例外）。
@@ -628,7 +628,7 @@ RESTメソッドはテーブルへのCRUDではなく、application stateへの�
 - **Tests:**
   - `tests/Hypermedia/HalEnvelopeContractTest.php`
   - `tests/Resource/App/ArticleTest.php`
-- **Key points:** `#[Embed]` が先にRequest slotを作るため、scalar fieldsは `$this->body += [...]` で足す。embedされるのはresource **request**（lazy）で評価はrendering時 — `addQuery()` は引数の追加、`withQuery()` は置換で、いずれもrender前に呼ぶ。`src` にURI template（`/author{?id}` 等）を使うと **request method引数**が束縛される（`#[Link]` の `$body` 束縛と異なる）。
+- **Key points:** `#[Embed]` が先にRequest slotを作るため、scalar fieldsは `$this->body += [...]` で足す。embedされるのはresource **request**（lazy）で評価はrendering時 — `addQuery()` は引数の追加、`withQuery()` は置換で、いずれもrender前に呼ぶ。`src` にURI template（`/author{?id}` 等）を使うと **request method引数**が束縛される（`#[Link]` の `$body` 束縛と異なる）。`rel: '_self'` は例外的に**eager**で、子のbodyを自身へflattenし子のstatus codeを伝播する（PageがAppを包む実例: `src/Resource/Page/Article.php` — `page-resource-qiq-detail`）。
 - **Do not:** embed relに `go*` 名を使わない。embed slotを `$this->body = [...]` で上書きしない。
 - **マスター確認（After）:**
   - [ ] `#[Embed]` を持つResourceが scalar を `+=` で足し、embed slot を `=` で潰していない。
@@ -778,25 +778,27 @@ RESTメソッドはテーブルへのCRUDではなく、application stateへの�
 **Page Resourceで1件詳細HTMLを描画する**
 
 - **ID:** `page-resource-qiq-detail`
-- **Aliases:** Page Resource, Qiq, HTML detail, template variables, article page, setLayout, setBlock, html context, HTML描画, 詳細ページ, Qiqテンプレート
+- **Aliases:** Page Resource, Qiq, HTML detail, template variables, article page, setLayout, setBlock, html context, self embed, _self, Reachability, HTML描画, 詳細ページ, Qiqテンプレート
 - **Status:** `canonical`
 - **Manual:** https://bearsunday.github.io/manuals/1.0/en/html-qiq.html
-- **Use when:** App Resourceとは別に、HTML表示用のPage Resourceを作りたい。
+- **Use when:** App Resourceの状態をHTML詳細ページとして表示するPage Resourceを作りたい。
 - **着手前チェック（Before）:**
-  - [ ] App Resource（API）とは別にPage Resource（HTML）を分けると決めたか。
-  - [ ] 表示に必要な値はPage Resourceで body に置き、Qiq template は描画に集中させると理解したか。
+  - [ ] Reachability原則を理解したか — 情報はApp Resource（`app://`）に住み、PageはQuery Interfaceを再注入せず**Appを参照**する（`docs/conventions.md` §4）。
+  - [ ] 複数の子を統合viewに融合する詳細ページは **self embed**（`#[Embed(rel: '_self', src: 'app://self/article{?id}')]`）、子の表現をそのまま置く一覧は **normal embed**（`AuthorList` の型）と使い分けを決めたか。
+  - [ ] Pageが持ってよいのは純粋なpresentation derivative（`bodyHtml` / 表示用ラベル / guard）のみと理解したか。
 - **Source:**
   - `src/Resource/Page/Article.php::onGet()`
+  - `src/Resource/App/Article.php::onGet()`
   - `templates/Page/Article.php`
   - `src/Renderer/CmsQiqRenderer.php`
   - `src/Module/HtmlModule.php`
 - **Tests:**
   - `tests/Resource/Page/ArticleTest.php`
-- **Key points:** Page Resourceが表示に必要なEntityや値をbodyに置く。Qiq templateは描画に集中する。template名はResourceクラスのファイルパスから導出（`src/Resource/Page/Article.php` → `templates/Page/Article.php`）。Qiqは暗黙エスケープしないため出力は `{{h }}` で明示エスケープし、layoutは `setLayout()` + `setBlock()` で組む。公式QiqModule標準ではbodyがtemplateに `$this` として渡るのに対し、`CmsQiqRenderer` は個別変数（`$article` 等）として展開する — 転植先のrendererを先に確認する。
-- **Do not:** templateからQuery Interfaceを呼ばない。
+- **Key points:** `_self` embedはeager実行 — App bodyがPage bodyへflattenされ、**Appのstatus codeが伝播する**（Appの404がPageの404になる）。App bodyに残る子Request（author/category/tagList）はPageの `onGet` でmaterialiseして配列にする（App Resourceは自前のHTML templateを持たないため、Requestのままrendererへ渡さない）。Qiqは暗黙エスケープしないため出力は `{{h }}` で明示エスケープし、layoutは `setLayout()` + `setBlock()` で組む。template名はResourceクラスのファイルパスから導出。
+- **Do not:** PageにQuery Interfaceを注入してAppと同じグラフを再組み立てしない（Appに無い情報をPageで組むのはreachability hole）。templateからQuery Interfaceを呼ばない。
 - **マスター確認（After）:**
-  - [ ] template に Query Interface / DB 呼び出しが無い（`grep -i query templates/Page/<Name>.php` が空）。
-  - [ ] Page Resource が描画に必要な値を body へ用意している。
+  - [ ] Page Resource に Query Interface の注入が無く、`#[Embed]` でAppを参照している。
+  - [ ] App側の404がPageの404として伝播する（`ArticleTest.php` のnotFoundケース相当で green）。
   - [ ] XSSエスケープ（`{{h }}` 漏れ）をfield値のescape検証で pin。
   - [ ] `Resource/Page/ArticleTest.php` 相当でHTML描画と200を green。
 

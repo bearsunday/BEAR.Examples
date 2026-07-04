@@ -1,30 +1,36 @@
 <?php
 /**
- * @var \BEAR\Kata\Entity\Article|null $article
+ * Body vars come flattened from app://self/article (self embed) plus the
+ * Page-owned presentation derivatives. See Resource\Page\Article.
+ *
+ * @var int|null $id
+ * @var string|null $slug
+ * @var string|null $title
+ * @var string|null $status
+ * @var string|null $publishedAtLabel
+ * @var string|null $summary
  * @var string $bodyHtml
- * @var \BEAR\Kata\Entity\Author|null $author
- * @var \BEAR\Kata\Entity\Category|null $category
+ * @var array{id:int, name:string, email:string}|null $author
+ * @var array{id:int, slug:string, name:string}|null $category
  * @var list<array{id:int, slug:string, name:string}> $tags
  */
-if (! isset($article) || $article === null) {
+if (! isset($id, $slug, $title, $status)) {
     throw new \BEAR\Kata\Exception\ArticleNotFoundException();
 }
 ?>
 {{ setLayout('layout/Default') }}
 {{ setBlock('bodyClass') ~}}public public-detail public-article{{ endBlock() }}
-{{ setBlock('title') ~}}{{h $article->title }} - BEAR.Kata{{ endBlock() }}
+{{ setBlock('title') ~}}{{h $title }} - BEAR.Kata{{ endBlock() }}
 {{ setBlock('header') ~}}<h1 class="Article">Article Detail</h1>{{ endBlock() }}
 <main>
   <article class="Article">
-    <input type="hidden" class="id" value="{{h $article->id }}">
-    <span class="slug">{{h $article->slug }}</span>
-    <h2 class="title">{{h $article->title }}</h2>
-    <span class="status" data-status="{{h $article->status->value }}">{{h $article->status->value }}</span>
-    <?php $publishedAtLabel = $article->publishedAtLabel(); ?>
+    <input type="hidden" class="id" value="{{h $id }}">
+    <span class="slug">{{h $slug }}</span>
+    <h2 class="title">{{h $title }}</h2>
+    <span class="status" data-status="{{h $status }}">{{h $status }}</span>
     <?php if ($publishedAtLabel !== null): ?>
       <time class="publishedAt" datetime="{{h $publishedAtLabel }}">{{h $publishedAtLabel }}</time>
     <?php endif ?>
-    <?php $summary = $article->summary(); ?>
     <?php if ($summary !== null): ?>
       <p class="excerpt">{{h $summary }}</p>
     <?php endif ?>
@@ -34,20 +40,20 @@ if (! isset($article) || $article === null) {
   <aside class="ArticleMeta">
     <?php if ($author !== null): ?>
       <section class="Author">
-        <input type="hidden" class="id" value="{{h $author->id }}">
+        <input type="hidden" class="id" value="{{h $author['id'] }}">
         <span class="role">Written by</span>
-        <span class="name">{{h $author->name }}</span>
-        <a class="email" href="mailto:{{h $author->email }}">{{h $author->email }}</a>
+        <span class="name">{{h $author['name'] }}</span>
+        <a class="email" href="mailto:{{h $author['email'] }}">{{h $author['email'] }}</a>
       </section>
     <?php endif ?>
 
     <?php if ($category !== null): ?>
       <section class="Category">
-        <input type="hidden" class="id" value="{{h $category->id }}">
+        <input type="hidden" class="id" value="{{h $category['id'] }}">
         <span class="role">Category</span>
-        <a class="goCategory" href="/category?id={{h $category->id }}">
-          <span class="name">{{h $category->name }}</span>
-          <span class="slug">{{h $category->slug }}</span>
+        <a class="goCategory" href="/category?id={{h $category['id'] }}">
+          <span class="name">{{h $category['name'] }}</span>
+          <span class="slug">{{h $category['slug'] }}</span>
         </a>
       </section>
     <?php endif ?>
@@ -72,10 +78,10 @@ if (! isset($article) || $article === null) {
 <nav class="Related">
   <ul>
     <?php if ($author !== null): ?>
-      <li><a href="/author?id={{h $author->id }}" class="goAuthor" title="Navigate to the author detail.">By {{h $author->name }}</a></li>
+      <li><a href="/author?id={{h $author['id'] }}" class="goAuthor" title="Navigate to the author detail.">By {{h $author['name'] }}</a></li>
     <?php endif ?>
     <?php if ($category !== null): ?>
-      <li><a href="/category?id={{h $category->id }}" class="goCategory" title="Navigate to the category detail.">In {{h $category->name }}</a></li>
+      <li><a href="/category?id={{h $category['id'] }}" class="goCategory" title="Navigate to the category detail.">In {{h $category['name'] }}</a></li>
     <?php endif ?>
   </ul>
 </nav>

@@ -1,208 +1,150 @@
 # BEAR.Kata
 
-BEAR.Sunday アプリケーションの実装パターン集。「これを実装したい時、どのファイルを見るか」をAIエージェントと人間が素早く引くためのリファレンス実装プロジェクト。
+BEAR.Sunday アプリケーションの実装パターン集（Kata = 型）。「これを実装したい時、どのファイルを見るか」をAIエージェントと人間が素早く引くためのリファレンス実装プロジェクト。
 
-各Kataの詳細（Aliases / 着手前チェック / Source / Tests / Key points / マスター確認）は [docs/source-index.md](docs/source-index.md) を参照。AIエージェントは intent から `/bear-kata` スキル（[.claude/skills/bear-kata](.claude/skills/bear-kata/SKILL.md)）経由でも該当Kataを引ける。
+## 引き方
 
-## カバレッジ
-
-BEAR.Sunday公式ドキュメントの主要機能と、この索引の対応状況。詳細は [docs/scope.md](docs/scope.md) を参照。
-
-| 機能領域 | Kata有無 | 該当Kata |
-|---|---|---|
-| Resource GET / POST / PUT / DELETE | ✅ | `api-get-hal-resource`, `api-post-input-dto`, `api-put-tristate-input`, `api-delete-no-content` |
-| Resource PATCH | 📖 型のみ | `api-patch-partial-update`（manual-only。tri-state入力の型は `api-put-tristate-input` を流用） |
-| Resource OPTIONS | 📖 型のみ | `api-options-method`（manual-only。`OptionsMethodModule`） |
-| HAL `_links` / `_embedded` | ✅ | `hal-link`, `hal-embed` |
-| Crawl / DataLoader | ✅ | `crawl-data-loader` |
-| Not Found (404) | ✅ | `not-found-response` |
-| JSON Schema validation | ✅ | `json-schema-validation`, `json-schema-generated` |
-| DB: BDR read / write / pager / link table / after-insert lookup | ✅ | `db-read-one-entity`, `db-entity-factory`, `db-read-by-natural-key`, `db-read-list-pager`, `db-command-write`, `db-link-table-sync` |
-| DB: Result projection / CQRS | ✅ | `db-result-projection` |
-| DB: トランザクション（`#[Transactional]`） | 📖 型のみ | `db-transactional`（manual-only。backing classはインストール済み） |
-| Cache: `#[Cacheable]` / `#[DonutCache]` / `#[CacheableResponse]` / `#[Purge]` | ✅ | `cacheable-leaf`, `donut-cache`, `cacheable-response`, `cache-purge` |
-| Cache: `#[Embed]` dependency / `fromAssoc` | ✅ | `cache-embed-dependency`, `cache-body-derived-dependency` |
-| Cache: ETag 配信 | ✅ | `cacheable-response` がETagを付与 |
-| Cache: 304 Conditional Request（If-None-Match） | ✅ | `conditional-request-304` — `src/Bootstrap.php` の `isNotModified()` が304を返す |
-| HTML: Page / Qiq detail / list | ✅ | `page-resource-qiq-detail`, `page-resource-list` |
-| HTML: Markdown 変換 | ✅ | `markdown-to-html` |
-| HTML: Admin PRG / 確認画面 / auth boundary | ✅ | `admin-prg-form`, `admin-confirm-page`, `admin-auth-boundary` |
-| Stream response | ✅ | `stream-response` |
-| Async / Parallel embed | ✅ | `async-embed-parallel` |
-| CLI | ✅ | `cli-resource` |
-| OAuth 認証 / セッションログイン | ✅ | `auth-oauth-flow`, `admin-session-login` |
-| CSRF / Same-Origin 保護 | ✅ | `csrf-same-origin-protection` |
-| ファイルアップロード | ✅ | `file-upload-input` |
-| 状態遷移 Resource | ✅ | `state-transition-resource` |
-| エラーハンドリング | ✅ | `error-status-mapping` |
-| Event Sourcing | ✅ | `event-extraction`, `event-filter-replay`, `event-store-persistence`, `resource-observation-bridge` |
-| Deferred execution | ✅ | `defer-resource-request`, `defer-conditional` |
-| Import (cross-app) | ✅ | `import-app` |
-| ALPS / API Doc / fake data | ✅ | `alps-profile-ssot`, `apidoc-llms-generated`, `semantic-fake-data` |
-| Content Negotiation | 📖 型のみ | `content-negotiation`（manual-only。`BEAR.Accept`, `#[Produces]`） |
-| Ray.WebFormModule フォームバリデーション | 📖 型のみ | `form-validation-webform`（manual-only。このリポジトリの正規形はJSON Schema + DTO + PRG） |
-| Web context binding（`#[CookieParam]` 等 / `#[ResourceParam]`） | 📖 型のみ | `web-context-param-binding`（manual-only） |
-| AOP validation（`#[Valid]`） | 📖 型のみ | `aop-validation-valid`（manual-only。正規形は `json-schema-validation`） |
-| レート制限 / スロットリング | 🔗 外部参照 | `rate-limit-interceptor`（external。参照実装: apple-x-co/bear-app） |
-| リソース権限（RBAC/ACL） | 🔗 外部参照 | `resource-permission-authorization`（external。参照実装: apple-x-co/bear-app） |
-| バッチ / キューワーカー | 🔗 外部参照 | `batch-command-resource`（external。参照実装: apple-x-co/bear-app） |
-| 署名付きURL検証 | 🔗 外部参照 | `signed-url-verification`（external。参照実装: apple-x-co/bear-app） |
-| LLM Tool Use | 🔗 外部参照 | `tool-use-instrument`（external。参照実装: bearsunday/BEAR.ToolUse） |
-| Production デプロイ / compile / preload | ❌ スコープ外 | インフラ層 |
-| High-Performance Servers (Swoole / RR / FrankenPHP) | ❌ スコープ外 | ランタイム層 |
-| Aura.Router カスタムルーティング | ❌ スコープ外 | フレームワーク設定 |
-
-> 📖 型のみ（`manual-only`）: BEAR.Sundayに機能はあるがこのリポジトリに正規実装が無いKata。公式マニュアルを一次資料に、近い実装済みKataの型を流用して移植する。
-> 🔗 外部参照（`external`）: 参照実装が外部公開リポジトリにあるKata。型を読み取って自プロジェクトで再実装する（コードはコピーしない）。
-> 詳細は [docs/source-index.md](docs/source-index.md) の各セクションを参照。
-
-## Kata 一覧
-
-> 各Kataの `Aliases`（検索用キーワード）は [docs/source-index.md](docs/source-index.md) に記載されています。より具体的なintent語（`after insert lookup`, `double submit cookie`, `linkCrawl` 等）で検索する場合は source-index.md を引いてください。
+1. **下の[索引](#索引)を「やりたいこと」で探す。** 各Kataの詳細（Aliases / 着手前チェック / Source / Tests / Key points / マスター確認）はリンク先の [docs/source-index.md](docs/source-index.md) にある。
+2. **キーワードで引く。** `pager` / `#[Embed]` / `PRG` / `多対多` / `認可` / `条件付きリクエスト` などの検索語（Aliases）は source-index.md の各エントリに載っている。この索引で見つからなければ source-index.md を全文検索する。
+3. **AIに引かせる。** Claude Code で「◯◯を kata に従って実装して」と言うと [`bear-kata` スキル](#スキルを獲得して使う)が該当Kataへ誘導する。
 
 | Status | 意味 |
 |---|---|
-| `canonical` | 通常の実装で最初に真似する正規形 |
-| `showcase` | 特定機能を切り出して見せる実例 |
-| `comparison-only` | 比較理解用。デフォルト実装としてコピーしない |
-| `support` | テスト、Fake、生成物など正規形を支える周辺実装 |
-| `manual-only` | 公式マニュアルを一次資料とする型の記述のみ。このリポジトリに正規実装・テストはまだ無い |
-| `external` | 外部公開リポジトリの参照実装を指す型の記述。このリポジトリに正規実装は無い |
+| `canonical` | 最初に真似する正規形 |
+| `showcase` | 特定機能を切り出した実例 |
+| `comparison-only` | 比較理解用。コピーしない |
+| `support` | テスト・Fake・生成物 |
+| `manual-only` | 型の記述のみ。一次資料は公式マニュアル |
+| `external` | 型の記述のみ。一次資料は外部の参照実装（コードはコピーしない） |
 
-### Data access / BDR
-DB読み書きの正規形。Ray.MediaQuery + `#[DbQuery]` + Entity/Factory のBDRパターン。
+## 索引
 
-| ID | 説明 | Status |
+### DBを読み書きする
+
+| やりたいこと | Kata | Status |
 |---|---|---|
-| [`db-read-one-entity`](docs/source-index.md#db-read-one-entity) | DBから主キーで1件のEntityを読む | canonical |
-| [`db-entity-factory`](docs/source-index.md#db-entity-factory) | `#[DbQuery(factory:)]`でDB行をEntityへ変換する（enum・日付正規化） | canonical |
-| [`db-read-by-natural-key`](docs/source-index.md#db-read-by-natural-key) | natural keyで1件読む（INSERT後の新規ID回収） | canonical |
-| [`db-read-list-pager`](docs/source-index.md#db-read-list-pager) | DBから一覧をページングして読む | canonical |
-| [`db-command-write`](docs/source-index.md#db-command-write) | DB書き込みをCommand Interfaceに分ける | canonical |
-| [`db-link-table-sync`](docs/source-index.md#db-link-table-sync) | link tableをclear/linkで同期する | canonical |
-| [`db-result-projection`](docs/source-index.md#db-result-projection) | Query結果を専用Result objectにする | showcase |
-| [`db-array-row-comparison`](docs/source-index.md#db-array-row-comparison) | Entityではなくarrayで読む比較例を見る | comparison-only |
-| [`db-sqlquery-orchestration`](docs/source-index.md#db-sqlquery-orchestration) | `SqlQueryInterface`で複数SQLを調停する | comparison-only |
-| [`db-raw-pdo-comparison`](docs/source-index.md#db-raw-pdo-comparison) | Raw PDOとの違いを見る | comparison-only |
+| 主キーで1件のEntityを読む | [`db-read-one-entity`](docs/source-index.md#db-read-one-entity) | canonical |
+| DB行をEntityへ変換する（enum・日付正規化） | [`db-entity-factory`](docs/source-index.md#db-entity-factory) | canonical |
+| natural keyで1件読む（INSERT後の新規ID回収） | [`db-read-by-natural-key`](docs/source-index.md#db-read-by-natural-key) | canonical |
+| 一覧をページング・絞り込みして読む | [`db-read-list-pager`](docs/source-index.md#db-read-list-pager) | canonical |
+| 作成・更新・削除をCommandに分ける | [`db-command-write`](docs/source-index.md#db-command-write) | canonical |
+| 多対多のlink tableを同期する | [`db-link-table-sync`](docs/source-index.md#db-link-table-sync) | canonical |
+| SELECT結果を型付きコレクションで返す | [`db-result-projection`](docs/source-index.md#db-result-projection) | showcase |
+| 複数書き込みをトランザクションで原子化する | [`db-transactional`](docs/source-index.md#db-transactional) | manual-only |
+| Entityを使わないarray実装と比較する | [`db-array-row-comparison`](docs/source-index.md#db-array-row-comparison) | comparison-only |
+| 複数SQLを`SqlQueryInterface`で調停する | [`db-sqlquery-orchestration`](docs/source-index.md#db-sqlquery-orchestration) | comparison-only |
+| Raw PDOとの責務差を見る | [`db-raw-pdo-comparison`](docs/source-index.md#db-raw-pdo-comparison) | comparison-only |
 
-### Resource / API
-App ResourceのHTTP メソッド別パターン。HAL+JSON、入力DTO、バリデーション、エラー、OAuth、ファイルアップロード、Crawl/DataLoader。
+### APIを作る（App Resource）
 
-| ID | 説明 | Status |
+| やりたいこと | Kata | Status |
 |---|---|---|
-| [`api-get-hal-resource`](docs/source-index.md#api-get-hal-resource) | GET ResourceをHAL+JSONで返す | canonical |
-| [`api-post-input-dto`](docs/source-index.md#api-post-input-dto) | POST入力をInput DTOで受ける | canonical |
-| [`api-put-tristate-input`](docs/source-index.md#api-put-tristate-input) | PUTでtri-state入力を扱う | canonical |
-| [`api-delete-no-content`](docs/source-index.md#api-delete-no-content) | DELETE成功を204で返す | canonical |
-| [`not-found-response`](docs/source-index.md#not-found-response) | 見つからないResourceを404にする | canonical |
-| [`json-schema-validation`](docs/source-index.md#json-schema-validation) | Request/ResponseをJSON Schemaで検証する | canonical |
-| [`hal-link`](docs/source-index.md#hal-link) | HAL `_links` を `#[Link]` で宣言する | canonical |
-| [`hal-embed`](docs/source-index.md#hal-embed) | HAL `_embedded` を `#[Embed]` と `addQuery()` で作る | canonical |
-| [`auth-oauth-flow`](docs/source-index.md#auth-oauth-flow) | OAuth認証フローをAuthInterface経由で示す | showcase |
-| [`file-upload-input`](docs/source-index.md#file-upload-input) | `#[InputFile]`でファイルアップロードを受ける | canonical |
-| [`crawl-data-loader`](docs/source-index.md#crawl-data-loader) | `#[Link(crawl:...)]` + DataLoaderでN+1を解消する | showcase |
-| [`state-transition-resource`](docs/source-index.md#state-transition-resource) | 状態遷移を独立Resourceとして切り出す | canonical |
-| [`error-status-mapping`](docs/source-index.md#error-status-mapping) | 例外→HTTPステータスマッピングとエラーハンドリング | canonical |
+| GETをHAL+JSONで返す | [`api-get-hal-resource`](docs/source-index.md#api-get-hal-resource) | canonical |
+| POST入力をInput DTOで受ける（201 + Location） | [`api-post-input-dto`](docs/source-index.md#api-post-input-dto) | canonical |
+| PUTで「省略/空/指定」のtri-state入力を扱う | [`api-put-tristate-input`](docs/source-index.md#api-put-tristate-input) | canonical |
+| PATCHで差分更新を受ける | [`api-patch-partial-update`](docs/source-index.md#api-patch-partial-update) | manual-only |
+| DELETE成功を204で返す | [`api-delete-no-content`](docs/source-index.md#api-delete-no-content) | canonical |
+| OPTIONSでメソッドとパラメータ仕様を返す | [`api-options-method`](docs/source-index.md#api-options-method) | manual-only |
+| 見つからないResourceを404にする | [`not-found-response`](docs/source-index.md#not-found-response) | canonical |
+| 入出力をJSON Schemaで検証する | [`json-schema-validation`](docs/source-index.md#json-schema-validation) | canonical |
+| 状態遷移（draft→published）を独立Resourceにする | [`state-transition-resource`](docs/source-index.md#state-transition-resource) | canonical |
+| 例外をHTTPステータスへマッピングする | [`error-status-mapping`](docs/source-index.md#error-status-mapping) | canonical |
+| ファイルアップロードを受ける（`#[InputFile]`） | [`file-upload-input`](docs/source-index.md#file-upload-input) | canonical |
+| cookie/env/他Resource値を引数に束縛する | [`web-context-param-binding`](docs/source-index.md#web-context-param-binding) | manual-only |
+| AcceptヘッダでJSON/HTML/CSV等を出し分ける | [`content-negotiation`](docs/source-index.md#content-negotiation) | manual-only |
+| 検証ロジックをAOPで分離する（`#[Valid]`） | [`aop-validation-valid`](docs/source-index.md#aop-validation-valid) | manual-only |
 
-### HTML / Page
-Page Resource + Qiq template によるHTML描画。Markdown変換、Admin PRG、認可境界。
+### リソースを繋ぐ（Hypermedia）
 
-| ID | 説明 | Status |
+| やりたいこと | Kata | Status |
 |---|---|---|
-| [`page-resource-qiq-detail`](docs/source-index.md#page-resource-qiq-detail) | Page Resourceで1件詳細HTMLを描画する | canonical |
-| [`page-resource-list`](docs/source-index.md#page-resource-list) | Page Resourceで一覧HTMLを描画する（pagerは `db-read-list-pager` を使用） | canonical |
-| [`markdown-to-html`](docs/source-index.md#markdown-to-html) | Markdown本文をHTMLへ変換する | canonical |
-| [`admin-prg-form`](docs/source-index.md#admin-prg-form) | Admin formでPRGを使う | showcase |
-| [`admin-auth-boundary`](docs/source-index.md#admin-auth-boundary) | 型で表現する認証境界とauthor-scoped認可 | showcase |
-| [`admin-session-login`](docs/source-index.md#admin-session-login) | セッションOAuthログインフロー（login → callback → logout） | showcase |
-| [`admin-confirm-page`](docs/source-index.md#admin-confirm-page) | 確認画面Page Resourceで状態遷移をラップする | showcase |
+| 遷移先を `_links` で宣言する（`#[Link]`） | [`hal-link`](docs/source-index.md#hal-link) | canonical |
+| 関連Resourceを `_embedded` に埋め込む（`#[Embed]`） | [`hal-embed`](docs/source-index.md#hal-embed) | canonical |
+| リソースグラフのN+1をDataLoaderで解消する | [`crawl-data-loader`](docs/source-index.md#crawl-data-loader) | showcase |
 
-### Runtime / representation
-キャッシュ（`#[Cacheable]` / `#[DonutCache]` / `#[CacheableResponse]` / `#[Purge]`）、ストリーム、Async/Parallel、CLI、CSRF保護、Import App。
+### HTMLページを作る（Page Resource + Qiq）
 
-| ID | 説明 | Status |
+| やりたいこと | Kata | Status |
 |---|---|---|
-| [`stream-response`](docs/source-index.md#stream-response) | ファイルやバイナリをストリームで返す | showcase |
-| [`cacheable-leaf`](docs/source-index.md#cacheable-leaf) | `#[Cacheable]` だけのleaf resourceを作る | showcase |
-| [`cache-embed-dependency`](docs/source-index.md#cache-embed-dependency) | `#[Embed]` 親Resourceの依存を自動合成する | showcase |
-| [`cache-body-derived-dependency`](docs/source-index.md#cache-body-derived-dependency) | `fromAssoc()` + Surrogate-Keyでbody由来の可変長依存を宣言する | showcase |
-| [`async-embed-parallel`](docs/source-index.md#async-embed-parallel) | embed graphを並列実行に載せる | showcase |
-| [`cli-resource`](docs/source-index.md#cli-resource) | ResourceをCLIコマンドとして公開する | showcase |
-| [`csrf-same-origin-protection`](docs/source-index.md#csrf-same-origin-protection) | CSRFトークン + Same-Origin interceptorをAOP bindする | canonical |
-| [`cache-purge`](docs/source-index.md#cache-purge) | `#[Purge]`でwrite時にcollection cacheを手動無効化する | showcase |
-| [`donut-cache`](docs/source-index.md#donut-cache) | `#[DonutCache]`でドーナツキャッシュ（Donut Cache / Donut Hole）を示す | showcase |
-| [`cacheable-response`](docs/source-index.md#cacheable-response) | `#[CacheableResponse]`でレスポンス全体キャッシュ + ETag配信 | showcase |
-| [`conditional-request-304`](docs/source-index.md#conditional-request-304) | 条件付きリクエスト（If-None-Match → 304）で転送を省く | showcase |
-| [`import-app`](docs/source-index.md#import-app) | ImportAppModuleで他アプリのResourceを呼ぶ | showcase |
+| 1件詳細ページを描画する | [`page-resource-qiq-detail`](docs/source-index.md#page-resource-qiq-detail) | canonical |
+| 一覧ページを描画する（pager・filter付き） | [`page-resource-list`](docs/source-index.md#page-resource-list) | canonical |
+| Markdown本文をHTMLへ変換する | [`markdown-to-html`](docs/source-index.md#markdown-to-html) | canonical |
+| 管理フォームでPRG（成功時303 / 失敗時422再描画） | [`admin-prg-form`](docs/source-index.md#admin-prg-form) | showcase |
+| 確認画面を挟んで状態遷移を実行する | [`admin-confirm-page`](docs/source-index.md#admin-confirm-page) | showcase |
+| form classにフィールド定義と検証を集約する | [`form-validation-webform`](docs/source-index.md#form-validation-webform) | manual-only |
+
+### 認証・認可・保護
+
+| やりたいこと | Kata | Status |
+|---|---|---|
+| OAuth認証フローをResourceで実装する | [`auth-oauth-flow`](docs/source-index.md#auth-oauth-flow) | showcase |
+| セッションログイン（login→callback→logout） | [`admin-session-login`](docs/source-index.md#admin-session-login) | showcase |
+| 認証境界（401）とauthor-scoped認可（403）を分ける | [`admin-auth-boundary`](docs/source-index.md#admin-auth-boundary) | showcase |
+| write操作をCSRF/Same-Originで保護する | [`csrf-same-origin-protection`](docs/source-index.md#csrf-same-origin-protection) | canonical |
+| ログイン試行をレート制限する（429） | [`rate-limit-interceptor`](docs/source-index.md#rate-limit-interceptor) | external |
+| ロール/権限でリソース単位の認可をする | [`resource-permission-authorization`](docs/source-index.md#resource-permission-authorization) | external |
+| 有効期限付き署名URLで検証リンクを作る | [`signed-url-verification`](docs/source-index.md#signed-url-verification) | external |
+
+### キャッシュと配信
+
+| やりたいこと | Kata | Status |
+|---|---|---|
+| `#[Cacheable]` だけでleafをキャッシュする | [`cacheable-leaf`](docs/source-index.md#cacheable-leaf) | showcase |
+| `#[Embed]` 子の更新で親cacheも無効化する | [`cache-embed-dependency`](docs/source-index.md#cache-embed-dependency) | showcase |
+| body由来のN個の依存を `fromAssoc()` で宣言する | [`cache-body-derived-dependency`](docs/source-index.md#cache-body-derived-dependency) | showcase |
+| write時にcollection cacheを `#[Purge]` する | [`cache-purge`](docs/source-index.md#cache-purge) | showcase |
+| 部分キャッシュ（donut cache）を使う | [`donut-cache`](docs/source-index.md#donut-cache) | showcase |
+| レスポンス全体をキャッシュしETagを付ける | [`cacheable-response`](docs/source-index.md#cacheable-response) | showcase |
+| If-None-Matchに304で応える | [`conditional-request-304`](docs/source-index.md#conditional-request-304) | showcase |
+
+### 実行モデル（並列・遅延・バッチ・CLI・ストリーム）
+
+| やりたいこと | Kata | Status |
+|---|---|---|
+| ファイル/バイナリをストリームで返す | [`stream-response`](docs/source-index.md#stream-response) | showcase |
+| `#[Embed]` graphを並列実行する | [`async-embed-parallel`](docs/source-index.md#async-embed-parallel) | showcase |
+| 応答後にfollow-upを実行する（`#[Defer]`・202） | [`defer-resource-request`](docs/source-index.md#defer-resource-request) | showcase |
+| 条件付きでdeferを手動制御する | [`defer-conditional`](docs/source-index.md#defer-conditional) | showcase |
+| cron/queueワーカーをCommand Resourceにする | [`batch-command-resource`](docs/source-index.md#batch-command-resource) | external |
+| ResourceをCLIコマンドとして公開する | [`cli-resource`](docs/source-index.md#cli-resource) | showcase |
+| 他アプリのResourceをimportして呼ぶ | [`import-app`](docs/source-index.md#import-app) | showcase |
 
 ### Event Sourcing
-Semantic Logger観察 → Event抽出（`event-extraction` がentry）→ フィルタ/replay → 永続化。Resource実行の観察ブリッジ。
 
-| ID | 説明 | Status |
+| やりたいこと | Kata | Status |
 |---|---|---|
-| [`event-extraction`](docs/source-index.md#event-extraction) | Semantic Logger観察ログからEventを抽出する | showcase |
-| [`event-filter-replay`](docs/source-index.md#event-filter-replay) | Eventsをフィルタしてreplayする | showcase |
-| [`event-store-persistence`](docs/source-index.md#event-store-persistence) | EventStoreInterfaceでEventを永続化する | support |
-| [`resource-observation-bridge`](docs/source-index.md#resource-observation-bridge) | BEAR.Resource実行から観察ログを生成する | showcase |
+| 観察ログからEventを抽出する | [`event-extraction`](docs/source-index.md#event-extraction) | showcase |
+| Eventをフィルタしてreplayする | [`event-filter-replay`](docs/source-index.md#event-filter-replay) | showcase |
+| Eventを永続化する | [`event-store-persistence`](docs/source-index.md#event-store-persistence) | support |
+| Resource実行から観察ログを生成する | [`resource-observation-bridge`](docs/source-index.md#resource-observation-bridge) | showcase |
 
-### Deferred execution
-`#[Defer]` + `#[Link]` で応答後にfollow-up Resourceを実行。202 Accepted即時返却。
+### テストする
 
-| ID | 説明 | Status |
+| やりたいこと | Kata | Status |
 |---|---|---|
-| [`defer-resource-request`](docs/source-index.md#defer-resource-request) | `#[Defer]` + `#[Link]`で応答後にfollow-upを実行する | showcase |
-| [`defer-conditional`](docs/source-index.md#defer-conditional) | `DeferInterface::add()`で条件付きdeferを手動制御する | showcase |
+| DBなしでMediaQueryをFakeする | [`fake-sql-query`](docs/source-index.md#fake-sql-query) | support |
+| App ResourceのAPI contractをテストする | [`app-resource-test`](docs/source-index.md#app-resource-test) | support |
+| Page ResourceのHTML contractをテストする | [`page-resource-test`](docs/source-index.md#page-resource-test) | support |
+| Link/Embedを辿るworkflowをテストする | [`hypermedia-workflow-test`](docs/source-index.md#hypermedia-workflow-test) | support |
+| 実DB経路を必要時だけ検証する | [`mysql-integration-test`](docs/source-index.md#mysql-integration-test) | support |
 
-### Tests / fake
-DBなしテストのFake基盤。Resource/Page/Hypermedia contract test、MySQL integration。
+### 意味論と生成物（ALPS / schema / docs / AI）
 
-| ID | 説明 | Status |
+| やりたいこと | Kata | Status |
 |---|---|---|
-| [`fake-sql-query`](docs/source-index.md#fake-sql-query) | DBなしでMediaQueryをFakeする | support |
-| [`app-resource-test`](docs/source-index.md#app-resource-test) | App ResourceのAPI contractをテストする | support |
-| [`page-resource-test`](docs/source-index.md#page-resource-test) | Page ResourceのHTML contractをテストする | support |
-| [`hypermedia-workflow-test`](docs/source-index.md#hypermedia-workflow-test) | Link/Embedを辿るworkflowをテストする | support |
-| [`mysql-integration-test`](docs/source-index.md#mysql-integration-test) | 実DB経路を必要時だけ検証する | support |
+| ALPS profileを意味のSSOTにする | [`alps-profile-ssot`](docs/source-index.md#alps-profile-ssot) | support |
+| 決定的なfake dataを生成する | [`semantic-fake-data`](docs/source-index.md#semantic-fake-data) | support |
+| 観測からJSON Schemaを生成する | [`json-schema-generated`](docs/source-index.md#json-schema-generated) | support |
+| API docsとllms.txtを生成する | [`apidoc-llms-generated`](docs/source-index.md#apidoc-llms-generated) | support |
+| ResourceをLLMのtool定義として公開する | [`tool-use-instrument`](docs/source-index.md#tool-use-instrument) | external |
 
-### Semantic / generated artifacts
-ALPS profile SSOT、決定的fake data、JSON Schema生成、API doc + llms.txt生成。
+## スコープ外（意図的に扱わない）
 
-| ID | 説明 | Status |
-|---|---|---|
-| [`alps-profile-ssot`](docs/source-index.md#alps-profile-ssot) | ALPS profileを意味のSSOTにする | support |
-| [`semantic-fake-data`](docs/source-index.md#semantic-fake-data) | semantic-exで決定的fake dataを作る | support |
-| [`json-schema-generated`](docs/source-index.md#json-schema-generated) | fake observationからJSON Schemaを生成する | support |
-| [`apidoc-llms-generated`](docs/source-index.md#apidoc-llms-generated) | API docsとllms.txtを生成する | support |
-
-### Manual-only（型のみ記述）
-BEAR.Sundayに機能はあるがこのリポジトリに正規実装が無いKata。公式マニュアルを一次資料に、近い実装済みKataの型を流用して移植する。
-
-| ID | 説明 | Status |
-|---|---|---|
-| [`api-patch-partial-update`](docs/source-index.md#api-patch-partial-update) | PATCHで差分更新を受ける | manual-only |
-| [`api-options-method`](docs/source-index.md#api-options-method) | OPTIONSでメソッドとパラメータ仕様を返す | manual-only |
-| [`content-negotiation`](docs/source-index.md#content-negotiation) | AcceptヘッダでJSON/HTML/CSV等を出し分ける | manual-only |
-| [`form-validation-webform`](docs/source-index.md#form-validation-webform) | Ray.WebFormModuleでAOPフォームバリデーション | manual-only |
-| [`web-context-param-binding`](docs/source-index.md#web-context-param-binding) | Webコンテキスト値と他Resource値を引数に束縛する | manual-only |
-| [`db-transactional`](docs/source-index.md#db-transactional) | `#[Transactional]`で複数書き込みを原子化する | manual-only |
-| [`aop-validation-valid`](docs/source-index.md#aop-validation-valid) | `#[Valid]`/`#[OnValidate]`でAOPバリデーション | manual-only |
-
-### External reference（外部参照実装）
-参照実装が外部公開リポジトリ（[apple-x-co/bear-app](https://github.com/apple-x-co/bear-app)、[bearsunday/BEAR.ToolUse](https://github.com/bearsunday/BEAR.ToolUse)）にあるKata。型を読み取って自プロジェクトで再実装する。
-
-| ID | 説明 | Status |
-|---|---|---|
-| [`rate-limit-interceptor`](docs/source-index.md#rate-limit-interceptor) | `#[RateLimiter]`×interceptorで試行回数を制限する | external |
-| [`resource-permission-authorization`](docs/source-index.md#resource-permission-authorization) | `#[RequiredPermission]`でリソース単位の権限を判定する | external |
-| [`batch-command-resource`](docs/source-index.md#batch-command-resource) | バッチ/キューワーカーをCommand Resourceとして表現する | external |
-| [`signed-url-verification`](docs/source-index.md#signed-url-verification) | 有効期限付き署名URLでメール検証リンクを実装する | external |
-| [`tool-use-instrument`](docs/source-index.md#tool-use-instrument) | `#[Tool]`でResourceをLLMのtool定義として公開する | external |
+Production デプロイ / compile / preload、High-Performance Servers（Swoole / RoadRunner / FrankenPHP）、Aura.Router カスタムルーティングはこのリファレンスの対象外。理由と全リストは [docs/scope.md](docs/scope.md) を参照。
 
 ## スキルを獲得して使う
 
 このリポジトリの価値は CMS を動かすことではなく、`bear-kata` スキルを獲得して **自分の BEAR.Sunday 実装に型(Kata)を適用する** ことにあります。
-
-### 1. スキルを獲得する
 
 ```bash
 # 個人用（どのプロジェクトでも有効）
@@ -212,19 +154,11 @@ mkdir -p ~/.claude/skills && cp -r .claude/skills/bear-kata ~/.claude/skills/
 mkdir -p /path/to/your-project/.claude/skills && cp -r .claude/skills/bear-kata /path/to/your-project/.claude/skills/
 ```
 
-このリポジトリ内で Claude Code を開く場合は、`.claude/skills/bear-kata/` が自動で有効になるのでコピー不要です。
-
-### 2. スキルを発動する
-
-Claude Code で、実装したいことを伝えるだけです。
-
-> 記事一覧のページングを **kata に従って実装してください**
-
-「kata に従って」「BEAR.Sunday で〜を実装したい」と言うと `bear-kata` スキルが発動し、[ソース索引](docs/source-index.md) から該当 Kata（着手前チェック → Source / Tests → マスター確認）へ誘導します。`/bear-kata` で明示的に呼ぶこともできます。
+Claude Code で「記事一覧のページングを **kata に従って実装してください**」のように言うと `bear-kata` スキルが発動し、[ソース索引](docs/source-index.md)から該当 Kata（着手前チェック → Source / Tests → マスター確認）へ誘導します。`/bear-kata` で明示的に呼ぶこともできます。このリポジトリ内で開く場合はコピー不要です。
 
 ## ドキュメント
 
-- [docs/source-index.md](docs/source-index.md) — 各KataのSource / Tests / Key points 詳細
+- [docs/source-index.md](docs/source-index.md) — 各KataのSource / Tests / Key points 詳細（この索引の本体）
 - [docs/setup.md](docs/setup.md) — DB・サーバー起動・管理者ログイン
 - [docs/architecture.md](docs/architecture.md) — BDRレイアウトと設計根拠
 - [docs/conventions.md](docs/conventions.md) — 命名・Resourceパターン・Read/Write SQL契約
