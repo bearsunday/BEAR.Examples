@@ -31,7 +31,7 @@ use function trim;
  * publishedAtLabel, summary (mirrors of Entity\Article projections,
  * kept here because the App wire format is pinned by JSON Schema).
  *
- * @property array{message: string}|array{id: int, slug: string, title: string, body: string, excerpt: string|null, status: string, publishedAt: string|null, authorId: int, categoryId: int, author: array{id: int, name: string, email: string}|null, category: array{id: int, slug: string, name: string}|null, tags: list<array{id: int, slug: string, name: string}>, bodyHtml: string, publishedAtLabel: string|null, summary: string|null} $body
+ * @property array{message: string}|array{id: int, slug: string, title: string, body: string, excerpt: string|null, status: string, publishedAt: string|null, authorId: int, categoryId: int, author: array{id: int, name: string, email: string}|null, category: array{id: int, slug: string, name: string}|null, tagList: Request, tags: list<array{id: int, slug: string, name: string}>, bodyHtml: string, publishedAtLabel: string|null, summary: string|null} $body
  */
 class Article extends ResourceObject
 {
@@ -49,7 +49,6 @@ class Article extends ResourceObject
             return $this;
         }
 
-        assert(is_array($this->body));
         $this->body['author'] = $this->materialise($this->body['author']);
         $this->body['category'] = $this->materialise($this->body['category']);
         $tagListBody = $this->materialise($this->body['tagList']);
