@@ -83,7 +83,7 @@ class Article extends ResourceObject
     private function materialise(mixed $request): array|null
     {
         assert($request instanceof Request);
-        $ro = $request();
+        $ro = $request->__invoke();
 
         return $ro->code === Code::OK && is_array($ro->body) ? $ro->body : null;
     }
