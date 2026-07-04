@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace BEAR\Kata\Fake\Defer\Resource\App;
 
 use BEAR\Defer\DeferInterface;
+use BEAR\Resource\Method;
 use BEAR\Resource\ResourceInterface;
 use BEAR\Resource\ResourceObject;
 
@@ -30,7 +31,7 @@ class ConditionalArticle extends ResourceObject
         $this->body = ['id' => $id];
 
         if ($publish) {
-            $request = $this->resource->post->uri('app://self/publish')->withQuery(['id' => $id]);
+            $request = $this->resource->newRequest(Method::POST, 'app://self/publish', ['id' => $id]);
             $this->defer->add($request);
         }
 
