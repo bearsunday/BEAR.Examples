@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace BEAR\Kata\Resource\Page;
 
-use BEAR\Resource\ResourceObject;
 use BEAR\Kata\Entity\Article;
 use BEAR\Kata\Entity\Category as CategoryEntity;
 use BEAR\Kata\Factory\ArticleFactory;
 use BEAR\Kata\Query\ArticleQueryInterface;
 use BEAR\Kata\Query\CategoryQueryInterface;
+use BEAR\Resource\ResourceObject;
 use Ray\AuraSqlModule\Pagerfanta\Page;
 
 use function assert;

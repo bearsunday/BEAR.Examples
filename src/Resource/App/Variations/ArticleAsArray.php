@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace BEAR\Kata\Resource\App\Variations;
 
+use BEAR\Kata\Query\Variations\ArticleAsArrayQueryInterface;
 use BEAR\Resource\Annotation\JsonSchema;
 use BEAR\Resource\Code;
 use BEAR\Resource\ResourceObject;
-use BEAR\Kata\Query\Variations\ArticleAsArrayQueryInterface;
 
 use function preg_match;
 use function str_replace;

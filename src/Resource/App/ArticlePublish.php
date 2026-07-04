@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace BEAR\Kata\Resource\App;
 
 use BEAR\ApiDoc\Annotation\Alps;
-use BEAR\Resource\Annotation\JsonSchema;
-use BEAR\Resource\Code;
-use BEAR\Resource\ResourceObject;
 use BEAR\Kata\Entity\ArticleStatus;
 use BEAR\Kata\Query\ArticleCommandInterface;
 use BEAR\Kata\Query\ArticleQueryInterface;
 use BEAR\Kata\Service\SqlDateTime;
+use BEAR\Resource\Annotation\JsonSchema;
+use BEAR\Resource\Code;
+use BEAR\Resource\ResourceObject;
 
 use function gmdate;
 

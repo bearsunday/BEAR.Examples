@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace BEAR\Kata;
 
+use BEAR\Kata\Module\App;
 use BEAR\Resource\ResourceObject;
 use BEAR\Sunday\Extension\Application\AppInterface;
 use BEAR\Sunday\Extension\Router\RouterInterface;
-use BEAR\Kata\Module\App;
 use Throwable;
 
 use function assert;

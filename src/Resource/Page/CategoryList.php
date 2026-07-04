@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace BEAR\Kata\Resource\Page;
 
-use BEAR\Resource\ResourceObject;
 use BEAR\Kata\Entity\Category;
 use BEAR\Kata\Query\CategoryQueryInterface;
+use BEAR\Resource\ResourceObject;
 
 /** @property array{categories: list<Category>} $body */
 class CategoryList extends ResourceObject

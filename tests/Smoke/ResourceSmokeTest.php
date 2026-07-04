@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace BEAR\Kata\Smoke;
 
-use BEAR\Resource\Annotation\JsonSchema;
-use BEAR\Resource\ResourceInterface;
-use JsonSchema\Validator;
 use BEAR\Kata\AbstractAppTestCase;
 use BEAR\Kata\Injector;
 use BEAR\Kata\Module\CacheShowcaseModule;
+use BEAR\Resource\Annotation\JsonSchema;
+use BEAR\Resource\ResourceInterface;
+use JsonSchema\Validator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;

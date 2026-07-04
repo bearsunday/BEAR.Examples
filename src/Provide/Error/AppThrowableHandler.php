@@ -75,7 +75,7 @@ final class AppThrowableHandler implements ThrowableHandlerInterface
         ]), []);
     }
 
-    private function asException(Throwable $e): Exception
+    private function asException(Throwable $e): Throwable
     {
         if ($e instanceof Exception) {
             return $e;

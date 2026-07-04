@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace BEAR\Kata\DataLoader;
 
-use BEAR\Resource\DataLoader\DataLoaderInterface;
 use BEAR\Kata\Query\TagQueryInterface;
+use BEAR\Resource\DataLoader\DataLoaderInterface;
 
 use function array_values;
 

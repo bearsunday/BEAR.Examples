@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace BEAR\Kata\Resource\App;
 
+use BEAR\Kata\Auth\AuthInterface;
+use BEAR\Kata\Input\AuthExchangeInput;
 use BEAR\Resource\Annotation\JsonSchema;
 use BEAR\Resource\Code;
 use BEAR\Resource\ResourceObject;
-use BEAR\Kata\Auth\AuthInterface;
-use BEAR\Kata\Input\AuthExchangeInput;
 use Ray\InputQuery\Attribute\Input;
 use Throwable;
 

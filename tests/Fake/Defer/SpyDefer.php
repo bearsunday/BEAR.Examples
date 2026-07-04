@@ -27,6 +27,7 @@ final class SpyDefer implements DeferInterface
         foreach ($this->added as $request) {
             $request();
         }
+
         $this->added = [];
     }
 }

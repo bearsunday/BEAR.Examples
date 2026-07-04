@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace BEAR\Kata\Resource\App;
 
-use BEAR\Resource\Exception\ParameterException;
 use BEAR\Kata\AbstractAppTestCase;
 use BEAR\Kata\Exception\ValidationException;
+use BEAR\Resource\Exception\ParameterException;
 
 use function array_column;
 use function json_decode;

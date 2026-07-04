@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace BEAR\Kata\Resource\App\Cache;
 
 use BEAR\ApiDoc\Annotation\Alps;
+use BEAR\Kata\Query\ArticleQueryInterface;
 use BEAR\RepositoryModule\Annotation\DonutCache;
 use BEAR\Resource\Annotation\JsonSchema;
 use BEAR\Resource\Code;
 use BEAR\Resource\ResourceObject;
-use BEAR\Kata\Query\ArticleQueryInterface;
 
 /**
  * Explicit `#[DonutCache]` example for a stable article preview.

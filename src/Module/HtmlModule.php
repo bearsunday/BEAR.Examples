@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace BEAR\Kata\Module;
 
+use BEAR\Kata\Provide\Error\HtmlThrowableHandler;
+use BEAR\Kata\Renderer\CmsQiqRenderer;
 use BEAR\QiqModule\QiqModule;
 use BEAR\Resource\RenderInterface;
 use BEAR\Sunday\Extension\Error\ThrowableHandlerInterface;
-use BEAR\Kata\Provide\Error\HtmlThrowableHandler;
-use BEAR\Kata\Renderer\CmsQiqRenderer;
 use Override;
 use Ray\Di\AbstractModule;
 use Ray\Di\Scope;

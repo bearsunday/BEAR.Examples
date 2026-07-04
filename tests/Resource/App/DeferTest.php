@@ -49,8 +49,7 @@ final class DeferTest extends TestCase
         });
     }
 
-    // ── C1: Declarative defer with #[Defer] + #[Link] ──
-
+    /** ── C1: Declarative defer with #[Defer] + #[Link] ── */
     public function testDeferEnqueuesResolvedRequests(): void
     {
         $injector = $this->injector();
@@ -94,8 +93,7 @@ final class DeferTest extends TestCase
         $this->assertSame('note:100', $log->calls[1]);
     }
 
-    // ── C2: Conditional defer with DeferInterface::add() ──
-
+    /** ── C2: Conditional defer with DeferInterface::add() ── */
     public function testConditionalDeferSkipsWhenPublishIsFalse(): void
     {
         $injector = $this->injector();

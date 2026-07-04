@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace BEAR\Kata\Resource\App;
 
+use BEAR\Kata\Injector;
+use BEAR\Kata\Resource\App\Cache\ArticlePreview;
 use BEAR\QueryRepository\RepositoryLoggerInterface;
 use BEAR\RepositoryModule\Annotation\DonutCache;
 use BEAR\Resource\ResourceInterface;
-use BEAR\Kata\Injector;
-use BEAR\Kata\Resource\App\Cache\ArticlePreview;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 

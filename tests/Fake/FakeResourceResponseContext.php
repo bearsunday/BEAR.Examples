@@ -12,9 +12,9 @@ use Koriym\SemanticLogger\AbstractContext;
  */
 final class FakeResourceResponseContext extends AbstractContext
 {
-    public const TYPE = 'resource_response';
+    public const string TYPE = 'resource_response';
 
-    public const SCHEMA_URL = 'https://bearsunday.github.io/schemas/semantic-logger/resource-response.json';
+    public const string SCHEMA_URL = 'https://bearsunday.github.io/schemas/semantic-logger/resource-response.json';
 
     public function __construct(
         public int $code,

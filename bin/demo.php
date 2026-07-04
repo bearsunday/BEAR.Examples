@@ -27,8 +27,8 @@ declare(strict_types=1);
  *   - otherwise                                 → fall back to a fresh SQLite file
  */
 
-use BEAR\Resource\ResourceInterface;
 use BEAR\Kata\Injector;
+use BEAR\Resource\ResourceInterface;
 
 require dirname(__DIR__) . '/autoload.php';
 

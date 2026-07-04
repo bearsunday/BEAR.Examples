@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace BEAR\Kata\Resource\Page\Admin;
 
-use BEAR\Resource\ResourceObject;
 use BEAR\Kata\Auth\AuthSessionInterface;
+use BEAR\Resource\ResourceObject;
 use Ray\Csrf\Attribute\CsrfToken;
 use Ray\Csrf\Attribute\SameOrigin;
 

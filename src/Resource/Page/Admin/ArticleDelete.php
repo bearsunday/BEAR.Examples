@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace BEAR\Kata\Resource\Page\Admin;
 
-use BEAR\Resource\Code;
-use BEAR\Resource\ResourceInterface;
-use BEAR\Resource\ResourceObject;
 use BEAR\Kata\Auth\AdminGuard;
 use BEAR\Kata\Auth\AdminUserInterface;
 use BEAR\Kata\Entity\Article;
 use BEAR\Kata\Query\ArticleQueryInterface;
+use BEAR\Resource\Code;
+use BEAR\Resource\ResourceInterface;
+use BEAR\Resource\ResourceObject;
 use Ray\Csrf\Attribute\CsrfToken;
 use Ray\Csrf\Attribute\SameOrigin;
 

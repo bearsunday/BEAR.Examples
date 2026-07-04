@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace BEAR\Kata\Resource\App\Crawl;
 
-use BEAR\Resource\Annotation\JsonSchema;
-use BEAR\Resource\Annotation\Link;
-use BEAR\Resource\ResourceObject;
 use BEAR\Kata\DataLoader\ArticleTagsDataLoader;
 use BEAR\Kata\Factory\ArticleFactory;
 use BEAR\Kata\Query\ArticleQueryInterface;
+use BEAR\Resource\Annotation\JsonSchema;
+use BEAR\Resource\Annotation\Link;
+use BEAR\Resource\ResourceObject;
 use Ray\AuraSqlModule\Pagerfanta\Page;
 
 use function array_map;

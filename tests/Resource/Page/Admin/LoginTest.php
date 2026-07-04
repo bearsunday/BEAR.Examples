@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace BEAR\Kata\Resource\Page\Admin;
 
-use BEAR\Resource\ResourceInterface;
 use BEAR\Kata\AbstractPageTestCase;
 use BEAR\Kata\Exception\UnauthenticatedException;
 use BEAR\Kata\Fake\FakeAuth0Module;
 use BEAR\Kata\Fake\FakeSqlQuery;
 use BEAR\Kata\Injector;
+use BEAR\Resource\ResourceInterface;
 use Ray\MediaQuery\SqlQueryInterface;
 
 use function array_filter;

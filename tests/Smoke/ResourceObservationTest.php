@@ -10,6 +10,7 @@ use BEAR\EventSourcing\SemanticLogExtractor;
 use BEAR\Resource\Module\ResourceModule;
 use BEAR\Resource\ResourceInterface;
 use Koriym\SemanticLogger\SemanticLogger;
+use Koriym\SemanticLogger\SemanticLoggerInterface;
 use PHPUnit\Framework\TestCase;
 use Ray\Di\Injector;
 
@@ -45,7 +46,7 @@ final class ResourceObservationTest extends TestCase
         $this->assertSame('Hello, Kata!', $ro->body['greeting']);
 
         // Flush the Semantic Logger and extract events
-        $logger = $injector->getInstance(\Koriym\SemanticLogger\SemanticLoggerInterface::class);
+        $logger = $injector->getInstance(SemanticLoggerInterface::class);
         assert($logger instanceof SemanticLogger);
         $log = $logger->flush();
 
@@ -65,6 +66,7 @@ final class ResourceObservationTest extends TestCase
                 break;
             }
         }
+
         $this->assertTrue($foundGet, 'Should observe the GET hello resource call');
     }
 }

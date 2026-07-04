@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace BEAR\Kata\Resource\App\Variations;
 
+use BEAR\Kata\AbstractAppTestCase;
 use BEAR\Resource\ResourceObject;
 use BEAR\Resource\TransferInterface;
-use BEAR\Kata\AbstractAppTestCase;
 
 use function file_get_contents;
 use function is_resource;

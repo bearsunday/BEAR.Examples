@@ -8,8 +8,8 @@ declare(strict_types=1);
  * real DB path without changing the main `composer demo` flow.
  */
 
-use BEAR\Resource\ResourceInterface;
 use BEAR\Kata\Injector;
+use BEAR\Resource\ResourceInterface;
 use RuntimeException as PhpRuntimeException;
 
 require dirname(__DIR__) . '/autoload.php';

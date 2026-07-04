@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace BEAR\Kata\Example;
 
+use BEAR\Kata\Injector;
 use BEAR\Package\Module\Import\ImportApp;
 use BEAR\Package\Module\ImportAppModule;
 use BEAR\Resource\ResourceInterface;
-use BEAR\Kata\Injector;
 use Override;
 use PHPUnit\Framework\TestCase;
 use Ray\Di\AbstractModule;

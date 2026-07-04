@@ -28,12 +28,12 @@ declare(strict_types=1);
  * ArrayAdapter so the run is hermetic — no DB and no external cache.
  */
 
+use BEAR\Kata\Injector;
+use BEAR\Kata\Module\CacheShowcaseModule;
 use BEAR\QueryRepository\Header;
 use BEAR\Resource\ResourceInterface;
 use BEAR\Resource\ResourceObject;
 use BEAR\Sunday\Extension\Transfer\HttpCacheInterface;
-use BEAR\Kata\Injector;
-use BEAR\Kata\Module\CacheShowcaseModule;
 
 require dirname(__DIR__) . '/autoload.php';
 

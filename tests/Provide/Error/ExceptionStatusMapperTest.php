@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace BEAR\Kata\Provide\Error;
 
-use BEAR\Resource\Code;
-use BEAR\Resource\Exception\JsonSchemaRequestException;
-use BEAR\Resource\Exception\JsonSchemaResponseException;
 use BEAR\Kata\Exception\ArticleNotFoundException;
 use BEAR\Kata\Exception\AuthorNotFoundException;
 use BEAR\Kata\Exception\CategoryNotFoundException;
@@ -14,9 +11,13 @@ use BEAR\Kata\Exception\ForbiddenException;
 use BEAR\Kata\Exception\TagNotFoundException;
 use BEAR\Kata\Exception\UnauthenticatedException;
 use BEAR\Kata\Exception\ValidationException;
+use BEAR\Resource\Code;
+use BEAR\Resource\Exception\JsonSchemaRequestException;
+use BEAR\Resource\Exception\JsonSchemaResponseException;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
+use Throwable;
 
 final class ExceptionStatusMapperTest extends TestCase
 {
@@ -27,7 +28,7 @@ final class ExceptionStatusMapperTest extends TestCase
         $this->mapper = new ExceptionStatusMapper();
     }
 
-    /** @return array<string, array{0: \Throwable, 1: int}> */
+    /** @return array<string, array{0: Throwable, 1: int}> */
     public static function statusProvider(): array
     {
         return [
@@ -44,7 +45,7 @@ final class ExceptionStatusMapperTest extends TestCase
     }
 
     #[DataProvider('statusProvider')]
-    public function testStatus(\Throwable $e, int|null $expected): void
+    public function testStatus(Throwable $e, int|null $expected): void
     {
         $this->assertSame($expected, $this->mapper->status($e));
     }

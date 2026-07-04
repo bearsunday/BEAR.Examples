@@ -7,13 +7,12 @@ namespace BEAR\Kata\Smoke;
 use BEAR\EventSourcing\Event;
 use BEAR\EventSourcing\Events;
 use BEAR\EventSourcing\EventsInterface;
-use BEAR\EventSourcing\RecordedMethods;
 use BEAR\EventSourcing\SemanticLogExtractor;
 use BEAR\EventSourcing\Store\InMemoryEventStore;
-use DateTimeImmutable;
-use Koriym\SemanticLogger\SemanticLogger;
 use BEAR\Kata\Fake\FakeResourceRequestContext;
 use BEAR\Kata\Fake\FakeResourceResponseContext;
+use DateTimeImmutable;
+use Koriym\SemanticLogger\SemanticLogger;
 use PHPUnit\Framework\TestCase;
 
 use function iterator_to_array;

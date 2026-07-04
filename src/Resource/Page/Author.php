@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace BEAR\Kata\Resource\Page;
 
-use BEAR\Resource\ResourceObject;
 use BEAR\Kata\Entity\Author as AuthorEntity;
 use BEAR\Kata\Query\AuthorQueryInterface;
+use BEAR\Resource\ResourceObject;
 
 /** @property array{message: string}|array{author: AuthorEntity} $body */
 class Author extends ResourceObject

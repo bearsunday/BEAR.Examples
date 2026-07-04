@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace BEAR\Kata\Interceptor;
 
-use BEAR\Resource\Exception\BadRequestException;
 use BEAR\Kata\Fake\FakeRequestOrigin;
+use BEAR\Resource\Exception\BadRequestException;
 use PHPUnit\Framework\TestCase;
 use Ray\Aop\ReflectiveMethodInvocation;
 use Ray\Csrf\Exception\ForbiddenException;

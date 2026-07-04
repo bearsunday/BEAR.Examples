@@ -4,14 +4,15 @@ declare(strict_types=1);
 
 namespace BEAR\Kata\Smoke;
 
-use BEAR\EventSourcing\RecordedMethods;
 use BEAR\EventSourcing\SemanticLogExtractor;
 use BEAR\Kata\Fake\FakeResourceRequestContext;
 use BEAR\Kata\Fake\FakeResourceResponseContext;
+use CallbackFilterIterator;
 use Koriym\SemanticLogger\SemanticLogger;
 use PHPUnit\Framework\TestCase;
 
 use function iterator_to_array;
+use function str_starts_with;
 
 /**
  * B2 `event-filter-replay` — filter Events by URI / params / method and replay.
@@ -51,7 +52,7 @@ final class EventReplayTest extends TestCase
 
         $events = (new SemanticLogExtractor())->extract($logger->flush());
 
-        $forUser = new \CallbackFilterIterator(
+        $forUser = new CallbackFilterIterator(
             $events->getIterator(),
             static fn ($e): bool => ($e->params['user_id'] ?? null) === 'koriym',
         );
@@ -83,7 +84,7 @@ final class EventReplayTest extends TestCase
 
         $events = (new SemanticLogExtractor())->extract($logger->flush());
 
-        $orderEvents = new \CallbackFilterIterator(
+        $orderEvents = new CallbackFilterIterator(
             $events->getIterator(),
             static fn ($e): bool => str_starts_with($e->uri, 'app://self/orders'),
         );
@@ -115,11 +116,11 @@ final class EventReplayTest extends TestCase
 
         $events = (new SemanticLogExtractor())->extract($logger->flush());
 
-        $forUser = new \CallbackFilterIterator(
+        $forUser = new CallbackFilterIterator(
             $events->getIterator(),
             static fn ($e): bool => ($e->params['user_id'] ?? null) === 'koriym',
         );
-        $writesOnly = new \CallbackFilterIterator(
+        $writesOnly = new CallbackFilterIterator(
             $forUser,
             static fn ($e): bool => $e->method === 'POST',
         );

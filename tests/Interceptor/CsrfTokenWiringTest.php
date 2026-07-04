@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace BEAR\Kata\Interceptor;
 
-use BEAR\Resource\ResourceInterface;
 use BEAR\Kata\Auth\Visitor;
 use BEAR\Kata\Fake\FakeUserModule;
 use BEAR\Kata\Injector;
+use BEAR\Resource\ResourceInterface;
 use PHPUnit\Framework\TestCase;
 use Ray\Csrf\Exception\ForbiddenException;
 

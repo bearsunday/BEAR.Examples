@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace BEAR\Kata\Module;
 
-use BEAR\Sunday\Extension\Error\ThrowableHandlerInterface;
 use BEAR\Kata\Provide\Error\AppThrowableHandler;
 use BEAR\Kata\Provide\Error\ExceptionStatusMapper;
+use BEAR\Sunday\Extension\Error\ThrowableHandlerInterface;
 use Override;
 use Ray\Di\AbstractModule;
 

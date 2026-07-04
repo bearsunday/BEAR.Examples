@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace BEAR\Kata\Resource\App\Cache;
 
 use BEAR\ApiDoc\Annotation\Alps;
+use BEAR\Kata\Query\TagCommandInterface;
+use BEAR\Kata\Query\TagQueryInterface;
 use BEAR\RepositoryModule\Annotation\Cacheable;
 use BEAR\Resource\Annotation\JsonSchema;
 use BEAR\Resource\Code;
 use BEAR\Resource\ResourceObject;
-use BEAR\Kata\Query\TagCommandInterface;
-use BEAR\Kata\Query\TagQueryInterface;
 
 /**
  * Cache showcase leaf — symmetric to {@see Author}.

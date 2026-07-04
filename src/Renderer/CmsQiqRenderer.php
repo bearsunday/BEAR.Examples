@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace BEAR\Kata\Renderer;
 
+use BEAR\Kata\Auth\AuthSessionInterface;
+use BEAR\Kata\Auth\UserInterface;
+use BEAR\Kata\Renderer\Exception\InvalidResourcePathException;
 use BEAR\Resource\AbstractRequest;
 use BEAR\Resource\RenderInterface;
 use BEAR\Resource\ResourceObject;
 use ErrorException;
-use BEAR\Kata\Auth\AuthSessionInterface;
-use BEAR\Kata\Auth\UserInterface;
-use BEAR\Kata\Renderer\Exception\InvalidResourcePathException;
 use Override;
 use Qiq\Template;
 use Ray\Aop\WeavedInterface;
@@ -64,9 +64,11 @@ final readonly class CmsQiqRenderer implements RenderInterface
         // (e.g. the page header). Pre-rendering keeps each resource's blocks
         // isolated, and each child is drawn with its own App template.
         foreach ($vars as $key => $value) {
-            if ($value instanceof AbstractRequest) {
-                $vars[$key] = (string) $value;
+            if (! ($value instanceof AbstractRequest)) {
+                continue;
             }
+
+            $vars[$key] = (string) $value;
         }
 
         $vars += $this->commonVars($ro);

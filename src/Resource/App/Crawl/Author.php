@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace BEAR\Kata\Resource\App\Crawl;
 
+use BEAR\Kata\Query\AuthorQueryInterface;
 use BEAR\Resource\Annotation\JsonSchema;
 use BEAR\Resource\Annotation\Link;
 use BEAR\Resource\Code;
 use BEAR\Resource\ResourceObject;
-use BEAR\Kata\Query\AuthorQueryInterface;
 
 class Author extends ResourceObject
 {

@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace BEAR\Kata;
 
-use BEAR\Resource\ResourceInterface;
 use BEAR\Kata\Auth\UserInterface;
 use BEAR\Kata\Auth\Visitor;
 use BEAR\Kata\Fake\FakeUserModule;
+use BEAR\Resource\ResourceInterface;
 use PHPUnit\Framework\TestCase;
 
 /**

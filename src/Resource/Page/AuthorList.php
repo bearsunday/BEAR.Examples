@@ -5,9 +5,10 @@ declare(strict_types=1);
 namespace BEAR\Kata\Resource\Page;
 
 use BEAR\Resource\Annotation\Embed;
+use BEAR\Resource\Request;
 use BEAR\Resource\ResourceObject;
 
-/** @property array{authorList: \BEAR\Resource\Request} $body */
+/** @property array{authorList: Request} $body */
 class AuthorList extends ResourceObject
 {
     /**

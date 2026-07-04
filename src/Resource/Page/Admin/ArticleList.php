@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace BEAR\Kata\Resource\Page\Admin;
 
-use BEAR\Resource\ResourceObject;
 use BEAR\Kata\Auth\AdminGuard;
 use BEAR\Kata\Entity\Article;
 use BEAR\Kata\Factory\ArticleFactory;
 use BEAR\Kata\Query\ArticleQueryInterface;
+use BEAR\Resource\ResourceObject;
 use Ray\AuraSqlModule\Pagerfanta\Page as PagerPage;
 
 use function assert;

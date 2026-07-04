@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace BEAR\Kata\Validation;
 
+use BEAR\Kata\Exception\ValidationException;
 use BEAR\Resource\Exception\JsonSchemaException;
 use BEAR\Resource\JsonSchemaRequestExceptionHandlerInterface;
 use BEAR\Resource\ResourceObject;
-use BEAR\Kata\Exception\ValidationException;
 use Override;
 
 /**

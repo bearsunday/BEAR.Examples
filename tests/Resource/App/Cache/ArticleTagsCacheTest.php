@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace BEAR\Kata\Resource\App\Cache;
 
+use BEAR\Kata\Injector;
+use BEAR\Kata\Module\CacheShowcaseModule;
 use BEAR\QueryRepository\Header;
 use BEAR\Resource\ResourceInterface;
 use BEAR\Sunday\Extension\Transfer\HttpCacheInterface;
-use BEAR\Kata\Injector;
-use BEAR\Kata\Module\CacheShowcaseModule;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 

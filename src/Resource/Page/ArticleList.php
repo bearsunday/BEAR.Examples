@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace BEAR\Kata\Resource\Page;
 
-use BEAR\Resource\ResourceObject;
 use BEAR\Kata\Entity\Article;
 use BEAR\Kata\Entity\ArticleStatus;
 use BEAR\Kata\Entity\Author;
@@ -15,6 +14,7 @@ use BEAR\Kata\Query\ArticleQueryInterface;
 use BEAR\Kata\Query\AuthorQueryInterface;
 use BEAR\Kata\Query\CategoryQueryInterface;
 use BEAR\Kata\Query\TagQueryInterface;
+use BEAR\Resource\ResourceObject;
 use Ray\AuraSqlModule\Pagerfanta\Page as PagerPage;
 
 use function assert;

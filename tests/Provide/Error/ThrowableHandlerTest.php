@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace BEAR\Kata\Provide\Error;
 
-use BEAR\Resource\ResourceObject;
+use BEAR\Kata\Exception\ValidationException;
 use BEAR\Resource\Code;
+use BEAR\Resource\ResourceObject;
 use BEAR\Sunday\Extension\Error\ErrorInterface;
 use BEAR\Sunday\Extension\Error\ThrowableHandlerInterface;
 use BEAR\Sunday\Extension\Router\RouterMatch as Request;
 use BEAR\Sunday\Extension\Transfer\TransferInterface;
-use BEAR\Kata\Exception\ValidationException;
 use PHPUnit\Framework\TestCase;
 use Throwable;
 
@@ -72,7 +72,7 @@ final class ThrowableHandlerTest extends TestCase
 /** Fake TransferInterface that captures the transferred ResourceObject. */
 final class FakeTransfer implements TransferInterface
 {
-    public ?ResourceObject $captured = null;
+    public ResourceObject|null $captured = null;
 
     public function __invoke(ResourceObject $ro, array $server): void
     {

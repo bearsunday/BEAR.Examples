@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace BEAR\Kata\Integration;
 
-use BEAR\Resource\ResourceInterface;
 use BEAR\Kata\Injector;
+use BEAR\Resource\ResourceInterface;
 use PDO;
 use PDOException;
 use PHPUnit\Framework\TestCase;

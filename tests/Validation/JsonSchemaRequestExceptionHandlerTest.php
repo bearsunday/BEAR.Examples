@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace BEAR\Kata\Validation;
 
+use BEAR\Kata\Exception\ValidationException;
 use BEAR\Resource\Exception\JsonSchemaRequestException;
 use BEAR\Resource\JsonSchema\ConstraintViolation;
 use BEAR\Resource\JsonSchema\JsonSchemaError;
 use BEAR\Resource\JsonSchema\JsonSchemaErrors;
 use BEAR\Resource\ResourceObject;
-use BEAR\Kata\Exception\ValidationException;
 use PHPUnit\Framework\TestCase;
 
 /**

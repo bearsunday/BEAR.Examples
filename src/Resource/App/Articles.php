@@ -7,12 +7,12 @@ namespace BEAR\Kata\Resource\App;
 use BEAR\ApiDoc\Annotation\Alps;
 use BEAR\Cli\Attribute\Cli;
 use BEAR\Cli\Attribute\Option;
+use BEAR\Kata\Factory\ArticleFactory;
+use BEAR\Kata\Query\ArticleQueryInterface;
 use BEAR\RepositoryModule\Annotation\CacheableResponse;
 use BEAR\Resource\Annotation\JsonSchema;
 use BEAR\Resource\Annotation\Link;
 use BEAR\Resource\ResourceObject;
-use BEAR\Kata\Factory\ArticleFactory;
-use BEAR\Kata\Query\ArticleQueryInterface;
 use Ray\AuraSqlModule\Pagerfanta\Page;
 
 use function array_map;

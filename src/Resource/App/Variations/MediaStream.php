@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace BEAR\Kata\Resource\App\Variations;
 
 use BEAR\AppMeta\AbstractAppMeta;
+use BEAR\Kata\Query\MediaQueryInterface;
 use BEAR\Resource\Code;
 use BEAR\Resource\ResourceObject;
 use BEAR\Streamer\StreamTransferInject;
-use BEAR\Kata\Query\MediaQueryInterface;
 
 use function basename;
 use function fclose;

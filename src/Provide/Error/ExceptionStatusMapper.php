@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace BEAR\Kata\Provide\Error;
 
-use BEAR\Resource\Code;
-use BEAR\Resource\Exception\BadRequestException;
-use BEAR\Resource\Exception\JsonSchemaRequestException;
 use BEAR\Kata\Exception\ArticleNotFoundException;
 use BEAR\Kata\Exception\AuthorNotFoundException;
 use BEAR\Kata\Exception\CategoryNotFoundException;
@@ -14,6 +11,9 @@ use BEAR\Kata\Exception\ForbiddenException;
 use BEAR\Kata\Exception\TagNotFoundException;
 use BEAR\Kata\Exception\UnauthenticatedException;
 use BEAR\Kata\Exception\ValidationException;
+use BEAR\Resource\Code;
+use BEAR\Resource\Exception\BadRequestException;
+use BEAR\Resource\Exception\JsonSchemaRequestException;
 use Throwable;
 
 use function preg_replace;
@@ -42,7 +42,8 @@ final class ExceptionStatusMapper
             return Code::FORBIDDEN;
         }
 
-        if ($e instanceof ArticleNotFoundException
+        if (
+            $e instanceof ArticleNotFoundException
             || $e instanceof AuthorNotFoundException
             || $e instanceof CategoryNotFoundException
             || $e instanceof TagNotFoundException

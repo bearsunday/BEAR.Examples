@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace BEAR\Kata\Resource\Page\Admin;
 
-use BEAR\Resource\Code;
-use BEAR\Resource\ResourceObject;
 use BEAR\Kata\Auth\AuthInterface;
 use BEAR\Kata\Auth\AuthorIdentityResolver;
 use BEAR\Kata\Auth\AuthSessionInterface;
+use BEAR\Resource\Code;
+use BEAR\Resource\ResourceObject;
 use Throwable;
 
 /** @property array{message: string}|array{} $body */

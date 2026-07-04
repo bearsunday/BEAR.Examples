@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace BEAR\Kata\Resource\Page;
 
+use BEAR\Kata\Service\MarkdownRendererInterface;
 use BEAR\Resource\Annotation\Embed;
 use BEAR\Resource\Code;
 use BEAR\Resource\Request;
 use BEAR\Resource\ResourceObject;
-use BEAR\Kata\Service\MarkdownRendererInterface;
 
 use function assert;
 use function is_array;

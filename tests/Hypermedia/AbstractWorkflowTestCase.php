@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace BEAR\Kata\Hypermedia;
 
-use BEAR\Resource\ResourceObject;
 use BEAR\Kata\AbstractAppTestCase;
+use BEAR\Resource\ResourceObject;
 
 use function parse_str;
 use function parse_url;

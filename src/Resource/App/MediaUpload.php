@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace BEAR\Kata\Resource\App;
 
 use BEAR\ApiDoc\Annotation\Alps;
+use BEAR\Kata\Query\MediaCommandInterface;
+use BEAR\Kata\Query\MediaQueryInterface;
 use BEAR\Resource\Annotation\JsonSchema;
 use BEAR\Resource\Code;
 use BEAR\Resource\ResourceObject;
 use Koriym\FileUpload\ErrorFileUpload;
 use Koriym\FileUpload\FileUpload;
-use BEAR\Kata\Query\MediaCommandInterface;
-use BEAR\Kata\Query\MediaQueryInterface;
 use Ray\InputQuery\Attribute\InputFile;
 use Throwable;
 
