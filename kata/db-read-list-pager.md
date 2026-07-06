@@ -168,7 +168,7 @@ collectionは `list()`、SQLは `article_list.sql`、`perPage` は `#[Pager(perP
 
 ## Do not
 
-- `item()` と同じ感覚で `factory:` によるEntity hydrationを期待しない — `#[Pager]` 付きmethodは getPages 経路を通り、`$pages[$page]->data` はsnake_case連想配列のまま返る。Entity化はResource側の `fromRows()` で行う。
+- `item()` と同じ感覚で `$pages[$page]->data` にEntityを期待しない — `factory:` 指定の無いこの `list()` は getPages 経路を通り、行はsnake_case連想配列のまま返る。Entity化はResource側の `fromRows()` で行う。
 
 ## マスター確認（After）
 

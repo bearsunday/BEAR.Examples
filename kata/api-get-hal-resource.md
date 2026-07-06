@@ -90,7 +90,7 @@ ResourceObjectは状態を `$this->body` に置く。表現はrendererが作る�
 
 ## Do not
 
-- ResourceでJSON文字列を手作りしない — `json_encode` した文字列を body に置くと renderer が働かず、`_links` / `_embedded` の付与も失われる。他フレームワークのJSON応答（`JsonResponse` 等）に慣れていると陥りやすいが、bodyは連想配列のまま置くのがidiom。
+- ResourceでJSON文字列を手作りしない — `json_encode` した文字列を body に置くと renderer は `value` key に包むだけで表現は二重エンコードになり、`#[Embed]` slot も潰れて `_embedded` が失われる。他フレームワークのJSON応答（`JsonResponse` 等）に慣れていると陥りやすいが、bodyは連想配列のまま置くのがidiom。
 
 ## マスター確認（After）
 
