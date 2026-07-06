@@ -148,14 +148,14 @@ Production デプロイ / compile / preload、High-Performance Servers（Swoole 
 
 **A. このリポジトリ内（インストール不要）** — clone して中で Claude Code を開けば `bear-kata` は自動で読み込まれる。
 
-**B. plugin として他プロジェクトへ（更新が効く）**
+**B. plugin として他プロジェクトへ（更新が効く）** — BEAR スキルのハブ [bearsunday/BEAR.Skills](https://github.com/bearsunday/BEAR.Skills) 経由で入れる。
 
 ```
-/plugin marketplace add bearsunday/BEAR.Kata
-/plugin install bear-kata@bear-kata
+/plugin marketplace add bearsunday/BEAR.Skills
+/plugin install bear-kata@bear-skills
 ```
 
-`/plugin marketplace update bear-kata` で最新の Kata に追随する（手動コピーと違い、リポジトリの更新を取り込む）。
+`/plugin marketplace update bear-skills` で最新の Kata に追随する（手動コピーと違い、リポジトリの更新を取り込む）。
 
 **C. 手動コピー（最小構成・更新は手動）**
 
