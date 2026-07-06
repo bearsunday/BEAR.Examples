@@ -49,79 +49,128 @@ BEAR.Kata の各エントリは「Kata（型）」です。武道の型と同じ
 
 ## 索引（一覧）
 
-| Kata | Status | 何をするか |
-|---|---|---|
-| [`db-read-one-entity`](kata/db-read-one-entity.md) | canonical | DBから主キーで1件のEntityを読む |
-| [`db-entity-factory`](kata/db-entity-factory.md) | canonical | `#[DbQuery(factory:)]`でDB行をEntityへ変換する |
-| [`db-read-by-natural-key`](kata/db-read-by-natural-key.md) | canonical | natural keyで1件読む |
-| [`db-read-list-pager`](kata/db-read-list-pager.md) | canonical | DBから一覧をページングして読む |
-| [`db-command-write`](kata/db-command-write.md) | canonical | DB書き込みをCommand Interfaceに分ける |
-| [`db-link-table-sync`](kata/db-link-table-sync.md) | canonical | link tableをclear/linkで同期する |
-| [`db-result-projection`](kata/db-result-projection.md) | showcase | Query結果を専用Result objectにする |
-| [`db-array-row-comparison`](kata/db-array-row-comparison.md) | comparison-only | Entityではなくarrayで読む比較例を見る |
-| [`db-sqlquery-orchestration`](kata/db-sqlquery-orchestration.md) | comparison-only | `SqlQueryInterface`で複数SQLを調停する |
-| [`db-raw-pdo-comparison`](kata/db-raw-pdo-comparison.md) | comparison-only | Raw PDOとの違いを見る |
-| [`api-get-hal-resource`](kata/api-get-hal-resource.md) | canonical | GET ResourceをHAL+JSONで返す |
-| [`api-post-input-dto`](kata/api-post-input-dto.md) | canonical | POST入力をInput DTOで受ける |
-| [`api-put-tristate-input`](kata/api-put-tristate-input.md) | canonical | PUTでtri-state入力を扱う |
-| [`api-delete-no-content`](kata/api-delete-no-content.md) | canonical | DELETE成功を204で返す |
-| [`not-found-response`](kata/not-found-response.md) | canonical | 見つからないResourceを404にする |
-| [`json-schema-validation`](kata/json-schema-validation.md) | canonical | Request/ResponseをJSON Schemaで検証する |
-| [`hal-link`](kata/hal-link.md) | canonical | HAL `_links` を `#[Link]` で宣言する |
-| [`hal-embed`](kata/hal-embed.md) | canonical | HAL `_embedded` を `#[Embed]` と `addQuery()` で作る |
-| [`page-resource-qiq-detail`](kata/page-resource-qiq-detail.md) | canonical | Page Resourceで1件詳細HTMLを描画する |
-| [`page-resource-list`](kata/page-resource-list.md) | canonical | Page Resourceで一覧HTMLを描画する |
-| [`markdown-to-html`](kata/markdown-to-html.md) | canonical | Markdown本文をHTMLへ変換する |
-| [`admin-prg-form`](kata/admin-prg-form.md) | showcase | Admin formでPRGを使う |
-| [`stream-response`](kata/stream-response.md) | showcase | ファイルやバイナリをストリームで返す |
-| [`cacheable-leaf`](kata/cacheable-leaf.md) | showcase | `#[Cacheable]` だけのleaf resourceを作る |
-| [`cache-embed-dependency`](kata/cache-embed-dependency.md) | showcase | `#[Embed]` 親Resourceの依存を自動合成する |
-| [`cache-body-derived-dependency`](kata/cache-body-derived-dependency.md) | showcase | body由来の可変長依存を `fromAssoc()` で宣言する |
-| [`async-embed-parallel`](kata/async-embed-parallel.md) | showcase | embed graphを並列実行に載せる |
-| [`cli-resource`](kata/cli-resource.md) | showcase | ResourceをCLIコマンドとして公開する |
-| [`fake-sql-query`](kata/fake-sql-query.md) | support | DBなしでMediaQueryをFakeする |
-| [`app-resource-test`](kata/app-resource-test.md) | support | App ResourceのAPI contractをテストする |
-| [`page-resource-test`](kata/page-resource-test.md) | support | Page ResourceのHTML contractをテストする |
-| [`hypermedia-workflow-test`](kata/hypermedia-workflow-test.md) | support | Link/Embedを辿るworkflowをテストする |
-| [`mysql-integration-test`](kata/mysql-integration-test.md) | support | 実DB経路を必要時だけ検証する |
-| [`alps-profile-ssot`](kata/alps-profile-ssot.md) | support | ALPS profileを意味のSSOTにする |
-| [`semantic-fake-data`](kata/semantic-fake-data.md) | support | semantic-exで決定的fake dataを作る |
-| [`json-schema-generated`](kata/json-schema-generated.md) | support | fake observationからJSON Schemaを生成する |
-| [`apidoc-llms-generated`](kata/apidoc-llms-generated.md) | support | API docsとllms.txtを生成する |
-| [`auth-oauth-flow`](kata/auth-oauth-flow.md) | showcase | OAuth認証フローをAuthInterface経由で示す |
-| [`csrf-same-origin-protection`](kata/csrf-same-origin-protection.md) | canonical | CSRFトークン + Same-Origin interceptorをAOP bindする |
-| [`file-upload-input`](kata/file-upload-input.md) | canonical | `#[InputFile]`でファイルアップロードを受ける |
-| [`crawl-data-loader`](kata/crawl-data-loader.md) | showcase | `#[Link(crawl:...)]` + DataLoaderでN+1を解消する |
-| [`state-transition-resource`](kata/state-transition-resource.md) | canonical | 状態遷移を独立Resourceとして切り出す |
-| [`error-status-mapping`](kata/error-status-mapping.md) | canonical | 例外→HTTPステータスマッピングとエラーハンドリング |
-| [`cache-purge`](kata/cache-purge.md) | showcase | `#[Purge]`でwrite時にcollection cacheを手動無効化する |
-| [`donut-cache`](kata/donut-cache.md) | showcase | `#[DonutCache]`で部分キャッシュを示す |
-| [`cacheable-response`](kata/cacheable-response.md) | showcase | `#[CacheableResponse]`でレスポンス全体をキャッシュする |
-| [`conditional-request-304`](kata/conditional-request-304.md) | showcase | 条件付きリクエスト（If-None-Match → 304）で転送を省く |
-| [`admin-auth-boundary`](kata/admin-auth-boundary.md) | showcase | 型で表現する認証境界とauthor-scoped認可 |
-| [`admin-session-login`](kata/admin-session-login.md) | showcase | セッションOAuthログインフロー（login → callback → logout） |
-| [`admin-confirm-page`](kata/admin-confirm-page.md) | showcase | 確認画面Page Resourceで状態遷移をラップする |
-| [`import-app`](kata/import-app.md) | showcase | ImportAppModuleで他アプリのResourceを呼ぶ |
-| [`event-extraction`](kata/event-extraction.md) | showcase | Semantic Logger観察ログからEventを抽出する |
-| [`event-filter-replay`](kata/event-filter-replay.md) | showcase | Eventsをフィルタしてreplayする |
-| [`event-store-persistence`](kata/event-store-persistence.md) | support | EventStoreInterfaceでEventを永続化する |
-| [`resource-observation-bridge`](kata/resource-observation-bridge.md) | showcase | BEAR.Resource実行から観察ログを生成する |
-| [`defer-resource-request`](kata/defer-resource-request.md) | showcase | `#[Defer]` + `#[Link]`で応答後にfollow-upを実行する |
-| [`defer-conditional`](kata/defer-conditional.md) | showcase | `DeferInterface::add()`で条件付きdeferを手動制御する |
-| [`api-patch-partial-update`](kata/api-patch-partial-update.md) | manual-only | PATCHで差分更新を受ける |
-| [`api-options-method`](kata/api-options-method.md) | manual-only | OPTIONSでメソッドとパラメータ仕様を返す |
-| [`content-negotiation`](kata/content-negotiation.md) | manual-only | AcceptヘッダでJSON/HTML/CSV等を出し分ける |
-| [`form-validation-webform`](kata/form-validation-webform.md) | manual-only | Ray.WebFormModuleでAOPフォームバリデーション |
-| [`web-context-param-binding`](kata/web-context-param-binding.md) | manual-only | Webコンテキスト値と他Resource値を引数に束縛する |
-| [`db-transactional`](kata/db-transactional.md) | manual-only | `#[Transactional]`で複数書き込みを原子化する |
-| [`aop-validation-valid`](kata/aop-validation-valid.md) | manual-only | `#[Valid]`/`#[OnValidate]`でAOPバリデーション |
-| [`rate-limit-interceptor`](kata/rate-limit-interceptor.md) | external | `#[RateLimiter]`×interceptorで試行回数を制限する |
-| [`resource-permission-authorization`](kata/resource-permission-authorization.md) | external | `#[RequiredPermission]`でリソース単位の権限を判定する |
-| [`batch-command-resource`](kata/batch-command-resource.md) | external | バッチ/キューワーカーをCommand Resourceとして表現する |
-| [`signed-url-verification`](kata/signed-url-verification.md) | external | 有効期限付き署名URLでメール検証リンクを実装する |
-| [`tool-use-instrument`](kata/tool-use-instrument.md) | external | `#[Tool]`でResourceをLLMのtool定義として公開する |
+「やりたいこと」から Kata を引きます。`Status` の意味は [前提](#前提) を参照。
 
-## Resource / API
+### DBを読み書きする
+
+| やりたいこと | Kata | Status |
+|---|---|---|
+| 主キーで1件のEntityを読む | [`db-read-one-entity`](kata/db-read-one-entity.md) | canonical |
+| DB行をEntityへ変換する（enum・日付正規化） | [`db-entity-factory`](kata/db-entity-factory.md) | canonical |
+| natural keyで1件読む（INSERT後の新規ID回収） | [`db-read-by-natural-key`](kata/db-read-by-natural-key.md) | canonical |
+| 一覧をページング・絞り込みして読む | [`db-read-list-pager`](kata/db-read-list-pager.md) | canonical |
+| 作成・更新・削除をCommandに分ける | [`db-command-write`](kata/db-command-write.md) | canonical |
+| 多対多のlink tableを同期する | [`db-link-table-sync`](kata/db-link-table-sync.md) | canonical |
+| SELECT結果を型付きコレクションで返す | [`db-result-projection`](kata/db-result-projection.md) | showcase |
+| 複数書き込みをトランザクションで原子化する | [`db-transactional`](kata/db-transactional.md) | manual-only |
+| Entityを使わないarray実装と比較する | [`db-array-row-comparison`](kata/db-array-row-comparison.md) | comparison-only |
+| 複数SQLを`SqlQueryInterface`で調停する | [`db-sqlquery-orchestration`](kata/db-sqlquery-orchestration.md) | comparison-only |
+| Raw PDOとの責務差を見る | [`db-raw-pdo-comparison`](kata/db-raw-pdo-comparison.md) | comparison-only |
+
+### APIを作る（App Resource）
+
+| やりたいこと | Kata | Status |
+|---|---|---|
+| GETをHAL+JSONで返す | [`api-get-hal-resource`](kata/api-get-hal-resource.md) | canonical |
+| POST入力をInput DTOで受ける（201 + Location） | [`api-post-input-dto`](kata/api-post-input-dto.md) | canonical |
+| PUTで「省略/空/指定」のtri-state入力を扱う | [`api-put-tristate-input`](kata/api-put-tristate-input.md) | canonical |
+| PATCHで差分更新を受ける | [`api-patch-partial-update`](kata/api-patch-partial-update.md) | manual-only |
+| DELETE成功を204で返す | [`api-delete-no-content`](kata/api-delete-no-content.md) | canonical |
+| OPTIONSでメソッドとパラメータ仕様を返す | [`api-options-method`](kata/api-options-method.md) | manual-only |
+| 見つからないResourceを404にする | [`not-found-response`](kata/not-found-response.md) | canonical |
+| 入出力をJSON Schemaで検証する | [`json-schema-validation`](kata/json-schema-validation.md) | canonical |
+| 状態遷移（draft→published）を独立Resourceにする | [`state-transition-resource`](kata/state-transition-resource.md) | canonical |
+| 例外をHTTPステータスへマッピングする | [`error-status-mapping`](kata/error-status-mapping.md) | canonical |
+| ファイルアップロードを受ける（`#[InputFile]`） | [`file-upload-input`](kata/file-upload-input.md) | canonical |
+| cookie/env/他Resource値を引数に束縛する | [`web-context-param-binding`](kata/web-context-param-binding.md) | manual-only |
+| AcceptヘッダでJSON/HTML/CSV等を出し分ける | [`content-negotiation`](kata/content-negotiation.md) | manual-only |
+| 検証ロジックをAOPで分離する（`#[Valid]`） | [`aop-validation-valid`](kata/aop-validation-valid.md) | manual-only |
+
+### リソースを繋ぐ（Hypermedia）
+
+| やりたいこと | Kata | Status |
+|---|---|---|
+| 遷移先を `_links` で宣言する（`#[Link]`） | [`hal-link`](kata/hal-link.md) | canonical |
+| 関連Resourceを `_embedded` に埋め込む（`#[Embed]`） | [`hal-embed`](kata/hal-embed.md) | canonical |
+| リソースグラフのN+1をDataLoaderで解消する | [`crawl-data-loader`](kata/crawl-data-loader.md) | showcase |
+
+### HTMLページを作る（Page Resource + Qiq）
+
+| やりたいこと | Kata | Status |
+|---|---|---|
+| 1件詳細ページを描画する | [`page-resource-qiq-detail`](kata/page-resource-qiq-detail.md) | canonical |
+| 一覧ページを描画する（pager・filter付き） | [`page-resource-list`](kata/page-resource-list.md) | canonical |
+| Markdown本文をHTMLへ変換する | [`markdown-to-html`](kata/markdown-to-html.md) | canonical |
+| 管理フォームでPRG（成功時303 / 失敗時422再描画） | [`admin-prg-form`](kata/admin-prg-form.md) | showcase |
+| 確認画面を挟んで状態遷移を実行する | [`admin-confirm-page`](kata/admin-confirm-page.md) | showcase |
+| form classにフィールド定義と検証を集約する | [`form-validation-webform`](kata/form-validation-webform.md) | manual-only |
+
+### 認証・認可・保護
+
+| やりたいこと | Kata | Status |
+|---|---|---|
+| OAuth認証フローをResourceで実装する | [`auth-oauth-flow`](kata/auth-oauth-flow.md) | showcase |
+| セッションログイン（login→callback→logout） | [`admin-session-login`](kata/admin-session-login.md) | showcase |
+| 認証境界（401）とauthor-scoped認可（403）を分ける | [`admin-auth-boundary`](kata/admin-auth-boundary.md) | showcase |
+| write操作をCSRF/Same-Originで保護する | [`csrf-same-origin-protection`](kata/csrf-same-origin-protection.md) | canonical |
+| ログイン試行をレート制限する（429） | [`rate-limit-interceptor`](kata/rate-limit-interceptor.md) | external |
+| ロール/権限でリソース単位の認可をする | [`resource-permission-authorization`](kata/resource-permission-authorization.md) | external |
+| 有効期限付き署名URLで検証リンクを作る | [`signed-url-verification`](kata/signed-url-verification.md) | external |
+
+### キャッシュと配信
+
+| やりたいこと | Kata | Status |
+|---|---|---|
+| `#[Cacheable]` だけでleafをキャッシュする | [`cacheable-leaf`](kata/cacheable-leaf.md) | showcase |
+| `#[Embed]` 子の更新で親cacheも無効化する | [`cache-embed-dependency`](kata/cache-embed-dependency.md) | showcase |
+| body由来のN個の依存を `fromAssoc()` で宣言する | [`cache-body-derived-dependency`](kata/cache-body-derived-dependency.md) | showcase |
+| write時にcollection cacheを `#[Purge]` する | [`cache-purge`](kata/cache-purge.md) | showcase |
+| 部分キャッシュ（donut cache）を使う | [`donut-cache`](kata/donut-cache.md) | showcase |
+| レスポンス全体をキャッシュしETagを付ける | [`cacheable-response`](kata/cacheable-response.md) | showcase |
+| If-None-Matchに304で応える | [`conditional-request-304`](kata/conditional-request-304.md) | showcase |
+
+### 実行モデル（並列・遅延・バッチ・CLI・ストリーム）
+
+| やりたいこと | Kata | Status |
+|---|---|---|
+| ファイル/バイナリをストリームで返す | [`stream-response`](kata/stream-response.md) | showcase |
+| `#[Embed]` graphを並列実行する | [`async-embed-parallel`](kata/async-embed-parallel.md) | showcase |
+| 応答後にfollow-upを実行する（`#[Defer]`・202） | [`defer-resource-request`](kata/defer-resource-request.md) | showcase |
+| 条件付きでdeferを手動制御する | [`defer-conditional`](kata/defer-conditional.md) | showcase |
+| cron/queueワーカーをCommand Resourceにする | [`batch-command-resource`](kata/batch-command-resource.md) | external |
+| ResourceをCLIコマンドとして公開する | [`cli-resource`](kata/cli-resource.md) | showcase |
+| 他アプリのResourceをimportして呼ぶ | [`import-app`](kata/import-app.md) | showcase |
+
+### Event Sourcing
+
+| やりたいこと | Kata | Status |
+|---|---|---|
+| 観察ログからEventを抽出する | [`event-extraction`](kata/event-extraction.md) | showcase |
+| Eventをフィルタしてreplayする | [`event-filter-replay`](kata/event-filter-replay.md) | showcase |
+| Eventを永続化する | [`event-store-persistence`](kata/event-store-persistence.md) | support |
+| Resource実行から観察ログを生成する | [`resource-observation-bridge`](kata/resource-observation-bridge.md) | showcase |
+
+### テストする
+
+| やりたいこと | Kata | Status |
+|---|---|---|
+| DBなしでMediaQueryをFakeする | [`fake-sql-query`](kata/fake-sql-query.md) | support |
+| App ResourceのAPI contractをテストする | [`app-resource-test`](kata/app-resource-test.md) | support |
+| Page ResourceのHTML contractをテストする | [`page-resource-test`](kata/page-resource-test.md) | support |
+| Link/Embedを辿るworkflowをテストする | [`hypermedia-workflow-test`](kata/hypermedia-workflow-test.md) | support |
+| 実DB経路を必要時だけ検証する | [`mysql-integration-test`](kata/mysql-integration-test.md) | support |
+
+### 意味論と生成物（ALPS / schema / docs / AI）
+
+| やりたいこと | Kata | Status |
+|---|---|---|
+| ALPS profileを意味のSSOTにする | [`alps-profile-ssot`](kata/alps-profile-ssot.md) | support |
+| 決定的なfake dataを生成する | [`semantic-fake-data`](kata/semantic-fake-data.md) | support |
+| 観測からJSON Schemaを生成する | [`json-schema-generated`](kata/json-schema-generated.md) | support |
+| API docsとllms.txtを生成する | [`apidoc-llms-generated`](kata/apidoc-llms-generated.md) | support |
+| ResourceをLLMのtool定義として公開する | [`tool-use-instrument`](kata/tool-use-instrument.md) | external |
+
+## 補足: 設計原則
 
 RESTメソッドはテーブルへのCRUDではなく、application stateへの操作です。各メソッドの安全性（safe=状態を変えない）と冪等性（idempotent=繰り返しても同じ結果）が、キャッシュ戦略とAI安全設計の両方を駆動します。
 
@@ -134,21 +183,10 @@ RESTメソッドはテーブルへのCRUDではなく、application stateへの�
 | DELETE | — | ✅ | 削除する |
 | OPTIONS | ✅ | ✅ | 必要パラメータと応答仕様を照会する |
 
-また `#[Embed]` が埋め込むのはresourceの**結果**ではなくresourceへの**request**（=関係そのもの）です。この区別が、Resourceクラスを変えないままの並列実行（`async-embed-parallel`）・DataLoaderバッチ（`crawl-data-loader`）・部分キャッシュ（`donut-cache`）を可能にします。
+`#[Embed]` が埋め込むのはresourceの**結果**ではなくresourceへの**request**（=関係そのもの）です。この区別が、Resourceクラスを変えないままの並列実行（[`async-embed-parallel`](kata/async-embed-parallel.md)）・DataLoaderバッチ（[`crawl-data-loader`](kata/crawl-data-loader.md)）・部分キャッシュ（[`donut-cache`](kata/donut-cache.md)）を可能にします。
 
-## Runtime / representation
+キャッシュ束（[`cacheable-leaf`](kata/cacheable-leaf.md) 〜 [`conditional-request-304`](kata/conditional-request-304.md)）の前提は「キャッシュを無効化するのは時間（TTL）ではなくイベント（write）」です。着手前に1つだけ問うこと — そのresourceは本質的に静的（data resource。DBから読んでいても意味は静的）か、本質的に動的（計算過程自体が表現）か。前者ならcache Kataを適用し、後者にはcache属性を付けません。TTLを短くすることを戦略の代用にしないでください。
 
-キャッシュ束（`cacheable-leaf` 〜 `conditional-request-304`）の前提は「キャッシュを無効化するのは時間（TTL）ではなくイベント（write）」です。着手前に1つだけ問うこと — そのresourceは本質的に静的（data resource。DBから読んでいても意味は静的）か、本質的に動的（計算過程自体が表現）か。前者ならcache Kataを適用し、後者にはcache属性を付けません。TTLを短くすることを戦略の代用にしないでください。
+## 補足: 外部参照（external）実装について
 
-## Manual-only（型のみ記述 — 公式マニュアル準拠）
-
-このセクションのKataは、BEAR.Sundayに機能が存在するがこのリポジトリに正規実装・テストがまだ無いものです。`Manual:` の公式マニュアル章を一次資料として読み、**近いKata** の実装済みの型（命名・分離・テスト形）を流用して移植します。マスター確認は自プロジェクトに書いたテストのgreenが最終確証です。
-
-## External reference（外部参照実装の型）
-
-このセクションのKataは、BEAR.Sundayの実装型として価値があるが、参照実装がこのリポジトリではなく外部の公開リポジトリにあるものです。
-
-- 参照実装の主な出典は [apple-x-co/bear-app](https://github.com/apple-x-co/bear-app)（DDD + CQRS構成の実働BEAR.Sundayアプリ。`Reference:` のパスは同リポジトリの `source/app/` 配下）と、公式パッケージ [bearsunday/BEAR.ToolUse](https://github.com/bearsunday/BEAR.ToolUse)。
-- bear-appにはライセンス表記が無いため**コードをコピーしない**こと。attribute × interceptor の構成・命名・責務分割という「型」を読み取り、自プロジェクトで再実装します。
-- bear-appはDDD層構造（Domain/Application/Infrastructure）を採用しており、このリポジトリのBDR（Bound / Domain / Resource）とはアーキテクチャの流儀が異なります。以下のKataはその流儀差に依存しない横断的な型のみを抽出しています。
-
+参照実装の主な出典は [apple-x-co/bear-app](https://github.com/apple-x-co/bear-app)（DDD + CQRS構成の実働BEAR.Sundayアプリ）と、公式パッケージ [bearsunday/BEAR.ToolUse](https://github.com/bearsunday/BEAR.ToolUse)。bear-appにはライセンス表記が無いため**コードをコピーしない**こと。attribute × interceptor の構成・命名・責務分割という「型」を読み取り、自プロジェクトで再実装します。bear-appはDDD層構造（Domain/Application/Infrastructure）を採用しており、このリポジトリのBDR（Bound / Domain / Resource）とはアーキテクチャの流儀が異なります。
