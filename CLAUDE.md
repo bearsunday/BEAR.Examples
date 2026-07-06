@@ -4,7 +4,7 @@
 
 To learn or transplant an implementation pattern ("how do I add a pager /
 HAL embed / streaming response / PRG form / Cacheable resource"), start at
-`docs/source-index.md` — the Kata (型) source index. Each Kata maps an intent
+`index.md` — the Kata (型) source index. Each Kata maps an intent
 to canonical Source, Tests, a **着手前チェック (before)**, and a
 **マスター確認 (after)** checklist. The `bear-kata` skill
 (`.claude/skills/bear-kata/SKILL.md`) routes intent → Kata. Prefer

@@ -6,7 +6,7 @@ user-invocable: true
 
 # bear-kata — BEAR.Sunday 実装の型を引く
 
-このスキルは BEAR.Kata の **ソース索引** [`docs/source-index.md`](docs/source-index.md) を入口に、「これを実装したい」という intent から、真似してよい正規形ソース・確認すべきテスト・マスター確認チェックリストへ最短で到達させる。
+このスキルは BEAR.Kata の **ソース索引** [`index.md`](index.md) を入口に、「これを実装したい」という intent から、真似してよい正規形ソース・確認すべきテスト・マスター確認チェックリストへ最短で到達させる。
 
 索引は武道の「型(Kata)」の集まり。各 Kata は **着手前チェック → ソース → テスト → 実装 → マスター確認** を備える。
 
@@ -19,7 +19,7 @@ user-invocable: true
 ## 手順（6ステップ）
 
 1. **INTENT を言語化する。** ユーザーがやりたいことを1文にする。例:「記事一覧をページングして返したい」。
-2. **ROUTE — 索引で Kata を引く。** [`docs/source-index.md`](docs/source-index.md) を開き、`Aliases`（`pager`, `#[Embed]`, `streaming`, `PRG`, `CSRF`, `OAuth`, `#[Defer]`, `event sourcing`, `FakeSqlQuery` 等）でマッチする Kata を選ぶ。冒頭の一覧テーブルからも引ける。
+2. **ROUTE — 索引で Kata を引く。** [`index.md`](index.md) を開き、`Aliases`（`pager`, `#[Embed]`, `streaming`, `PRG`, `CSRF`, `OAuth`, `#[Defer]`, `event sourcing`, `FakeSqlQuery` 等）でマッチする Kata を選ぶ。冒頭の一覧テーブルからも引ける。
 3. **Status を確認する。**
    - `canonical` … 最初に真似する正規形。コピー可。
    - `showcase` … 特定機能の実例。
@@ -79,5 +79,5 @@ user-invocable: true
 
 - `comparison-only` の Kata（`db-array-row-comparison`, `db-sqlquery-orchestration`, `db-raw-pdo-comparison`）は**理解用**。正規形として移植しない。
 - 索引のパスはこのリポジトリ（BEAR.Kata）内の実ファイル。別プロジェクトへ移植する際は、命名規約（`docs/conventions.md`）と型を保ったまま自分の Entity 名へ読み替える。
-- **別プロジェクトでこのスキルを使う場合**、ローカルに `docs/source-index.md` が無いことがある。その時は GitHub のコピーを参照する: `https://github.com/bearsunday/BEAR.Kata/blob/1.x/docs/source-index.md`（raw: `https://raw.githubusercontent.com/bearsunday/BEAR.Kata/1.x/docs/source-index.md`）。`Source` / `Tests` のパスも同じリポジトリ（BEAR.Kata）の該当ファイルとして読む。
+- **別プロジェクトでこのスキルを使う場合**、ローカルに `index.md` / `kata/` が無いことがある。その時は GitHub のコピーを参照する: `https://github.com/bearsunday/BEAR.Kata/blob/1.x/index.md`（索引）および `https://github.com/bearsunday/BEAR.Kata/tree/1.x/kata`（各Kata）。`Source` / `Tests` のパスも同じリポジトリ（BEAR.Kata）の該当ファイルとして読む。
 - 索引に該当 Kata が無い時は、近い Status=`canonical` の Kata の型（Query/Command 分離、SQL外部化、ResourceObject body/status、HAL rel 層分離）を当てはめ、`docs/conventions.md` を参照する。

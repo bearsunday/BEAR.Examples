@@ -1,23 +1,55 @@
-# BEAR.Kata
+# BEAR.Kata ソース索引
 
-BEAR.Sunday アプリケーションの実装パターン集（Kata = 型）。「これを実装したい時、どのファイルを見るか」をAIエージェントと人間が素早く引くためのリファレンス実装プロジェクト。
+このページは、AIエージェントと人間が「これを実装したい時、このリファレンスのどこを見るか」を素早く引くためのソース索引です。チュートリアルではありません。説明は最小限にし、実装意図（intent）からソース、テスト、真似してよい要点へ直接到達することを目的にします。
 
-## 引き方
+BEAR.Kata の各エントリは「Kata（型）」です。武道の型と同じく、**着手前に型を確認し、実装後に型に従えたかを検証する**ことで、「このKataをマスターした」と自信を持って言える状態を目指します。
 
-1. **下の[索引](#索引)を「やりたいこと」で探す。** 各Kataの詳細（Aliases / 着手前チェック / Source / Tests / Key points / マスター確認）はリンク先の [kata/](kata/) 配下の各ページにある。
-2. **キーワードで引く。** `pager` / `#[Embed]` / `PRG` / `多対多` / `認可` / `条件付きリクエスト` などの検索語（Aliases）は各Kataページ（kata/）の Aliases に載っている。この索引で見つからなければ kata/ 配下を全文検索する。
-3. **AIに引かせる。** Claude Code で「◯◯を kata に従って実装して」と言うと [`bear-kata` スキル](#スキルを獲得して使う)が該当Kataへ誘導する。
+## エージェントの引き方（6ステップ）
+
+```
+1. INTENT    「BEAR.Sundayでページング一覧を実装したい」
+               ↓ skill `bear-kata` が intent でトリガー（能動的入口）
+2. ROUTE     skill → この索引 → kata `db-read-list-pager`
+               ↓ Status=canonical なら真似してよい正規形
+3. READ      Source（Resource + Query + SQL + Entity）+ Key points + Do not
+               ↓ 【着手前チェック】型と前提を確認してから書く
+4. OBSERVE   Tests = 正しい振る舞いの仕様
+               ↓
+5. IMPLEMENT 自分のプロジェクトに移植
+               ↓
+6. MASTER    【マスター確認】greppable assertion ＋ listされたTestを写経してgreen
+               → 全項目 ✓ なら「このKataをマスターした」
+```
+
+## 前提
+
+- namespace は `BEAR\Kata\`。`Source` と `Tests` はこのリポジトリ root からの相対パスです。
+- 各Kataの `Manual:` は対応するBEAR.Sunday公式マニュアル章へのリンクです。型の背景にあるフレームワーク仕様はそちらが一次資料です。
+- サンプルの位置付けは次の5種類です。
 
 | Status | 意味 |
 |---|---|
-| `canonical` | 最初に真似する正規形 |
-| `showcase` | 特定機能を切り出した実例 |
-| `comparison-only` | 比較理解用。コピーしない |
-| `support` | テスト・Fake・生成物 |
-| `manual-only` | 型の記述のみ。一次資料は公式マニュアル |
-| `external` | 型の記述のみ。一次資料は外部の参照実装（コードはコピーしない） |
+| `canonical` | 通常の実装で最初に真似する正規形 |
+| `showcase` | 特定機能を切り出して見せる実例 |
+| `comparison-only` | 比較理解用。デフォルト実装としてコピーしない |
+| `support` | テスト、Fake、生成物など正規形を支える周辺実装 |
+| `manual-only` | 公式マニュアルを一次資料とする型の記述のみ。このリポジトリに正規実装・テストはまだ無い |
+| `external` | 外部公開リポジトリ（実働アプリ・未導入パッケージ）の参照実装を指す型の記述。このリポジトリに正規実装は無い |
 
-## 索引
+## 使い方
+
+1. `Aliases` にある語で検索します。例: `streaming`, `DbQuery`, `PRG`, `FakeSqlQuery`。
+2. `Status` で、そのコードをコピーしてよい正規形か、比較用かを確認します。
+3. **着手前チェック** で、書き始める前に守るべき型と前提を確認します。
+4. `Source` を読みます。
+5. `Tests` を読み、期待される振る舞いを確認します。
+6. 実装後に **マスター確認** のチェックリストを自分のコードに対して走らせ、全項目が満たされたらそのKataをマスターしたと判断します。マスター確認は「`Tests` に挙げたテストを自分の実装へ写経して green になること」を最終確証とします。
+
+`manual-only` と `external` のKataは手順が異なります。Sourceの代わりに一次資料（公式マニュアル章、または `Reference:` の外部リポジトリ）を読み、**近いKata** に挙げた実装済みKataの型（命名・分離・テスト形）を流用して移植します。マスター確認は自プロジェクトに書いたテストのgreenが最終確証です。
+
+## 索引（一覧）
+
+「やりたいこと」から Kata を引きます。`Status` の意味は [前提](#前提) を参照。
 
 ### DBを読み書きする
 
@@ -138,34 +170,23 @@ BEAR.Sunday アプリケーションの実装パターン集（Kata = 型）。�
 | API docsとllms.txtを生成する | [`apidoc-llms-generated`](kata/apidoc-llms-generated.md) | support |
 | ResourceをLLMのtool定義として公開する | [`tool-use-instrument`](kata/tool-use-instrument.md) | external |
 
-## スコープ外（意図的に扱わない）
+## 補足: 設計原則
 
-Production デプロイ / compile / preload、High-Performance Servers（Swoole / RoadRunner / FrankenPHP）、Aura.Router カスタムルーティングはこのリファレンスの対象外。理由と全リストは [docs/scope.md](docs/scope.md) を参照。
+RESTメソッドはテーブルへのCRUDではなく、application stateへの操作です。各メソッドの安全性（safe=状態を変えない）と冪等性（idempotent=繰り返しても同じ結果）が、キャッシュ戦略とAI安全設計の両方を駆動します。
 
-## スキルを獲得して使う
+| Method | Safe | Idempotent | 意味 |
+|---|---|---|---|
+| GET | ✅ | ✅ | 状態を読む。自由にキャッシュ・AIから自由に呼べる |
+| POST | — | — | 状態を変える。繰り返しは同じ結果を保証しない |
+| PUT | — | ✅ | representation全体をURIに置く（無ければ作成） |
+| PATCH | — | — | 差分を適用する |
+| DELETE | — | ✅ | 削除する |
+| OPTIONS | ✅ | ✅ | 必要パラメータと応答仕様を照会する |
 
-このリポジトリの価値は CMS を動かすことではなく、`bear-kata` スキルを獲得して **自分の BEAR.Sunday 実装に型(Kata)を適用する** ことにあります。
+`#[Embed]` が埋め込むのはresourceの**結果**ではなくresourceへの**request**（=関係そのもの）です。この区別が、Resourceクラスを変えないままの並列実行（[`async-embed-parallel`](kata/async-embed-parallel.md)）・DataLoaderバッチ（[`crawl-data-loader`](kata/crawl-data-loader.md)）・部分キャッシュ（[`donut-cache`](kata/donut-cache.md)）を可能にします。
 
-```bash
-# 個人用（どのプロジェクトでも有効）
-mkdir -p ~/.claude/skills && cp -r .claude/skills/bear-kata ~/.claude/skills/
+キャッシュ束（[`cacheable-leaf`](kata/cacheable-leaf.md) 〜 [`conditional-request-304`](kata/conditional-request-304.md)）の前提は「キャッシュを無効化するのは時間（TTL）ではなくイベント（write）」です。着手前に1つだけ問うこと — そのresourceは本質的に静的（data resource。DBから読んでいても意味は静的）か、本質的に動的（計算過程自体が表現）か。前者ならcache Kataを適用し、後者にはcache属性を付けません。TTLを短くすることを戦略の代用にしないでください。
 
-# または特定プロジェクト用
-mkdir -p /path/to/your-project/.claude/skills && cp -r .claude/skills/bear-kata /path/to/your-project/.claude/skills/
-```
+## 補足: 外部参照（external）実装について
 
-Claude Code で「記事一覧のページングを **kata に従って実装してください**」のように言うと `bear-kata` スキルが発動し、[ソース索引](index.md)から該当 Kata（着手前チェック → Source / Tests → マスター確認）へ誘導します。`/bear-kata` で明示的に呼ぶこともできます。このリポジトリ内で開く場合はコピー不要です。
-
-## ドキュメント
-
-- [index.md](index.md) — ソース索引（使い方・カテゴリ別索引・設計原則）。各Kataの詳細は [kata/](kata/) 配下
-- [docs/setup.md](docs/setup.md) — DB・サーバー起動・管理者ログイン
-- [docs/architecture.md](docs/architecture.md) — BDRレイアウトと設計根拠
-- [docs/conventions.md](docs/conventions.md) — 命名・Resourceパターン・Read/Write SQL契約
-- [docs/scope.md](docs/scope.md) — 実装範囲と意図的な除外事項
-
-## Links
-
-- [BEAR.Sunday manual](https://bearsunday.github.io/manuals/1.0/en/index.html)
-- [Ray.MediaQuery](https://github.com/ray-di/Ray.MediaQuery)
-- [ALPS](https://alps.io/)
+参照実装の主な出典は [apple-x-co/bear-app](https://github.com/apple-x-co/bear-app)（DDD + CQRS構成の実働BEAR.Sundayアプリ）と、公式パッケージ [bearsunday/BEAR.ToolUse](https://github.com/bearsunday/BEAR.ToolUse)。bear-appにはライセンス表記が無いため**コードをコピーしない**こと。attribute × interceptor の構成・命名・責務分割という「型」を読み取り、自プロジェクトで再実装します。bear-appはDDD層構造（Domain/Application/Infrastructure）を採用しており、このリポジトリのBDR（Bound / Domain / Resource）とはアーキテクチャの流儀が異なります。
