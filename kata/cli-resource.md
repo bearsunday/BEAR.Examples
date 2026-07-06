@@ -90,7 +90,7 @@ CLI名は `#[Cli(name:)]` で指定し、生成物は `bin/cli/<name>` に置か
 
 ## Key points
 
-Resource methodに `#[Cli]` と `#[Option]` を付け、`composer cli` で生成する。生成コマンドは `cli-hal-api-app` contextのresource clientを呼ぶだけ（重複実装ゼロ）。default出力は `output:` で指定したbody fieldのみで、`--format json` でAPIと同じfull JSON。errorはstderr、exit codeはHTTP status mapping（0=success / 1=client error / 2=server error）。GitHub repository設定時はHomebrew formulaも生成される。
+Resource methodに `#[Cli]` と `#[Option]` を付け、`composer cli` で生成する。生成コマンドは `cli-hal-api-app` contextのresource clientを呼ぶだけ（重複実装ゼロ）。default出力は `output:` で指定したbody fieldのみで、`--format json` でAPIと同じfull JSON。errorはexit codeで表す — HTTP statusのmapping（0=success / 1=client error / 2=server error）。GitHub repository設定時はHomebrew formulaも生成される。
 
 ## Do not
 

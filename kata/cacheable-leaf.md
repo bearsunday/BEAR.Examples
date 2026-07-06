@@ -157,7 +157,7 @@ class-level `#[Cacheable]` がcache surface。manual cache primitiveはResource�
 
 ## Do not
 
-- leaf resourceに不要な `Surrogate-Key` 手書きコードを足さない — self URI tagはframeworkが保存時に書き、write時のpurgeも `RefreshSameCommand` が行う。手書きはmanual/automaticのSurrogate-Key混在となり `CacheDependency::depends()` のassertionを壊す。
+- leaf resourceに不要な `Surrogate-Key` 手書きコードを足さない — self URI tagはframeworkが保存時に書き、write時のpurgeも `RefreshSameCommand` が行う。手書きすると `QueryRepository::setCacheDependency()` が「Surrogate-Key既設」とみなして早期returnし、frameworkの自動依存解決をスキップしてしまう。
 
 ## マスター確認（After）
 

@@ -54,7 +54,7 @@ rel名は `var/alps/profile.json` のChoreography descriptor（`type: safe` の�
 
 ### Contract test
 
-`self` はHAL rendererが自動付与するので、それを除いた資産のrelをpinする:
+`self` はHAL rendererが自動付与するので、それを除いたResource自身のrelをpinする:
 
 ```php
 $rels = array_values(array_diff(array_keys($rendered['_links']), ['self']));

@@ -100,7 +100,7 @@ item ↔ collection はclass名の単複で対にする — Query methodの `ite
 
 ## Key points
 
-`#[CacheableResponse]` は全体キャッシュ。embed子も含めてキャッシュされる（本showcaseのArticles/Categories自体にはembed子が無い — embed込みの実例はmanualのBlogPosting例）。TTLは `DonutRepositoryInterface::put($this, ttl:, sMaxAge:)` で指定でき、default TTLはCDN module依存（tag無効化対応CDNなら実質無期限、それ以外は10秒）。ETagによる304応答は [`conditional-request-304`](./conditional-request-304.md) が担う。
+`#[CacheableResponse]` は全体キャッシュ。embed子も含めてキャッシュされる（本showcaseのArticles/Categories自体にはembed子が無い — embed込みの実例はmanualのBlogPosting例）。TTLは `DonutRepositoryInterface::putStatic($this, ttl:, sMaxAge:)` で指定でき、default TTLはCDN module依存（tag無効化対応CDNなら実質無期限、それ以外は10秒）。ETagによる304応答は [`conditional-request-304`](./conditional-request-304.md) が担う。
 
 ## Do not
 

@@ -120,7 +120,7 @@ DataLoader class は `<親><子コレクション>DataLoader`（`ArticleTagsData
 
 ## Key points
 
-`#[Link(crawl: ...)]` でグラフ名を宣言。`DataLoaderInterface::__invoke(array $queries): array` でバッチクエリ。keyはURI templateから自動推論。clientからは `ResourceInterface::crawl($uri, $crawlName, $query)` またはfluent DSLの `linkCrawl($rel)` で実行する。
+`#[Link(crawl: ...)]` でグラフ名を宣言。`DataLoaderInterface::__invoke(array $queries): array` でバッチクエリ。keyはURI templateから自動推論。clientからは `ResourceInterface::crawl($uri, $crawlName, $query)` またはfluent DSLの `linkCrawl($crawlName)` で実行する。
 
 ## Do not
 

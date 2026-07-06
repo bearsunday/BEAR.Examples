@@ -114,6 +114,10 @@ composer parallel:demo  # container内で php bin/async.php get 'app://self/arti
 
 Resource codeは通常の `#[Embed]` のまま。runtime/context側でparallel moduleを重ねる。実行は `composer parallel:up`（ZTS + ext-parallel container起動）→ `composer parallel:demo`。Swooleは別entrypointではなく `AsyncSwooleModule` + connection poolをAppModuleにinstallする形（本リポジトリはDockerfileのみ用意、module wiringは未着手）。
 
+## Do not
+
+- 並列化のためにResource body assemblyを別物に書き換えない。並列化はruntime overlayの責務で、sync版とResourceクラスの差分はゼロに保つ。
+
 ## マスター確認（After）
 
 - [ ] sync版と並列版で Resource クラスの差分がゼロ（並列化はcontext側のみ）。

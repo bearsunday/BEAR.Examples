@@ -11,7 +11,7 @@
 
 ## 例
 
-このリポジトリに正規実装は無い（manual-only）。[公式マニュアル（database）](https://bearsunday.github.io/manuals/1.0/en/database.html) を一次資料として読み、原子化したいuse case境界のResource methodに `Ray\AuraSqlModule\Annotation\Transactional` を付ける。AOPがmethod実行をbegin/commitで包み、例外throwでrollbackする（backing classは `vendor/ray/aura-sql-module/src/TransactionalInterceptor.php`、このリポジトリにインストール済み）。複数接続DBは `#[Transactional(["pdo", "userDb"])]` のようにproperty指定する。典型候補は [`db-link-table-sync`](./db-link-table-sync.md) の clear→link ループ — entity本体のwriteと合わせて1トランザクションに包む。マスター確認は自プロジェクトに書いたテストのgreenが最終確証。
+このリポジトリに正規実装は無い（manual-only）。[公式マニュアル（database）](https://bearsunday.github.io/manuals/1.0/en/database.html) を一次資料として読み、原子化したいuse case境界のResource methodに `Ray\AuraSqlModule\Annotation\Transactional` を付ける。AOPがmethod実行をbegin/commitで包み、`PDOException` throw時にrollbackして `RollbackException` へ包み直す（backing classは `vendor/ray/aura-sql-module/src/TransactionalInterceptor.php`、このリポジトリにインストール済み）。複数接続DBは `#[Transactional(["pdo", "userDb"])]` のようにproperty指定する。典型候補は [`db-link-table-sync`](./db-link-table-sync.md) の clear→link ループ — entity本体のwriteと合わせて1トランザクションに包む。マスター確認は自プロジェクトに書いたテストのgreenが最終確証。
 
 ## Naming
 
@@ -37,7 +37,7 @@
 
 ## Key points
 
-例外throwでrollback。AuraSqlModule系のbindingにinterceptorが含まれる。
+rollbackが起きるのは `PDOException` throw時で、`RollbackException` へ包み直される。AuraSqlModule系のbindingにinterceptorが含まれる。
 
 ## Do not
 
