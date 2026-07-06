@@ -1,0 +1,14 @@
+{
+  "name": "bear-kata",
+  "owner": {
+    "name": "BEAR.Sunday"
+  },
+  "description": "BEAR.Sunday リファレンス実装の型(Kata)を配布するマーケットプレイス。",
+  "plugins": [
+    {
+      "name": "bear-kata",
+      "source": "./",
+      "description": "BEAR.Sunday 実装の型(Kata)をソース索引から引くスキル。"
+    }
+  ]
+}

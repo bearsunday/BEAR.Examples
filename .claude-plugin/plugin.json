@@ -1,0 +1,13 @@
+{
+  "name": "bear-kata",
+  "description": "BEAR.Sunday 実装の型(Kata)をソース索引から引く。intent から canonical なソース・テスト・マスター確認へ誘導するスキル。",
+  "version": "1.0.0",
+  "author": {
+    "name": "Akihito Koriyama"
+  },
+  "homepage": "https://github.com/bearsunday/BEAR.Kata",
+  "repository": "https://github.com/bearsunday/BEAR.Kata",
+  "license": "MIT",
+  "keywords": ["bear-sunday", "php", "kata", "reference", "resource-oriented", "hal"],
+  "skills": "./.claude/skills/"
+}
