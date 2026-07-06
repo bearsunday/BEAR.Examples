@@ -144,17 +144,26 @@ Production デプロイ / compile / preload、High-Performance Servers（Swoole 
 
 ## スキルを獲得して使う
 
-このリポジトリの価値は CMS を動かすことではなく、`bear-kata` スキルを獲得して **自分の BEAR.Sunday 実装に型(Kata)を適用する** ことにあります。
+このリポジトリの価値は CMS を動かすことではなく、`bear-kata` スキルを獲得して **自分の BEAR.Sunday 実装に型(Kata)を適用する** ことにあります。獲得は3通り。
 
-```bash
-# 個人用（どのプロジェクトでも有効）
-mkdir -p ~/.claude/skills && cp -r .claude/skills/bear-kata ~/.claude/skills/
+**A. このリポジトリ内（インストール不要）** — clone して中で Claude Code を開けば `bear-kata` は自動で読み込まれる。
 
-# または特定プロジェクト用
-mkdir -p /path/to/your-project/.claude/skills && cp -r .claude/skills/bear-kata /path/to/your-project/.claude/skills/
+**B. plugin として他プロジェクトへ（更新が効く）** — BEAR スキルのハブ [bearsunday/BEAR.Skills](https://github.com/bearsunday/BEAR.Skills) 経由で入れる。
+
+```
+/plugin marketplace add bearsunday/BEAR.Skills
+/plugin install bear-kata@bear-skills
 ```
 
-Claude Code で「記事一覧のページングを **kata に従って実装してください**」のように言うと `bear-kata` スキルが発動し、[ソース索引](index.md)から該当 Kata（着手前チェック → Source / Tests → マスター確認）へ誘導します。`/bear-kata` で明示的に呼ぶこともできます。このリポジトリ内で開く場合はコピー不要です。
+`/plugin marketplace update bear-skills` で最新の Kata に追随する（手動コピーと違い、リポジトリの更新を取り込む）。
+
+**C. 手動コピー（最小構成・更新は手動）**
+
+```bash
+mkdir -p ~/.claude/skills && cp -r .claude/skills/bear-kata ~/.claude/skills/
+```
+
+Claude Code で「記事一覧のページングを **kata に従って実装してください**」のように言うと `bear-kata` スキルが発動し、[ソース索引](index.md)から該当 Kata（着手前チェック → Source / Tests → マスター確認）へ誘導します。明示的に呼ぶなら、リポジトリ内は `/bear-kata`、plugin 経由は `/bear-kata:bear-kata`。
 
 ## ドキュメント
 
