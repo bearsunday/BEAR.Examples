@@ -1,0 +1,22 @@
+name: Skills Sync
+
+on:
+  push:
+    branches: [1.x]
+  pull_request:
+    paths:
+      - '.agents/skills/**'
+      - '.claude/skills/**'
+      - '.github/workflows/skills-sync.yml'
+  workflow_dispatch:
+
+jobs:
+  skills-sync:
+    name: Skill copies must be identical
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: .agents/skills/ and .claude/skills/ must be identical
+        run: diff -r .agents/skills .claude/skills
