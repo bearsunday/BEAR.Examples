@@ -28,8 +28,8 @@ user-invocable: true
    - `manual-only` … 型の記述のみ。**公式マニュアルを一次資料に、「近いKata」の型を流用して移植する。**
    - `external` … 型の記述のみ。**`Reference:` の外部リポジトリを参照実装として読み、自プロジェクトで再実装する（コードはコピーしない）。**
 4. **着手前チェック（Before）を読む。** 書き始める前に守るべき型と前提（命名・分離・契約）を確認する。
-5. **READ → OBSERVE。** `Source` を読んで `Key points` と `Do not` を把握し、`Tests` で期待される振る舞い（status / body / link / embed）を確認する。
-6. **IMPLEMENT → MASTER。** ユーザーのプロジェクトに移植したら、**マスター確認（After）** のチェックリストを実装に対して走らせる。最終確証は「`Tests` に挙げたテストを自分の実装へ写経して green になること」。全項目 ✓ なら、その Kata をマスターしたと判断する。
+5. **READ → OBSERVE。** `Source` を読んで `Key points` と `Do not` を把握し、`Tests` で期待される振る舞い（status / body / link / embed）を確認する。`manual-only` / `external` にはこのリポジトリ内の `Source` / `Tests` が無い。前者は公式マニュアル、後者は `Reference:` の外部リポジトリを、同じ位置の一次資料として読む。
+6. **IMPLEMENT → MASTER。** ユーザーのプロジェクトに移植したら、**マスター確認（After）** のチェックリストを実装に対して走らせる。最終確証は「`Tests` に挙げたテストを自分の実装へ写経して green になること」。`Tests` を持たない `manual-only` / `external` では、一次資料から読み取った仕様に対して自分で書いたテストが green になることを確証とする。全項目 ✓ なら、その Kata をマスターしたと判断する。
 
 ## 索引の構造（各 Kata の項目）
 
